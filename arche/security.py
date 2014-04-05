@@ -1,0 +1,4 @@
+
+
+def groupfinder(*args):
+    return ()
