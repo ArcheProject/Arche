@@ -1,7 +1,10 @@
 from pyramid.httpexceptions import HTTPFound
 
 from arche.views.base import DefaultAddForm
+from arche.views.base import DefaultEditForm
+from arche.views.listing import ListingView
 from arche import security
+from arche import _
 
 
 class UserAddForm(DefaultAddForm):
@@ -16,6 +19,15 @@ class UserAddForm(DefaultAddForm):
         return HTTPFound(location = self.request.resource_url(obj))
 
 
+class UserChangePasswordForm(DefaultEditForm):
+    type_name = u'User'
+    schema_name = u'change_password'
+
+    def save_success(self, appstruct):
+        #FIXME: pop old password
+        return super(UserChangePasswordForm, self).save_success(appstruct)
+
+
 def includeme(config):
     config.add_view(UserAddForm,
                     context = 'arche.interfaces.IUsers',
@@ -23,3 +35,13 @@ def includeme(config):
                     request_param = "content_type=User",
                     permission = security.NO_PERMISSION_REQUIRED, #FIXME: perm check in add
                     renderer = 'arche:templates/form.pt')
+    config.add_view(UserChangePasswordForm,
+                    context = 'arche.interfaces.IUser',
+                    name = 'change_password',
+                    permission = security.NO_PERMISSION_REQUIRED, #FIXME: perm check in add
+                    renderer = 'arche:templates/form.pt')
+    config.add_view(ListingView,
+                    name = 'view',
+                    permission = security.NO_PERMISSION_REQUIRED,
+                    renderer = "arche:templates/users_table.pt",
+                    context = 'arche.interfaces.IUsers')

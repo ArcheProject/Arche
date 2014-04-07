@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/master.pt')">
+      i18n:domain="fika">
+<body>
+<div metal:fill-slot="content">
+    <div class="row">
+        <div class="col-md-12">
+        <tal:iterate repeat="obj contents">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">${obj.title}</h3>
+              </div>
+              <div class="panel-body" >
+                  <div class="description" tal:content="structure obj.description|''"></div>
+              </div>
+            </div>
+        </tal:iterate>
+        </div>
+    </div>
+</div>
+</body>
+</html>

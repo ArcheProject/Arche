@@ -13,20 +13,38 @@ class BaseSchema(colander.Schema):
 
 
 class UserSchema(colander.Schema):
-    first_name = colander.SchemaNode(colander.String())
-    last_name = colander.SchemaNode(colander.String())
-
+    first_name = colander.SchemaNode(colander.String(),
+                                     title = _(u"First name"),
+                                     missing = u"")
+    last_name = colander.SchemaNode(colander.String(),
+                                    title = _(u"Last name"),
+                                    missing = u"")
+    email = colander.SchemaNode(colander.String(),
+                                title = _(u"Email adress"),
+                                validator = colander.Email())
+    
 
 class AddUserSchema(UserSchema):
     userid = colander.SchemaNode(colander.String(),
                                  validator = unique_context_name_validator)
+    password = colander.SchemaNode(colander.String(),
+                                   title = _(u"Password"),
+                                   widget = deform.widget.CheckedPasswordWidget())
+
+
+class ChangePasswordSchema(colander.Schema):
+    #FIXME: Validate old password
+    password = colander.SchemaNode(colander.String(),
+                                   title = _(u"Password"),
+                                   widget = deform.widget.CheckedPasswordWidget())
 
 
 class InitialSetup(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title = _(u"Site title"))
     userid = colander.SchemaNode(colander.String(),
-                                 title = _(u"Admin userid"))
+                                 title = _(u"Admin userid"),
+                                 validator = unique_context_name_validator)
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Admins email adress"),
                                 validator = colander.Email())
@@ -42,4 +60,5 @@ def includeme(config):
     config.add_content_schema('User', UserSchema, 'view')
     config.add_content_schema('User', UserSchema, 'edit')
     config.add_content_schema('User', AddUserSchema, 'add')
+    config.add_content_schema('User', ChangePasswordSchema, 'change_password')
     config.add_content_schema('InitialSetup', InitialSetup, 'setup')

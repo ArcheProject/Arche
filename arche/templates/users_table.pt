@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/master.pt')">
+      i18n:domain="fika">
+<body>
+<div metal:fill-slot="content">
+    <div class="row">
+        <div class="col-md-12">
+        <table class="table table-responsive table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>First</th>
+                    <th>Last</th>
+                    <th>UserID</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr tal:repeat="obj contents">
+                    <td>${obj.first_name}</td>
+                    <td>${obj.last_name}</td>
+                    <td>${obj.userid}</td>
+                    <td>${obj.email}</td>
+                </tr>                
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

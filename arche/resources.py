@@ -19,6 +19,7 @@ class Base(Folder):
     addable_to = ()
     default_view = u"view"
     nav_visible = True
+    listing_visible = True
 
     def __init__(self, data=None, **kwargs):
         super(Base, self).__init__()
@@ -55,7 +56,7 @@ class User(Base):
 
     @property
     def userid(self):
-        self.__name__
+        return self.__name__
 
     @property
     def password(self):
@@ -94,6 +95,7 @@ class Users(Base):
     type_title = _(u"Users")
     addable_to = ()
     nav_visible = False
+    listing_visible = False
     title = _(u"Users")
 
 
