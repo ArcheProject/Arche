@@ -2,6 +2,8 @@ import colander
 import deform
 
 from arche.validators import unique_context_name_validator
+from arche.validators import login_password_validator
+from arche.validators import unique_userid_validator
 from arche import _
 
 
@@ -53,6 +55,28 @@ class InitialSetup(colander.Schema):
                                    widget = deform.widget.CheckedPasswordWidget())
 
 
+class LoginSchema(colander.Schema):
+    validator = login_password_validator
+    email = colander.SchemaNode(colander.String(),
+                                 title = _(u"Email"),)
+    password = colander.SchemaNode(colander.String(),
+                                   title = _(u"Password"),
+                                   widget = deform.widget.PasswordWidget())
+
+
+class RegisterSchema(colander.Schema):
+    userid = colander.SchemaNode(colander.String(),
+                                 title = _(u"UserID"),
+                                 validator = unique_userid_validator)
+    email = colander.SchemaNode(colander.String(),
+                                title = _(u"Email"),
+                                #FIXME: Validate unique email
+                                validator = colander.Email())
+    password = colander.SchemaNode(colander.String(), #FIXME REMOVE!
+                                   title = _(u"Password"),
+                                   widget = deform.widget.PasswordWidget())
+
+
 def includeme(config):
     config.add_content_schema('Document', BaseSchema, 'view')
     config.add_content_schema('Document', BaseSchema, 'edit')
@@ -62,3 +86,5 @@ def includeme(config):
     config.add_content_schema('User', AddUserSchema, 'add')
     config.add_content_schema('User', ChangePasswordSchema, 'change_password')
     config.add_content_schema('InitialSetup', InitialSetup, 'setup')
+    config.add_content_schema('Auth', LoginSchema, 'login')
+    config.add_content_schema('Auth', RegisterSchema, 'register')

@@ -98,6 +98,12 @@ class Users(Base):
     listing_visible = False
     title = _(u"Users")
 
+    def get_user_by_email(self, email, default = None):
+        #FIXME use catalog instead?
+        for user in self.values():
+            if email == user.email:
+                return user
+
 
 def includeme(config):
     config.add_content_factory(Document)

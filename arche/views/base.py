@@ -19,6 +19,7 @@ from deform_autoneed import need_lib
 from arche.utils import get_flash_messages
 from arche.utils import generate_slug
 from arche.utils import get_view
+from arche.utils import get_content_schemas
 from arche.fanstatic_lib import main_css
 from arche import security
 from arche import _
@@ -97,7 +98,7 @@ class BaseForm(BaseView, FormView):
     button_cancel = deform.Button('cancel', title = _(u"Cancel"), css_class = 'btn btn-default')
     button_save = deform.Button('save', title = _(u"Save"), css_class = 'btn btn-primary')
     button_add = deform.Button('add', title = _(u"Add"), css_class = 'btn btn-primary')
-    
+
     buttons = (button_save, button_cancel,)
 
     def __call__(self):
@@ -141,7 +142,7 @@ class BaseForm(BaseView, FormView):
 
 class DefaultAddForm(BaseForm):
     schema_name = u'add'
-    header = _(u"Add")
+    title = _(u"Add")
 
     @property
     def type_name(self):
@@ -161,7 +162,7 @@ class DefaultAddForm(BaseForm):
 
 class DefaultEditForm(BaseForm):
     schema_name = u'edit'
-    header = _(u"Edit")
+    title = _(u"Edit")
 
     @property
     def type_name(self):
@@ -171,6 +172,36 @@ class DefaultEditForm(BaseForm):
         self.flash_messages.add(self.default_success, type="success")
         self.context.update(**appstruct)
         return HTTPFound(location = self.request.resource_url(self.context))
+
+
+class DefaultDeleteForm(BaseForm):
+    appstruct =lambda x: {}
+    schema_name = u'delete'
+    title = _(u"Delete")
+
+    @property
+    def type_name(self):
+        return self.context.type_name
+
+    @property
+    def buttons(self):
+        return (self.button_delete, self.button_cancel,)
+
+    def get_schema_factory(self, type_name, schema_name):
+        """ Allow custom delete schemas here, otherwise just use the default one. """
+        schema = get_content_schemas(self.request.registry).get(type_name, {}).get(schema_name)
+        if not schema:
+            return colander.Schema
+
+    def delete_success(self, appstruct):
+        if self.root == self.context:
+            raise HTTPForbidden("Can't delete root")
+        msg = _(u"Deleted '${title}'",
+                mapping = {'title': self.context.title})
+        parent = self.context.__parent__
+        del parent[self.context.__name__]
+        self.flash_messages.add(msg, type = 'warning')
+        return HTTPFound(location = self.request.resource_url(parent))
 
 
 class DynamicView(BaseForm):
@@ -193,7 +224,7 @@ class DefaultView(BaseView):
     
     def __call__(self):
         return {}
-
+    
 
 def delegate_content_view(context, request):
     view_name = context.default_view and context.default_view or 'view'
@@ -227,6 +258,11 @@ def includeme(config):
     config.add_view(DefaultEditForm,
                     context = 'arche.interfaces.IBase',
                     name = 'edit',
+                    permission = security.NO_PERMISSION_REQUIRED, #FIXME
+                    renderer = 'arche:templates/form.pt')
+    config.add_view(DefaultDeleteForm,
+                    context = 'arche.interfaces.IBase',
+                    name = 'delete',
                     permission = security.NO_PERMISSION_REQUIRED, #FIXME
                     renderer = 'arche:templates/form.pt')
     config.add_view(DefaultView,

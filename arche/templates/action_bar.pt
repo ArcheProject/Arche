@@ -30,6 +30,13 @@
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
+            <li role="presentation" class="dropdown-header" i18n:translate="">In context</li>
+            <li tal:condition="view.root != context"><!-- FIXME: Other perm checks -->
+                <a href="${request.resource_url(context, 'delete')}">
+                    <span i18n:translate="">Delete</span>
+                    <span class="glyphicon glyphicon-remove pull-right"></span>
+                </a>
+            </li>
             <li role="presentation" class="dropdown-header" i18n:translate="">View selection</li>
             <tal:iterate repeat="(name, title) view.selectable_views(context).items()">
             <li>
