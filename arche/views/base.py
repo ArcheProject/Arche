@@ -1,11 +1,16 @@
+import warnings
+
 import colander
 import deform
 from pyramid.traversal import find_root
 from pyramid.traversal import lineage
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPForbidden
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
+from pyramid.view import render_view_to_response
 from pyramid.security import authenticated_userid
 from pyramid.security import has_permission
 from pyramid_deform import FormView
@@ -13,7 +18,9 @@ from deform_autoneed import need_lib
 
 from arche.utils import get_flash_messages
 from arche.utils import generate_slug
+from arche.utils import get_view
 from arche.fanstatic_lib import main_css
+from arche import security
 from arche import _
 
 
@@ -59,11 +66,25 @@ class BaseView(object):
     def render_actionbar(self, context):
         return self.render_template('arche:templates/action_bar.pt')
 
+    def get_local_nav_objects(self, context):
+        #FIXME: Conditions for navigation!
+        #FIXME: Permission check
+        for obj in context.values():
+            if getattr(obj, 'nav_visible', False):
+                if self.has_permission('view', obj):
+                    yield obj
+
     def has_permission(self, permission, context = None):
         #FIXME: Consider other request contexts
         return True #FIXME
         context = context and context or self.context
         return has_permission(permission, context, self.request)
+
+    def selectable_views(self, context):
+        type_name = getattr(context,'type_name', None)
+        selectable = {'view': _(u"Default")}
+        selectable.update(self.request.registry.settings['arche.content_views'].get(type_name, {}))
+        return selectable
 
 
 class BaseForm(BaseView, FormView):
@@ -82,8 +103,6 @@ class BaseForm(BaseView, FormView):
     def __call__(self):
         self.schema = self.get_schema_factory(self.type_name, self.schema_name)()
         result = super(BaseForm, self).__call__()
-#        if isinstance(result, dict):
-#            result.update(self.more_template_vars())
         return result
 
     def get_schema_factory(self, type_name, schema_name):
@@ -152,15 +171,51 @@ class DefaultView(BaseView):
         return {}
 
 
+def delegate_content_view(context, request):
+    view_name = context.default_view and context.default_view or 'view'
+    response = render_view_to_response(context, request, name=view_name)
+    if response is None:  # pragma: no coverage
+        warnings.warn("Failed to look up view called %r for %r." %
+                      (view_name, context))
+        raise HTTPNotFound()
+    return response
+
+def set_view(context, request, name = None):
+    name = request.GET.get('name', name)
+    if name is None:
+        raise ValueError("Need to specify a request with the GET variable name or simply a name parameter.")
+    if get_view(context, request, view_name = name) is None:
+        raise HTTPForbidden(u"There's no view registered for this content type with that name. "
+                            u"Perhaps you forgot to register the view for this context?")
+    context.default_view = name
+    fm = get_flash_messages(request)
+    fm.add(_(u"View set to ${title}",
+             mapping = {'title': name})) #FIXME
+    return HTTPFound(location = request.resource_url(context))
+
+
 def includeme(config):
     config.add_view(DefaultAddForm,
-                    context = 'arche.resources.Base',
+                    context = 'arche.interfaces.IBase',
                     name = 'add',
+                    permission = security.NO_PERMISSION_REQUIRED, #FIXME: perm check in add
                     renderer = 'arche:templates/form.pt')
     config.add_view(DefaultEditForm,
-                    context = 'arche.resources.Base',
+                    context = 'arche.interfaces.IBase',
                     name = 'edit',
+                    permission = security.NO_PERMISSION_REQUIRED, #FIXME
                     renderer = 'arche:templates/form.pt')
     config.add_view(DefaultView,
-                    context = 'arche.resources.Base',
+                    name = 'view',
+                    context = 'arche.interfaces.IBase',
+                    permission = security.NO_PERMISSION_REQUIRED, #FIXME
                     renderer = 'arche:templates/base_view.pt')
+    config.add_view(delegate_content_view,
+                    context = 'arche.interfaces.IBase',
+                    permission = security.NO_PERMISSION_REQUIRED,
+                    )
+    config.add_view(set_view,
+                    name = 'set_view',
+                    context = 'arche.interfaces.IBase',
+                    permission = security.NO_PERMISSION_REQUIRED, #FIXME
+                    )

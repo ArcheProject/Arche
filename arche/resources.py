@@ -12,6 +12,8 @@ class Base(Folder):
     type_name = u""
     type_title = u""
     addable_to = ()
+    default_view = u"view"
+    nav_visible = True
 
     def __init__(self, data=None, **kwargs):
         super(Base, self).__init__()

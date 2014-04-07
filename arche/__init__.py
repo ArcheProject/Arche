@@ -10,6 +10,7 @@ _ = TranslationStringFactory('Arche')
 default_settings = {
     'arche.content_factories': {},
     'arche.content_schemas': {},
+    'arche.content_views': {},
 }
 
 def includeme(config):

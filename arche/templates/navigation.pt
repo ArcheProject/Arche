@@ -16,7 +16,9 @@
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li><a href="/users">Users</a></li>
+        <li tal:repeat="obj view.get_local_nav_objects(view.root)">
+          <a href="${request.resource_url(obj)}">${obj.title}</a>
+        </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
           <li class="dropdown" tal:condition="view.userid">

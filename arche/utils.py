@@ -6,18 +6,21 @@ from zope.interface import implementer
 from zope.interface.interfaces import ComponentLookupError
 from zope.component import adapter
 from pyramid.interfaces import IRequest
-from pyramid.renderers import render
-from pyramid.threadlocal import get_current_request
 from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
+from pyramid.compat import map_
+from pyramid.renderers import render
+from pyramid.threadlocal import get_current_request
 
 from arche.interfaces import IFlashMessages
+from arche import _
 
 
 def add_content_factory(config, ctype):
     assert inspect.isclass(ctype)
     factories = config.registry.settings['arche.content_factories']
-    factories[ctype.__name__] = ctype
+    type_name = ctype.__name__
+    factories[type_name] = ctype
 
 def add_content_schema(config, type_name, schema, name):
     assert inspect.isclass(schema)
@@ -26,6 +29,18 @@ def add_content_schema(config, type_name, schema, name):
     schemas = config.registry.settings['arche.content_schemas']
     ctype_schemas = schemas.setdefault(type_name, {})
     ctype_schemas[name] = schema
+
+def add_content_view(config, type_name, name, title = u''):
+    if not name:
+        raise ValueError("Name must be specified and can't be an empty string. Specify 'view' to override the default view.")
+    if inspect.isclass(type_name):
+        type_name = type_name.__name__
+    settings = config.registry.settings
+    if type_name not in settings['arche.content_factories']:
+        raise KeyError('No content type with name %s' % type_name)
+    views = settings['arche.content_views']
+    ctype_views = views.setdefault(type_name, {})
+    ctype_views[name] = title
 
 def generate_slug(parent, text, limit=40):
     """ Suggest a name for content that will be added.
@@ -60,6 +75,15 @@ def check_unique_name(context, request, name):
     if request.registry.adapters.lookup(provides, IView, name=name):
         return False
     return True
+
+def get_view(context, request, view_name = ''):
+    """ Returns view callable if a view is registered.
+    """
+    provides = [IViewClassifier] + map_(
+        providedBy,
+        (request, context)
+    )
+    return request.registry.adapters.lookup(provides, IView, name=view_name)
 
 
 @adapter(IRequest)
@@ -101,3 +125,4 @@ def includeme(config):
     config.registry.registerAdapter(FlashMessages)
     config.add_directive('add_content_factory', add_content_factory)
     config.add_directive('add_content_schema', add_content_schema)
+    config.add_directive('add_content_view', add_content_view)
