@@ -101,12 +101,20 @@ class BaseForm(BaseView, FormView):
     buttons = (button_save, button_cancel,)
 
     def __call__(self):
-        self.schema = self.get_schema_factory(self.type_name, self.schema_name)()
+        schema_factory = self.get_schema_factory(self.type_name, self.schema_name)
+        if not schema_factory:
+            err = _(u"Schema type '${type_name}' not registered for content type '${schema_name}'.",
+                    mapping = {'type_name': self.type_name, 'schema_name': self.schema_name})
+            raise HTTPForbidden(err)
+        self.schema = schema_factory()
         result = super(BaseForm, self).__call__()
         return result
 
     def get_schema_factory(self, type_name, schema_name):
-        return self.request.registry.settings['arche.content_schemas'][type_name][schema_name]
+        try:
+            return self.request.registry.settings['arche.content_schemas'][type_name][schema_name]
+        except KeyError:
+            pass
 
     @property
     def form_options(self):

@@ -85,7 +85,6 @@ def get_view(context, request, view_name = ''):
     )
     return request.registry.adapters.lookup(provides, IView, name=view_name)
 
-
 @adapter(IRequest)
 @implementer(IFlashMessages)
 class FlashMessages(object):

@@ -1,7 +1,10 @@
 from repoze.folder import Folder
 from zope.interface import implementer
+#from zope.component import adapter
 
 from arche.interfaces import IBase
+from arche.interfaces import IUser
+from arche.interfaces import IUsers
 from arche import _
 
 
@@ -34,6 +37,24 @@ class Document(Base):
     addable_to = (u"Document")
 
 
+@implementer(IUser)
+class User(Base):
+    type_name = u"User"
+    type_title = _(u"User")
+    addable_to = (u'Users')
+    first_name = u""
+    last_name = u""
+    nav_visible = False
+
+    @property
+    def title(self):
+        return " ".join((self.first_name, self.last_name,)).strip()
+
+    @property
+    def userid(self):
+        self.__name__
+
+
 class File(Base):
     pass
 
@@ -46,5 +67,16 @@ class Image(Base):
     pass
 
 
+@implementer(IUsers)
+class Users(Base):
+    type_name = u"Users"
+    type_title = _(u"Users")
+    addable_to = ()
+    nav_visible = False
+    title = _(u"Users")
+
+
 def includeme(config):
-    config.add_content_factory(Document)
+    config.add_content_factory(Document)    
+    config.add_content_factory(Users)    
+    config.add_content_factory(User)    

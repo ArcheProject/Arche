@@ -20,21 +20,6 @@
           <a href="${request.resource_url(obj)}">${obj.title}</a>
         </li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
-          <li class="dropdown" tal:condition="view.userid">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                Blabla
-            </a>
-            <ul class="dropdown-menu">
-              <li class="divider"></li>
-              <li><a href="/logout">Logout</a></li>
-            </ul>
-          </li>
-          <tal:annon condition="not view.userid">
-              <li><a href="/login">Login</a></li>
-              <li><a href="/register">Register</a></li>
-          </tal:annon>
-      </ul>
         <div class="nav navbar-nav navbar-right">
             <form action="${request.resource_url(view.root,'search')}" id="search" class="navbar-form" role="search" method="get">
                 <div class="input-group">

@@ -73,8 +73,15 @@ def appmaker(zodb_root):
         return zodb_root['app_root']
 
 def populate_database():
+    #FIXME: Customisable
     from .resources import Document
-    return Document()
+    from .resources import Users
+    from .interfaces import IRoot
+    from zope.interface import alsoProvides
+    root = Document(title = 'Welcome to Arche')
+    alsoProvides(root, IRoot)
+    root['users'] = Users()
+    return root
 
 def read_salt(settings):
     from uuid import uuid4
