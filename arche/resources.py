@@ -5,6 +5,8 @@ from zope.interface import implementer
 from arche.interfaces import IBase
 from arche.interfaces import IUser
 from arche.interfaces import IUsers
+from arche.interfaces import IInitialSetup
+from arche.utils import hash_method
 from arche import _
 
 
@@ -44,6 +46,7 @@ class User(Base):
     addable_to = (u'Users')
     first_name = u""
     last_name = u""
+    email = u""
     nav_visible = False
 
     @property
@@ -53,6 +56,14 @@ class User(Base):
     @property
     def userid(self):
         self.__name__
+
+    @property
+    def password(self):
+        return getattr(self, "__password_hash__", u"")
+
+    @password.setter
+    def password(self, value):
+        self.__password_hash__ = hash_method(value)
 
 
 class File(Base):
@@ -67,6 +78,16 @@ class Image(Base):
     pass
 
 
+@implementer(IInitialSetup)
+class InitialSetup(Base):
+    type_name = u"InitialSetup"
+    type_title = u""
+    addable_to = () #Never!
+    nav_visible = False
+    title = _(u"Welcome to Arche!")
+    setup_data = {}
+
+
 @implementer(IUsers)
 class Users(Base):
     type_name = u"Users"
@@ -77,6 +98,7 @@ class Users(Base):
 
 
 def includeme(config):
-    config.add_content_factory(Document)    
-    config.add_content_factory(Users)    
-    config.add_content_factory(User)    
+    config.add_content_factory(Document)
+    config.add_content_factory(Users)
+    config.add_content_factory(User)
+    config.add_content_factory(InitialSetup)

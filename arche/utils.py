@@ -1,4 +1,5 @@
 import inspect
+from hashlib import sha512
 
 from slugify import slugify
 from zope.interface import providedBy
@@ -11,6 +12,7 @@ from pyramid.interfaces import IViewClassifier
 from pyramid.compat import map_
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
+from pyramid.threadlocal import get_current_registry
 
 from arche.interfaces import IFlashMessages
 from arche import _
@@ -18,29 +20,44 @@ from arche import _
 
 def add_content_factory(config, ctype):
     assert inspect.isclass(ctype)
-    factories = config.registry.settings['arche.content_factories']
+    factories = get_content_factories(config.registry)
     type_name = ctype.__name__
     factories[type_name] = ctype
+
+def get_content_factories(registry = None):
+    if registry is None:
+        registry = get_current_registry()
+    return registry.settings['arche.content_factories']
 
 def add_content_schema(config, type_name, schema, name):
     assert inspect.isclass(schema)
     if inspect.isclass(type_name):
         type_name = type_name.__name__
-    schemas = config.registry.settings['arche.content_schemas']
+    schemas = get_content_schemas(config.registry)
     ctype_schemas = schemas.setdefault(type_name, {})
     ctype_schemas[name] = schema
+
+def get_content_schemas(registry = None):
+    if registry is None:
+        registry = get_current_registry()
+    return registry.settings['arche.content_schemas']
 
 def add_content_view(config, type_name, name, title = u''):
     if not name:
         raise ValueError("Name must be specified and can't be an empty string. Specify 'view' to override the default view.")
     if inspect.isclass(type_name):
         type_name = type_name.__name__
-    settings = config.registry.settings
-    if type_name not in settings['arche.content_factories']:
+    content_factories = get_content_factories(config.registry)
+    if type_name not in content_factories:
         raise KeyError('No content type with name %s' % type_name)
-    views = settings['arche.content_views']
+    views = get_content_views(config.registry)
     ctype_views = views.setdefault(type_name, {})
     ctype_views[name] = title
+
+def get_content_views(registry = None):
+    if registry is None:
+        registry = get_current_registry()
+    return registry.settings['arche.content_views']
 
 def generate_slug(parent, text, limit=40):
     """ Suggest a name for content that will be added.
@@ -112,13 +129,19 @@ class FlashMessages(object):
         response = {'get_messages': self.get_messages}
         return render("arche:templates/flash_messages.pt", response, request = self.request)
 
-
 def get_flash_messages(request):
     try:
         return request.registry.getAdapter(request, IFlashMessages)
     except ComponentLookupError:
         return FlashMessages(request)
 
+def hash_method(value, registry = None):
+    if registry is None:
+        registry = get_current_registry()
+    return registry.settings['arche.hash_method'](value)
+
+def default_hash_method(value):
+    return sha512(value).hexdigest()
 
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)

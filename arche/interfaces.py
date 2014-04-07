@@ -15,3 +15,7 @@ class IFlashMessages(Interface):
 
 class IRoot(Interface):
     """ Marker interface for the site root."""
+
+
+class IInitialSetup(Interface):
+    """ For populating the site."""
