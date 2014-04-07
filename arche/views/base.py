@@ -173,6 +173,22 @@ class DefaultEditForm(BaseForm):
         return HTTPFound(location = self.request.resource_url(self.context))
 
 
+class DynamicView(BaseForm):
+    """ Based on view schemas. """
+    schema_name = u'view'
+    buttons = ()
+
+    @property
+    def type_name(self):
+        return self.context.type_name
+
+    def show(self, form):
+        appstruct = self.appstruct()
+        if appstruct is None:
+            appstruct = {}
+        return {'form': form.render(appstruct = appstruct, readonly = True)}
+
+
 class DefaultView(BaseView):
     
     def __call__(self):
@@ -218,6 +234,11 @@ def includeme(config):
                     context = 'arche.interfaces.IBase',
                     permission = security.NO_PERMISSION_REQUIRED, #FIXME
                     renderer = 'arche:templates/base_view.pt')
+    config.add_view(DynamicView,
+                    name = 'dynamic_view',
+                    context = 'arche.interfaces.IBase',
+                    permission = security.NO_PERMISSION_REQUIRED, #FIXME
+                    renderer = 'arche:templates/form.pt')
     config.add_view(delegate_content_view,
                     context = 'arche.interfaces.IBase',
                     permission = security.NO_PERMISSION_REQUIRED,
@@ -227,3 +248,5 @@ def includeme(config):
                     context = 'arche.interfaces.IBase',
                     permission = security.NO_PERMISSION_REQUIRED, #FIXME
                     )
+    config.add_content_view('Document', 'dynamic_view', _(u"Dynamic view"))
+    config.add_content_view('User', 'dynamic_view', _(u"Dynamic view"))

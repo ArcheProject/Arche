@@ -8,10 +8,12 @@
 <div metal:fill-slot="content">
     <div class="row">
         <div class="col-md-12">
-        	Hello world
+            <div class="description"
+                 tal:define="description context.description|None"
+                 tal:condition="description"
+                 tal:content="structure description">Description text</div>
         </div>
     </div>
 </div>
-
 </body>
 </html>

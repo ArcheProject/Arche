@@ -2,8 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       metal:use-macro="view.macro('arche:templates/master.pt')">
   <h1 metal:define-slot="header">${view.header|''}</h1>
-
   <div metal:fill-slot="content">
-    <form tal:replace="structure form" />
+      <div class="row">
+        <div class="col-md-12">
+            <form tal:replace="structure form" />
+        </div>
+    </div>
   </div>
 </html>

@@ -7,6 +7,9 @@ from arche import _
 
 class BaseSchema(colander.Schema):
     title = colander.SchemaNode(colander.String())
+    description = colander.SchemaNode(colander.String(),
+                                      widget = deform.widget.TextAreaWidget(rows = 5),
+                                      missing = u"")
 
 
 class UserSchema(colander.Schema):
@@ -33,8 +36,10 @@ class InitialSetup(colander.Schema):
 
 
 def includeme(config):
+    config.add_content_schema('Document', BaseSchema, 'view')
     config.add_content_schema('Document', BaseSchema, 'edit')
     config.add_content_schema('Document', BaseSchema, 'add')
+    config.add_content_schema('User', UserSchema, 'view')
     config.add_content_schema('User', UserSchema, 'edit')
     config.add_content_schema('User', AddUserSchema, 'add')
     config.add_content_schema('InitialSetup', InitialSetup, 'setup')
