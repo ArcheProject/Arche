@@ -8,7 +8,7 @@
 <div metal:fill-slot="content">
     <div class="row">
         <div class="col-md-12">
-        <table class="table table-responsive table-bordered table-striped">
+        <table class="table table-responsive table-bordered table-striped table-hover">
             <thead>
                 <tr>
                     <th>First</th>

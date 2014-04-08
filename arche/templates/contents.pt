@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/master.pt')">
+      i18n:domain="fika">
+<body>
+<tal:blank metal:fill-slot="heading"></tal:blank>
+<div metal:fill-slot="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span i18n:translate="">Contents of</span>
+                    ${context.title}
+                </h3>
+              </div>
+              <div class="panel-body">
+                  
+                <a tal:condition="context.__parent__" href="${request.resource_url(context.__parent__, 'contents')}" >
+                    <span class="glyphicon glyphicon-arrow-up"></span>
+                    <span i18n:translate="">Parent directory</span>
+                </a>
+                <p>&nbsp;</p>
+                    
+                <table class="table table-responsive table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr tal:repeat="obj contents">
+                            <td><a href="${request.resource_url(obj, 'contents')}"
+                                   title="${obj.description}">${obj.title}</a></td>
+                            <td>${obj.type_title}</td>
+                        </tr>                
+                    </tbody>
+                </table>
+              </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
