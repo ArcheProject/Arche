@@ -6,4 +6,5 @@ def includeme(config):
     config.include('arche.views.contents')
     config.include('arche.views.listing')
     config.include('arche.views.initial_setup')
+    config.include('arche.views.permissions')
     config.include('arche.views.users')

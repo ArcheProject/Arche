@@ -24,6 +24,7 @@ def includeme(config):
     config.include('arche.resources')
     config.include('arche.schemas')
     config.include('arche.views')
+    config.include('arche.security')
     #Resolve strings
     if isinstance(settings['arche.hash_method'], str):
         settings['arche.hash_method'] = config.name_resolver.resolve(settings['arche.hash_method'])
@@ -43,11 +44,6 @@ def includeme(config):
     bootstrap_js_path = 'deform:static/scripts/bootstrap.min.js'
     assert resource_registry.find_resource(bootstrap_js_path)
     resource_registry.replace_resource(bootstrap_js_path, bootstrap_js)
-    #Add convenience methods to request - remember that these are added
-    #even to json or ajax requests, so don't add things that aren't really needed!
-    config.add_request_method('arche.utils.get_userid',
-                              name = 'userid',
-                              reify = True)
 
 def root_factory(request):
     conn = get_connection(request)

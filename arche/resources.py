@@ -7,6 +7,7 @@ from arche.interfaces import IUser
 from arche.interfaces import IUsers
 from arche.interfaces import IInitialSetup
 from arche.utils import hash_method
+from arche.security import get_default_acl, get_local_roles
 from arche import _
 
 
@@ -42,6 +43,14 @@ class Base(Folder, DCMetadataMixin):
     nav_visible = True
     listing_visible = True
 
+    @property
+    def __acl__(self):
+        return get_default_acl()
+
+    @property
+    def roles(self):
+        return get_local_roles(self)
+
     def __init__(self, data=None, **kwargs):
         #Things like created, creator etc...
         super(Base, self).__init__()
@@ -54,6 +63,18 @@ class Base(Folder, DCMetadataMixin):
             setattr(self, key, value)
         #FIXME event?
         #FIXME: Check current value?
+
+    #Roles to own type?
+    #FIXME: When the view will be rewritten, this attr goes...
+    @property
+    def local_roles(self):
+        local_roles = get_local_roles(self)
+        return local_roles.get_appstruct()
+
+    @local_roles.setter
+    def local_roles(self, value):
+        local_roles = get_local_roles(self)
+        local_roles.set_from_appstruct(value)
 
 
 class Document(Base):

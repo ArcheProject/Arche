@@ -63,7 +63,7 @@ def includeme(config):
     config.add_view(RegisterForm,
                     context = IRoot,
                     name = 'register',
-                    permission = security.NO_PERMISSION_REQUIRED,
+                    permission = security.PERM_REGISTER,
                     renderer = 'arche:templates/form.pt')
     config.add_view(logout,
                     context = IRoot,

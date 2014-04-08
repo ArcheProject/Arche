@@ -287,22 +287,22 @@ def includeme(config):
     config.add_view(DefaultEditForm,
                     context = 'arche.interfaces.IBase',
                     name = 'edit',
-                    permission = security.NO_PERMISSION_REQUIRED, #FIXME
+                    permission = security.PERM_EDIT,
                     renderer = 'arche:templates/form.pt')
     config.add_view(DefaultDeleteForm,
                     context = 'arche.interfaces.IBase',
                     name = 'delete',
-                    permission = security.NO_PERMISSION_REQUIRED, #FIXME
+                    permission = security.PERM_DELETE,
                     renderer = 'arche:templates/form.pt')
     config.add_view(DefaultView,
                     name = 'view',
                     context = 'arche.interfaces.IBase',
-                    permission = security.NO_PERMISSION_REQUIRED, #FIXME
+                    permission = security.PERM_VIEW,
                     renderer = 'arche:templates/base_view.pt')
     config.add_view(DynamicView,
                     name = 'dynamic_view',
                     context = 'arche.interfaces.IBase',
-                    permission = security.NO_PERMISSION_REQUIRED, #FIXME
+                    permission = security.PERM_EDIT,
                     renderer = 'arche:templates/form.pt')
     config.add_view(delegate_content_view,
                     context = 'arche.interfaces.IBase',
@@ -311,7 +311,7 @@ def includeme(config):
     config.add_view(set_view,
                     name = 'set_view',
                     context = 'arche.interfaces.IBase',
-                    permission = security.NO_PERMISSION_REQUIRED, #FIXME
+                    permission = security.PERM_EDIT,
                     )
     config.add_content_view('Document', 'dynamic_view', _(u"Dynamic view"))
     config.add_content_view('User', 'dynamic_view', _(u"Dynamic view"))

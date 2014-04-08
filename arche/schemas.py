@@ -4,6 +4,7 @@ import deform
 from arche.validators import unique_context_name_validator
 from arche.validators import login_password_validator
 from arche.validators import unique_userid_validator
+from arche.security import get_available_roles
 from arche import _
 
 
@@ -14,7 +15,7 @@ tabs = {'': _(u"Default"),
 
 @colander.deferred
 def current_userid(node, kw):
-    userid = kw['request'].userid
+    userid = kw['request'].authenticated_userid
     return userid and userid or colander.null
 
 
@@ -143,6 +144,31 @@ class RegisterSchema(colander.Schema):
     password = colander.SchemaNode(colander.String(), #FIXME REMOVE!
                                    title = _(u"Password"),
                                    widget = deform.widget.PasswordWidget())
+
+@colander.deferred
+def global_roles_widget(node, kw):
+    request = kw['request']
+    roles = get_available_roles(request.registry)
+    return deform.widget.CheckboxChoiceWidget(values = roles.items(), inline = True)
+
+@colander.deferred
+def principal_hinter_widget(node, kw):
+    view = kw['view']
+    return deform.widget.AutocompleteInputWidget(values = tuple(view.root['users'].keys()))
+
+class LocalRolesSchema(colander.Schema):
+    principal = colander.SchemaNode(colander.String(),
+                                    widget = principal_hinter_widget)
+    roles = colander.SchemaNode(
+                colander.Set(),
+                widget = global_roles_widget)
+
+class LocalRolesSequence(colander.SequenceSchema):
+    local_role = LocalRolesSchema()
+
+#To be removed...
+class PermissionsSchema(colander.Schema):
+    local_roles = LocalRolesSequence()
 
 
 def includeme(config):
