@@ -26,10 +26,17 @@ def includeme(config):
     if isinstance(settings['arche.hash_method'], str):
         settings['arche.hash_method'] = config.name_resolver.resolve(settings['arche.hash_method'])
     from deform_autoneed import resource_registry
+    #Replace bootstrap theme
     from js.bootstrap import bootstrap_theme
     bootstrap_css_path = 'deform:static/css/bootstrap.min.css'
     assert resource_registry.find_resource(bootstrap_css_path)
     resource_registry.replace_resource(bootstrap_css_path, bootstrap_theme)
+    #Replace jquery
+    from js.jquery import jquery
+    jquery_path = 'deform:static/scripts/jquery-2.0.3.min.js'
+    assert resource_registry.find_resource(jquery_path)
+    resource_registry.replace_resource(jquery_path, jquery)
+    #Replace bootstrap
     from js.bootstrap import bootstrap_js
     bootstrap_js_path = 'deform:static/scripts/bootstrap.min.js'
     assert resource_registry.find_resource(bootstrap_js_path)
