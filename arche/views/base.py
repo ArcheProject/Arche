@@ -19,6 +19,7 @@ from deform_autoneed import need_lib
 from arche.utils import get_flash_messages
 from arche.utils import generate_slug
 from arche.utils import get_view
+from arche.utils import get_content_factories
 from arche.utils import get_content_schemas
 from arche.utils import get_content_views
 from arche.fanstatic_lib import main_css
@@ -94,6 +95,7 @@ class BaseForm(BaseView, FormView):
     default_cancel = _(u"Canceled")
     schema_name = u''
     type_name = u''
+    heading = u''
 
     button_delete = deform.Button('delete', title = _(u"Delete"), css_class = 'btn btn-danger')
     button_cancel = deform.Button('cancel', title = _(u"Cancel"), css_class = 'btn btn-default')
@@ -120,7 +122,7 @@ class BaseForm(BaseView, FormView):
 
     @property
     def form_options(self):
-        return {'action': self.request.url}
+        return {'action': self.request.url, 'heading': getattr(self, 'heading', '')}
 
     def get_bind_data(self):
         return {'context': self.context, 'request': self.request, 'view': self}
@@ -143,14 +145,21 @@ class BaseForm(BaseView, FormView):
 
 class DefaultAddForm(BaseForm):
     schema_name = u'add'
-    title = _(u"Add")
+    appstruct = lambda x: {} #No previous values exist :)
 
     @property
     def type_name(self):
         return self.request.GET.get('content_type', u'')
 
-    def appstruct(self):
-        return {} #Always blank, no data to edit
+    @property
+    def heading(self):
+        factories = get_content_factories(self.request.registry)
+        ctype =  factories.get(self.type_name)
+        if ctype:
+            type_title = ctype.type_title
+        else:
+            type_title = self.type_name
+        return _(u"Add ${type_title}", mapping = {'type_title': type_title})
 
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
@@ -163,11 +172,14 @@ class DefaultAddForm(BaseForm):
 
 class DefaultEditForm(BaseForm):
     schema_name = u'edit'
-    title = _(u"Edit")
 
     @property
     def type_name(self):
         return self.context.type_name
+
+    @property
+    def heading(self):
+        return _(u"Edit ${type_title}", mapping = {'type_title': self.context.type_title})
 
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
@@ -178,7 +190,7 @@ class DefaultEditForm(BaseForm):
 class DefaultDeleteForm(BaseForm):
     appstruct =lambda x: {}
     schema_name = u'delete'
-    title = _(u"Delete")
+    heading = _(u"Delete")
 
     @property
     def type_name(self):

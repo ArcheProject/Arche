@@ -12,6 +12,8 @@ default_settings = {
     'arche.content_schemas': {},
     'arche.content_views': {},
     'arche.hash_method': 'arche.utils.default_hash_method',
+    #Set template dir for deform overrides
+    'pyramid_deform.template_search_path': 'arche:templates/deform/',
 }
 
 def includeme(config):
@@ -62,13 +64,13 @@ def main(global_config, **settings):
     """
     config = base_config(**settings)
     config.add_static_view('static', 'static', cache_max_age=3600)
+    config.include('arche') #Must be included first to adjust settings for other packages!
     config.include('pyramid_beaker')
     config.include('pyramid_zodbconn')
     config.include('pyramid_tm')
     config.include('pyramid_deform')
     config.include('pyramid_chameleon')
     config.include('deform_autoneed')
-    config.include('arche')
     #config.add_translation_dirs('arche:locale/')
     return config.make_wsgi_app()
 

@@ -7,7 +7,7 @@ from arche import _
 
 class InitialSetupForm(DefaultEditForm):
     schema_name = u'setup'
-    header = _(u"Welcome")
+    heading = _(u"Welcome")
     appstruct = lambda x: {}
 
     def save_success(self, appstruct):

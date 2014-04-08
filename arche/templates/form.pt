@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       metal:use-macro="view.macro('arche:templates/master.pt')">
-  <h1 metal:fill-slot="header">${view.title|''}</h1>
+  <h1 metal:fill-slot="heading"></h1>
   <div metal:fill-slot="content">
       <div class="row">
         <div class="col-md-12">
