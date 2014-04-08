@@ -20,6 +20,7 @@ from arche.utils import get_flash_messages
 from arche.utils import generate_slug
 from arche.utils import get_view
 from arche.utils import get_content_schemas
+from arche.utils import get_content_views
 from arche.fanstatic_lib import main_css
 from arche import security
 from arche import _
@@ -243,9 +244,13 @@ def set_view(context, request, name = None):
         raise HTTPForbidden(u"There's no view registered for this content type with that name. "
                             u"Perhaps you forgot to register the view for this context?")
     context.default_view = name
+    if name != 'view':
+        title = get_content_views(request.registry)[context.type_name][name]
+    else:
+        title = _(u"Default view")
     fm = get_flash_messages(request)
-    fm.add(_(u"View set to ${title}",
-             mapping = {'title': name})) #FIXME
+    fm.add(_(u"View set to '${title}'",
+             mapping = {'title': title}))
     return HTTPFound(location = request.resource_url(context))
 
 
