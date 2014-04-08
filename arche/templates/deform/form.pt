@@ -32,18 +32,22 @@
   <fieldset class="deformFormFieldset">
     <input type="hidden" name="_charset_" />
     <input type="hidden" name="__formid__" value="${formid}"/>
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" tal:condition="len(tabbed_fields) > 1">
-            <tal:iterate repeat="name tabbed_fields">
-            <li class="${name == '' and 'active' or None}">
-                <a href="#${name}_tab" data-toggle="tab">${tab_titles.get(name, name.title())}</a>
-            </li>
-            </tal:iterate>
-        </ul>
+
       <div class="panel panel-primary">
         <div class="panel-heading" tal:condition="heading">
+                    <!-- Nav tabs -->
           <h3 class="panel-title">${heading}</h3>
         </div>
+        <div class="panel-footer">
+            <ul class="nav nav-pills" tal:condition="len(tabbed_fields) > 1">
+                <tal:iterate repeat="name tabbed_fields">
+                <li class="${name == '' and 'active' or None}">
+                    <a href="#${name}_tab" data-toggle="tab">${tab_titles.get(name, name.title())}</a>
+                </li>
+                </tal:iterate>
+            </ul>
+        </div>
+
         <div class="panel-body">
             <div class="alert alert-danger" tal:condition="field.error">
               <div class="errorMsgLbl" i18n:translate=""
