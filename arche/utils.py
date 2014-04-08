@@ -13,6 +13,7 @@ from pyramid.compat import map_
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.threadlocal import get_current_registry
+from pyramid.security import authenticated_userid
 
 from arche.interfaces import IFlashMessages
 from arche import _
@@ -101,6 +102,9 @@ def get_view(context, request, view_name = ''):
         (request, context)
     )
     return request.registry.adapters.lookup(provides, IView, name=view_name)
+
+def get_userid(request):
+    return authenticated_userid(request)
 
 @adapter(IRequest)
 @implementer(IFlashMessages)

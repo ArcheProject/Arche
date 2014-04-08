@@ -43,6 +43,11 @@ def includeme(config):
     bootstrap_js_path = 'deform:static/scripts/bootstrap.min.js'
     assert resource_registry.find_resource(bootstrap_js_path)
     resource_registry.replace_resource(bootstrap_js_path, bootstrap_js)
+    #Add convenience methods to request - remember that these are added
+    #even to json or ajax requests, so don't add things that aren't really needed!
+    config.add_request_method('arche.utils.get_userid',
+                              name = 'userid',
+                              reify = True)
 
 def root_factory(request):
     conn = get_connection(request)

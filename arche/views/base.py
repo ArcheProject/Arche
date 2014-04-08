@@ -11,7 +11,6 @@ from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
 from pyramid.view import render_view_to_response
-from pyramid.security import authenticated_userid
 from pyramid.security import has_permission
 from pyramid_deform import FormView
 from deform_autoneed import need_lib
@@ -38,10 +37,6 @@ class BaseView(object):
     @reify
     def root(self):
         return find_root(self.context)
-
-    @reify
-    def userid(self):
-        return authenticated_userid(self.request)
 
     @reify
     def flash_messages(self):
@@ -120,9 +115,26 @@ class BaseForm(BaseView, FormView):
         except KeyError:
             pass
 
+    def _tab_fields(self, field):
+        results = {}
+        for child in field:
+            tab = getattr(child.schema, 'tab', '')
+            fields = results.setdefault(tab, [])
+            fields.append(child)
+        return results
+
+    @property
+    def tab_titles(self):
+        #FIXME adjustable
+        from arche.schemas import tabs
+        return tabs
+
     @property
     def form_options(self):
-        return {'action': self.request.url, 'heading': getattr(self, 'heading', '')}
+        return {'action': self.request.url,
+                'heading': getattr(self, 'heading', ''),
+                'tab_fields': self._tab_fields,
+                'tab_titles': self.tab_titles}
 
     def get_bind_data(self):
         return {'context': self.context, 'request': self.request, 'view': self}

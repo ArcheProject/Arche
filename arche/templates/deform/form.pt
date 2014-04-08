@@ -17,7 +17,9 @@
               formid formid|field.formid;
               action action|field.action or None;
               method method|field.method;
-              heading heading|field.heading;"
+              heading heading|field.heading;
+              tabbed_fields field.tab_fields(field);
+              tab_titles field.tab_titles;"
   tal:attributes="autocomplete autocomplete;
                   style style;
                   class css_class;
@@ -30,12 +32,19 @@
   <fieldset class="deformFormFieldset">
     <input type="hidden" name="_charset_" />
     <input type="hidden" name="__formid__" value="${formid}"/>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" tal:condition="len(tabbed_fields) > 1">
+            <tal:iterate repeat="name tabbed_fields">
+            <li class="${name == '' and 'active' or None}">
+                <a href="#${name}_tab" data-toggle="tab">${tab_titles.get(name, name.title())}</a>
+            </li>
+            </tal:iterate>
+        </ul>
       <div class="panel panel-primary">
         <div class="panel-heading" tal:condition="heading">
           <h3 class="panel-title">${heading}</h3>
         </div>
         <div class="panel-body">
-
             <div class="alert alert-danger" tal:condition="field.error">
               <div class="errorMsgLbl" i18n:translate=""
                 >There was a problem with your submission</div>
@@ -46,8 +55,16 @@
               ${description}
             </p>
 
-            <div tal:repeat="child field"
-                 tal:replace="structure child.render_template(item_template)"/>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <tal:iterate repeat="(name, fields) tabbed_fields.items()">
+                  <div class="tab-pane ${name == '' and 'active' or None}" id="${name}_tab">
+                      <tal:fields repeat="child fields">
+                          <tal:field replace="structure child.render_template(item_template)" />
+                      </tal:fields>
+                  </div>
+                </tal:iterate>
+            </div>
 
         </div><!-- body -->
         <div class="panel-footer">

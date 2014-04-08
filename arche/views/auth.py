@@ -13,6 +13,7 @@ from arche import _
 class LoginForm(BaseForm):
     type_name = u'Auth'
     schema_name = 'login'
+    heading = _("Login")
 
     @property
     def buttons(self):
@@ -31,6 +32,7 @@ class LoginForm(BaseForm):
 class RegisterForm(BaseForm):
     type_name = u'Auth'
     schema_name = 'register'
+    heading = _("Register")
 
     @property
     def buttons(self):

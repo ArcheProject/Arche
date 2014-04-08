@@ -7,11 +7,79 @@ from arche.validators import unique_userid_validator
 from arche import _
 
 
-class BaseSchema(colander.Schema):
+tabs = {'': _(u"Default"),
+        'visibility': _(u"Visibility"),
+        'metadata': _(u"Metadata")}
+
+
+@colander.deferred
+def current_userid(node, kw):
+    userid = kw['request'].userid
+    return userid and userid or colander.null
+
+
+class DCMetadataSchema(colander.Schema):
     title = colander.SchemaNode(colander.String())
     description = colander.SchemaNode(colander.String(),
                                       widget = deform.widget.TextAreaWidget(rows = 5),
                                       missing = u"")
+    creator = colander.SchemaNode(colander.String(),
+                                  tab = 'metadata',
+                                  missing = colander.null,
+                                  default = current_userid)
+    contributor = colander.SchemaNode(colander.String(),
+                                      tab = 'metadata',
+                                      missing = colander.null)
+    created = colander.SchemaNode(colander.DateTime(),
+                                  missing = colander.null,
+                                  tab = 'metadata')
+    modified = colander.SchemaNode(colander.DateTime(),
+                                   missing = colander.null,
+                                   tab = 'metadata')
+    publisher = colander.SchemaNode(colander.String(),
+                                    missing = colander.null,
+                                  tab = 'metadata')
+    date = colander.SchemaNode(colander.DateTime(),
+                               missing = colander.null,
+                                  tab = 'metadata')
+    subject = colander.SchemaNode(colander.String(),
+                                   title = _(u"Tags or subjects"),
+                                missing = colander.null,
+                                  tab = 'metadata')
+    relation = colander.SchemaNode(colander.String(),
+                                   title = _(u"Links or relations to other content"),
+                                   missing = colander.null,
+                                  tab = 'metadata')
+    rights = colander.SchemaNode(colander.String(),
+                                 title = _(u"Licensing"),
+                                 missing = colander.null,
+                                 tab = 'metadata')
+    #type?
+    #format
+    #identifier -> url
+    #source
+    #language
+    #relation?
+
+
+class BaseSchema(DCMetadataSchema):
+    nav_visible = colander.SchemaNode(colander.Bool(),
+                                      title = _(u"Show in navigations"),
+                                      missing = True,
+                                      default = True,
+                                      tab = tabs['visibility'])
+    listing_visible = colander.SchemaNode(colander.Bool(),
+                                          title = _(u"Show in listing or table views"),
+                                          description = _(u"The content view will always show this regardless of what you set."),
+                                          missing = True,
+                                          default = True,
+                                          tab = tabs['visibility'])
+
+
+class DocumentSchema(BaseSchema):
+    body = colander.SchemaNode(colander.String(),
+                               widget = deform.widget.RichTextWidget(),
+                               missing = colander.null)
 
 
 class UserSchema(colander.Schema):
@@ -78,9 +146,9 @@ class RegisterSchema(colander.Schema):
 
 
 def includeme(config):
-    config.add_content_schema('Document', BaseSchema, 'view')
-    config.add_content_schema('Document', BaseSchema, 'edit')
-    config.add_content_schema('Document', BaseSchema, 'add')
+    config.add_content_schema('Document', DocumentSchema, 'view')
+    config.add_content_schema('Document', DocumentSchema, 'edit')
+    config.add_content_schema('Document', DocumentSchema, 'add')
     config.add_content_schema('User', UserSchema, 'view')
     config.add_content_schema('User', UserSchema, 'edit')
     config.add_content_schema('User', AddUserSchema, 'add')

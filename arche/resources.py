@@ -10,10 +10,31 @@ from arche.utils import hash_method
 from arche import _
 
 
-@implementer(IBase)
-class Base(Folder):
+class DCMetadataMixin(object):
+    """ Should always be used as a mixin of another persistent object! """
     title = u""
     description = u""
+    creator = u"" #FIXME
+    contributor = u"" #FIXME
+    created = None #FIXME
+    modified = None #FIXME - also via update?
+    date = u""
+    publisher = u""
+    subject = u"" #FIXME: Same as tags?
+    relation = u"" #Probably a  relation field here
+    rights = u"" #FIXME: global default is a good idea
+    
+    #type = u"" #FIXME?
+    format = u"" #Mimetype or similar?
+    source = u"" #Sources?
+
+    @property
+    def identifier(self):
+        return self.request.resource_url(self.context)
+
+
+@implementer(IBase)
+class Base(Folder, DCMetadataMixin):
     type_name = u""
     type_title = u""
     addable_to = ()
@@ -22,6 +43,7 @@ class Base(Folder):
     listing_visible = True
 
     def __init__(self, data=None, **kwargs):
+        #Things like created, creator etc...
         super(Base, self).__init__()
         self.update(**kwargs)
 
@@ -38,6 +60,7 @@ class Document(Base):
     type_name = u"Document"
     type_title = _(u"Document")
     addable_to = (u"Document")
+    body = u""
 
 
 @implementer(IUser)
