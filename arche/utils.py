@@ -1,5 +1,6 @@
 import inspect
 from hashlib import sha512
+from StringIO import StringIO
 
 from slugify import slugify
 from zope.interface import providedBy
@@ -142,6 +143,55 @@ def hash_method(value, registry = None):
 
 def default_hash_method(value):
     return sha512(value).hexdigest()
+
+def upload_stream(stream, _file):
+    size = 0
+    while 1:
+        data = stream.read(1<<21)
+        if not data:
+            break
+        size += len(data)
+        _file.write(data)
+    return size
+
+
+class FileUploadTempStore(object):
+    """
+    A temporary storage for file file uploads
+
+    File uploads are stored in the session so that you don't need
+    to upload your file again if validation of another schema node
+    fails.
+    """
+
+    def __init__(self, request):
+        self.session = request.session
+
+    def keys(self):
+        return [k for k in self.session.keys() if not k.startswith('_')]
+
+    def get(self, key, default = None):
+        return key in self.keys() and self.session[key] or default
+
+    def __setitem__(self, name, value):
+        value = value.copy()
+        fp = value.pop('fp')
+        value['file_contents'] = fp.read()
+        fp.seek(0)
+        self.session[name] = value
+
+    def __getitem__(self, name):
+        #import pdb;pdb.set_trace()
+        value = self.session[name].copy()
+        value['fp'] = StringIO(value.pop('file_contents'))
+        return value
+
+    def __delitem__(self, name):
+        del self.session[name]
+
+    def preview_url(self, name):
+        return None
+
 
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)

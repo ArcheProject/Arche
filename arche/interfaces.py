@@ -16,6 +16,9 @@ class IUser(IBase):
 class IUsers(Interface):
     pass
 
+class IFile(Interface):
+    pass
+
 class IFlashMessages(Interface):
     pass
 

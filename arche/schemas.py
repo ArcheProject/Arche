@@ -5,6 +5,7 @@ from arche.validators import unique_context_name_validator
 from arche.validators import login_password_validator
 from arche.validators import unique_userid_validator
 from arche.security import get_roles_registry
+from arche.utils import FileUploadTempStore
 from arche import _
 
 
@@ -39,6 +40,12 @@ def principal_hinter_widget(node, kw):
 def userid_hinder_widget(node, kw):
     view = kw['view']
     return deform.widget.AutocompleteInputWidget(values = tuple(view.root['users'].keys()))
+
+@colander.deferred
+def file_upload_widget(node, kw):
+    request = kw['request']
+    tmpstorage = FileUploadTempStore(request)
+    return deform.widget.FileUploadWidget(tmpstorage)
 
 
 class DCMetadataSchema(colander.Schema):
@@ -215,6 +222,23 @@ def permissions_schema_factory(context, request, view):
         )
     return schema
 
+
+class AddFileSchema(colander.Schema):
+    title = colander.SchemaNode(colander.String(),
+                                missing = u"")
+    description = colander.SchemaNode(colander.String(),
+                                      widget = deform.widget.TextAreaWidget(rows = 5),
+                                      missing = u"")
+    file_data = colander.SchemaNode(deform.FileData(),
+                                    widget = file_upload_widget)
+
+
+class EditFileSchema(AddFileSchema):
+    file_data = colander.SchemaNode(deform.FileData(),
+                                    missing = colander.null,
+                                    widget = file_upload_widget)
+
+
 def includeme(config):
     config.add_content_schema('Document', DocumentSchema, 'view')
     config.add_content_schema('Document', DocumentSchema, 'edit')
@@ -229,3 +253,5 @@ def includeme(config):
     config.add_content_schema('Group', GroupSchema, 'add')
     config.add_content_schema('Group', GroupSchema, 'view')
     config.add_content_schema('Group', GroupSchema, 'edit')
+    config.add_content_schema('File', AddFileSchema, 'add')
+    config.add_content_schema('File', EditFileSchema, 'edit')

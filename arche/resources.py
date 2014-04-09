@@ -1,18 +1,21 @@
 from repoze.folder import Folder
 from zope.interface import implementer
 from BTrees.OOBTree import OOSet
+from ZODB.blob import Blob
 from persistent import Persistent
 #from zope.component import adapter
 
 from arche.interfaces import IBase
 from arche.interfaces import IBare
 from arche.interfaces import IContent
+from arche.interfaces import IFile
 from arche.interfaces import IUser
 from arche.interfaces import IUsers
 from arche.interfaces import IGroup
 from arche.interfaces import IGroups
 from arche.interfaces import IInitialSetup
 from arche.utils import hash_method
+from arche.utils import upload_stream
 from arche.security import get_default_acl, get_local_roles
 from arche import _
 
@@ -64,8 +67,7 @@ class BaseMixin(object):
 class ContextRolesMixin(object):
 
     @property
-    def local_roles(self):
-        return get_local_roles(self)
+    def local_roles(self): return get_local_roles(self)
 
     @local_roles.setter
     def local_roles(self, value):
@@ -124,22 +126,51 @@ class User(Bare):
         return title and title or self.userid
 
     @property
-    def userid(self):
-        return self.__name__
+    def userid(self): return self.__name__
 
     @property
-    def password(self):
-        return getattr(self, "__password_hash__", u"")
+    def password(self): return getattr(self, "__password_hash__", u"")
 
     @password.setter
     def password(self, value):
         self.__password_hash__ = hash_method(value)
 
 
-# class File(Base):
-#     pass
-# 
-# 
+@implementer(IFile)
+class File(Bare):
+    type_name = u"File"
+    type_title = _(u"File")
+    addable_to = (u'Document')
+    filename = u""
+    blobfile = None
+    mimetype = u""
+    size = 0
+
+    def __init__(self, file_data, **kwargs):
+        self._title = u""
+        self.blobfile = Blob()
+        super(File, self).__init__(file_data = file_data, **kwargs)
+
+    @property
+    def title(self):
+        return self._title and self._title or self.filename
+    @title.setter
+    def title(self, value): self._title = value
+
+    @property
+    def file_data(self):
+        pass
+
+    @file_data.setter
+    def file_data(self, value):
+        if value:
+            self.filename = value['filename']
+            fp = value['fp']
+            self.mimetype = value['mimetype']
+            f = self.blobfile.open('w')
+            self.size = upload_stream(fp, f)
+            f.close()
+
 # class Link(Base):
 #     pass
 # 
@@ -246,3 +277,4 @@ def includeme(config):
     config.add_content_factory(InitialSetup)
     config.add_content_factory(Groups)
     config.add_content_factory(Group)
+    config.add_content_factory(File)
