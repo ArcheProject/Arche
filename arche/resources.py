@@ -64,15 +64,8 @@ class BaseMixin(object):
 class ContextRolesMixin(object):
 
     @property
-    def roles(self):
-        return get_local_roles(self)
-
-    #Roles to own type?
-    #FIXME: When the view will be rewritten, this attr goes...
-    @property
     def local_roles(self):
-        local_roles = get_local_roles(self)
-        return local_roles.get_appstruct()
+        return get_local_roles(self)
 
     @local_roles.setter
     def local_roles(self, value):
@@ -127,7 +120,8 @@ class User(Bare):
 
     @property
     def title(self):
-        return " ".join((self.first_name, self.last_name,)).strip()
+        title = " ".join((self.first_name, self.last_name,)).strip()
+        return title and title or self.userid
 
     @property
     def userid(self):
@@ -198,6 +192,10 @@ class Groups(Content):
                 groups.add(group.principal_name)
                 roles.update(group.roles)
         return groups, roles
+
+    def get_group_principals(self):
+        for group in self.values():
+            yield group.principal_name
 
 
 @implementer(IGroup)

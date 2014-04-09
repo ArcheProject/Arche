@@ -4,13 +4,15 @@ import deform
 from arche.validators import unique_context_name_validator
 from arche.validators import login_password_validator
 from arche.validators import unique_userid_validator
-from arche.security import get_available_roles
+from arche.security import get_roles_registry
 from arche import _
 
 
 tabs = {'': _(u"Default"),
         'visibility': _(u"Visibility"),
-        'metadata': _(u"Metadata")}
+        'metadata': _(u"Metadata"),
+        'users': _(u"Users"),
+        'groups': _(u"Groups"),}
 
 
 @colander.deferred
@@ -21,13 +23,17 @@ def current_userid(node, kw):
 @colander.deferred
 def global_roles_widget(node, kw):
     request = kw['request']
-    roles = get_available_roles(request.registry)
-    return deform.widget.CheckboxChoiceWidget(values = roles.items(), inline = True)
+    rr = get_roles_registry(request.registry)
+    values = [(role, role.title) for role in rr.assign_global()]
+    return deform.widget.CheckboxChoiceWidget(values = values, inline = True)
+
 
 @colander.deferred
 def principal_hinter_widget(node, kw):
     view = kw['view']
-    return deform.widget.AutocompleteInputWidget(values = tuple(view.root['users'].keys()))
+    values = set(view.root['users'].keys())
+    values.update(view.root['groups'].get_group_principals())
+    return deform.widget.AutocompleteInputWidget(values = tuple(values))
 
 @colander.deferred
 def userid_hinder_widget(node, kw):
@@ -184,20 +190,30 @@ class RegisterSchema(colander.Schema):
                                    widget = deform.widget.PasswordWidget())
 
 
-class LocalRolesSchema(colander.Schema):
-    principal = colander.SchemaNode(colander.String(),
-                                    widget = principal_hinter_widget)
-    roles = colander.SchemaNode(
-                colander.Set(),
-                widget = global_roles_widget)
-
-class LocalRolesSequence(colander.SequenceSchema):
-    local_role = LocalRolesSchema()
-
-#To be removed...
-class PermissionsSchema(colander.Schema):
-    local_roles = LocalRolesSequence()
-
+def permissions_schema_factory(context, request, view):
+    rr = get_roles_registry(request.registry)
+    values = [(role, role.title) for role in rr.assign_local()]
+    roles_widget = deform.widget.CheckboxChoiceWidget(values = values,
+                                                      inline = True)
+    schema = colander.Schema()
+    for user in view.root['users'].values():
+        schema.add(colander.SchemaNode(
+            colander.Set(),
+            tab = 'users',
+            name = user.userid,
+            title = user.title,
+            widget = roles_widget,)
+        )
+    for group in view.root['groups'].values():
+        schema.add(colander.SchemaNode(
+            colander.Set(),
+            tab = 'groups',
+            name = group.principal_name,
+            title = group.title,
+            description = group.description,
+            widget = roles_widget,)
+        )
+    return schema
 
 def includeme(config):
     config.add_content_schema('Document', DocumentSchema, 'view')

@@ -41,7 +41,7 @@
         <div class="panel-footer">
             <ul class="nav nav-pills" tal:condition="len(tabbed_fields) > 1">
                 <tal:iterate repeat="name tabbed_fields">
-                <li class="${name == '' and 'active' or None}">
+                <li class="${repeat['name'].start and 'active' or None}">
                     <a href="#${name}_tab" data-toggle="tab">${tab_titles.get(name, name.title())}</a>
                 </li>
                 </tal:iterate>
@@ -61,9 +61,9 @@
 
             <!-- Tab panes -->
             <div class="tab-content">
-                <tal:iterate repeat="(name, fields) tabbed_fields.items()">
-                  <div class="tab-pane ${name == '' and 'active' or None}" id="${name}_tab">
-                      <tal:fields repeat="child fields">
+                <tal:iterate repeat="name tabbed_fields">
+                  <div class="tab-pane ${repeat['name'].start and 'active' or None}" id="${name}_tab">
+                      <tal:fields repeat="child tabbed_fields[name]">
                           <tal:field replace="structure child.render_template(item_template)" />
                       </tal:fields>
                   </div>
