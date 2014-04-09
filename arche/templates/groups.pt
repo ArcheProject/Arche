@@ -11,22 +11,24 @@
         <table class="table table-responsive table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                    <th>UserID</th>
-                    <th>Email</th>
-                    <th>First</th>
-                    <th>Last</th>
+                    <th>Group</th>
+                    <th>Description</th>
+                    <th>Roles</th>
                 </tr>
             </thead>
             <tbody>
                 <tr tal:repeat="obj contents">
                     <td>
                         <a href="${request.resource_url(obj, 'edit')}">
-                            ${obj.userid}
+                            ${obj.title}
                         </a>
                     </td>
-                    <td>${obj.email}</td>
-                    <td>${obj.first_name}</td>
-                    <td>${obj.last_name}</td>
+                    <td>
+                        <div tal:content="obj.description"></div>
+                    </td>
+                    <td>
+                        
+                    </td>
                 </tr>                
             </tbody>
         </table>

@@ -84,6 +84,9 @@ class BaseView(object):
         selectable.update(self.request.registry.settings['arche.content_views'].get(type_name, {}))
         return selectable
 
+    def query_view(self, context, name = '', default = ''):
+        result = get_view(context, self.request, view_name = name)
+        return result and name or default
 
 class BaseForm(BaseView, FormView):
     default_success = _(u"Done")
@@ -280,7 +283,7 @@ def set_view(context, request, name = None):
 
 def includeme(config):
     config.add_view(DefaultAddForm,
-                    context = 'arche.interfaces.IBase',
+                    context = 'arche.interfaces.IContent',
                     name = 'add',
                     permission = security.NO_PERMISSION_REQUIRED, #FIXME: perm check in add
                     renderer = 'arche:templates/form.pt')
@@ -296,22 +299,25 @@ def includeme(config):
                     renderer = 'arche:templates/form.pt')
     config.add_view(DefaultView,
                     name = 'view',
-                    context = 'arche.interfaces.IBase',
+                    context = 'arche.interfaces.IContent',
                     permission = security.PERM_VIEW,
                     renderer = 'arche:templates/base_view.pt')
     config.add_view(DynamicView,
                     name = 'dynamic_view',
-                    context = 'arche.interfaces.IBase',
+                    context = 'arche.interfaces.IContent', #Should this be used?
                     permission = security.PERM_EDIT,
                     renderer = 'arche:templates/form.pt')
+    config.add_view(DynamicView,
+                    context = 'arche.interfaces.IBare', #So at least something exist...
+                    permission = security.PERM_VIEW,
+                    renderer = 'arche:templates/form.pt')
     config.add_view(delegate_content_view,
-                    context = 'arche.interfaces.IBase',
+                    context = 'arche.interfaces.IContent',
                     permission = security.NO_PERMISSION_REQUIRED,
                     )
     config.add_view(set_view,
                     name = 'set_view',
-                    context = 'arche.interfaces.IBase',
+                    context = 'arche.interfaces.IContent',
                     permission = security.PERM_EDIT,
                     )
     config.add_content_view('Document', 'dynamic_view', _(u"Dynamic view"))
-    config.add_content_view('User', 'dynamic_view', _(u"Dynamic view"))

@@ -4,6 +4,12 @@ from zope.interface import Interface
 class IBase(Interface):
     pass
 
+class IBare(Interface):
+    pass
+
+class IContent(Interface):
+    pass
+
 class IUser(IBase):
     pass
 
@@ -19,10 +25,11 @@ class IRoot(Interface):
 class IInitialSetup(Interface):
     """ For populating the site."""
 
+class IGroup(Interface):
+    pass
 
 class IGroups(Interface):
-    """ Adapter for root that stores and fetches groups. """
-    #FIXME: Not implemented yet!
+    pass
 
 class IRoles(Interface):
     """ Adapter for IBase content that stores and fetches assigned roles. """

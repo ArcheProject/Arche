@@ -18,6 +18,22 @@ def current_userid(node, kw):
     userid = kw['request'].authenticated_userid
     return userid and userid or colander.null
 
+@colander.deferred
+def global_roles_widget(node, kw):
+    request = kw['request']
+    roles = get_available_roles(request.registry)
+    return deform.widget.CheckboxChoiceWidget(values = roles.items(), inline = True)
+
+@colander.deferred
+def principal_hinter_widget(node, kw):
+    view = kw['view']
+    return deform.widget.AutocompleteInputWidget(values = tuple(view.root['users'].keys()))
+
+@colander.deferred
+def userid_hinder_widget(node, kw):
+    view = kw['view']
+    return deform.widget.AutocompleteInputWidget(values = tuple(view.root['users'].keys()))
+
 
 class DCMetadataSchema(colander.Schema):
     title = colander.SchemaNode(colander.String())
@@ -103,6 +119,29 @@ class AddUserSchema(UserSchema):
                                    widget = deform.widget.CheckedPasswordWidget())
 
 
+class GroupSchema(colander.Schema):
+    title = colander.SchemaNode(colander.String(),
+                                title = _(u"Title"))
+    description = colander.SchemaNode(colander.String(),
+                                      title = _(u"Description"),
+                                      widget = deform.widget.TextAreaWidget(rows = 5),
+                                      missing = u"")
+    members = colander.SchemaNode(
+                  colander.Sequence(),
+                  colander.SchemaNode(
+                          colander.String(),
+                          title = _(u"UserID"),
+                          name = u"not_used",
+                          widget = userid_hinder_widget,),
+                  title = _(u"Members"),
+                  )
+                  
+    roles = colander.SchemaNode(
+                colander.Set(),
+                title = _(u"Global roles for all members of this group"),
+                widget = global_roles_widget)
+
+
 class ChangePasswordSchema(colander.Schema):
     #FIXME: Validate old password
     password = colander.SchemaNode(colander.String(),
@@ -114,8 +153,7 @@ class InitialSetup(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title = _(u"Site title"))
     userid = colander.SchemaNode(colander.String(),
-                                 title = _(u"Admin userid"),
-                                 validator = unique_context_name_validator)
+                                 title = _(u"Admin userid"),)
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Admins email adress"),
                                 validator = colander.Email())
@@ -145,16 +183,6 @@ class RegisterSchema(colander.Schema):
                                    title = _(u"Password"),
                                    widget = deform.widget.PasswordWidget())
 
-@colander.deferred
-def global_roles_widget(node, kw):
-    request = kw['request']
-    roles = get_available_roles(request.registry)
-    return deform.widget.CheckboxChoiceWidget(values = roles.items(), inline = True)
-
-@colander.deferred
-def principal_hinter_widget(node, kw):
-    view = kw['view']
-    return deform.widget.AutocompleteInputWidget(values = tuple(view.root['users'].keys()))
 
 class LocalRolesSchema(colander.Schema):
     principal = colander.SchemaNode(colander.String(),
@@ -182,3 +210,6 @@ def includeme(config):
     config.add_content_schema('InitialSetup', InitialSetup, 'setup')
     config.add_content_schema('Auth', LoginSchema, 'login')
     config.add_content_schema('Auth', RegisterSchema, 'register')
+    config.add_content_schema('Group', GroupSchema, 'add')
+    config.add_content_schema('Group', GroupSchema, 'view')
+    config.add_content_schema('Group', GroupSchema, 'edit')

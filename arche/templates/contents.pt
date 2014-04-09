@@ -33,7 +33,8 @@
                     </thead>
                     <tbody>
                         <tr tal:repeat="obj contents">
-                            <td><a href="${request.resource_url(obj, 'contents')}"
+                            <td>
+                                <a href="${request.resource_url(obj, view.query_view(obj, name = 'contents', default = ''))}"
                                    title="${obj.description}">${obj.title}</a></td>
                             <td>${obj.type_title}</td>
                         </tr>                

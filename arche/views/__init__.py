@@ -8,3 +8,4 @@ def includeme(config):
     config.include('arche.views.initial_setup')
     config.include('arche.views.permissions')
     config.include('arche.views.users')
+    config.include('arche.views.groups')

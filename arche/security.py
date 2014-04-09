@@ -22,7 +22,6 @@ from arche import _
 from arche.interfaces import IBase
 from arche.interfaces import IRoot
 from arche.interfaces import IRoles
-from arche.interfaces import IGroups
 
 
 ROLE_ADMIN = 'role:Administrator'
@@ -41,18 +40,31 @@ def non_inherited_roles(request = None):
     return set([ROLE_OWNER])
 
 def groupfinder(name, request):
+    """ This method is called on each request to determine which
+        principals a user has.
+        Principals are groups, roles, userid and perhaps Authenticated or similar.
+        
+        This method also calls itself to fetch any local roles for groups.
+    """
+    if name is None: #Abort for unauthenticated - no reason to use CPU
+        return ()
     result = set()
-    if name:
-        groups = get_groups(request.context, request.registry)
-        result.update(groups.groups_for_userid(name))
-        non_inherited = non_inherited_roles(request)
-        context = request.context
-        while context:
-            try:
-                result.update([x for x in context.roles.get(name, ()) if x not in non_inherited])
-            except AttributeError:
-                pass
-            context = context.__parent__
+    non_inherited = non_inherited_roles(request)
+    context = request.context
+    if not name.startswith('group:'):
+        root = find_root(context)
+        groups, roles = root['groups'].get_groups_roles_security(name)
+        result.update(roles)
+        result.update(groups)
+        #Fetch any local roles for group
+        for group in groups:
+            result.update(groupfinder(group, request))
+    while context:
+        try:
+            result.update([x for x in context.roles.get(name, ()) if x not in non_inherited])
+        except AttributeError:
+            pass
+        context = context.__parent__
     return result
 
 def get_available_roles(registry = None):
@@ -98,42 +110,6 @@ class Roles(IterableUserDict):
         return [{'principal': k, 'roles': v} for (k, v) in self.items()]
 
 
-@adapter(IRoot)
-@implementer(IGroups)
-class Groups(IterableUserDict):
-    #FIXME: Probably needs an update and group objects?
-    #Lookup userid to group?
-    #FIXME: Not active yet!
-
-    def __init__(self, context):
-        self.context = context
-        try:
-            self.data = self.context.__groups__
-        except AttributeError:
-            self.context.__groups__ = OOBTree()
-            self.data = self.context.__groups__
-
-    def __setitem__(self, key, value):
-        assert key.startswith('groups.')
-        self.data[key] = OOSet(value)
-
-    def groups_for_userid(self, userid):
-        #FIXME
-        return ()
-        for (name, members) in self.items():
-            if userid in members:
-                pass
-                #yield name
-
-def get_groups(context, registry = None):
-    root = find_root(context)
-    if registry is None:
-        registry = get_current_registry()
-    try:
-        return registry.getAdapter(root, IGroups)
-    except ComponentLookupError:
-        return Groups(root)
-
 def get_local_roles(context, registry = None):
     if registry is None:
         registry = get_current_registry()
@@ -160,5 +136,4 @@ def includeme(config):
     roles[ROLE_EDITOR] = _(u"Editor")
     roles[ROLE_VIEWER] = _(u"Viewer")
     roles[ROLE_OWNER] = _(u"Owner")
-    config.registry.registerAdapter(Groups)
     config.registry.registerAdapter(Roles)

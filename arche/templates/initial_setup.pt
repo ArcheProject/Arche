@@ -16,12 +16,25 @@
   <body class="view-${request.view_name or 'default'}">
 
     <div class="container">
-        
-        <div tal:replace="structure view.flash_messages.render()">Flash messages, if any</div>
-
-        <h1>${context.title}</h1>
-    
-        <tal:form replace="structure form" />
+        <div class="row">
+            <div class="page-header">
+              <h1>Welcome to Arche!</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <tal:form replace="structure form" />
+            </div>
+            <div class="col-sm-7">
+                <div class="jumbotron">
+                  <h1>First steps</h1>
+                  <p i18n:translate="">This is the setup page - there's no site here yet. What would you like to do?</p>
+                  <p class="text-right">
+                      <a class="btn btn-primary btn-lg" role="button">Button...</a> FIXME
+                  </p>
+                </div>
+            </div>
+        </div>
     </div><!-- container -->
   </body>
 </html>

@@ -14,4 +14,4 @@ def includeme(config):
                     name = 'contents',
                     permission = security.NO_PERMISSION_REQUIRED,
                     renderer = "arche:templates/contents.pt",
-                    context = 'arche.interfaces.IBase')
+                    context = 'arche.interfaces.IContent')

@@ -2,7 +2,7 @@ from pyramid.httpexceptions import HTTPFound
 
 from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultEditForm
-from arche.views.listing import ListingView
+from arche.views.base import BaseView
 from arche import security
 from arche import _
 
@@ -28,6 +28,12 @@ class UserChangePasswordForm(DefaultEditForm):
         return super(UserChangePasswordForm, self).save_success(appstruct)
 
 
+class UsersView(BaseView):
+
+    def __call__(self):
+        return {'contents': [x for x in self.context.values()]}
+
+
 def includeme(config):
     config.add_view(UserAddForm,
                     context = 'arche.interfaces.IUsers',
@@ -40,7 +46,7 @@ def includeme(config):
                     name = 'change_password',
                     permission = security.NO_PERMISSION_REQUIRED, #FIXME: perm check in add
                     renderer = 'arche:templates/form.pt')
-    config.add_view(ListingView,
+    config.add_view(UsersView,
                     name = 'view',
                     permission = security.NO_PERMISSION_REQUIRED,
                     renderer = "arche:templates/users_table.pt",

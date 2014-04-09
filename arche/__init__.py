@@ -96,13 +96,22 @@ def appmaker(zodb_root):
         else:
             #FIX document type!
             #FIXME move this population to its own method so tests can use it
+            #Root added
             data = zodb_root['initial_setup'].setup_data
             root = factories['Document'](title = data.pop('title'))
             alsoProvides(root, IRoot)
+            #Add user
             root['users'] = users = factories['Users']()
             userid = data.pop('userid')
             users[userid] = factories['User'](**data)
-            #FIXME: Add permissions
+            #Add admin role
+            from arche.security import get_local_roles
+            from arche.security import ROLE_ADMIN
+            local_roles = get_local_roles(root)
+            local_roles[userid] = (ROLE_ADMIN,)
+            #Add groups
+            root['groups'] = factories['Groups']()
+            #Attach and remove setup context
             zodb_root['app_root'] = root
             del zodb_root['initial_setup']
             return zodb_root['app_root']
