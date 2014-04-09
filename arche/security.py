@@ -169,7 +169,6 @@ class Roles(IterableUserDict):
             if self.get(k, marker) != v:
                 self[k] = v
 
-
 def get_local_roles(context, registry = None):
     if registry is None:
         registry = get_current_registry()
