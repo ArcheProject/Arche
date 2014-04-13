@@ -1,4 +1,11 @@
 from zope.interface import Interface
+from zope.component.interfaces import IObjectEvent
+
+from repoze.folder.interfaces import (IObjectAddedEvent,
+                                      IObjectWillBeRemovedEvent) #API
+
+class IObjectUpdatedEvent(IObjectEvent):
+    pass
 
 
 class IBase(Interface):
@@ -39,3 +46,10 @@ class IRole(Interface):
 
 class IRoles(Interface):
     """ Adapter for IBase content that stores and fetches assigned roles. """
+
+class ICataloger(Interface):
+    """ Content catalog adapter. """
+
+class IIndexedContent(Interface):
+    """ Marker for content that belongs in catalog.
+    """

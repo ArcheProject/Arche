@@ -25,6 +25,7 @@ def includeme(config):
     config.include('arche.schemas')
     config.include('arche.views')
     config.include('arche.security')
+    config.include('arche.catalog')
     #Resolve strings
     if isinstance(settings['arche.hash_method'], str):
         settings['arche.hash_method'] = config.name_resolver.resolve(settings['arche.hash_method'])
@@ -98,8 +99,7 @@ def appmaker(zodb_root):
             #FIXME move this population to its own method so tests can use it
             #Root added
             data = zodb_root['initial_setup'].setup_data
-            root = factories['Document'](title = data.pop('title'))
-            alsoProvides(root, IRoot)
+            root = factories['Root'](title = data.pop('title'))
             #Add user
             root['users'] = users = factories['Users']()
             userid = data.pop('userid')

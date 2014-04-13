@@ -3,10 +3,15 @@ from zope.interface import implementer
 from BTrees.OOBTree import OOSet
 from ZODB.blob import Blob
 from persistent import Persistent
+from pyramid.threadlocal import get_current_registry
 #from zope.component import adapter
+from repoze.catalog.catalog import Catalog
+from repoze.catalog.document import DocumentMap
+from zope.component.event import objectEventNotify
 
 from arche.interfaces import IBase
 from arche.interfaces import IBare
+from arche.interfaces import IRoot
 from arche.interfaces import IContent
 from arche.interfaces import IFile
 from arche.interfaces import IUser
@@ -14,8 +19,11 @@ from arche.interfaces import IUsers
 from arche.interfaces import IGroup
 from arche.interfaces import IGroups
 from arche.interfaces import IInitialSetup
+from arche.interfaces import IIndexedContent
+from arche.interfaces import ICataloger
 from arche.utils import hash_method
 from arche.utils import upload_stream
+from arche.events import ObjectUpdatedEvent
 from arche.security import get_default_acl, get_local_roles
 from arche import _
 
@@ -55,13 +63,22 @@ class BaseMixin(object):
     def __acl__(self):
         return get_default_acl()
 
-    def update(self, **kwargs):
+    def update(self, event = True, **kwargs):
+        _marker = object()
+        changed_attributes = set()
         for (key, value) in kwargs.items():
             if not hasattr(self, key):
                 raise AttributeError("This class doesn't have any '%s' attribute." % key)
-            setattr(self, key, value)
+            if getattr(self, key, _marker) != value:
+                setattr(self, key, value)
+                changed_attributes.add(key)
+        if event:
+            event_obj = ObjectUpdatedEvent(self, changed = changed_attributes)
+            objectEventNotify(event_obj)
+        return changed_attributes
         #FIXME event?
-        #FIXME: Check current value?
+        #FIXME: Check if value should be removed?
+        #
 
 
 class ContextRolesMixin(object):
@@ -75,7 +92,7 @@ class ContextRolesMixin(object):
         local_roles.set_from_appstruct(value)
 
 
-@implementer(IContent)
+@implementer(IContent, IIndexedContent)
 class Content(BaseMixin, Folder, ContextRolesMixin, DCMetadataMixin):
     default_view = u"view"
     nav_visible = True
@@ -87,7 +104,7 @@ class Content(BaseMixin, Folder, ContextRolesMixin, DCMetadataMixin):
         self.update(**kwargs)
 
 
-@implementer(IBare)
+@implementer(IBare, IIndexedContent)
 class Bare(BaseMixin, Persistent):
     __name__ = None
     __parent__ = None
@@ -97,11 +114,20 @@ class Bare(BaseMixin, Persistent):
         Persistent.__init__(self)
         self.update(**kwargs)
 
-    def update(self, **kwargs):
-        for (key, value) in kwargs.items():
-            if not hasattr(self, key):
-                raise AttributeError("This class doesn't have any '%s' attribute." % key)
-            setattr(self, key, value)
+
+@implementer(IRoot)
+class Root(Content):
+    type_name = u"Root"
+    type_title = _(u"Site root")
+    addable_to = ()
+    
+    def __init__(self, data=None, **kwargs):
+        self.catalog = Catalog()
+        self.document_map = DocumentMap()
+        reg = get_current_registry()
+        cataloger = reg.getAdapter(self, ICataloger)
+        cataloger.init()
+        super(Root, self).__init__(data=data, **kwargs)
 
 
 class Document(Content):
@@ -160,6 +186,7 @@ class File(Bare):
     @property
     def file_data(self):
         pass
+        #FIXME: Should this return something?
 
     @file_data.setter
     def file_data(self, value):
@@ -278,3 +305,4 @@ def includeme(config):
     config.add_content_factory(Groups)
     config.add_content_factory(Group)
     config.add_content_factory(File)
+    config.add_content_factory(Root)
