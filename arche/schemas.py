@@ -255,3 +255,4 @@ def includeme(config):
     config.add_content_schema('Group', GroupSchema, 'edit')
     config.add_content_schema('File', AddFileSchema, 'add')
     config.add_content_schema('File', EditFileSchema, 'edit')
+    config.add_content_schema('Root', BaseSchema, 'edit')

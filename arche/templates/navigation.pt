@@ -20,7 +20,6 @@
           <a href="${request.resource_url(obj)}">${obj.title}</a>
         </li>
       </ul>
-        <!--
         <div class="nav navbar-nav navbar-right">
             <form action="${request.resource_url(view.root,'search')}" id="search" class="navbar-form" role="search" method="get">
                 <div class="input-group">
@@ -33,7 +32,7 @@
                     </span>
                 </div>
             </form>
-        </div>-->
+        </div>
     </div><!--/.nav-collapse -->
   </div><!-- /.container-->
 </nav>

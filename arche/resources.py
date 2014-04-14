@@ -25,6 +25,7 @@ from arche.utils import hash_method
 from arche.utils import upload_stream
 from arche.events import ObjectUpdatedEvent
 from arche.security import get_default_acl, get_local_roles
+from arche.catalog import populate_catalog
 from arche import _
 
 
@@ -101,7 +102,7 @@ class Content(BaseMixin, Folder, ContextRolesMixin, DCMetadataMixin):
     def __init__(self, data=None, **kwargs):
         #Things like created, creator etc...
         Folder.__init__(self, data = data)
-        self.update(**kwargs)
+        self.update(event = False, **kwargs)
 
 
 @implementer(IBare, IIndexedContent)
@@ -112,10 +113,10 @@ class Bare(BaseMixin, Persistent):
     def __init__(self, data=None, **kwargs):
         #Things like created, creator etc...
         Persistent.__init__(self)
-        self.update(**kwargs)
+        self.update(event = False, **kwargs)
 
 
-@implementer(IRoot)
+@implementer(IRoot, IIndexedContent)
 class Root(Content):
     type_name = u"Root"
     type_title = _(u"Site root")
@@ -124,16 +125,17 @@ class Root(Content):
     def __init__(self, data=None, **kwargs):
         self.catalog = Catalog()
         self.document_map = DocumentMap()
+        populate_catalog(self.catalog)
         reg = get_current_registry()
         cataloger = reg.getAdapter(self, ICataloger)
-        cataloger.init()
+        cataloger.index_object()
         super(Root, self).__init__(data=data, **kwargs)
 
 
 class Document(Content):
     type_name = u"Document"
     type_title = _(u"Document")
-    addable_to = (u"Document")
+    addable_to = (u"Document", u"Root")
     body = u""
 
 
@@ -166,7 +168,7 @@ class User(Bare):
 class File(Bare):
     type_name = u"File"
     type_title = _(u"File")
-    addable_to = (u'Document')
+    addable_to = (u'Document', u"Root")
     filename = u""
     blobfile = None
     mimetype = u""

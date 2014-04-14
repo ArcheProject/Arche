@@ -74,6 +74,7 @@ def main(global_config, **settings):
     config.include('pyramid_chameleon')
     config.include('deform_autoneed')
     #config.add_translation_dirs('arche:locale/')
+    config.hook_zca()
     return config.make_wsgi_app()
 
 def appmaker(zodb_root):
@@ -98,7 +99,7 @@ def appmaker(zodb_root):
             #FIX document type!
             #FIXME move this population to its own method so tests can use it
             #Root added
-            data = zodb_root['initial_setup'].setup_data
+            data = dict(zodb_root['initial_setup'].setup_data)
             root = factories['Root'](title = data.pop('title'))
             #Add user
             root['users'] = users = factories['Users']()

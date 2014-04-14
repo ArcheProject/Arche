@@ -42,6 +42,10 @@ class BaseView(object):
     def flash_messages(self):
         return get_flash_messages(self.request)
 
+    def catalog_query(self, **kwargs):
+        #FIXME: inject permisison check here or always assume unsafe?
+        return self.root.catalog.query(**kwargs)
+
     def breadcrumbs(self):
         return reversed(list(lineage(self.context)))
 
