@@ -119,7 +119,7 @@ class RolesRegistry(object):
         self.data = set()
 
     def add(self, role):
-        assert isinstance(role, Role)
+        assert IRole.providedBy(role)
         self.data.add(role)
 
     #set-isch API
