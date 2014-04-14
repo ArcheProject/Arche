@@ -289,6 +289,9 @@ class Group(Bare):
         self.__members__.clear()
         self.__members__.update(value)
 
+    #FIXME: Remove the whole concept of group roles.
+    #They can be assigned in the root instead
+    #This just makes it more confusing
     @property
     def roles(self):
         return self.__roles__
