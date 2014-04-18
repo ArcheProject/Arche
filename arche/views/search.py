@@ -4,6 +4,7 @@ from repoze.catalog.query import Name
 from repoze.catalog.query import Any
 from pyramid.traversal import resource_path
 from pyramid.traversal import find_resource
+
 from arche.views.base import BaseView
 from arche import security
 from arche import _

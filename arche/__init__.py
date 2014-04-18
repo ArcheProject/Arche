@@ -87,7 +87,9 @@ def appmaker(zodb_root):
 
         from arche.utils import get_content_factories
         from arche.interfaces import IRoot
-        
+        from arche.security import get_local_roles
+        from arche.security import ROLE_ADMIN
+
         factories = get_content_factories()
         #This is where initial population takes place, but first some site setup
         if not 'initial_setup' in zodb_root or not zodb_root['initial_setup'].setup_data:
@@ -96,7 +98,6 @@ def appmaker(zodb_root):
             transaction.commit()
             return zodb_root['initial_setup']
         else:
-            #FIX document type!
             #FIXME move this population to its own method so tests can use it
             #Root added
             data = dict(zodb_root['initial_setup'].setup_data)
@@ -105,13 +106,16 @@ def appmaker(zodb_root):
             root['users'] = users = factories['Users']()
             userid = data.pop('userid')
             users[userid] = factories['User'](**data)
-            #Add admin role
-            from arche.security import get_local_roles
-            from arche.security import ROLE_ADMIN
-            local_roles = get_local_roles(root)
-            local_roles[userid] = (ROLE_ADMIN,)
             #Add groups
-            root['groups'] = factories['Groups']()
+            root['groups'] = groups = factories['Groups']()
+            #Add administrators group
+            description = _(u"Group for all administrators. Add any administrators to this group.")
+            groups['administrators'] = adm_group = factories['Group'](title = _(u"Administrators"),
+                                                                      description = description,
+                                                                      members = [userid])
+            #Add admin role
+            local_roles = get_local_roles(root)
+            local_roles[adm_group.principal_name] = (ROLE_ADMIN,)
             #Attach and remove setup context
             zodb_root['app_root'] = root
             del zodb_root['initial_setup']

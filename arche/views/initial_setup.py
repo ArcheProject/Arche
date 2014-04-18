@@ -1,4 +1,5 @@
 from pyramid.httpexceptions import HTTPFound
+from pyramid.security import remember
 
 from arche.views.base import DefaultEditForm
 from arche import security
@@ -13,7 +14,8 @@ class InitialSetupForm(DefaultEditForm):
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
         self.context.setup_data = appstruct
-        return HTTPFound(location = self.request.resource_url(self.context))
+        headers = remember(self.request, appstruct['userid'])
+        return HTTPFound(location = self.request.resource_url(self.context), headers = headers)
 
 
 def includeme(config):

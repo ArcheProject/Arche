@@ -243,15 +243,13 @@ class Groups(Content):
     listing_visible = False
     title = _(u"Groups")
 
-    def get_groups_roles_security(self, userid):
+    def get_users_group_principals(self, userid):
         #Cache memberships? Needed on sites with many groups
         groups = set()
-        roles = set()
         for group in self.values():
             if userid in group.members:
                 groups.add(group.principal_name)
-                roles.update(group.roles)
-        return groups, roles
+        return groups
 
     def get_group_principals(self):
         for group in self.values():
@@ -270,8 +268,7 @@ class Group(Bare):
         #Things like created, creator etc...
         super(Group, self).__init__()
         self.__members__ = OOSet()
-        self.__roles__ = OOSet()
-        self.update(**kwargs)
+        self.update(event = False, **kwargs)
 
     @property
     def principal_name(self):
@@ -288,18 +285,6 @@ class Group(Bare):
     def members(self, value):
         self.__members__.clear()
         self.__members__.update(value)
-
-    #FIXME: Remove the whole concept of group roles.
-    #They can be assigned in the root instead
-    #This just makes it more confusing
-    @property
-    def roles(self):
-        return self.__roles__
-
-    @roles.setter
-    def roles(self, value):
-        self.__roles__.clear()
-        self.__roles__.update(value)
 
 
 def includeme(config):

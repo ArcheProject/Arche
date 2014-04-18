@@ -148,11 +148,6 @@ class GroupSchema(colander.Schema):
                           widget = userid_hinder_widget,),
                   title = _(u"Members"),
                   )
-                  
-    roles = colander.SchemaNode(
-                colander.Set(),
-                title = _(u"Global roles for all members of this group"),
-                widget = global_roles_widget)
 
 
 class ChangePasswordSchema(colander.Schema):
@@ -164,9 +159,11 @@ class ChangePasswordSchema(colander.Schema):
 
 class InitialSetup(colander.Schema):
     title = colander.SchemaNode(colander.String(),
-                                title = _(u"Site title"))
+                                title = _(u"Site title"),
+                                default = _(u"A site made with Arche"))
     userid = colander.SchemaNode(colander.String(),
-                                 title = _(u"Admin userid"),)
+                                 title = _(u"Admin userid"),
+                                 default = u"admin")
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Admins email adress"),
                                 validator = colander.Email())

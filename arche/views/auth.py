@@ -1,7 +1,6 @@
 import deform
 from pyramid.security import remember
 from pyramid.security import forget
-from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
 
 from arche.views.base import BaseForm
