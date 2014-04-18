@@ -10,4 +10,5 @@ def includeme(config):
     config.include('arche.views.initial_setup')
     config.include('arche.views.permissions')
     config.include('arche.views.search')
+    config.include('arche.views.system')
     config.include('arche.views.users')

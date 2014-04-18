@@ -8,7 +8,7 @@ from pyramid.security import (NO_PERMISSION_REQUIRED,
                               Authenticated,
                               Allow,
                               Deny,
-                              ALL_PERMISSIONS,
+                              #ALL_PERMISSIONS,
                               DENY_ALL,
                               authenticated_userid)
 from pyramid.decorator import reify
@@ -31,6 +31,7 @@ PERM_VIEW = 'perm:View'
 PERM_EDIT = 'perm:Edit'
 PERM_REGISTER = 'perm:Register'
 PERM_DELETE = 'perm:Delete'
+PERM_MANAGE_SYSTEM = 'perm:Manage system'
 
 
 def groupfinder(name, request):
@@ -59,6 +60,55 @@ def groupfinder(name, request):
             pass
         context = context.__parent__
     return result
+
+def get_acl_registry(registry = None):
+    """ Get ACL registry"""
+    if registry is None:
+        registry = get_current_registry()
+    return registry._acl
+
+
+class ACLEntry(IterableUserDict):
+    """ Contains ACL information.
+        ACL entries behave like dicts, and ACL entries can be added to other ACL entries.
+        This is the way to create custom permissions for some workflow states or similar.
+    """
+    def __init__(self):
+        self.roleperms = {}
+        self.data = {}
+
+    def add(self, role, perms):
+        assert isinstance(role, Role)
+        current = self.roleperms.setdefault(role, set())
+        current.update(perms)
+
+    def remove(self, role, perms):
+        current = self.roleperms.get(role, set())
+        [current.remove(x) for x in perms if x in current]
+
+    def __call__(self):
+        items = [(Allow, role, perms) for (role, perms) in self.roleperms.items()]
+        items.append(DENY_ALL)
+        return items
+
+
+class ACLRegistry(IterableUserDict):
+    """ Manages available ACL. """
+    def __init__(self):
+        self.data = {}
+        self.default = ACLEntry()
+
+    def __setitem__(self, key, aclentry):
+        assert isinstance(aclentry, ACLEntry)
+        self.data[key] = aclentry
+
+    def get_acl(self, type_name, workflow = None):
+        if type_name in self:
+            aclentry = self[type_name]
+            if workflow in aclentry:
+                return aclentry[workflow]()
+            return aclentry()
+        return self.default()
 
 def get_roles_registry(registry = None):
     """ Get roles registry"""
@@ -177,16 +227,6 @@ def get_local_roles(context, registry = None):
         #FIXME: Does this mean that roles shouldn't be stored here...?
         return Roles(context)
 
-#FIXME
-BASE_ACL = [(Allow, ROLE_ADMIN, ALL_PERMISSIONS),
-            DENY_ALL]
-
-
-def get_default_acl(registry = None):
-    if registry is None:
-        registry = get_current_registry()
-    return BASE_ACL
-
 
 def includeme(config):
     config.registry._roles = rr = RolesRegistry()
@@ -195,3 +235,7 @@ def includeme(config):
     rr.add(ROLE_VIEWER)
     rr.add(ROLE_OWNER)
     config.registry.registerAdapter(Roles)
+    config.registry._acl = aclreg =  ACLRegistry()
+    aclreg.default.add(ROLE_ADMIN, [PERM_VIEW, PERM_EDIT, PERM_DELETE, PERM_MANAGE_SYSTEM])
+    aclreg.default.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
+    aclreg.default.add(ROLE_VIEWER, [PERM_VIEW])

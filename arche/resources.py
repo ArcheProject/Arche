@@ -4,6 +4,7 @@ from BTrees.OOBTree import OOSet
 from ZODB.blob import Blob
 from persistent import Persistent
 from pyramid.threadlocal import get_current_registry
+from pyramid.security import DENY_ALL
 #from zope.component import adapter
 from repoze.catalog.catalog import Catalog
 from repoze.catalog.document import DocumentMap
@@ -24,7 +25,7 @@ from arche.interfaces import ICataloger
 from arche.utils import hash_method
 from arche.utils import upload_stream
 from arche.events import ObjectUpdatedEvent
-from arche.security import get_default_acl, get_local_roles
+from arche.security import get_local_roles, get_acl_registry
 from arche.catalog import populate_catalog
 from arche import _
 
@@ -58,11 +59,8 @@ class BaseMixin(object):
     description = u""
     type_name = u""
     type_title = u""
+    type_description = u""
     addable_to = ()
-
-    @property
-    def __acl__(self):
-        return get_default_acl()
 
     def update(self, event = True, **kwargs):
         _marker = object()
@@ -77,9 +75,6 @@ class BaseMixin(object):
             event_obj = ObjectUpdatedEvent(self, changed = changed_attributes)
             objectEventNotify(event_obj)
         return changed_attributes
-        #FIXME event?
-        #FIXME: Check if value should be removed?
-        #
 
 
 class ContextRolesMixin(object):
@@ -93,8 +88,16 @@ class ContextRolesMixin(object):
         local_roles.set_from_appstruct(value)
 
 
+class ContextACLMixin(object):
+
+    @property
+    def __acl__(self):
+        acl_reg = get_acl_registry()
+        return acl_reg.get_acl(self.type_name) #FIXME wf here
+
+
 @implementer(IContent, IIndexedContent)
-class Content(BaseMixin, Folder, ContextRolesMixin, DCMetadataMixin):
+class Content(BaseMixin, Folder, ContextACLMixin, ContextRolesMixin, DCMetadataMixin):
     default_view = u"view"
     nav_visible = True
     listing_visible = True
@@ -106,7 +109,7 @@ class Content(BaseMixin, Folder, ContextRolesMixin, DCMetadataMixin):
 
 
 @implementer(IBare, IIndexedContent)
-class Bare(BaseMixin, Persistent):
+class Bare(BaseMixin, ContextACLMixin, Persistent):
     __name__ = None
     __parent__ = None
 
@@ -143,7 +146,7 @@ class Document(Content):
 class User(Bare):
     type_name = u"User"
     type_title = _(u"User")
-    addable_to = (u'Users')
+    addable_to = (u'Users',)
     first_name = u""
     last_name = u""
     email = u""
@@ -211,7 +214,7 @@ class File(Bare):
 @implementer(IInitialSetup)
 class InitialSetup(Bare):
     type_name = u"InitialSetup"
-    type_title = u""
+    type_title = _(u"Initial setup")
     addable_to = () #Never!
     nav_visible = False
     title = _(u"Welcome to Arche!")
@@ -260,7 +263,7 @@ class Groups(Content):
 class Group(Bare):
     type_name = u"Group"
     type_title = _(u"Group")
-    addable_to = (u'Groups')
+    addable_to = (u'Groups',)
     title = u""
     description = u""
 

@@ -1,0 +1,148 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/master.pt')">
+      i18n:domain="fika">
+<body>
+<h1 metal:fill-slot="heading"></h1>
+<div metal:fill-slot="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <!-- Nav tabs -->
+                    <h3 class="panel-title" i18n:translate="">System overview</h3>
+                </div>
+                <div class="panel-footer">
+                    <ul class="nav nav-pills">
+                        <li class="active">
+                            <a href="#info_tab" data-toggle="tab" i18n:translate="">Info</a>
+                        </li>
+                        <li>
+                            <a href="#content_types_tab" data-toggle="tab" i18n:translate="">Content types</a>
+                        </li>
+                        <li>
+                            <a href="#roles_tab" data-toggle="tab" i18n:translate="">Roles</a>
+                        </li>
+                        <li>
+                            <a href="#acl_tab" data-toggle="tab" i18n:translate="">ACL</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="panel-body">
+                    <!-- Tab panes -->
+                    <div class="tab-content"><!-- info -->
+                      <div class="tab-pane active" id="info_tab">
+                          FIXME: Sysinfo etc
+                      </div>
+                      <div class="tab-pane" id="content_types_tab"><!-- content types -->
+                          <div class="panel-group" id="accordion_content_types">
+                          <tal:content_types repeat="factory content_factories.values()">
+                              <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion_content_types" href="#collapse_${factory.type_name}">
+                                      ${factory.type_title} - (${factory.type_name})
+                                    </a>
+                                  </h4>
+                                </div>
+                                <div id="collapse_${factory.type_name}" class="panel-collapse collapse">
+                                  <div class="panel-body">
+                                      <dl>
+                                          <dt i18n:translate="">Description</dt>
+                                          <dd>${factory.type_description}</dd>
+                                          <dt i18n:translate="">Addable to</dt>
+                                          <dd>
+                                          <tal:iter repeat="name factory.addable_to">
+                                              ${name}<br/>
+                                          </tal:iter>
+                                          </dd>
+                                          <dt i18n:translate="">Selectable views</dt>
+                                          <dd>
+                                          <tal:iter repeat="(name, title) content_views.get(factory.type_name, {}).items()">
+                                              ${title} (${name})<br/>
+                                          </tal:iter>
+                                          </dd>
+                                          <dt i18n:translate="">Available contextual schemas</dt>
+                                          <dd>
+                                          <tal:iter repeat="(name, schema) content_schemas.get(factory.type_name, {}).items()">
+                                              ${schema.title and schema.title or schema.__name__} (${name})<br/>
+                                          </tal:iter>
+                                          </dd>
+                                      </dl>
+                                  </div>
+                                </div>
+                              </div>
+                          </tal:content_types>
+                          </div>
+                      </div><!-- /content_types -->
+
+                      <div class="tab-pane" id="roles_tab"><!-- roles -->
+                          <div class="panel-group">
+                          <tal:role repeat="role roles_registry">
+                              <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                      ${role.title}
+                                  </h4>
+                                </div>
+                                  <div class="panel-body">
+                                      <dl>
+                                          <dt i18n:translate="">Principal name</dt>
+                                          <dd>${role}</dd>
+                                          <dt i18n:translate="">Inheritable</dt>
+                                          <dd>${common_titles.get(role.inheritable, '')}</dd>
+                                      </dl>
+                                  </div>
+                              </div>
+                          </tal:role>
+                          </div>
+                      </div><!-- /roles -->
+
+                      <div class="tab-pane" id="acl_tab"><!-- acl -->
+                          <div class="panel-group">
+                              <div class="panel panel-default">
+                                <div class="panel-heading">
+                                  <h4 class="panel-title" i18n:translate="">Default ACL</h4>
+                                </div>
+                                  <div class="panel-body">
+                                      <dl>
+                                          <tal:iterate repeat="(state, role, perms) acl_registry.default()">
+                                              <dt>${state}: ${role_titles.get(role, role)} - (${role})</dt>
+                                              <dd>${perms}</dd>
+                                          </tal:iterate>
+                                      </dl>
+                                  </div>
+                              </div>
+                              
+                              <tal:acl repeat="(name, acl) acl_registry.items()">
+                                  <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                      <h4 class="panel-title">
+                                          ${name}
+                                      </h4>
+                                    </div>
+                                      <div class="panel-body">
+                                      <dl>
+                                          <tal:iterate repeat="(state, role, perms) acl()">
+                                              <dt>${state}: ${role_titles.get(role, role)} - (${role})</dt>
+                                              <dd>${perms}</dd>
+                                          </tal:iterate>
+                                      </dl>
+                                      </div>
+                                  </div>
+                              </tal:acl>
+                              </div>
+                          </div><!-- /acl -->
+
+
+                    </div>
+                </div><!-- body -->
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
