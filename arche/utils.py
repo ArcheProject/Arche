@@ -22,8 +22,7 @@ from arche import _
 def add_content_factory(config, ctype):
     assert inspect.isclass(ctype)
     factories = get_content_factories(config.registry)
-    type_name = ctype.__name__
-    factories[type_name] = ctype
+    factories[ctype.type_name] = ctype
 
 def get_content_factories(registry = None):
     if registry is None:
