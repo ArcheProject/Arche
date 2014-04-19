@@ -130,8 +130,9 @@ class Root(Content):
         self.document_map = DocumentMap()
         populate_catalog(self.catalog)
         reg = get_current_registry()
-        cataloger = reg.getAdapter(self, ICataloger)
-        cataloger.index_object()
+        cataloger = reg.queryAdapter(self, ICataloger)
+        if cataloger: #Not needed for testing
+            cataloger.index_object()
         super(Root, self).__init__(data=data, **kwargs)
 
 

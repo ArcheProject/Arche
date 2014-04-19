@@ -27,7 +27,7 @@ def add_content_factory(config, ctype):
 def get_content_factories(registry = None):
     if registry is None:
         registry = get_current_registry()
-    return registry.settings['arche.content_factories']
+    return registry._content_factories
 
 def add_content_schema(config, type_name, schema, name):
     assert inspect.isclass(schema)
@@ -40,7 +40,7 @@ def add_content_schema(config, type_name, schema, name):
 def get_content_schemas(registry = None):
     if registry is None:
         registry = get_current_registry()
-    return registry.settings['arche.content_schemas']
+    return registry._content_schemas
 
 def add_content_view(config, type_name, name, title = u''):
     if not name:
@@ -57,7 +57,7 @@ def add_content_view(config, type_name, name, title = u''):
 def get_content_views(registry = None):
     if registry is None:
         registry = get_current_registry()
-    return registry.settings['arche.content_views']
+    return registry._content_views
 
 def generate_slug(parent, text, limit=40):
     """ Suggest a name for content that will be added.
@@ -194,6 +194,9 @@ class FileUploadTempStore(object):
 
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)
+    config.registry._content_factories = {}
+    config.registry._content_schemas = {}
+    config.registry._content_views = {}
     config.add_directive('add_content_factory', add_content_factory)
     config.add_directive('add_content_schema', add_content_schema)
     config.add_directive('add_content_view', add_content_view)

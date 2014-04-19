@@ -11,7 +11,6 @@ from pyramid.decorator import reify
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
 from pyramid.view import render_view_to_response
-from pyramid.security import has_permission
 from pyramid_deform import FormView
 from deform_autoneed import need_lib
 
@@ -50,14 +49,14 @@ class BaseView(object):
         return reversed(list(lineage(self.context)))
 
     def get_content_factory(self, name):
-        return self.request.registry.settings['arche.content_factories'].get(name)
+        return get_content_factories(self.request.registry).get(name)
 
     def macro(self, asset_spec, macro_name='main'):
         return get_renderer(asset_spec).implementation().macros[macro_name]
 
     def addable_content(self, context):
         #FIXME permisison checks etc
-        for factory in self.request.registry.settings['arche.content_factories'].values():
+        for factory in get_content_factories(self.request.registry).values():
             if getattr(context, 'type_name', None) in getattr(factory, 'addable_to', ()):
                 yield factory
 
@@ -73,24 +72,20 @@ class BaseView(object):
         #FIXME: Permission check
         for obj in context.values():
             if getattr(obj, 'nav_visible', False):
-                if self.has_permission('view', obj):
+                if self.request.has_permission(security.PERM_VIEW, obj):
                     yield obj
-
-    def has_permission(self, permission, context = None):
-        #FIXME: Consider other request contexts
-        return True #FIXME
-        context = context and context or self.context
-        return has_permission(permission, context, self.request)
 
     def selectable_views(self, context):
         type_name = getattr(context,'type_name', None)
         selectable = {'view': _(u"Default")}
-        selectable.update(self.request.registry.settings['arche.content_views'].get(type_name, {}))
+        views = get_content_views(self.request.registry)
+        selectable.update(views.get(type_name, {}))
         return selectable
 
     def query_view(self, context, name = '', default = ''):
         result = get_view(context, self.request, view_name = name)
         return result and name or default
+
 
 class BaseForm(BaseView, FormView):
     default_success = _(u"Done")
@@ -121,7 +116,7 @@ class BaseForm(BaseView, FormView):
 
     def get_schema_factory(self, type_name, schema_name):
         try:
-            return self.request.registry.settings['arche.content_schemas'][type_name][schema_name]
+            return get_content_schemas(self.request.registry)[type_name][schema_name]
         except KeyError:
             pass
 

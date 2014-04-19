@@ -8,9 +8,6 @@ _ = TranslationStringFactory('Arche')
 
 
 default_settings = {
-    'arche.content_factories': {},
-    'arche.content_schemas': {},
-    'arche.content_views': {},
     'arche.hash_method': 'arche.utils.default_hash_method',
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
@@ -33,6 +30,7 @@ def includeme(config):
     #Replace bootstrap theme
     from js.bootstrap import bootstrap_theme
     bootstrap_css_path = 'deform:static/css/bootstrap.min.css'
+    #import pdb;pdb.set_trace()
     assert resource_registry.find_resource(bootstrap_css_path)
     resource_registry.replace_resource(bootstrap_css_path, bootstrap_theme)
     #Replace jquery
@@ -61,12 +59,18 @@ def base_config(**settings):
                         authentication_policy=authn_policy,
                         authorization_policy=authz_policy,)
 
+def override_perm_methods(config):
+    """ Important override, see has_permission. """
+    from arche.security import has_permission
+    config.add_request_method(has_permission, name = 'has_permission')
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     config = base_config(**settings)
     config.add_static_view('static', 'static', cache_max_age=3600)
     config.include('arche') #Must be included first to adjust settings for other packages!
+    config.include(override_perm_methods)
     config.include('pyramid_beaker')
     config.include('pyramid_zodbconn')
     config.include('pyramid_tm')
@@ -87,8 +91,7 @@ def appmaker(zodb_root):
 
         from arche.utils import get_content_factories
         from arche.interfaces import IRoot
-        from arche.security import get_local_roles
-        from arche.security import ROLE_ADMIN
+        from arche.populators import root_populator
 
         factories = get_content_factories()
         #This is where initial population takes place, but first some site setup
@@ -101,21 +104,7 @@ def appmaker(zodb_root):
             #FIXME move this population to its own method so tests can use it
             #Root added
             data = dict(zodb_root['initial_setup'].setup_data)
-            root = factories['Root'](title = data.pop('title'))
-            #Add user
-            root['users'] = users = factories['Users']()
-            userid = data.pop('userid')
-            users[userid] = factories['User'](**data)
-            #Add groups
-            root['groups'] = groups = factories['Groups']()
-            #Add administrators group
-            description = _(u"Group for all administrators. Add any administrators to this group.")
-            groups['administrators'] = adm_group = factories['Group'](title = _(u"Administrators"),
-                                                                      description = description,
-                                                                      members = [userid])
-            #Add admin role
-            local_roles = get_local_roles(root)
-            local_roles[adm_group.principal_name] = (ROLE_ADMIN,)
+            root = root_populator(**data)
             #Attach and remove setup context
             zodb_root['app_root'] = root
             del zodb_root['initial_setup']

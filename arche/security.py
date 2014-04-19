@@ -1,28 +1,25 @@
 from UserDict import IterableUserDict
 from UserString import UserString
-from UserList import UserList
+from contextlib import contextmanager
+
 from BTrees.OOBTree import OOBTree
 from BTrees.OOBTree import OOSet
 from pyramid.security import (NO_PERMISSION_REQUIRED,
                               Everyone,
                               Authenticated,
                               Allow,
-                              Deny,
-                              #ALL_PERMISSIONS,
-                              DENY_ALL,
-                              authenticated_userid)
-from pyramid.decorator import reify
+                              Allowed,
+                              DENY_ALL)
 from pyramid.threadlocal import get_current_registry
-from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_root
+from pyramid.interfaces import IAuthenticationPolicy
+from pyramid.interfaces import IAuthorizationPolicy
 from zope.component import adapter
 from zope.interface import implementer
 from zope.component import ComponentLookupError
 
 from arche import _
-from arche.interfaces import IBase
 from arche.interfaces import IContent
-from arche.interfaces import IRoot
 from arche.interfaces import IRole
 from arche.interfaces import IRoles
 
@@ -32,6 +29,37 @@ PERM_EDIT = 'perm:Edit'
 PERM_REGISTER = 'perm:Register'
 PERM_DELETE = 'perm:Delete'
 PERM_MANAGE_SYSTEM = 'perm:Manage system'
+
+@contextmanager
+def authz_context(context, request):
+    before = request.environ.pop('authz_context', None)
+    request.environ['authz_context'] = context
+    try:
+        yield
+    finally:
+        del request.environ['authz_context']
+        if before is not None:
+            request.environ['authz_context'] = before
+
+
+def has_permission(request, permission, context=None):
+    """ The default has_permission does care about the context,
+        but it calls the callback (in our case 'groupfinder') without the correct
+        context. This methods hacks in the correct context. Keep it here until
+        this has been fixed in Pyramid."""
+    if context is None:
+        context = request.context
+    reg = request.registry
+    authn_policy = reg.queryUtility(IAuthenticationPolicy)
+    if authn_policy is None:
+        return Allowed('No authentication policy in use.')
+    authz_policy = reg.queryUtility(IAuthorizationPolicy)
+    if authz_policy is None:
+        raise ValueError('Authentication policy registered without '
+                         'authorization policy') # should never happen
+    with authz_context(context, request):
+        principals = authn_policy.effective_principals(request)
+        return authz_policy.permits(context, principals, permission)
 
 
 def groupfinder(name, request):
@@ -44,7 +72,8 @@ def groupfinder(name, request):
     if name is None: #Abort for unauthenticated - no reason to use CPU
         return ()
     result = set()
-    context = request.context
+    context = request.environ.get(
+        'authz_context', getattr(request, 'context', None))
     inherited_roles = get_roles_registry(request.registry).inheritable()
     if not name.startswith('group:'):
         root = find_root(context)
