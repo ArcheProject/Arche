@@ -236,6 +236,13 @@ class EditFileSchema(AddFileSchema):
                                     widget = file_upload_widget)
 
 
+class PortletBaseSchema(colander.Schema):
+    title = colander.SchemaNode(colander.String())
+    description = colander.SchemaNode(colander.String(),
+                                      widget = deform.widget.TextAreaWidget(rows = 5),
+                                      missing = u"")
+
+
 def includeme(config):
     config.add_content_schema('Document', DocumentSchema, 'view')
     config.add_content_schema('Document', DocumentSchema, 'edit')

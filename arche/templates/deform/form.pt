@@ -17,9 +17,9 @@
               formid formid|field.formid;
               action action|field.action or None;
               method method|field.method;
-              heading heading|field.heading;
-              tabbed_fields field.tab_fields(field);
-              tab_titles field.tab_titles;"
+              heading heading|field.heading|field.title|u'';
+              tabbed_fields field.tab_fields(field)|();
+              tab_titles field.tab_titles|{};"
   tal:attributes="autocomplete autocomplete;
                   style style;
                   class css_class;
@@ -60,7 +60,7 @@
             </p>
 
             <!-- Tab panes -->
-            <div class="tab-content">
+            <div class="tab-content" tal:condition="tabbed_fields">
                 <tal:iterate repeat="name tabbed_fields">
                   <div class="tab-pane ${repeat['name'].start and 'active' or None}" id="${name}_tab">
                       <tal:fields repeat="child tabbed_fields[name]">
@@ -69,6 +69,11 @@
                   </div>
                 </tal:iterate>
             </div>
+
+            <!-- No tabbed -->
+            <tal:fields condition="not tabbed_fields" repeat="child field">
+              <tal:field replace="structure child.render_template(item_template)" />
+            </tal:fields>
 
         </div><!-- body -->
         <div class="panel-footer">

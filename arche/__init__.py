@@ -23,6 +23,7 @@ def includeme(config):
     config.include('arche.views')
     config.include('arche.security')
     config.include('arche.catalog')
+    config.include('arche.portlets')
     #Resolve strings
     if isinstance(settings['arche.hash_method'], str):
         settings['arche.hash_method'] = config.name_resolver.resolve(settings['arche.hash_method'])

@@ -53,3 +53,12 @@ class ICataloger(Interface):
 class IIndexedContent(Interface):
     """ Marker for content that belongs in catalog.
     """
+
+class IPortlet(Interface):
+    pass
+
+class IPortletType(Interface):
+    pass
+
+class IPortletManager(Interface):
+    pass

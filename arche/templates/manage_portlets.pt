@@ -1,0 +1,30 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/master.pt')">
+      i18n:domain="fika">
+<body>
+<tal:blank metal:fill-slot="heading"></tal:blank>
+<div metal:fill-slot="content">
+    <div class="row">
+        <tal:iterate repeat="slot slots">
+            <div class="col-md-3">
+                <ul tal:define="portlets portlet_manager.get(slot, ())">
+                    <li tal:repeat="portlet portlets">
+                        <a href="${request.resource_url(context, 'edit_portlet', query = {'slot': slot, 'portlet': portlet.uid})}">
+                            ${portlet.title}
+                        </a>
+                        <span class="label label-default">${portlet.portlet_type}</span>
+                        <a href="${request.resource_url(context, 'delete_portlet', query = {'slot': slot, 'portlet': portlet.uid})}">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                    </li>
+                </ul>
+                <tal:form replace="structure forms[slot].render()" />
+            </div>
+        </tal:iterate>
+    </div>
+</div>
+</body>
+</html>

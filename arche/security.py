@@ -8,6 +8,7 @@ from pyramid.security import (NO_PERMISSION_REQUIRED,
                               Everyone,
                               Authenticated,
                               Allow,
+                              Deny,
                               Allowed,
                               DENY_ALL)
 from pyramid.threadlocal import get_current_registry

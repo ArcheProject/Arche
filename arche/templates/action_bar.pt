@@ -37,6 +37,11 @@
                     <span class="glyphicon glyphicon-remove pull-right"></span>
                 </a>
             </li>
+            <li>
+                <a href="${request.resource_url(context, 'manage_portlets')}">
+                    <span i18n:translate="">Manage portlets</span>
+                </a>
+            </li>
             <tal:view_selection condition="hasattr(context, 'default_view')">
                 <li role="presentation" class="dropdown-header" i18n:translate="">View selection</li>
                 <tal:iterate repeat="(name, title) view.selectable_views(context).items()">
