@@ -1,0 +1,14 @@
+<div class="panel panel-default portlet">
+    <div class="panel-heading">
+        <h4 class="panel-title">${title}</h4>
+    </div>
+    <div class="panel-body">
+        <tal:iterate repeat="obj contents">
+            <a href="${request.resource_url(obj)}">
+                ${obj.title}
+            </a>
+        </tal:iterate>
+    </div>
+    <div class="panel-footer">Edit?</div>
+</div>
+

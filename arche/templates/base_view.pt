@@ -7,7 +7,15 @@
 <body>
 <div metal:fill-slot="content">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-3 portlets-left" tal:condition="portlets_left">
+            <tal:portlets repeat="portlet portlets_left">
+                <tal:portlet replace="structure portlet" />
+            </tal:portlets>
+        </div>
+        <div class="col-md-${main_cols}">
+
+            <div metal:define-slot="heading"><h1>${context.title}</h1></div>
+
             <p class="description lead"
                  tal:define="description context.description|None"
                  tal:condition="description"
@@ -16,6 +24,11 @@
                  tal:define="body context.body|None"
                  tal:condition="body"
                  tal:content="structure body">Body text</div>
+        </div>
+        <div class="col-md-3 portlets-right" tal:condition="portlets_right">
+            <tal:portlets repeat="portlet portlets_right">
+                <tal:portlet replace="structure portlet" />
+            </tal:portlets>
         </div>
     </div>
 </div>

@@ -108,7 +108,7 @@ class ACLEntry(IterableUserDict):
         self.data = {}
 
     def add(self, role, perms):
-        assert isinstance(role, Role)
+        #Check what kind of role?
         current = self.roleperms.setdefault(role, set())
         current.update(perms)
 
@@ -269,3 +269,4 @@ def includeme(config):
     aclreg.default.add(ROLE_ADMIN, [PERM_VIEW, PERM_EDIT, PERM_DELETE, PERM_MANAGE_SYSTEM])
     aclreg.default.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     aclreg.default.add(ROLE_VIEWER, [PERM_VIEW])
+    aclreg.default.add(Everyone, [PERM_VIEW])

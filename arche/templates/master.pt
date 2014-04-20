@@ -13,7 +13,10 @@
         <metal:head define-slot="head"></metal:head>
     </head>
 
-  <body class="view-${request.view_name or 'default'}">
+  <body class="view-${request.view_name or 'default'}"
+        tal:define="portlets_left view.render_portlet_slot('left');
+                    portlets_right view.render_portlet_slot('right');
+                    main_cols 12 - int(bool(portlets_left))*3 - int(bool(portlets_right))*3;">
 
     <nav tal:replace="structure view.render_template('arche:templates/navigation.pt')" />
 
@@ -28,8 +31,6 @@
         <tal:actionbar replace="structure view.render_actionbar(context)" />
 
         <div tal:replace="structure view.flash_messages.render()">Flash messages, if any</div>
-
-        <div metal:define-slot="heading" class="page-header"><h1>${context.title}</h1></div>
 
         <metal:content define-slot="content"></metal:content>
 

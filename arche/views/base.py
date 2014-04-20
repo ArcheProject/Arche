@@ -21,6 +21,7 @@ from arche.utils import get_content_factories
 from arche.utils import get_content_schemas
 from arche.utils import get_content_views
 from arche.fanstatic_lib import main_css
+from arche.portlets import get_portlet_manager
 from arche import security
 from arche import _
 
@@ -40,6 +41,17 @@ class BaseView(object):
     @reify
     def flash_messages(self):
         return get_flash_messages(self.request)
+
+    def render_portlet_slot(self, slot, **kw):
+        results = []
+        context = self.context
+        while context:
+            manager = get_portlet_manager(context, self.request.registry)
+            if manager:
+                #Use the view context when calling the portlets!
+                results.extend(manager.render_slot(slot, self.context, self.request, self, **kw))
+            context = getattr(context, '__parent__', None)
+        return results
 
     def catalog_query(self, **kwargs):
         #FIXME: inject permisison check here or always assume unsafe?

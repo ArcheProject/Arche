@@ -2,6 +2,7 @@ from UserDict import IterableUserDict
 from uuid import uuid4
 
 from zope.interface import implementer
+from zope.interface.verify import verifyClass
 from zope.component import adapter
 from zope.component import ComponentLookupError
 from persistent import Persistent
@@ -25,10 +26,10 @@ class PortletType(object):
     schema_factory = None
     title = u""
     
-    def __init__(self, context):
-        self.context = context
+    def __init__(self, portlet):
+        self.portlet = portlet
 
-    def __call__(self, context, request, view, settings, **kwargs):
+    def render(self, context, request, view, **kwargs):
         return u""
 
 
@@ -77,7 +78,7 @@ class Portlet(Persistent):
         return reg.getAdapter(self, IPortletType, name = self.portlet_type)
 
     def render(self, context, request, view, **kw):
-        return self.portlet_adapter(context, request, view, self.settings, **kw)
+        return self.portlet_adapter.render(context, request, view, **kw)
         
 
 @adapter(IContent)
@@ -103,6 +104,14 @@ class PortletManager(IterableUserDict):
             if portlet.uid == portlet_uid:
                 slot_registry.remove(portlet)
 
+    def render_slot(self, slot, context, request, view, **kw):
+        results = []
+        for portlet in self.get(slot, ()):
+            output = portlet.render(context, request, view, **kw)
+            if output:
+                results.append(output)
+        return results
+
 
 def get_portlet_slots(registry = None):
     if registry is None:
@@ -118,12 +127,13 @@ def get_available_portlets(registry = None):
     if registry is None:
         registry = get_current_registry()
     return [(x.name, x.name) for x in registry.registeredAdapters() if x.provided == IPortletType]
-    
+
+def add_portlet(config, portlet):
+    verifyClass(IPortletType, portlet)
+    config.registry.registerAdapter(portlet, name = portlet.name)
 
 def includeme(config):
     config.add_content_factory(Portlet)
-    #config.registry.registerAdapter(PortletType)
+    config.add_directive('add_portlet', add_portlet)
     config.registry.registerAdapter(PortletManager)
     config.registry._portlet_slots = {'left': _(u"Left"), 'right': _(u"Right")}
-
-    config.include('arche.portlets.navigation')
