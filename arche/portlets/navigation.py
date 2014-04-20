@@ -21,7 +21,9 @@ class NavigationPortlet(PortletType):
         contents = view.get_local_nav_objects(context)
         if not contents:
             return
-        return render("arche:templates/portlets/navigation.pt", {'title': self.title, 'contents': contents}, request = request)
+        return render("arche:templates/portlets/navigation.pt",
+                      {'title': self.title, 'contents': contents, 'portlet': self.portlet},
+                      request = request)
 
 
 def includeme(config):
