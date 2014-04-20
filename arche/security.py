@@ -30,6 +30,8 @@ PERM_EDIT = 'perm:Edit'
 PERM_REGISTER = 'perm:Register'
 PERM_DELETE = 'perm:Delete'
 PERM_MANAGE_SYSTEM = 'perm:Manage system'
+PERM_MANAGE_USERS = 'perm:Manage users'
+
 
 @contextmanager
 def authz_context(context, request):
@@ -259,6 +261,9 @@ def get_local_roles(context, registry = None):
 
 
 def includeme(config):
+    from arche.utils import get_content_factories
+    from arche.security import ROLE_ADMIN
+
     config.registry._roles = rr = RolesRegistry()
     rr.add(ROLE_ADMIN)
     rr.add(ROLE_EDITOR)
@@ -266,7 +271,15 @@ def includeme(config):
     rr.add(ROLE_OWNER)
     config.registry.registerAdapter(Roles)
     config.registry._acl = aclreg =  ACLRegistry()
-    aclreg.default.add(ROLE_ADMIN, [PERM_VIEW, PERM_EDIT, PERM_DELETE, PERM_MANAGE_SYSTEM])
+    aclreg.default.add(ROLE_ADMIN, [PERM_VIEW, PERM_EDIT, PERM_DELETE, PERM_MANAGE_SYSTEM, PERM_MANAGE_USERS])
     aclreg.default.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     aclreg.default.add(ROLE_VIEWER, [PERM_VIEW])
     aclreg.default.add(Everyone, [PERM_VIEW])
+    #Default add perms - perhaps configurable somewhere else?
+    #Anyway, factories need to be included first otherwise this won't work!
+    factories = get_content_factories(config.registry)
+    add_perms = []
+    for factory in factories.values():
+        if hasattr(factory, 'add_permission'):
+            add_perms.append(factory.add_permission)
+    aclreg.default.add(ROLE_ADMIN, add_perms)

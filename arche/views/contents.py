@@ -12,6 +12,6 @@ class ContentsView(BaseView):
 def includeme(config):
     config.add_view(ContentsView,
                     name = 'contents',
-                    permission = security.NO_PERMISSION_REQUIRED,
+                    permission = security.PERM_VIEW,
                     renderer = "arche:templates/contents.pt",
                     context = 'arche.interfaces.IContent')

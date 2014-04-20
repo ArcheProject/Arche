@@ -2,7 +2,8 @@ from zope.interface import Interface
 from zope.component.interfaces import IObjectEvent
 
 from repoze.folder.interfaces import (IObjectAddedEvent,
-                                      IObjectWillBeRemovedEvent) #API
+                                      IObjectWillBeRemovedEvent,
+                                      IFolder) #API
 
 class IObjectUpdatedEvent(IObjectEvent):
     pass

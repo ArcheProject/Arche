@@ -112,6 +112,8 @@ class Content(BaseMixin, Folder, ContextACLMixin, ContextRolesMixin, DCMetadataM
 class Bare(BaseMixin, ContextACLMixin, Persistent):
     __name__ = None
     __parent__ = None
+    nav_visible = False
+    listing_visible = False
 
     def __init__(self, data=None, **kwargs):
         #Things like created, creator etc...
@@ -124,7 +126,8 @@ class Root(Content):
     type_name = u"Root"
     type_title = _(u"Site root")
     addable_to = ()
-    
+    add_permission = "Add %s" % type_name
+
     def __init__(self, data=None, **kwargs):
         self.catalog = Catalog()
         self.document_map = DocumentMap()
@@ -141,6 +144,7 @@ class Document(Content):
     type_title = _(u"Document")
     addable_to = (u"Document", u"Root")
     body = u""
+    add_permission = "Add %s" % type_name
 
 
 @implementer(IUser)
@@ -151,6 +155,7 @@ class User(Bare):
     first_name = u""
     last_name = u""
     email = u""
+    add_permission = "Add %s" % type_name
 
     @property
     def title(self):
@@ -169,10 +174,11 @@ class User(Bare):
 
 
 @implementer(IFile)
-class File(Bare):
+class File(Bare, DCMetadataMixin):
     type_name = u"File"
     type_title = _(u"File")
     addable_to = (u'Document', u"Root")
+    add_permission = "Add %s" % type_name
     filename = u""
     blobfile = None
     mimetype = u""
@@ -265,6 +271,7 @@ class Group(Bare):
     type_name = u"Group"
     type_title = _(u"Group")
     addable_to = (u'Groups',)
+    add_permission = "Add %s" % type_name
     title = u""
     description = u""
 

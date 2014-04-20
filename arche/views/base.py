@@ -22,6 +22,7 @@ from arche.utils import get_content_schemas
 from arche.utils import get_content_views
 from arche.fanstatic_lib import main_css
 from arche.portlets import get_portlet_manager
+from arche.interfaces import IFolder
 from arche import security
 from arche import _
 
@@ -81,11 +82,11 @@ class BaseView(object):
 
     def get_local_nav_objects(self, context):
         #FIXME: Conditions for navigation!
-        #FIXME: Permission check
-        for obj in context.values():
-            if getattr(obj, 'nav_visible', False):
-                if self.request.has_permission(security.PERM_VIEW, obj):
-                    yield obj
+        if IFolder.providedBy(context):
+            for obj in context.values():
+                if getattr(obj, 'nav_visible', False):
+                    if self.request.has_permission(security.PERM_VIEW, obj):
+                        yield obj
 
     def selectable_views(self, context):
         type_name = getattr(context,'type_name', None)
@@ -176,16 +177,22 @@ class DefaultAddForm(BaseForm):
     schema_name = u'add'
     appstruct = lambda x: {} #No previous values exist :)
 
+    def __call__(self):
+        factory = self.get_content_factory(self.type_name)
+        if not self.request.has_permission(factory.add_permission):
+            raise HTTPForbidden(_(u"You're not allowed to add this content type here. "
+                                  u"It requires the permission '%s'" % factory.add_permission))
+        return super(DefaultAddForm, self).__call__()
+
     @property
     def type_name(self):
         return self.request.GET.get('content_type', u'')
 
     @property
     def heading(self):
-        factories = get_content_factories(self.request.registry)
-        ctype =  factories.get(self.type_name)
-        if ctype:
-            type_title = ctype.type_title
+        factory =  self.get_content_factory(self.type_name)
+        if factory:
+            type_title = factory.type_title
         else:
             type_title = self.type_name
         return _(u"Add ${type_title}", mapping = {'type_title': type_title})

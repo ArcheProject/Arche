@@ -220,12 +220,9 @@ def permissions_schema_factory(context, request, view):
     return schema
 
 
-class AddFileSchema(colander.Schema):
+class AddFileSchema(BaseSchema):
     title = colander.SchemaNode(colander.String(),
                                 missing = u"")
-    description = colander.SchemaNode(colander.String(),
-                                      widget = deform.widget.TextAreaWidget(rows = 5),
-                                      missing = u"")
     file_data = colander.SchemaNode(deform.FileData(),
                                     widget = file_upload_widget)
 
