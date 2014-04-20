@@ -12,7 +12,7 @@
             <a href="${request.resource_url(context, 'edit')}">Edit</a>
         </li>
         <li><a href="${request.resource_url(context, 'contents')}">Contents</a></li>
-        <li><a href="${request.resource_url(context, 'permissions')}">Permissions</a></li>
+        <li tal:condition="request.has_permission('perm:Manage users')"><a href="${request.resource_url(context, 'permissions')}">Permissions</a></li>
         <li class="dropdown ${request.view_name == 'add' and 'active' or None}">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <tal:ts i18n:translate="">Add</tal:ts>
@@ -57,6 +57,16 @@
         </li>
       </ul>
     <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown user-menu">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <span i18n:translate="">You</span>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="${request.resource_url(view.root['users'], request.authenticated_userid)}" i18n:translate="">Profile</a></li>
+          <li><a href="${request.resource_url(view.root, 'logout')}" i18n:translate="">Logout</a></li>
+        </ul>
+      </li>
       <li class="dropdown site-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <span i18n:translate="">Site</span>

@@ -68,17 +68,18 @@ class BaseView(object):
         return get_renderer(asset_spec).implementation().macros[macro_name]
 
     def addable_content(self, context):
-        #FIXME permisison checks etc
         for factory in get_content_factories(self.request.registry).values():
             if getattr(context, 'type_name', None) in getattr(factory, 'addable_to', ()):
-                yield factory
+                if self.request.has_permission(factory.add_permission, context):
+                    yield factory
 
     def render_template(self, renderer, **kwargs):
         kwargs.setdefault('view', self)
         return render(renderer, kwargs, self.request)
 
     def render_actionbar(self, context):
-        return self.render_template('arche:templates/action_bar.pt')
+        if self.request.authenticated_userid:
+            return self.render_template('arche:templates/action_bar.pt')
 
     def get_local_nav_objects(self, context):
         #FIXME: Conditions for navigation!
