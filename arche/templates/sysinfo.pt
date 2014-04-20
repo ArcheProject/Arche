@@ -3,7 +3,7 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="view.macro('arche:templates/master.pt')">
-      i18n:domain="fika">
+      i18n:domain="Arche">
 <body>
 <h1 metal:fill-slot="heading"></h1>
 <div metal:fill-slot="content">
@@ -55,7 +55,7 @@
                                           <dd>${factory.type_description}</dd>
                                           <dt i18n:translate="">Addable to</dt>
                                           <dd>
-                                          <tal:iter repeat="name factory.addable_to">
+                                          <tal:iter repeat="name getattr(factory, 'addable_to', ())">
                                               ${name}<br/>
                                           </tal:iter>
                                           </dd>

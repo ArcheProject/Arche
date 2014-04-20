@@ -41,6 +41,7 @@ class Portlet(Persistent):
     type_title = _(u"Portlet")
     type_description = _(u"A mini view rendered ")
     portlet_type = u""
+    addable_to = ()
 
     def __init__(self, portlet_type, **kw):
         self.uid = unicode(uuid4())

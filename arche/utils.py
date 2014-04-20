@@ -116,7 +116,7 @@ class FlashMessages(object):
         if dismissable:
             css_classes.append('alert-dismissable')
         if auto_destruct:
-            css_classes.append('fika-auto-destruct')
+            css_classes.append('auto-destruct')
         css_classes = " ".join(css_classes)
         flash = {'msg':msg, 'dismissable': dismissable, 'css_classes': css_classes}
         self.request.session.flash(flash)
