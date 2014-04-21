@@ -2,6 +2,7 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:define-macro="main"
       metal:use-macro="view.macro('arche:templates/master.pt')">
       i18n:domain="Arche">
 <body>
@@ -13,17 +14,17 @@
             </tal:portlets>
         </div>
         <div class="col-md-${main_cols}">
-
-            <div metal:define-slot="heading"><h1>${context.title}</h1></div>
-
-            <p class="description lead"
-                 tal:define="description context.description|None"
-                 tal:condition="description"
-                 tal:content="structure description">Description text</p>
-            <div class="body"
-                 tal:define="body context.body|None"
-                 tal:condition="body"
-                 tal:content="structure body">Body text</div>
+            <tal:main-column metal:define-slot="main-column">
+                <h1>${context.title}</h1>
+                <p class="description lead"
+                     tal:define="description context.description|None"
+                     tal:condition="description"
+                     tal:content="structure description">Description text</p>
+                <div class="body"
+                     tal:define="body context.body|None"
+                     tal:condition="body"
+                     tal:content="structure body">Body text</div>
+            </tal:main-column>
         </div>
         <div class="col-md-3 portlets-right" tal:condition="portlets_right">
             <tal:portlets repeat="portlet portlets_right">

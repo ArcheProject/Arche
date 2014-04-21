@@ -100,6 +100,14 @@ class BaseView(object):
         result = get_view(context, self.request, view_name = name)
         return result and name or default
 
+    def byte_format(self, num):
+        """ Return a tuple with size and unit. """
+        for x in ['bytes', 'Kb', 'Mb', 'Gb']:
+            if num < 1024.0 and num > -1024.0:
+                return (u"%3.1f" % num, x)
+            num /= 1024.0
+        return (u"%3.1f" % num, 'Tb')
+
 
 class BaseForm(BaseView, FormView):
     default_success = _(u"Done")

@@ -1,0 +1,35 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/master.pt')">
+      i18n:domain="Arche">
+<body>
+<div metal:fill-slot="main-column">
+    <table class="table table-responsive table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Group</th>
+                <th>Description</th>
+                <th>Roles</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr tal:repeat="obj contents">
+                <td>
+                    <a href="${request.resource_url(obj, 'edit')}">
+                        ${obj.title}
+                    </a>
+                </td>
+                <td>
+                    <div tal:content="obj.description"></div>
+                </td>
+                <td>
+                    
+                </td>
+            </tr>                
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

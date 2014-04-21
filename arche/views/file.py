@@ -49,7 +49,7 @@ def includeme(config):
     config.add_view(DefaultView,
                     context = 'arche.interfaces.IFile',
                     permission = security.PERM_VIEW,
-                    renderer = 'arche:templates/file.pt')
+                    renderer = 'arche:templates/content/file.pt')
     config.add_view(download_view,
                     context = 'arche.interfaces.IFile',
                     permission = security.PERM_VIEW,

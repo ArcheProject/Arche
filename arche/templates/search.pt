@@ -2,40 +2,34 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      metal:use-macro="view.macro('arche:templates/master.pt')">
+      metal:use-macro="view.macro('arche:templates/base_view.pt')">
       i18n:domain="Arche">
 <body>
-<tal:blank metal:fill-slot="heading"></tal:blank>
-<div metal:fill-slot="content">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <h3 class="panel-title">
-                    <span i18n:translate="">Search result</span>
-                </h3>
-              </div>
-              <div class="panel-body">
-                <table class="table table-responsive table-bordered table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th i18n:translate="">Title</th>
-                            <th i18n:translate="">Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr tal:repeat="obj results">
-                            <td>
-                                <a href="${request.resource_url(obj)}"
-                                   title="${obj.description}">${obj.title}</a></td>
-                            <td>${obj.type_title}</td>
-                        </tr>                
-                    </tbody>
-                </table>
-              </div>
-            </div>
-
-        </div>
+<div metal:fill-slot="main-column">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+            <span i18n:translate="">Search result</span>
+        </h3>
+      </div>
+      <div class="panel-body">
+        <table class="table table-responsive table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th i18n:translate="">Title</th>
+                    <th i18n:translate="">Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr tal:repeat="obj results">
+                    <td>
+                        <a href="${request.resource_url(obj)}"
+                           title="${obj.description}">${obj.title}</a></td>
+                    <td>${obj.type_title}</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
     </div>
 </div>
 </body>

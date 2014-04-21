@@ -49,5 +49,5 @@ def includeme(config):
     config.add_view(UsersView,
                     name = 'view',
                     permission = security.NO_PERMISSION_REQUIRED,
-                    renderer = "arche:templates/users_table.pt",
+                    renderer = "arche:templates/content/users_table.pt",
                     context = 'arche.interfaces.IUsers')

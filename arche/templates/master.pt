@@ -21,7 +21,6 @@
     <nav tal:replace="structure view.render_template('arche:templates/navigation.pt')" />
 
     <div class="container">
-        
         <ol class="breadcrumb">
             <tal:iterate repeat="obj view.breadcrumbs()">
                 <li><a href="${request.resource_url(obj)}">${obj.title and obj.title or obj.__name__}</a></li>

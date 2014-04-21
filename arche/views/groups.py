@@ -17,7 +17,7 @@ def includeme(config):
     config.add_view(GroupsView,
                     name = 'view',
                     permission = security.PERM_MANAGE_USERS, #FIXME
-                    renderer = "arche:templates/groups.pt",
+                    renderer = "arche:templates/content/groups.pt",
                     context = 'arche.interfaces.IGroups')
     config.add_view(DefaultEditForm,
                     name = u"edit",

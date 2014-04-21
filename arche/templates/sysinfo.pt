@@ -5,7 +5,6 @@
       metal:use-macro="view.macro('arche:templates/master.pt')">
       i18n:domain="Arche">
 <body>
-<h1 metal:fill-slot="heading"></h1>
 <div metal:fill-slot="content">
     <div class="row">
         <div class="col-md-12">
@@ -37,6 +36,7 @@
                       <div class="tab-pane active" id="info_tab">
                           FIXME: Sysinfo etc
                       </div>
+
                       <div class="tab-pane" id="content_types_tab"><!-- content types -->
                           <div class="panel-group" id="accordion_content_types">
                           <tal:content_types repeat="factory content_factories.values()">
@@ -116,7 +116,7 @@
                                       </dl>
                                   </div>
                               </div>
-                              
+
                               <tal:acl repeat="(name, acl) acl_registry.items()">
                                   <div class="panel panel-default">
                                     <div class="panel-heading">
@@ -136,7 +136,6 @@
                               </tal:acl>
                               </div>
                           </div><!-- /acl -->
-
 
                     </div>
                 </div><!-- body -->
