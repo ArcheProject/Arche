@@ -4,24 +4,12 @@ from BTrees.OOBTree import OOSet
 from ZODB.blob import Blob
 from persistent import Persistent
 from pyramid.threadlocal import get_current_registry
-from pyramid.security import DENY_ALL
-#from zope.component import adapter
 from repoze.catalog.catalog import Catalog
 from repoze.catalog.document import DocumentMap
 from zope.component.event import objectEventNotify
+from plone.scale.scale import scaleImage
 
-from arche.interfaces import IBase
-from arche.interfaces import IBare
-from arche.interfaces import IRoot
-from arche.interfaces import IContent
-from arche.interfaces import IFile
-from arche.interfaces import IUser
-from arche.interfaces import IUsers
-from arche.interfaces import IGroup
-from arche.interfaces import IGroups
-from arche.interfaces import IInitialSetup
-from arche.interfaces import IIndexedContent
-from arche.interfaces import ICataloger
+from arche.interfaces import * #Pick later
 from arche.utils import hash_method
 from arche.utils import upload_stream
 from arche.events import ObjectUpdatedEvent
@@ -173,7 +161,7 @@ class User(Bare):
         self.__password_hash__ = hash_method(value)
 
 
-@implementer(IFile)
+@implementer(IFile, IContent)
 class File(Bare, DCMetadataMixin):
     type_name = u"File"
     type_title = _(u"File")
@@ -210,13 +198,36 @@ class File(Bare, DCMetadataMixin):
             self.size = upload_stream(fp, f)
             f.close()
 
+
+@implementer(IImage)
+class Image(File):
+    type_name = u"Image"
+    type_title = _(u"Image")
+    addable_to = (u'Document', u"Root")
+    add_permission = "Add %s" % type_name
+
+
+class Thumbnail(Persistent):
+    size = 0
+    mimetype = u""
+    blobfile = None
+    addable_to = () #This is not a regular content type
+    type_name = u"Thumbnail"
+    type_title = _(u"Thumbnail")
+    filename = u"" #Needed=
+
+    def __init__(self, image_data, width = 50, height = 50):
+        #FIXME: Handle IO decoder errors!!!
+        thumb_data, format, size = scaleImage(image_data, width=width, height=height, direction="thumb")
+        self.blobfile = Blob()
+        self.size = size
+        self.blobfile.open('w').write(thumb_data)
+
+
 # class Link(Base):
 #     pass
 # 
 # 
-# class Image(Base):
-#     pass
-
 
 @implementer(IInitialSetup)
 class InitialSetup(Bare):
@@ -306,4 +317,6 @@ def includeme(config):
     config.add_content_factory(Groups)
     config.add_content_factory(Group)
     config.add_content_factory(File)
+    config.add_content_factory(Image)
     config.add_content_factory(Root)
+    config.add_content_factory(Thumbnail)

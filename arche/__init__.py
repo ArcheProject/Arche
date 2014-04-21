@@ -13,6 +13,7 @@ default_settings = {
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
 }
 
+
 def includeme(config):
     settings = config.registry.settings
     for key, value in default_settings.items():
@@ -46,6 +47,11 @@ def includeme(config):
     bootstrap_js_path = 'deform:static/scripts/bootstrap.min.js'
     assert resource_registry.find_resource(bootstrap_js_path)
     resource_registry.replace_resource(bootstrap_js_path, bootstrap_js)
+
+    #Add thumb_url method to request object
+    from arche.utils import thumb_url
+    config.add_request_method(thumb_url, name = 'thumb_url')
+
 
 def root_factory(request):
     conn = get_connection(request)

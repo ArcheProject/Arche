@@ -20,6 +20,7 @@ from arche.utils import get_view
 from arche.utils import get_content_factories
 from arche.utils import get_content_schemas
 from arche.utils import get_content_views
+from arche.utils import get_image_scales
 from arche.fanstatic_lib import main_css
 from arche.portlets import get_portlet_manager
 from arche.interfaces import IFolder
@@ -108,6 +109,20 @@ class BaseView(object):
             num /= 1024.0
         return (u"%3.1f" % num, 'Tb')
 
+    def thumb_tag(self, context, scale_name, default = u"", **kw):
+        #FIXME: Default?
+        url = self.request.thumb_url(context, scale_name)
+        if url:
+            scales = get_image_scales(self.request.registry)
+            data = {'src': url,
+                    'width': scales[scale_name][0],
+                    'height': scales[scale_name][1],
+                    'class': 'img-responsive thumb-%s' % scale_name,
+                    'alt': context.title,
+                    }
+            data.update(kw)
+            return u"<img %s />" % " ".join(['%s="%s"' % (k, v) for (k, v) in data.items()])
+        return default
 
 class BaseForm(BaseView, FormView):
     default_success = _(u"Done")

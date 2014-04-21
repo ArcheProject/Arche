@@ -1,12 +1,15 @@
 import inspect
 from hashlib import sha512
 from StringIO import StringIO
+from UserDict import IterableUserDict
 
 from slugify import slugify
 from zope.interface import providedBy
 from zope.interface import implementer
 from zope.interface.interfaces import ComponentLookupError
 from zope.component import adapter
+from BTrees.OOBTree import OOBTree
+from plone.scale.scale import scaleImage
 from pyramid.interfaces import IRequest
 from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
@@ -15,7 +18,7 @@ from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.threadlocal import get_current_registry
 
-from arche.interfaces import IFlashMessages
+from arche.interfaces import IFlashMessages, IThumbnails, IContent
 from arche import _
 
 
@@ -101,6 +104,7 @@ def get_view(context, request, view_name = ''):
         (request, context)
     )
     return request.registry.adapters.lookup(provides, IView, name=view_name)
+
 
 @adapter(IRequest)
 @implementer(IFlashMessages)
@@ -192,11 +196,70 @@ class FileUploadTempStore(object):
         return None
 
 
+@implementer(IThumbnails)
+@adapter(IContent)
+class Thumbnails(IterableUserDict):
+
+    def __init__(self, context):
+        self.context = context
+        self.data = getattr(context, '__thumbnails__', {}) #Don't create any storage unless really needed!
+
+    def __setitem__(self, key, item):
+        if not isinstance(self.data, OOBTree):
+            self.data = self.context.__thumbnails__ = OOBTree()
+        self.data[key] = item
+
+    def create(self, scale_name, data):
+        scales = get_image_scales()
+        if scale_name not in scales:
+            #Log?
+            return
+        factory = get_content_factories()['Thumbnail']
+        width, height = scales[scale_name]
+        try:
+            self[scale_name] = thumb = factory(data, width = width, height = height)
+            return thumb
+        except IOError:
+            #FIXME: Log error or try to figure out what went wrong?
+            #Usually problem with missing libs during compilation of PIL
+            pass
+
+
+#Default image scales - mapped to twitter bootstrap columns
+image_scales = {
+    'col-1': [60, 120],
+    'col-2': [160, 320],
+    'col-3': [260, 520],
+    'col-4': [360, 720],
+    'col-5': [460, 920],
+    'col-6': [560, 1120],
+    'col-7': [660, 1320],
+    'col-8': [760, 1520],
+    'col-9': [860, 1720],
+    'col-10': [960, 1920],
+    'col-11': [1060, 2120],
+    'col-12': [1160, 2320],
+    }
+
+
+def get_image_scales(registry = None):
+    if registry is None:
+        registry = get_current_registry()
+    return registry._image_scales
+
+def thumb_url(request, context, key):
+    #Check that the context really has a thumbnail?
+    scales = get_image_scales(request.registry)
+    if key in scales:
+        return request.resource_url(context, 'thumbnail', key)
+
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)
+    config.registry.registerAdapter(Thumbnails)
     config.registry._content_factories = {}
     config.registry._content_schemas = {}
     config.registry._content_views = {}
+    config.registry._image_scales = image_scales
     config.add_directive('add_content_factory', add_content_factory)
     config.add_directive('add_content_schema', add_content_schema)
     config.add_directive('add_content_view', add_content_view)

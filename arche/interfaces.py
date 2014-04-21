@@ -27,6 +27,9 @@ class IUsers(Interface):
 class IFile(Interface):
     pass
 
+class IImage(Interface):
+    pass
+
 class IFlashMessages(Interface):
     pass
 
@@ -54,6 +57,9 @@ class ICataloger(Interface):
 class IIndexedContent(Interface):
     """ Marker for content that belongs in catalog.
     """
+
+class IThumbnails(Interface):
+    pass
 
 class IPortlet(Interface):
     pass

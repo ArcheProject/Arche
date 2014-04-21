@@ -8,6 +8,7 @@ def includeme(config):
     config.include('arche.views.groups')
     config.include('arche.views.listing')
     config.include('arche.views.initial_setup')
+    config.include('arche.views.image')
     config.include('arche.views.permissions')
     config.include('arche.views.portlets')
     config.include('arche.views.search')

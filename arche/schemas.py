@@ -224,11 +224,13 @@ class AddFileSchema(BaseSchema):
     title = colander.SchemaNode(colander.String(),
                                 missing = u"")
     file_data = colander.SchemaNode(deform.FileData(),
+                                    title = _(u"Upload file"),
                                     widget = file_upload_widget)
 
 
 class EditFileSchema(AddFileSchema):
     file_data = colander.SchemaNode(deform.FileData(),
+                                    title = _(u"Replace file"),
                                     missing = colander.null,
                                     widget = file_upload_widget)
 
@@ -256,4 +258,6 @@ def includeme(config):
     config.add_content_schema('Group', GroupSchema, 'edit')
     config.add_content_schema('File', AddFileSchema, 'add')
     config.add_content_schema('File', EditFileSchema, 'edit')
+    config.add_content_schema('Image', AddFileSchema, 'add') #Specific schema?
+    config.add_content_schema('Image', EditFileSchema, 'edit')
     config.add_content_schema('Root', BaseSchema, 'edit')

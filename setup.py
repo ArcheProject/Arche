@@ -30,6 +30,8 @@ requires = ('pyramid',
             'zope.component',
             'fanstatic',
             'js.bootstrap',
+            'plone.scale',
+            'Pillow',
             )
 
 
