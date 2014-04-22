@@ -135,6 +135,7 @@ class AddUserSchema(UserSchema):
                                    title = _(u"Password"),
                                    widget = deform.widget.CheckedPasswordWidget())
     profile_data = colander.SchemaNode(deform.FileData(),
+                                       missing = colander.null,
                                        title = _(u"Add profile image"),
                                        widget = file_upload_widget)
 

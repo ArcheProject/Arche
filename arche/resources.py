@@ -3,7 +3,8 @@ from zope.interface import implementer
 from BTrees.OOBTree import OOSet
 from ZODB.blob import Blob
 from persistent import Persistent
-from pyramid.threadlocal import get_current_registry
+from pyramid.threadlocal import get_current_registry, get_current_request
+
 from repoze.catalog.catalog import Catalog
 from repoze.catalog.document import DocumentMap
 from zope.component.event import objectEventNotify
@@ -14,6 +15,7 @@ from arche.utils import upload_stream
 from arche.events import ObjectUpdatedEvent
 from arche.security import get_local_roles
 from arche.security import get_acl_registry
+from arche.security import ROLE_OWNER
 from arche.catalog import populate_catalog
 from arche import _
 
@@ -22,7 +24,7 @@ class DCMetadataMixin(object):
     """ Should always be used as a mixin of another persistent object! """
     title = u""
     description = u""
-    creator = u"" #FIXME
+    creator = None #FIXME
     contributor = u"" #FIXME
     created = None #FIXME
     modified = None #FIXME - also via update?
@@ -50,6 +52,16 @@ class BaseMixin(object):
     type_description = u""
     addable_to = ()
 
+    def __init__(self, **kwargs):
+        #IContent should be the same iface registered by the roles adapter
+        if 'local_roles' not in kwargs and IContent.providedBy(self):
+            #Check creators attribute?
+            request = get_current_request()
+            userid = getattr(request, 'authenticated_userid', None)
+            if userid:
+                kwargs['local_roles'] = {userid: [ROLE_OWNER]}
+        self.update(event = False, **kwargs)
+
     def update(self, event = True, **kwargs):
         _marker = object()
         changed_attributes = set()
@@ -64,14 +76,12 @@ class BaseMixin(object):
             objectEventNotify(event_obj)
         return changed_attributes
 
-
-class ContextRolesMixin(object):
-
     @property
     def local_roles(self): return get_local_roles(self)
 
     @local_roles.setter
     def local_roles(self, value):
+        #Note that you can also set roles via the property, like self.local_roles['admin'] = ['role:Admin']
         local_roles = get_local_roles(self)
         local_roles.set_from_appstruct(value)
 
@@ -85,15 +95,14 @@ class ContextACLMixin(object):
 
 
 @implementer(IContent, IIndexedContent)
-class Content(BaseMixin, Folder, ContextACLMixin, ContextRolesMixin, DCMetadataMixin):
+class Content(BaseMixin, Folder, ContextACLMixin, DCMetadataMixin):
     default_view = u"view"
     nav_visible = True
     listing_visible = True
 
     def __init__(self, data=None, **kwargs):
-        #Things like created, creator etc...
         Folder.__init__(self, data = data)
-        self.update(event = False, **kwargs)
+        super(Content, self).__init__(**kwargs) #BaseMixin!
 
 
 @implementer(IBare, IIndexedContent)
@@ -106,7 +115,7 @@ class Bare(BaseMixin, ContextACLMixin, Persistent):
     def __init__(self, data=None, **kwargs):
         #Things like created, creator etc...
         Persistent.__init__(self)
-        self.update(event = False, **kwargs)
+        super(Bare, self).__init__(**kwargs)
 
 
 @implementer(IRoot, IIndexedContent)
@@ -133,49 +142,6 @@ class Document(Content):
     addable_to = (u"Document", u"Root")
     body = u""
     add_permission = "Add %s" % type_name
-
-
-@implementer(IUser, IThumbnailedContent)
-class User(Bare):
-    type_name = u"User"
-    type_title = _(u"User")
-    addable_to = (u'Users',)
-    first_name = u""
-    last_name = u""
-    email = u""
-    add_permission = "Add %s" % type_name
-    blobfile = None
-
-    @property
-    def title(self):
-        title = " ".join((self.first_name, self.last_name,)).strip()
-        return title and title or self.userid
-
-    @property
-    def userid(self): return self.__name__
-
-    @property
-    def password(self): return getattr(self, "__password_hash__", u"")
-    @password.setter
-    def password(self, value): self.__password_hash__ = hash_method(value)
-
-    @property
-    def thumbnail_original(self): return self.blobfile
-
-    @property
-    def profile_data(self): pass #FIXME: Should this return something?
-
-    @profile_data.setter
-    def profile_data(self, value):
-        if value:
-            if self.blobfile is None:
-                self.blobfile = Blob()
-            with self.blobfile.open('w') as f:
-                #self.filename = value['filename']
-                fp = value['fp']
-                #self.mimetype = value['mimetype']
-                #self.size = upload_stream(fp, f)
-                upload_stream(fp, f)
 
 
 @implementer(IFile, IContent)
@@ -259,6 +225,48 @@ class Users(Content):
                 return user
 
 
+@implementer(IUser, IThumbnailedContent, IContent)
+class User(Bare):
+    type_name = u"User"
+    type_title = _(u"User")
+    addable_to = (u'Users',)
+    first_name = u""
+    last_name = u""
+    email = u""
+    add_permission = "Add %s" % type_name
+    blobfile = None
+
+    @property
+    def title(self):
+        title = " ".join((self.first_name, self.last_name,)).strip()
+        return title and title or self.userid
+
+    @property
+    def userid(self): return self.__name__
+
+    @property
+    def password(self): return getattr(self, "__password_hash__", u"")
+    @password.setter
+    def password(self, value): self.__password_hash__ = hash_method(value)
+
+    @property
+    def thumbnail_original(self): return self.blobfile
+
+    @property
+    def profile_data(self): pass #FIXME: Should this return something?
+
+    @profile_data.setter
+    def profile_data(self, value):
+        if value:
+            if self.blobfile is None:
+                self.blobfile = Blob()
+            with self.blobfile.open('w') as f:
+                #self.filename = value['filename']
+                fp = value['fp']
+                #self.mimetype = value['mimetype']
+                #self.size = upload_stream(fp, f)
+                upload_stream(fp, f)
+
 @implementer(IGroups)
 class Groups(Content):
     type_name = u"Groups"
@@ -313,6 +321,15 @@ class Group(Bare):
         self.__members__.update(value)
 
 
+def make_user_owner(user, event = None):
+    """ Whenever a user object is added, make sure the user has the role owner,
+        and no one else. This might not be the default behaviour, if an
+        administrator adds the user.
+    """
+    if ROLE_OWNER not in user.local_roles.get(user.userid, ()):
+        user.local_roles = {user.userid: [ROLE_OWNER]}
+
+
 def includeme(config):
     config.add_content_factory(Document)
     config.add_content_factory(Users)
@@ -323,3 +340,4 @@ def includeme(config):
     config.add_content_factory(File)
     config.add_content_factory(Image)
     config.add_content_factory(Root)
+    config.add_subscriber(make_user_owner, [IUser, IObjectAddedEvent])

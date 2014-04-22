@@ -77,6 +77,8 @@ def groupfinder(name, request):
     result = set()
     context = request.environ.get(
         'authz_context', getattr(request, 'context', None))
+    if not context:
+        return ()
     inherited_roles = get_roles_registry(request.registry).inheritable()
     if not name.startswith('group:'):
         root = find_root(context)
@@ -236,7 +238,7 @@ class Roles(IterableUserDict):
             #Make sure it exist
             roles_principals = get_roles_registry()
             for role in value:
-                assert role in roles_principals
+                assert role in roles_principals, "'%s' isn't a role" % role
             self.data[key] = OOSet(value)
         elif key in self.data:
             del self.data[key]
@@ -253,11 +255,7 @@ class Roles(IterableUserDict):
 def get_local_roles(context, registry = None):
     if registry is None:
         registry = get_current_registry()
-    try:
-        return registry.getAdapter(context, IRoles)
-    except ComponentLookupError:
-        #FIXME: Does this mean that roles shouldn't be stored here...?
-        return Roles(context)
+    return registry.queryAdapter(context, IRoles)
 
 
 def includeme(config):
