@@ -59,6 +59,8 @@
     <ul class="nav navbar-nav navbar-right">
       <li class="dropdown user-menu">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <tal:img replace="structure view.thumb_tag(view.root['users'][request.authenticated_userid], 'icon', extra_cls = 'pull-left')" />
+            &nbsp;
             <span i18n:translate="">You</span>
             <span class="caret"></span>
         </a>
