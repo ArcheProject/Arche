@@ -122,6 +122,10 @@ class UserSchema(colander.Schema):
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Email adress"),
                                 validator = colander.Email())
+    profile_data = colander.SchemaNode(deform.FileData(),
+                                       missing = colander.null,
+                                       title = _(u"Replace profile image"),
+                                       widget = file_upload_widget)
     
 
 class AddUserSchema(UserSchema):
@@ -130,6 +134,9 @@ class AddUserSchema(UserSchema):
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
                                    widget = deform.widget.CheckedPasswordWidget())
+    profile_data = colander.SchemaNode(deform.FileData(),
+                                       title = _(u"Add profile image"),
+                                       widget = file_upload_widget)
 
 
 class GroupSchema(colander.Schema):

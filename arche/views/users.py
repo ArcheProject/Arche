@@ -34,20 +34,30 @@ class UsersView(BaseView):
         return {'contents': [x for x in self.context.values()]}
 
 
+class UserView(BaseView):
+
+    def __call__(self):
+        return {}
+
+
 def includeme(config):
     config.add_view(UserAddForm,
                     context = 'arche.interfaces.IUsers',
                     name = 'add',
                     request_param = "content_type=User",
-                    permission = security.NO_PERMISSION_REQUIRED, #FIXME: perm check in add
+                    permission = security.PERM_MANAGE_USERS, #FIXME: Not add user perm?
                     renderer = 'arche:templates/form.pt')
     config.add_view(UserChangePasswordForm,
                     context = 'arche.interfaces.IUser',
                     name = 'change_password',
-                    permission = security.NO_PERMISSION_REQUIRED, #FIXME: perm check in add
+                    permission = security.PERM_EDIT, #FIXME: perm check in add
                     renderer = 'arche:templates/form.pt')
     config.add_view(UsersView,
                     name = 'view',
-                    permission = security.NO_PERMISSION_REQUIRED,
+                    permission = security.PERM_MANAGE_USERS,
                     renderer = "arche:templates/content/users_table.pt",
                     context = 'arche.interfaces.IUsers')
+    config.add_view(UserView,
+                    permission = security.PERM_VIEW,
+                    renderer = "arche:templates/content/user.pt",
+                    context = 'arche.interfaces.IUser')

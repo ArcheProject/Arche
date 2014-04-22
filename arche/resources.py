@@ -7,13 +7,13 @@ from pyramid.threadlocal import get_current_registry
 from repoze.catalog.catalog import Catalog
 from repoze.catalog.document import DocumentMap
 from zope.component.event import objectEventNotify
-from plone.scale.scale import scaleImage
 
 from arche.interfaces import * #Pick later
 from arche.utils import hash_method
 from arche.utils import upload_stream
 from arche.events import ObjectUpdatedEvent
-from arche.security import get_local_roles, get_acl_registry
+from arche.security import get_local_roles
+from arche.security import get_acl_registry
 from arche.catalog import populate_catalog
 from arche import _
 
@@ -135,7 +135,7 @@ class Document(Content):
     add_permission = "Add %s" % type_name
 
 
-@implementer(IUser)
+@implementer(IUser, IThumbnailedContent)
 class User(Bare):
     type_name = u"User"
     type_title = _(u"User")
@@ -144,6 +144,7 @@ class User(Bare):
     last_name = u""
     email = u""
     add_permission = "Add %s" % type_name
+    blobfile = None
 
     @property
     def title(self):
@@ -155,10 +156,26 @@ class User(Bare):
 
     @property
     def password(self): return getattr(self, "__password_hash__", u"")
-
     @password.setter
-    def password(self, value):
-        self.__password_hash__ = hash_method(value)
+    def password(self, value): self.__password_hash__ = hash_method(value)
+
+    @property
+    def thumbnail_original(self): return self.blobfile
+
+    @property
+    def profile_data(self): pass #FIXME: Should this return something?
+
+    @profile_data.setter
+    def profile_data(self, value):
+        if value:
+            if self.blobfile is None:
+                self.blobfile = Blob()
+            with self.blobfile.open('w') as f:
+                #self.filename = value['filename']
+                fp = value['fp']
+                #self.mimetype = value['mimetype']
+                #self.size = upload_stream(fp, f)
+                upload_stream(fp, f)
 
 
 @implementer(IFile, IContent)
@@ -191,37 +208,24 @@ class File(Bare, DCMetadataMixin):
     @file_data.setter
     def file_data(self, value):
         if value:
-            self.filename = value['filename']
-            fp = value['fp']
-            self.mimetype = value['mimetype']
-            f = self.blobfile.open('w')
-            self.size = upload_stream(fp, f)
-            f.close()
+            with self.blobfile.open('w') as f:
+                self.filename = value['filename']
+                fp = value['fp']
+                self.mimetype = value['mimetype']
+                self.size = upload_stream(fp, f)
 
 
-@implementer(IImage)
+@implementer(IImage, IThumbnailedContent)
 class Image(File):
     type_name = u"Image"
     type_title = _(u"Image")
     addable_to = (u'Document', u"Root")
     add_permission = "Add %s" % type_name
-
-
-class Thumbnail(Persistent):
-    size = 0
-    mimetype = u""
     blobfile = None
-    addable_to = () #This is not a regular content type
-    type_name = u"Thumbnail"
-    type_title = _(u"Thumbnail")
-    filename = u"" #Needed=
 
-    def __init__(self, image_data, width = 50, height = 50):
-        #FIXME: Handle IO decoder errors!!!
-        thumb_data, format, size = scaleImage(image_data, width=width, height=height, direction="thumb")
-        self.blobfile = Blob()
-        self.size = size
-        self.blobfile.open('w').write(thumb_data)
+    @property
+    def thumbnail_original(self):
+        return self.blobfile
 
 
 # class Link(Base):
@@ -319,4 +323,3 @@ def includeme(config):
     config.add_content_factory(File)
     config.add_content_factory(Image)
     config.add_content_factory(Root)
-    config.add_content_factory(Thumbnail)

@@ -1,4 +1,4 @@
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 from zope.component.interfaces import IObjectEvent
 
 from repoze.folder.interfaces import (IObjectAddedEvent,
@@ -57,6 +57,11 @@ class ICataloger(Interface):
 class IIndexedContent(Interface):
     """ Marker for content that belongs in catalog.
     """
+
+class IThumbnailedContent(Interface):
+    """ Marker for content that could have a thumbnail.
+    """
+    thumbnail_original = Attribute("A non-opened data stream like a blobfile. It should support the same functions as an StringIO.")
 
 class IThumbnails(Interface):
     pass

@@ -1,9 +1,9 @@
-from plone.scale.scale import scaleImage
 from pyramid.httpexceptions import HTTPNotFound
-
+from pyramid.response import Response
 from arche.views.base import DefaultView
 from arche import security
 from arche.utils import IThumbnails
+from arche.utils import get_image_scales
 from arche.views.file import (AddFileForm,
                               file_data_response,
                               download_view,
@@ -19,22 +19,28 @@ def thumb_view(context, request, subpath = None):
     if subpath is None:
         subpath = request.subpath
     #FIXME: Default sizes etc?
-
     if subpath:
         scale_name = subpath[0]
     else:
         scale_name = u"col-1" #???
+    scales = get_image_scales()
+    if scale_name not in scales:
+        return HTTPNotFound()
     thumbnails = request.registry.queryAdapter(context, IThumbnails)
     if not thumbnails:
         #Log?
         raise HTTPNotFound()
-    thumb = thumbnails.get(scale_name, None)
-    if thumb is None:
-        #FIXME: Why blobfile really? Shuld be settable
-        if hasattr(context, 'blobfile'):
-            thumb = thumbnails.create(scale_name, context.blobfile.open())
+    thumb = thumbnails.get_thumb(scale_name)
     if thumb:
-        return file_data_response(thumb, request)
+        return Response(
+            body = thumb.image,
+            headerlist=[
+                    #     disposition = 'inline'
+               # ('Content-Disposition', '%s;filename="%s"' % (
+               #     disposition, context.filename.encode('ascii', 'ignore'))),
+                ('Content-Type', thumb.mimetype),
+                ]
+            )
     raise HTTPNotFound()
 
 
@@ -59,5 +65,5 @@ def includeme(config):
                     name = 'view')
     config.add_view(thumb_view,
                     name = 'thumbnail',
-                    context = 'arche.interfaces.IContent',
+                    context = 'arche.interfaces.IThumbnailedContent',
                     permission = security.PERM_VIEW)

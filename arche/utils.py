@@ -1,7 +1,6 @@
 import inspect
 from hashlib import sha512
 from StringIO import StringIO
-from UserDict import IterableUserDict
 
 from slugify import slugify
 from zope.interface import providedBy
@@ -18,7 +17,7 @@ from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.threadlocal import get_current_registry
 
-from arche.interfaces import IFlashMessages, IThumbnails, IContent
+from arche.interfaces import IFlashMessages, IThumbnails, IThumbnailedContent
 from arche import _
 
 
@@ -197,32 +196,49 @@ class FileUploadTempStore(object):
 
 
 @implementer(IThumbnails)
-@adapter(IContent)
-class Thumbnails(IterableUserDict):
+@adapter(IThumbnailedContent)
+class Thumbnails(object):
 
     def __init__(self, context):
         self.context = context
-        self.data = getattr(context, '__thumbnails__', {}) #Don't create any storage unless really needed!
+        #self.data = getattr(context, '__thumbnails__', {}) #Don't create any storage unless really needed!
+        assert hasattr(self.context, 'thumbnail_original'),\
+            "This context doesn't have an attribute called 'thumbnail_original' which it needs"
 
-    def __setitem__(self, key, item):
-        if not isinstance(self.data, OOBTree):
-            self.data = self.context.__thumbnails__ = OOBTree()
-        self.data[key] = item
+    @property
+    def setting(self):
+        """ FIXME: Add available settings, like if the original should be kept,
+            If thumbs should be created on the fly, if the thumbs should be stored at all.
+            Not implemented yet
+        """
+        pass
 
-    def create(self, scale_name, data):
+    def get_thumb(self, scale):
+        """ Return data from plone scale or None"""
         scales = get_image_scales()
-        if scale_name not in scales:
-            #Log?
+        maxwidth, maxheight = scales[scale]
+        if not self.context.thumbnail_original:
             return
-        factory = get_content_factories()['Thumbnail']
-        width, height = scales[scale_name]
-        try:
-            self[scale_name] = thumb = factory(data, width = width, height = height)
-            return thumb
-        except IOError:
-            #FIXME: Log error or try to figure out what went wrong?
-            #Usually problem with missing libs during compilation of PIL
-            pass
+        with self.context.thumbnail_original.open() as f:
+            thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction="thumb")
+
+        return Thumbnail(thumb_data, image_type = image_type, size = size)
+
+
+class Thumbnail(object):
+    width = 0
+    height = 0
+    image_type = u""
+    image = None
+
+    def __init__(self, image, size = None, image_type = u""):
+        self.width, self.height = size
+        self.image = image
+        self.image_type = image_type
+
+    @property
+    def mimetype(self):
+        return "image/%s" % self.image_type
 
 
 #Default image scales - mapped to twitter bootstrap columns
@@ -248,10 +264,11 @@ def get_image_scales(registry = None):
     return registry._image_scales
 
 def thumb_url(request, context, key):
-    #Check that the context really has a thumbnail?
     scales = get_image_scales(request.registry)
     if key in scales:
-        return request.resource_url(context, 'thumbnail', key)
+        if IThumbnailedContent.providedBy(context) and context.thumbnail_original is not None:
+            return request.resource_url(context, 'thumbnail', key)
+
 
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)
