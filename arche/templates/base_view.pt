@@ -18,11 +18,15 @@
             <div class="portlets-top" tal:condition="portlets_top">
                 <tal:portlets repeat="portlet portlets_top">
                     <tal:portlet replace="structure portlet" />
+                    <div class="clearfix"><!-- --></div>
                 </tal:portlets>
             </div>
 
             <tal:main-column metal:define-slot="main-column">
+                <img tal:replace="structure view.thumb_tag(context, 'col-2', extra_cls = 'pull-right')" />
+
                 <h1>${context.title}</h1>
+
                 <p class="description lead"
                      tal:define="description context.description|None"
                      tal:condition="description"
@@ -31,10 +35,12 @@
                      tal:define="body context.body|None"
                      tal:condition="body"
                      tal:content="structure body">Body text</div>
+                <div class="clearfix"><!-- --></div>
 
             <div class="portlets-bottom" tal:condition="portlets_bottom">
                 <tal:portlets repeat="portlet portlets_bottom">
                     <tal:portlet replace="structure portlet" />
+                    <div class="clearfix"><!-- --></div>
                 </tal:portlets>
             </div>
 

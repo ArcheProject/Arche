@@ -3,18 +3,17 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
-<div class="portlet ">
-
+<div class="portlet well well-sm">
     <div class="media">
       <div class="pull-left">
-        <img tal:replace="structure view.thumb_tag(profile, 'col-1', extra_cls = 'media-object')" />
+        <img tal:replace="structure view.thumb_tag(profile, 'mini', extra_cls = 'media-object')" />
       </div>
-      <div class="media-body well well-sm">
+      <div class="media-body">
         Created by
         <a href="${request.resource_url(profile)}">${profile.title}</a>
         Published on (somedate)
+        etc...
       </div>
     </div>
-
 </div>
 </tal:main>
