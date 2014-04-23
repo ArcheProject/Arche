@@ -110,6 +110,10 @@ class DocumentSchema(BaseSchema):
     body = colander.SchemaNode(colander.String(),
                                widget = deform.widget.RichTextWidget(),
                                missing = colander.null)
+    thumbnail_data = colander.SchemaNode(deform.FileData(),
+                                         missing = colander.null,
+                                         title = _(u"Image"),
+                                         widget = file_upload_widget)
 
 
 class UserSchema(colander.Schema):

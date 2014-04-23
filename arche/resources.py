@@ -136,12 +136,29 @@ class Root(Content):
         super(Root, self).__init__(data=data, **kwargs)
 
 
+@implementer(IDocument, IThumbnailedContent)
 class Document(Content):
     type_name = u"Document"
     type_title = _(u"Document")
     addable_to = (u"Document", u"Root")
     body = u""
     add_permission = "Add %s" % type_name
+    blobfile = None
+
+    @property
+    def thumbnail_original(self): return self.blobfile
+
+    @property
+    def thumbnail_data(self): pass #FIXME: Should this return something?
+
+    @thumbnail_data.setter
+    def thumbnail_data(self, value):
+        if value:
+            if self.blobfile is None:
+                self.blobfile = Blob()
+            with self.blobfile.open('w') as f:
+                fp = value['fp']
+                upload_stream(fp, f)
 
 
 @implementer(IFile, IContent)

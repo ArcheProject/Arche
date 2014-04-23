@@ -16,3 +16,4 @@ def includeme(config):
                     renderer = "arche:templates/content/listing_view.pt",
                     context = 'arche.interfaces.IBase')
     config.add_content_view('Document', 'listing_view', _('Content listing'))
+    config.add_content_view('Root', 'listing_view', _('Content listing'))

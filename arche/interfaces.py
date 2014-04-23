@@ -18,6 +18,9 @@ class IBare(Interface):
 class IContent(Interface):
     pass
 
+class IDocument(Interface):
+    pass
+
 class IUser(IBase):
     pass
 
