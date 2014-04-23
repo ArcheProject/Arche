@@ -114,6 +114,11 @@ class DocumentSchema(BaseSchema):
                                          missing = colander.null,
                                          title = _(u"Image"),
                                          widget = file_upload_widget)
+    show_byline = colander.SchemaNode(colander.Bool(),
+                                      default = True,
+                                      tab = tabs['visibility'],
+                                      title = _(u"Show byline"),
+                                      description = u"If anything exist that will render a byline, like the Byline portlet.",)
 
 
 class UserSchema(colander.Schema):

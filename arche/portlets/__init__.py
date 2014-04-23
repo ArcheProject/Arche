@@ -138,4 +138,4 @@ def includeme(config):
     config.add_content_factory(Portlet)
     config.add_directive('add_portlet', add_portlet)
     config.registry.registerAdapter(PortletManager)
-    config.registry._portlet_slots = {'left': _(u"Left"), 'right': _(u"Right")}
+    config.registry._portlet_slots = {'left': _(u"Left"), 'right': _(u"Right"), 'top': _(u"Top"), 'bottom': _(u"Bottom")}

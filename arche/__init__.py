@@ -25,7 +25,9 @@ def includeme(config):
     config.include('arche.views')
     config.include('arche.catalog')
     config.include('arche.portlets')
+    #Portlets
     config.include('arche.portlets.navigation')
+    config.include('arche.portlets.byline')
 
     #Resolve strings
     if isinstance(settings['arche.hash_method'], str):

@@ -99,6 +99,7 @@ class Content(BaseMixin, Folder, ContextACLMixin, DCMetadataMixin):
     default_view = u"view"
     nav_visible = True
     listing_visible = True
+    show_byline = False
 
     def __init__(self, data=None, **kwargs):
         Folder.__init__(self, data = data)
