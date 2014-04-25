@@ -4,7 +4,15 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
 <nav id="actionbar" class="navbar navbar-default navbar-static-top" role="navigation">
-    <div class="collapse navbar-collapse">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#actionbar-collapsible">
+        <span class="sr-only" i18n:translate="">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse" id="actionbar-collapsible">
       <ul class="nav navbar-nav">
         <li><a href="${request.resource_url(context)}">View</a></li>
         <li tal:condition="request.has_permission('perm:Edit')"
