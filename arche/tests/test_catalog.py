@@ -32,7 +32,7 @@ class CatalogIntegrationTests(TestCase):
     def _mk_context(self):
         from arche.resources import BaseMixin
         @implementer(IIndexedContent)
-        class _DummyIndexedContent(testing.DummyModel, BaseMixin):
+        class _DummyIndexedContent(BaseMixin, testing.DummyModel):
             title = u"hello"
             description = u"world"
         return _DummyIndexedContent()
@@ -64,6 +64,14 @@ class CatalogIntegrationTests(TestCase):
         obj = self._cut(context)
         obj.index_object()
         res = obj.catalog.query("title == 'hello'")
+        self.assertEqual(res[0], 1)
+
+    def test_uid_index(self):
+        root = self._fixture()
+        root['a'] = context = self._mk_context()
+        obj = self._cut(context)
+        obj.index_object()
+        res = obj.catalog.query("uid == '%s'" % context.uid)
         self.assertEqual(res[0], 1)
 
     def test_searchable_text(self):

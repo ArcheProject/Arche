@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from repoze.folder import Folder
 from zope.interface import implementer
 from BTrees.OOBTree import OOSet
@@ -51,6 +53,7 @@ class BaseMixin(object):
     type_title = u""
     type_description = u""
     addable_to = ()
+    uid = None
 
     def __init__(self, **kwargs):
         #IContent should be the same iface registered by the roles adapter
@@ -60,6 +63,8 @@ class BaseMixin(object):
             userid = getattr(request, 'authenticated_userid', None)
             if userid:
                 kwargs['local_roles'] = {userid: [ROLE_OWNER]}
+        if 'uid' not in kwargs:
+            kwargs['uid'] = unicode(uuid4())
         self.update(event = False, **kwargs)
 
     def update(self, event = True, **kwargs):

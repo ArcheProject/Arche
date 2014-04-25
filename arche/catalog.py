@@ -50,6 +50,7 @@ def get_title(context, default): return getattr(context, 'title', default)
 def get_description(context, default): return getattr(context, 'description', default)
 def get_type_name(context, default): return getattr(context, 'type_name', default)
 def get_path(context, default): return resource_path(context)
+def get_uid(context, default): return getattr(context, 'uid', default)
 
 def get_sortable_title(context, default):
     title = getattr(context, 'title', default)
@@ -79,6 +80,7 @@ def populate_catalog(catalog):
     catalog['path'] = CatalogPathIndex(get_path)
     lexicon = Lexicon(Splitter(), CaseNormalizer())
     catalog['searchable_text'] = CatalogTextIndex(get_searchable_text, lexicon = lexicon)
+    catalog['uid'] = CatalogFieldIndex(get_uid)
 
 # Subscribers
 def index_object_subscriber(context, event):
