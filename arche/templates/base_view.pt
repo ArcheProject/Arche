@@ -8,12 +8,12 @@
 <body>
 <div metal:fill-slot="content">
     <div class="row">
-        <div class="col-md-3 portlets-left" tal:condition="portlets_left">
+        <div class="col-sm-3 portlets-left" tal:condition="portlets_left">
             <tal:portlets repeat="portlet portlets_left">
                 <tal:portlet replace="structure portlet" />
             </tal:portlets>
         </div>
-        <div class="col-md-${main_cols}">
+        <div class="col-sm-${main_cols}">
 
             <div class="portlets-top" tal:condition="portlets_top">
                 <tal:portlets repeat="portlet portlets_top">
@@ -46,7 +46,7 @@
 
             </tal:main-column>
         </div>
-        <div class="col-md-3 portlets-right" tal:condition="portlets_right">
+        <div class="col-sm-3 portlets-right" tal:condition="portlets_right">
             <tal:portlets repeat="portlet portlets_right">
                 <tal:portlet replace="structure portlet" />
             </tal:portlets>
