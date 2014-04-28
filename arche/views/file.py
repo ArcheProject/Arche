@@ -1,12 +1,16 @@
+import deform
+
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 
 from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultView
 from arche import security
+from arche.schemas import AddFileSchema
+from arche.utils import get_content_factories
+from arche.utils import generate_slug
 from arche.utils import generate_slug
 from arche import _
-
 
 class AddFileForm(DefaultAddForm):
     type_name = u"File"
@@ -38,6 +42,22 @@ def download_view(context, request):
 def inline_view(context, request):
     return file_data_response(context, request, disposition = 'inline')
 
+def upload_view(context, request):
+    controls = request.params.items()
+    controls.insert(0, ('__start__', 'file_data:mapping'))
+    controls.append(('__end__', 'file_data:mapping'))
+    schema = AddFileSchema()
+    schema = schema.bind(request = request, context = context)
+    form = deform.Form(schema)
+    
+    appstruct = form.validate(controls)
+    factory = get_content_factories()['File']
+    obj = factory(**appstruct)
+    name = generate_slug(context, obj.filename)
+    context[name] = obj
+    from pyramid.response import Response
+    return Response()
+
 
 def includeme(config):
     config.add_view(AddFileForm,
@@ -58,4 +78,9 @@ def includeme(config):
                     context = 'arche.interfaces.IFile',
                     permission = security.PERM_VIEW,
                     name = 'view')
+    config.add_view(upload_view,
+                    context = 'arche.interfaces.IContent',
+                    permission = security.PERM_VIEW,
+                    name = 'upload')
+
 
