@@ -5,7 +5,7 @@
       metal:use-macro="view.macro('arche:templates/master.pt')">
       i18n:domain="Arche">
 <body>
-<div metal:fill-slot="main-column">
+<div metal:fill-slot="main-content">
     <table class="table table-responsive table-bordered table-striped table-hover">
         <thead>
             <tr>

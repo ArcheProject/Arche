@@ -22,7 +22,7 @@ class ManagePortlets(BaseView):
     def slots(self):
         return get_portlet_slots(self.request.registry)
 
-    def get_form(self, name, title):
+    def get_form(self, name, slotinfo):
         values = [('', _('<Select>'))]
         values.extend(get_available_portlets(self.request.registry))
 
@@ -31,14 +31,13 @@ class ManagePortlets(BaseView):
                                                title = _(u"Type"),
                                                widget = deform.widget.SelectWidget(values = values))
         schema = AddPortlet()
-        schema.title = title
         add_url = self.request.resource_url(self.context, 'add_portlet', query = {'slot': name})
         return deform.Form(schema, buttons = (button_add,), action = add_url)
     
     def __call__(self):
         forms = {}
-        for (name, title) in self.slots.items():
-            forms[name] = self.get_form(name, title)
+        for (name, slotinfo) in self.slots.items():
+            forms[name] = self.get_form(name, slotinfo)
         return {'slots': self.slots, 'forms': forms,
                 'portlet_manager': get_portlet_manager(self.context, self.request.registry)}
 
@@ -63,8 +62,12 @@ def delete_portlet(context, request):
 class EditPortlet(BaseForm):
 
     def __call__(self):
-        self.schema = self.portlet.schema_factory()
-        return super(EditPortlet, self).__call__()
+        factory = getattr(self.portlet, 'schema_factory', None)
+        if factory:
+            self.schema = self.portlet.schema_factory()
+            return super(EditPortlet, self).__call__()
+        #XXXX: NOthing to edit message?
+        return HTTPFound(location = self.request.resource_url(self.context, 'manage_portlets'))
 
     def appstruct(self):
         return dict(self.portlet.settings)
@@ -73,10 +76,8 @@ class EditPortlet(BaseForm):
     def portlet(self):
         slot = self.request.GET['slot']
         portlet_uid = self.request.GET['portlet']
-        slot_portlets = self.portlet_manager.get(slot, ())
-        for portlet in slot_portlets:
-            if portlet_uid == portlet.uid:
-                return portlet
+        slot_portlets = self.portlet_manager.get(slot, {})
+        return slot_portlets.get(portlet_uid, None)
 
     @property
     def portlet_manager(self):

@@ -1,0 +1,17 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Arche">
+<ul class="list-group">
+    <li class="list-group-item" tal:repeat="portlet portlets.values()">
+        <a href="${request.resource_url(context, 'edit_portlet', query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
+            ${portlet.title}
+        </a>
+        <span class="label label-default">${portlet.portlet_type}</span>
+        <a href="${request.resource_url(context, 'delete_portlet', query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
+            <span class="glyphicon glyphicon-remove"></span>
+        </a>
+    </li>
+</ul>
+</tal:main>

@@ -5,7 +5,7 @@
       metal:use-macro="view.macro('arche:templates/base_view.pt')">
       i18n:domain="Arche">
 <body>
-<div metal:fill-slot="main-column">
+<div metal:fill-slot="main-content">
     <h1>${context.title}</h1>
     <p class="description lead"
          tal:define="description context.description|None"

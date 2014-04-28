@@ -1,2 +1,3 @@
 form#search { width: 250px; }
 
+.dashed-border { border: #ccc 1px dashed; }

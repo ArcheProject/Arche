@@ -8,21 +8,21 @@
 <body>
 <div metal:fill-slot="content">
     <div class="row">
-        <div class="col-sm-3 portlets-left" tal:condition="portlets_left">
+        <div class="col-sm-3 portlets-left" metal:define-slot="portlets-left">
             <tal:portlets repeat="portlet portlets_left">
                 <tal:portlet replace="structure portlet" />
             </tal:portlets>
         </div>
-        <div class="col-sm-${main_cols}">
+        <div class="col-sm-${main_cols}" metal:define-slot="main-column">
 
-            <div class="portlets-top" tal:condition="portlets_top">
+            <div class="portlets-top" tal:condition="portlets_top" metal:define-slot="portlets-top">
                 <tal:portlets repeat="portlet portlets_top">
                     <tal:portlet replace="structure portlet" />
                     <div class="clearfix"><!-- --></div>
                 </tal:portlets>
             </div>
 
-            <tal:main-column metal:define-slot="main-column">
+            <tal:main-column metal:define-slot="main-content">
                 <img tal:replace="structure view.thumb_tag(context, 'col-2', extra_cls = 'pull-right')" />
 
                 <h1>${context.title}</h1>
@@ -37,16 +37,17 @@
                      tal:content="structure body">Body text</div>
                 <div class="clearfix"><!-- --></div>
 
-            <div class="portlets-bottom" tal:condition="portlets_bottom">
+            </tal:main-column>
+
+            <div class="portlets-bottom" tal:condition="portlets_bottom" metal:define-slot="portlets-bottom">
                 <tal:portlets repeat="portlet portlets_bottom">
                     <tal:portlet replace="structure portlet" />
                     <div class="clearfix"><!-- --></div>
                 </tal:portlets>
             </div>
 
-            </tal:main-column>
         </div>
-        <div class="col-sm-3 portlets-right" tal:condition="portlets_right">
+        <div class="col-sm-3 portlets-right" tal:condition="portlets_right" metal:define-slot="portlets-right">
             <tal:portlets repeat="portlet portlets_right">
                 <tal:portlet replace="structure portlet" />
             </tal:portlets>

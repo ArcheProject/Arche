@@ -1,18 +1,11 @@
-#import colander
 from pyramid.renderers import render
 
-from arche.schemas import PortletBaseSchema
 from arche.portlets import PortletType
 from arche import _
 
 
-class BylineSchema(PortletBaseSchema):
-    pass
-
-
 class BylinePortlet(PortletType):
     name = u"byline"
-    schema_factory = BylineSchema
     title = _(u"Byline")
 
     def render(self, context, request, view, **kwargs):

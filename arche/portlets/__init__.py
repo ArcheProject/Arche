@@ -9,6 +9,7 @@ from persistent import Persistent
 from persistent.list import PersistentList
 from BTrees.OOBTree import OOBTree
 from pyramid.threadlocal import get_current_registry
+from repoze.folder import Folder
 
 from arche.interfaces import IPortlet
 from arche.interfaces import IPortletType
@@ -55,11 +56,11 @@ class Portlet(Persistent):
 
     @property
     def title(self):
-        return self.settings.get('title', u'')
+        return self.settings.get('title', getattr(self.portlet_adapter, 'title', u''))
 
     @property
     def description(self):
-        return self.settings.get('description', u'')
+        return self.settings.get('description', getattr(self.portlet_adapter, 'description', u''))
 
     @property
     def settings(self):
@@ -79,9 +80,41 @@ class Portlet(Persistent):
         reg = get_current_registry()
         return reg.getAdapter(self, IPortletType, name = self.portlet_type)
 
+    @property
+    def slot(self):
+        try:
+            return self.__parent__.slot
+        except AttributeError:
+            pass
+
     def render(self, context, request, view, **kw):
         return self.portlet_adapter.render(context, request, view, **kw)
         
+
+class PortletFolder(Folder):
+    """ Container for portlets. """
+    __name__ = None
+    __parent__ = None
+    type_name = u"PortletFolder"
+    type_title = _(u"Portlet folder")
+    type_description = _(u"Container for portlets")
+    addable_to = ()
+
+    def __init__(self, slot):
+        self.slot = slot
+        super(PortletFolder, self).__init__()
+
+
+class PortletSlotInfo(object):
+    title = u""
+    slot = u""
+    layout = u""
+
+    def __init__(self, slot, title = u"", layout = u""):
+        self.slot = slot
+        self.title = title
+        self.layout = layout
+
 
 @adapter(IContent)
 @implementer(IPortletManager)
@@ -89,26 +122,31 @@ class PortletManager(IterableUserDict):
     
     def __init__(self, context):
         self.context = context
-        if not hasattr(context, '__portlets__'):
-            context.__portlets__ = OOBTree()
-        self.data = context.__portlets__
+        self.data = getattr(context, '__portlets__', {})
+
+    def __setitem__(self, key, pf):
+        assert isinstance(pf, PortletFolder), u"Not a portlet forlder"
+        if isinstance(self.data, dict):
+            self.data = self.context.__portlets__ = OOBTree()
+        self.data[key] = pf
 
     def add(self, slot, portlet_type, **kw):
         factory = get_content_factories()['Portlet']
         portlet = factory(portlet_type, **kw)
-        slot_registry = self.setdefault(slot, PersistentList())
-        slot_registry.append(portlet)
+        if slot not in self:
+            self[slot] = pf = get_content_factories()['PortletFolder'](slot)
+            pf.__parent__ = self.context
+        portlets = self[slot]
+        portlets[portlet.uid] = portlet
+        portlet.__parent__ = portlets
         return portlet
 
     def remove(self, slot, portlet_uid):
-        slot_registry = self.get(slot, ())
-        for portlet in slot_registry:
-            if portlet.uid == portlet_uid:
-                slot_registry.remove(portlet)
+        self[slot].pop(portlet_uid, None)
 
     def render_slot(self, slot, context, request, view, **kw):
         results = []
-        for portlet in self.get(slot, ()):
+        for portlet in self.get(slot, {}).values():
             output = portlet.render(context, request, view, **kw)
             if output:
                 results.append(output)
@@ -136,6 +174,14 @@ def add_portlet(config, portlet):
 
 def includeme(config):
     config.add_content_factory(Portlet)
+    config.add_content_factory(PortletFolder)
     config.add_directive('add_portlet', add_portlet)
     config.registry.registerAdapter(PortletManager)
-    config.registry._portlet_slots = {'left': _(u"Left"), 'right': _(u"Right"), 'top': _(u"Top"), 'bottom': _(u"Bottom")}
+    left_slot = PortletSlotInfo('left', title = _(u"Left"), layout = 'vertical')
+    right_slot = PortletSlotInfo('right', title = _(u"Right"), layout = 'vertical')
+    top_slot = PortletSlotInfo('top', title = _(u"Top"), layout = 'horizontal')
+    bottom_slot = PortletSlotInfo('bottom', title = _(u"Bottom"), layout = 'horizontal')
+    config.registry._portlet_slots = {'left': left_slot,
+                                      'right': right_slot,
+                                      'top': top_slot,
+                                      'bottom': bottom_slot}
