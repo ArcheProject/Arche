@@ -6,6 +6,7 @@ from arche.validators import login_password_validator
 from arche.validators import unique_userid_validator
 from arche.security import get_roles_registry
 from arche.utils import FileUploadTempStore
+from arche.interfaces import IPopulator
 from arche import _
 
 
@@ -46,6 +47,13 @@ def file_upload_widget(node, kw):
     request = kw['request']
     tmpstorage = FileUploadTempStore(request)
     return deform.widget.FileUploadWidget(tmpstorage)
+
+@colander.deferred
+def populators_choice(node, kw):
+    request = kw['request']
+    values = [('', _('No thanks'))]
+    values.extend([(x.name, x.name) for x in request.registry.registeredAdapters() if x.provided == IPopulator])
+    return deform.widget.SelectWidget(values = values)
 
 
 class DCMetadataSchema(colander.Schema):
@@ -187,6 +195,9 @@ class InitialSetup(colander.Schema):
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Admins password"),
                                    widget = deform.widget.CheckedPasswordWidget())
+    populator_name = colander.SchemaNode(colander.String(),
+                                         title = _("Populate site"),
+                                         widget = populators_choice)
 
 
 class LoginSchema(colander.Schema):

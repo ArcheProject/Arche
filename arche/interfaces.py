@@ -77,3 +77,10 @@ class IPortletType(Interface):
 
 class IPortletManager(Interface):
     pass
+
+class IPopulator(Interface):
+    """ An adapter that populates the database with content or initial setup.
+        Should accept root as context.
+    """
+    def populate(self, **kw):
+        """ Populate context with the following arguments. """

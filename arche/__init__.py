@@ -9,6 +9,7 @@ _ = TranslationStringFactory('Arche')
 
 default_settings = {
     'arche.hash_method': 'arche.utils.default_hash_method',
+    'arche.includes': '',
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
 }
@@ -25,6 +26,7 @@ def includeme(config):
     config.include('arche.views')
     config.include('arche.catalog')
     config.include('arche.portlets')
+    config.include('arche.populators')
     #Portlets
     config.include('arche.portlets.navigation')
     config.include('arche.portlets.byline')
@@ -54,6 +56,9 @@ def includeme(config):
     from arche.utils import thumb_url
     config.add_request_method(thumb_url, name = 'thumb_url')
 
+    #Include other arche plugins
+    for package in config.registry.settings.get('arche.includes', '').strip().splitlines():
+        config.include(package)
 
 def root_factory(request):
     conn = get_connection(request)
