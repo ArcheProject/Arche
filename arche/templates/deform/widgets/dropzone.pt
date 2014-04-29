@@ -4,9 +4,8 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
 
-<div id="${field.oid}" class="dropzone"></div>
-
 <script type="text/javascript">
+    Dropzone.autoDiscover = false;
 	deform.addCallback(
     '${field.oid}',
     function(oid) {
@@ -37,5 +36,7 @@
 		});
 	});
 </script>
+
+<div id="${field.oid}" class="dropzone"></div>
 
 </tal:main>
