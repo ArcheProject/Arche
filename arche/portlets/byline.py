@@ -11,14 +11,17 @@ class BylinePortlet(PortletType):
     def render(self, context, request, view, **kwargs):
         if not getattr(context, 'show_byline', False):
             return
-        #FIXME: creator should be an iterable later on!
         creator = getattr(context, 'creator', None)
-        if creator in view.root['users']:
-            profile = view.root['users'][creator]
-            return render("arche:templates/portlets/byline.pt",
-                          {'profile': profile, 'portlet': self.portlet, 'view': view},
-                          request = request)
-
+        if not creator:
+            return
+        out = u""
+        for uid in creator:
+            #Catalog search returns a generator
+            for profile in view.catalog_search(resolve = True, uid = uid):
+                out += render("arche:templates/portlets/byline.pt",
+                              {'profile': profile, 'portlet': self.portlet, 'view': view},
+                              request = request)
+        return out
 
 def includeme(config):
     config.add_portlet(BylinePortlet)

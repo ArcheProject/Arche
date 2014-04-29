@@ -4,6 +4,7 @@ import colander
 import deform
 from pyramid.traversal import find_root
 from pyramid.traversal import lineage
+from pyramid.traversal import find_resource
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPNotFound
@@ -54,9 +55,21 @@ class BaseView(object):
             context = getattr(context, '__parent__', None)
         return results
 
-    def catalog_query(self, **kwargs):
-        #FIXME: inject permisison check here or always assume unsafe?
-        return self.root.catalog.query(**kwargs)
+    def catalog_search(self, resolve = False, **kwargs):
+        results = self.root.catalog.search(**kwargs)[1]
+        if resolve:
+            results = self.resolve_docids(results)
+        return results
+
+    def resolve_docids(self, docids):
+        if isinstance(docids, basestring):
+            docids = (docids,)
+        for docid in docids:
+            path = self.root.document_map.address_for_docid(docid)
+            obj = find_resource(self.root, path)
+            #FIXME: Have perm check here?
+            if self.request.has_permission(security.PERM_VIEW, obj):
+                yield obj
 
     def breadcrumbs(self):
         return reversed(list(lineage(self.context)))
