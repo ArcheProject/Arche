@@ -1,0 +1,17 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Arche">
+    <li class="dropdown user-menu">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <tal:img replace="structure view.thumb_tag(view.root['users'][request.authenticated_userid], 'icon', extra_cls = 'pull-left')" />
+            &nbsp;
+            <span>${request.authenticated_userid}</span>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+          <tal:actionbar_items replace="structure view.render_view_group('user_menu')" />
+        </ul>
+    </li>
+</tal:main>

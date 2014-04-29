@@ -14,84 +14,11 @@
     </div>
     <div class="collapse navbar-collapse" id="actionbar-collapsible">
       <ul class="nav navbar-nav">
-        <li><a href="${request.resource_url(context)}">View</a></li>
-        <li tal:condition="request.has_permission('perm:Edit')"
-            class="${request.view_name == 'edit' and 'active' or None}">
-            <a href="${request.resource_url(context, 'edit')}">Edit</a>
-        </li>
-        <li><a href="${request.resource_url(context, 'contents')}">Contents</a></li>
-        <li tal:condition="request.has_permission('perm:Manage users')"><a href="${request.resource_url(context, 'permissions')}">Permissions</a></li>
-        <li class="dropdown ${request.view_name == 'add' and 'active' or None}">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <tal:ts i18n:translate="">Add</tal:ts>
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            <tal:iterate repeat="factory view.addable_content(context)">
-                <li><a href="${request.resource_url(context, 'add', query = {'content_type': factory.type_name})}">${factory.type_title}</a></li>
-            </tal:iterate>
-          </ul>
-        </li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <tal:ts i18n:translate="">Actions</tal:ts>
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            <li role="presentation" class="dropdown-header" i18n:translate="">In context</li>
-            <li tal:condition="view.root != context"><!-- FIXME: Other perm checks -->
-                <a href="${request.resource_url(context, 'delete')}">
-                    <span i18n:translate="">Delete</span>
-                    <span class="glyphicon glyphicon-remove pull-right"></span>
-                </a>
-            </li>
-            <li>
-                <a href="${request.resource_url(context, 'manage_portlets')}">
-                    <span i18n:translate="">Manage portlets</span>
-                </a>
-            </li>
-            <tal:view_selection condition="hasattr(context, 'default_view')">
-                <li role="presentation" class="dropdown-header" i18n:translate="">View selection</li>
-                <tal:iterate repeat="(name, title) view.selectable_views(context).items()">
-                <li>
-                    <a href="${request.resource_url(context, 'set_view', query = {'name': name})}">
-                        ${title}
-                        <span tal:condition="context.default_view == name" class="glyphicon glyphicon-ok pull-right"></span>
-                    </a>
-                </li>
-                </tal:iterate>
-            </tal:view_selection>
-          </ul>
-        </li>
+        <tal:actionbar_items replace="structure view.render_view_group('actionbar_main')" />
       </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li class="dropdown user-menu">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <tal:img replace="structure view.thumb_tag(view.root['users'][request.authenticated_userid], 'icon', extra_cls = 'pull-left')" />
-            &nbsp;
-            <span i18n:translate="">You</span>
-            <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-          <li><a href="${request.resource_url(view.root['users'], request.authenticated_userid)}" i18n:translate="">Profile</a></li>
-          <li><a href="${request.resource_url(view.root, 'logout')}" i18n:translate="">Logout</a></li>
-        </ul>
-      </li>
-      <li class="dropdown site-menu">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <span i18n:translate="">Site</span>
-            <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-          <li role="presentation" class="dropdown-header" i18n:translate="">System</li>
-          <li><a href="${request.resource_url(view.root, 'sysinfo')}" i18n:translate="">Overview</a></li>
 
-          <li role="presentation" class="dropdown-header" i18n:translate="">Users &amp; Groups</li>
-          <li><a href="${request.resource_url(view.root['users'])}" i18n:translate="">Users</a></li>
-          <li><a href="${request.resource_url(view.root['groups'])}" i18n:translate="">Groups</a></li>
-          <li class="divider"></li>
-        </ul>
-      </li>
+    <ul class="nav navbar-nav navbar-right">
+        <tal:actionbar_items replace="structure view.render_view_group('actionbar_right')" />
     </ul>
     </div>
 </nav>

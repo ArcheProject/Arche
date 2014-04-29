@@ -1,6 +1,7 @@
 
 
 def includeme(config):
+    config.include('arche.views.actions')
     config.include('arche.views.auth')
     config.include('arche.views.base')
     config.include('arche.views.contents')

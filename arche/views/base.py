@@ -13,7 +13,7 @@ from pyramid.renderers import render
 from pyramid.view import render_view_to_response
 from pyramid_deform import FormView
 from deform_autoneed import need_lib
-
+from betahaus.viewcomponent import render_view_group
 from arche.utils import get_flash_messages
 from arche.utils import generate_slug
 from arche.utils import get_view
@@ -80,6 +80,11 @@ class BaseView(object):
     def render_actionbar(self, context):
         if self.request.authenticated_userid:
             return self.render_template('arche:templates/action_bar.pt')
+
+    def render_view_group(self, group, context = None, **kw):
+        if context is None:
+            context = self.context
+        return render_view_group(context, self.request, group, view = self, **kw)
 
     def get_local_nav_objects(self, context):
         #FIXME: Conditions for navigation!
