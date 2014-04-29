@@ -14,7 +14,6 @@ from arche import _
 
 def root_populator(title = "", userid = "", email = "", password = "", populator_name = ""):
     factories = get_content_factories()
-
     root = factories['Root'](title = title)
     #Add users
     root['users'] = users = factories['Users']()
