@@ -1,0 +1,82 @@
+<tal:widget tal:define="
+     name name|field.name;
+     style field.widget.style;
+     oid oid|field.oid;
+     css_class css_class|field.widget.css_class;
+     optgroup_class optgroup_class|field.widget.optgroup_class;">
+
+   <style>
+    .form-control .select2-choice {
+        border: 0;
+        border-radius: 2px;
+    }
+
+    .form-control .select2-choice .select2-arrow {
+        border-radius: 0 2px 2px 0;   
+    }
+
+    .form-control.select2-container {
+        height: auto !important;
+        padding: 0px;
+    }
+
+    .form-control.select2-container.select2-dropdown-open {
+        border-color: #5897FB;
+        border-radius: 3px 3px 0 0;
+    }
+
+    .form-control .select2-container.select2-dropdown-open .select2-choices {
+        border-radius: 3px 3px 0 0;
+    }
+
+    .form-control.select2-container .select2-choices {
+        border: 0 !important;
+        border-radius: 3px;
+    }
+   </style>
+
+  <input type="hidden"
+      multiple="true"
+      tal:attributes="
+        name name;
+        id oid;
+        class string: form-control ${css_class};">
+
+  <script type="text/javascript">
+   deform.addCallback(
+     '${field.oid}',
+     function(oid) {
+       $('#' + oid).select2({
+           placeholder: "${field.widget.placeholder}",
+           containerCssClass: 'form-control',
+           minimumInputLength: ${field.widget.minimumInputLength},
+           multiple: true,
+           formatResult: function (object, container, query) {
+               //return object
+               container.html( object['text'] );
+               //return object
+               //debugger;
+           },
+           ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+               url: "http://localhost:6543/search.json?glob=1",
+               dataType: 'json',
+               data: function (term, page) {
+                    return {
+                        query: term, // search term
+                        page_limit: 10,
+                    };
+                },
+                results: function (data, page) { return data }
+           },
+    });
+    $('#' + oid).select2('data', ${preload_data} );
+});
+    /*
+    formatResult: movieFormatResult, // omitted for brevity, see the source of this page
+    formatSelection: movieFormatSelection,  // omitted for brevity, see the source of this page
+    dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
+    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+    */
+  </script>
+
+</tal:widget>

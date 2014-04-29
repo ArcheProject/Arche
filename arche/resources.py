@@ -5,6 +5,7 @@ from zope.interface import implementer
 from BTrees.OOBTree import OOSet
 from ZODB.blob import Blob
 from persistent import Persistent
+from persistent.list import PersistentList
 from pyramid.threadlocal import get_current_registry, get_current_request
 
 from repoze.catalog.catalog import Catalog
@@ -109,6 +110,18 @@ class Content(BaseMixin, Folder, ContextACLMixin, DCMetadataMixin):
     def __init__(self, data=None, **kwargs):
         Folder.__init__(self, data = data)
         super(Content, self).__init__(**kwargs) #BaseMixin!
+
+    @property
+    def related_content(self):
+        return getattr(self, '__related_content__', ())
+    
+    @related_content.setter
+    def related_content(self, value):
+        if value:
+            self.__related_content__ = PersistentList(value)
+        else:
+            if hasattr(self, '__related_content__'):
+                delattr(self, '__related_content__')
 
 
 @implementer(IBare, IIndexedContent)

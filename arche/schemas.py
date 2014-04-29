@@ -7,12 +7,14 @@ from arche.validators import unique_userid_validator
 from arche.security import get_roles_registry
 from arche.utils import FileUploadTempStore
 from arche.interfaces import IPopulator
+from arche.widgets import ReferenceWidget
 from arche import _
 
 
 tabs = {'': _(u"Default"),
         'visibility': _(u"Visibility"),
         'metadata': _(u"Metadata"),
+        'related': _(u"Related"),
         'users': _(u"Users"),
         'groups': _(u"Groups"),}
 
@@ -97,7 +99,6 @@ class DCMetadataSchema(colander.Schema):
     #identifier -> url
     #source
     #language
-    #relation?
 
 
 class BaseSchema(DCMetadataSchema):
@@ -127,6 +128,12 @@ class DocumentSchema(BaseSchema):
                                       tab = tabs['visibility'],
                                       title = _(u"Show byline"),
                                       description = u"If anything exist that will render a byline, like the Byline portlet.",)
+    related_content = colander.SchemaNode(colander.List(),
+                                          title = _(u"Related content"),
+                                          description = _(u"Can be used to link to other content"),
+                                          tab = tabs['related'],
+                                          missing = colander.null,
+                                          widget = ReferenceWidget())
 
 
 class UserSchema(colander.Schema):
