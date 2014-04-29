@@ -25,6 +25,14 @@ def current_userid(node, kw):
     return userid and userid or colander.null
 
 @colander.deferred
+def current_users_uid(node, kw):
+    userid = kw['request'].authenticated_userid
+    if userid:
+        user = kw['view'].root['users'].get(userid)
+        if user:
+            return (user.uid,)
+
+@colander.deferred
 def global_roles_widget(node, kw):
     request = kw['request']
     rr = get_roles_registry(request.registry)
@@ -63,16 +71,24 @@ class DCMetadataSchema(colander.Schema):
     description = colander.SchemaNode(colander.String(),
                                       widget = deform.widget.TextAreaWidget(rows = 5),
                                       missing = u"")
-    creator = colander.SchemaNode(colander.String(),
+    creator = colander.SchemaNode(colander.List(),
                                   tab = 'metadata',
+                                  widget = ReferenceWidget(query_params = {'type_name': 'User'}),
                                   missing = colander.null,
-                                  default = current_userid)
-    contributor = colander.SchemaNode(colander.String(),
+                                  default = current_users_uid)
+    contributor = colander.SchemaNode(colander.List(),
+                                      widget = ReferenceWidget(query_params = {'type_name': 'User'}),
                                       tab = 'metadata',
                                       missing = colander.null)
     created = colander.SchemaNode(colander.DateTime(),
                                   missing = colander.null,
                                   tab = 'metadata')
+    relation = colander.SchemaNode(colander.List(),
+                                   title = _(u"Related content"),
+                                   description = _(u"Can be used to link to other content"),
+                                   tab = 'metadata',
+                                   missing = colander.null,
+                                   widget = ReferenceWidget())
     modified = colander.SchemaNode(colander.DateTime(),
                                    missing = colander.null,
                                    tab = 'metadata')
@@ -85,10 +101,6 @@ class DCMetadataSchema(colander.Schema):
     subject = colander.SchemaNode(colander.String(),
                                    title = _(u"Tags or subjects"),
                                 missing = colander.null,
-                                  tab = 'metadata')
-    relation = colander.SchemaNode(colander.String(),
-                                   title = _(u"Links or relations to other content"),
-                                   missing = colander.null,
                                   tab = 'metadata')
     rights = colander.SchemaNode(colander.String(),
                                  title = _(u"Licensing"),
@@ -128,12 +140,6 @@ class DocumentSchema(BaseSchema):
                                       tab = tabs['visibility'],
                                       title = _(u"Show byline"),
                                       description = u"If anything exist that will render a byline, like the Byline portlet.",)
-    related_content = colander.SchemaNode(colander.List(),
-                                          title = _(u"Related content"),
-                                          description = _(u"Can be used to link to other content"),
-                                          tab = tabs['related'],
-                                          missing = colander.null,
-                                          widget = ReferenceWidget())
 
 
 class UserSchema(colander.Schema):

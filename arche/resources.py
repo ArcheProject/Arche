@@ -27,8 +27,6 @@ class DCMetadataMixin(object):
     """ Should always be used as a mixin of another persistent object! """
     title = u""
     description = u""
-    creator = None #FIXME
-    contributor = u"" #FIXME
     created = None #FIXME
     modified = None #FIXME - also via update?
     date = u""
@@ -44,6 +42,38 @@ class DCMetadataMixin(object):
     @property
     def identifier(self):
         return self.request.resource_url(self.context)
+
+    @property
+    def contributor(self): return getattr(self, '__contributor__', ())
+    @contributor.setter
+    def contributor(self, value):
+        if value:
+            self.__contributor__ = PersistentList(value)
+        else:
+            if hasattr(self, '__contributor__'):
+                delattr(self, '__contributor__')
+
+    @property
+    def creator(self): return getattr(self, '__creator__', ())
+    @creator.setter
+    def creator(self, value):
+        if value:
+            self.__creator__ = PersistentList(value)
+        else:
+            if hasattr(self, '__creator__'):
+                delattr(self, '__creator__')
+
+    @property
+    def relation(self):
+        return getattr(self, '__relation__', ())
+    
+    @relation.setter
+    def relation(self, value):
+        if value:
+            self.__relation__ = PersistentList(value)
+        else:
+            if hasattr(self, '__relation__'):
+                delattr(self, '__relation__')
 
 
 @implementer(IBase)
@@ -106,22 +136,11 @@ class Content(BaseMixin, Folder, ContextACLMixin, DCMetadataMixin):
     nav_visible = True
     listing_visible = True
     show_byline = False
+    related_content = None
 
     def __init__(self, data=None, **kwargs):
         Folder.__init__(self, data = data)
         super(Content, self).__init__(**kwargs) #BaseMixin!
-
-    @property
-    def related_content(self):
-        return getattr(self, '__related_content__', ())
-    
-    @related_content.setter
-    def related_content(self, value):
-        if value:
-            self.__related_content__ = PersistentList(value)
-        else:
-            if hasattr(self, '__related_content__'):
-                delattr(self, '__related_content__')
 
 
 @implementer(IBare, IIndexedContent)

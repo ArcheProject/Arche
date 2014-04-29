@@ -1,7 +1,7 @@
 from repoze.catalog.query import Eq
 from repoze.catalog.query import Contains
 from repoze.catalog.query import Name
-#from repoze.catalog.query import Any
+from repoze.catalog.query import Any
 from pyramid.traversal import resource_path
 from pyramid.traversal import find_resource
 from pyramid.view import view_config, view_defaults
@@ -20,15 +20,16 @@ class SearchView(BaseView):
     def _mk_query(self):
         self.docids = ()
         query = self.request.GET.get('query', None)
+        if not query:
+            return
         if self.request.GET.get('glob', False):
             if '*' not in query:
                 query = "%s*" % query
-        if query:
-            path = resource_path(self.context)
-            query_vals = {'searchable_text': query,
-                          'path': path}
-            self.docids = self.root.catalog.query(SEARCH_VIEW_QUERY,
-                                                  names = query_vals)[1]
+        query_obj = Contains('searchable_text', query)
+        type_name = self.request.GET.getall('type_name')
+        if type_name:
+            query_obj &= Any('type_name', type_name)
+        self.docids = self.root.catalog.query(query_obj)[1]
 
     @view_config(name = 'search', renderer = 'arche:templates/search.pt')
     def search_page(self):
@@ -40,7 +41,10 @@ class SearchView(BaseView):
         self._mk_query()
         output = []
         for obj in self.result_objects():
-            output.append({'text': obj.title, 'id': obj.uid})
+            output.append({'text': obj.title,
+                           'id': obj.uid,
+                           'type_name': obj.type_name,
+                           'type_title': getattr(obj, 'type_title', obj.type_name)})
         return {'results': output}
 
     def result_objects(self):

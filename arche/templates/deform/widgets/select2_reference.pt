@@ -52,13 +52,10 @@
            minimumInputLength: ${field.widget.minimumInputLength},
            multiple: true,
            formatResult: function (object, container, query) {
-               //return object
-               container.html( object['text'] );
-               //return object
-               //debugger;
+               container.html( object['text'] + ' (' + object['type_title'] + ')');
            },
            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-               url: "http://localhost:6543/search.json?glob=1",
+               url: "${query_url}",
                dataType: 'json',
                data: function (term, page) {
                     return {
@@ -72,9 +69,9 @@
     $('#' + oid).select2('data', ${preload_data} );
 });
     /*
+    dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
     formatResult: movieFormatResult, // omitted for brevity, see the source of this page
     formatSelection: movieFormatSelection,  // omitted for brevity, see the source of this page
-    dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
     escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
     */
   </script>
