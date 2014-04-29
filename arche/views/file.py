@@ -1,4 +1,5 @@
 import random
+import string
 
 import deform
 from colander import null
