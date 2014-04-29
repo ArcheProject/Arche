@@ -24,21 +24,6 @@
                 </a>
                 <p>&nbsp;</p>
                 
-                
-				
-                
-                <form
-                	action="../upload"
-			      class="dropzone"
-			      id="my-dropzone"></form>
-				
-				<script>
-                	Dropzone.options.myDropzone = {
-  						paramName: "upload"
-					};
-					
-                </script>
-                    
                 <table class="table table-responsive table-bordered table-striped table-hover">
                     <thead>
                         <tr>

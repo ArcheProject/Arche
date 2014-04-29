@@ -7,6 +7,7 @@ from arche.validators import unique_userid_validator
 from arche.security import get_roles_registry
 from arche.utils import FileUploadTempStore
 from arche.interfaces import IPopulator
+from arche.widgets import DropzoneWidget
 from arche.widgets import ReferenceWidget
 from arche import _
 
@@ -56,7 +57,7 @@ def userid_hinder_widget(node, kw):
 def file_upload_widget(node, kw):
     request = kw['request']
     tmpstorage = FileUploadTempStore(request)
-    return deform.widget.FileUploadWidget(tmpstorage)
+    return DropzoneWidget(tmpstorage, template='arche:templates/deform/widgets/dropzone.pt')
 
 @colander.deferred
 def populators_choice(node, kw):

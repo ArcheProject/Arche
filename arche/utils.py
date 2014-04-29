@@ -183,7 +183,6 @@ class FileUploadTempStore(object):
         self.session[name] = value
 
     def __getitem__(self, name):
-        #import pdb;pdb.set_trace()
         value = self.session[name].copy()
         value['fp'] = StringIO(value.pop('file_contents'))
         return value
