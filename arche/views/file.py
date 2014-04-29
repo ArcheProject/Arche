@@ -1,5 +1,7 @@
-import deform
+import random
 
+import deform
+from deform.compat import uppercase
 from pyramid.httpexceptions import HTTPFound
 from pyramid.response import Response
 
@@ -7,6 +9,7 @@ from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultView
 from arche import security
 from arche.schemas import AddFileSchema
+from arche.utils import FileUploadTempStore
 from arche.utils import get_content_factories
 from arche.utils import generate_slug
 from arche.utils import generate_slug
@@ -49,14 +52,47 @@ def upload_view(context, request):
     schema = AddFileSchema()
     schema = schema.bind(request = request, context = context)
     form = deform.Form(schema)
-    
     appstruct = form.validate(controls)
     factory = get_content_factories()['File']
+    
     obj = factory(**appstruct)
+    
     name = generate_slug(context, obj.filename)
     context[name] = obj
     from pyramid.response import Response
     return Response()
+
+def upload_temp(context, request):
+    controls = request.params.items()
+    controls.insert(0, ('__start__', 'file_data:mapping'))
+    controls.append(('__end__', 'file_data:mapping'))
+    
+    upload = request.params['upload']
+    uid = None
+    tmpstore = FileUploadTempStore(request)
+    
+    if hasattr(upload, 'file'):
+        # the upload control had a file selected
+        data = dict()
+        data['fp'] = upload.file
+        filename = upload.filename
+        # sanitize IE whole-path filenames
+        filename = filename[filename.rfind('\\')+1:].strip()
+        data['filename'] = filename
+        data['mimetype'] = upload.type
+        data['size']  = upload.length
+        while 1:
+            uid = ''.join([random.choice(uppercase+string.digits) for i in range(10)])
+            if tmpstore.get(uid) is None:
+                data['uid'] = uid
+                tmpstore[uid] = data
+                preview_url = tmpstore.preview_url(uid)
+                tmpstore[uid]['preview_url'] = preview_url
+                break
+    else:
+        # the upload control had no file selected
+        return null
+    return {'uid':uid}
 
 
 def includeme(config):
@@ -82,5 +118,10 @@ def includeme(config):
                     context = 'arche.interfaces.IContent',
                     permission = security.PERM_VIEW,
                     name = 'upload')
+    config.add_view(upload_temp,
+                    context = 'arche.interfaces.IContent',
+                    permission = security.PERM_VIEW,
+                    name = 'upload_temp',
+                    renderer = 'json')
 
 

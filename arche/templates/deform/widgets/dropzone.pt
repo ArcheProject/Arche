@@ -1,0 +1,41 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Arche">
+
+<div id="${field.oid}" class="dropzone"></div>
+
+<script type="text/javascript">
+	deform.addCallback(
+    '${field.oid}',
+    function(oid) {
+    	var myDropzone = new Dropzone("div#${field.oid}", {
+			url: "${field.request.resource_url(field.request.context, 'upload_temp')}",
+			paramName: "upload",
+			acceptedFiles: "image/*",
+			maxFilesize: 5,
+			dictDefaultMessage: 			"${field.dropzoneDefaultMessage}",
+			dictFallbackMessage: 			"${field.dropzoneFallbackMessage}",
+			dictFallbackText: 				"${field.dropzoneFallbackText}",
+			dictInvalidFileType:			"${field.dropzoneInvalidFileType}",
+			dictFileTooBig: 				"${field.dropzoneFileTooBig}",
+			dictResponseError: 				"${field.dropzoneResponseError}",
+			dictCancelUpload:	 			"${field.dropzoneCancelUpload}",
+			dictCancelUploadConfirmation: 	"${field.dropzoneCancelUploadConfirmation}",
+			dictRemoveFile: 				"${field.dropzoneRemoveFile}",
+			dictMaxFilesExceeded: 			"${field.dropzoneMaxFilesExceeded}",
+			addRemoveLinks: true,
+			init: function() {
+				this.on("addedfile", function(file) { console.log("Added file."+file); });
+				this.on("success", function(file, response) {
+					dropdiv = $("div#${field.oid}")[0];
+					console.log(dropdiv);
+					dropdiv.innerHTML += "<input type='hidden' name='${field.name}' value='" +response.uid+ "'>";
+				});
+			}
+		});
+	});
+</script>
+
+</tal:main>
