@@ -35,12 +35,24 @@
     }
    </style>
 
-  <input type="hidden"
+    <input type="hidden"
       multiple="true"
       tal:attributes="
         name name;
         id oid;
         class string: form-control ${css_class};">
+
+    <tal:comment condition="False">This is a structural item that will be used as a template</tal:comment>
+    <div id="${field.oid}-struct" class="media" style="display: none;">
+      <div class="pull-left img-container"></div>
+      <div class="media-body">
+        <h4 class="media-heading">
+            <span class="heading-text"></span>
+            (<span class="heading-type"></span>)
+        </h4>
+        <div class="description"></div>
+      </div>
+    </div>
 
   <script type="text/javascript">
    deform.addCallback(
@@ -52,7 +64,22 @@
            minimumInputLength: ${field.widget.minimumInputLength},
            multiple: true,
            formatResult: function (object, container, query) {
-               container.html( object['text'] + ' (' + object['type_title'] + ')');
+               if (${show_thumbs} == true) {
+                   console.log(${show_thumbs});
+                   var out = $('#${field.oid}-struct').clone();
+                   out.removeAttr('id');
+                   out.find('.img-container').html(object['img_tag']);
+                   out.find('.heading-text').html( object['text'] );
+                   out.find('.heading-type').html( object['type_title'] );
+                   out.show();
+                   console.log(out);
+                   //debugger;
+                   container.html(out);
+                   //container.html( object['img_tag'] + object['text'] + ' (' + object['type_title'] + ')');
+
+               } else {
+                   container.html( object['text'] + ' (' + object['type_title'] + ')');
+               }
            },
            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
                url: "${query_url}",

@@ -44,6 +44,7 @@ class SearchView(BaseView):
             output.append({'text': obj.title,
                            'id': obj.uid,
                            'type_name': obj.type_name,
+                           'img_tag': self.thumb_tag(obj, 'mini'),
                            'type_title': getattr(obj, 'type_title', obj.type_name)})
         return {'results': output}
 

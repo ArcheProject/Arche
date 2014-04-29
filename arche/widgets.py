@@ -29,6 +29,7 @@ class ReferenceWidget(Select2Widget):
     null_value = ''
     placeholder = "Type something to search."
     minimumInputLength = 2
+    show_thumbs = True
     default_query_params = {'glob': 1}
     query_params = {}
     #Make query view configurable?
@@ -57,6 +58,7 @@ class ReferenceWidget(Select2Widget):
         readonly = kw.get('readonly', self.readonly)
         kw['placeholder'] = kw.get('placeholder', self.placeholder)
         kw['minimumInputLength'] = kw.get('minimumInputLength', self.minimumInputLength)
+        kw['show_thumbs'] = str(kw.get('show_thumbs', self.show_thumbs)).lower() #true or false in js
         query_params = self.default_query_params.copy()
         query_params.update(self.query_params)
         query_url = view.request.resource_url(view.root, 'search.json', query = query_params)
