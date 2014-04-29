@@ -34,26 +34,19 @@ class SearchView(BaseView):
     @view_config(name = 'search', renderer = 'arche:templates/search.pt')
     def search_page(self):
         self._mk_query()
-        return {'results': self.result_objects()}
+        return {'results': self.resolve_docids(self.docids)}
 
     @view_config(name = 'search.json', renderer = 'json')
     def search_json(self):
         self._mk_query()
         output = []
-        for obj in self.result_objects():
+        for obj in self.resolve_docids(self.docids):
             output.append({'text': obj.title,
                            'id': obj.uid,
                            'type_name': obj.type_name,
                            'img_tag': self.thumb_tag(obj, 'mini'),
                            'type_title': getattr(obj, 'type_title', obj.type_name)})
         return {'results': output}
-
-    def result_objects(self):
-        for docid in self.docids:
-            path = self.root.document_map.address_for_docid(docid)
-            obj = find_resource(self.root, path)
-            if self.request.has_permission(security.PERM_VIEW, obj):
-                yield obj
 
 
 def includeme(config):
