@@ -9,6 +9,7 @@ from arche.utils import FileUploadTempStore
 from arche.interfaces import IPopulator
 from arche.widgets import DropzoneWidget
 from arche.widgets import ReferenceWidget
+from arche.widgets import TaggingWidget
 from arche import _
 
 
@@ -65,6 +66,13 @@ def populators_choice(node, kw):
     values = [('', _('No thanks'))]
     values.extend([(x.name, x.name) for x in request.registry.registeredAdapters() if x.provided == IPopulator])
     return deform.widget.SelectWidget(values = values)
+
+@colander.deferred
+def tagging_widget(node, kw):
+    view = kw['view']
+    #This might be a very dumb way to get unique values...
+    tags = tuple(view.root.catalog['tags']._fwd_index.keys())
+    return TaggingWidget(tags = tags)
 
 
 class DCMetadataSchema(colander.Schema):
@@ -126,6 +134,10 @@ class BaseSchema(DCMetadataSchema):
                                           missing = True,
                                           default = True,
                                           tab = tabs['visibility'])
+    tags = colander.SchemaNode(colander.List(),
+                               title = _("Tags"),
+                               missing = "",
+                               widget = tagging_widget)
 
 
 class DocumentSchema(BaseSchema):

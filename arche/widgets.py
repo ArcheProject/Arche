@@ -10,8 +10,43 @@ from repoze.catalog.query import Any
 from arche.fanstatic_lib import dropzonejs
 from arche.fanstatic_lib import dropzonecss
 from arche.fanstatic_lib import dropzonebasiccss
+from arche import _
 
-                                                  
+
+class TaggingWidget(Select2Widget):
+    """ A very liberal widget that allows the user to pretty much enter anything.
+        It will also display any existing values.
+        
+        placeholder
+            Text to display when nothing is entered
+        
+        tags
+            Predefined tags that will show up as suggestions
+    """
+    template = 'widgets/select2_tags'
+    readonly_template = 'widgets/select2_tags' #XXX
+    null_value = ''
+    placeholder = _("Tags")
+    minimumInputLength = 2
+    tags = ()
+
+    def serialize(self, field, cstruct, **kw):
+        if cstruct in (null, None):
+            cstruct = self.null_value
+        readonly = kw.get('readonly', self.readonly)
+        template = readonly and self.readonly_template or self.template
+        #This formatting is kind of silly. Is there no smarter way to load old data into select2?
+        current_data = dumps([{'text': x, 'id': x} for x in cstruct])
+        available_tags = dumps(self.tags)
+        tmpl_values = self.get_template_values(field, cstruct, kw)
+        return field.renderer(template, available_tags = available_tags, current_data = current_data, **tmpl_values)
+
+    def deserialize(self, field, pstruct):
+        if pstruct in (null, self.null_value):
+            return null
+        return tuple(pstruct.split(','))
+
+
 class ReferenceWidget(Select2Widget):
     """ A reference widget that searches for content to reference.
         It returns a list.
@@ -27,7 +62,7 @@ class ReferenceWidget(Select2Widget):
     template = 'widgets/select2_reference'
     readonly_template = 'widgets/select2_reference' #XXX
     null_value = ''
-    placeholder = "Type something to search."
+    placeholder = _("Type something to search.")
     minimumInputLength = 2
     show_thumbs = True
     default_query_params = {'glob': 1}

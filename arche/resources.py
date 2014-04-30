@@ -142,6 +142,17 @@ class Content(BaseMixin, Folder, ContextACLMixin, DCMetadataMixin):
         Folder.__init__(self, data = data)
         super(Content, self).__init__(**kwargs) #BaseMixin!
 
+    @property
+    def tags(self): return getattr(self, '__tags__', ())
+    @tags.setter
+    def tags(self, value):
+        #Is this the right way to mutate objects, or should we simply clear the contents?
+        if value:
+            self.__tags__ = OOSet(value)
+        else:
+            if hasattr(self, '__tags__'):
+                delattr(self, '__tags__')
+
 
 @implementer(IBare, IIndexedContent)
 class Bare(BaseMixin, ContextACLMixin, Persistent):
