@@ -8,7 +8,7 @@
 <body>
 <div metal:fill-slot="content">
     <div class="row">
-        <div class="col-sm-3 portlets-left" metal:define-slot="portlets-left">
+        <div class="col-sm-3 portlets-left" tal:condition="portlets_left" metal:define-slot="portlets-left">
             <tal:portlets repeat="portlet portlets_left">
                 <tal:portlet replace="structure portlet" />
             </tal:portlets>
