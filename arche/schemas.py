@@ -222,6 +222,7 @@ class InitialSetup(colander.Schema):
                                    title = _(u"Admins password"),
                                    widget = deform.widget.CheckedPasswordWidget())
     populator_name = colander.SchemaNode(colander.String(),
+                                         missing = u'',
                                          title = _("Populate site"),
                                          widget = populators_choice)
 
