@@ -2,6 +2,8 @@ import warnings
 
 import colander
 import deform
+from zope.interface import implementer
+from BTrees.OOBTree import OOBTree
 from pyramid.traversal import find_root
 from pyramid.traversal import lineage
 from pyramid.traversal import find_resource
@@ -23,7 +25,9 @@ from arche.utils import get_content_schemas
 from arche.utils import get_content_views
 from arche.fanstatic_lib import main_css
 from arche.portlets import get_portlet_manager
-from arche.interfaces import IFolder, IThumbnails
+from arche.interfaces import IFolder
+from arche.interfaces import IThumbnails
+from arche.interfaces import IContentView
 from arche import security
 from arche import _
 
@@ -147,6 +151,23 @@ class BaseView(object):
             data.update(kw)
             return u"<img %s />" % " ".join(['%s="%s"' % (k, v) for (k, v) in data.items()])
         return default
+
+
+@implementer(IContentView)
+class ContentView(BaseView):
+    """ Use this for more complex views that can have settings and be dynamically selected
+        as a view for content types
+    """
+    title = u""
+    description = u""
+    settings_schema = None
+
+    @property
+    def settings(self):
+        return getattr(self.context, '__view_settings__', {})
+    @settings.setter
+    def settings(self, value):
+        self.context.__view_settings__ = OOBTree(value)
 
 
 class BaseForm(BaseView, FormView):
@@ -302,10 +323,11 @@ class DefaultDeleteForm(BaseForm):
         return HTTPFound(location = self.request.resource_url(parent))
 
 
-class DynamicView(BaseForm):
+class DynamicView(BaseForm, ContentView):
     """ Based on view schemas. """
     schema_name = u'view'
     buttons = ()
+    title = _(u"Dynamic view")
 
     @property
     def type_name(self):
@@ -390,4 +412,4 @@ def includeme(config):
                     context = 'arche.interfaces.IContent',
                     permission = security.PERM_EDIT,
                     )
-    config.add_content_view('Document', 'dynamic_view', _(u"Dynamic view"))
+    config.add_content_view('Document', 'dynamic_view', DynamicView)

@@ -78,9 +78,20 @@ class IPortletType(Interface):
 class IPortletManager(Interface):
     pass
 
+
 class IPopulator(Interface):
     """ An adapter that populates the database with content or initial setup.
         Should accept root as context.
     """
     def populate(self, **kw):
         """ Populate context with the following arguments. """
+
+
+class IContentView(Interface):
+    """ View for content types that have a bit more settings. They're also selectable
+        through the action menu if they're registered via the add_content_view method.
+    """
+    title = Attribute("")
+    description = Attribute("")
+    settings_schema = Attribute("If this view has settings, this should point to a colander.Schema class or factory.")
+    settings = Attribute("Storage for settings. Accepts any dict-like structures.")

@@ -17,7 +17,10 @@ from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.threadlocal import get_current_registry
 
-from arche.interfaces import IFlashMessages, IThumbnails, IThumbnailedContent
+from arche.interfaces import (IFlashMessages,
+                              IThumbnails,
+                              IThumbnailedContent,
+                              IContentView)
 from arche import _
 
 
@@ -44,17 +47,22 @@ def get_content_schemas(registry = None):
         registry = get_current_registry()
     return registry._content_schemas
 
-def add_content_view(config, type_name, name, title = u''):
+def add_content_view(config, type_name, name, view_cls):
+    """ Register a view as selectable for a content type.
+        view_cls must implement IContentView.
+    """
+    assert IContentView.implementedBy(view_cls), "view_cls argument must be a class that implements arche.interfaces.IContentView"
     if not name:
         raise ValueError("Name must be specified and can't be an empty string. Specify 'view' to override the default view.")
     if inspect.isclass(type_name):
-        type_name = type_name.__name__
+        type_name = type_name.type_name
     content_factories = get_content_factories(config.registry)
     if type_name not in content_factories:
         raise KeyError('No content type with name %s' % type_name)
     views = get_content_views(config.registry)
     ctype_views = views.setdefault(type_name, {})
-    ctype_views[name] = title
+    #XXX: This will probably change. I'm guessing we'll want to store description etc...
+    ctype_views[name] = view_cls.title
 
 def get_content_views(registry = None):
     if registry is None:
@@ -269,8 +277,6 @@ def thumb_url(request, context, key):
     if key in scales:
         if IThumbnailedContent.providedBy(context) and context.thumbnail_original is not None:
             return request.resource_url(context, 'thumbnail', key)
-
-
 
 def find_all_db_objects(context):
     """ Return all objects stored in context.values(), and all subobjects.
