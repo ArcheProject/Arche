@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/base_view.pt')">
+      i18n:domain="Arche">
+<body>
+<div metal:fill-slot="main-content">
+    <tal:iterate repeat="obj contents">
+    <div class="media">
+      <div class="pull-right">
+        <img tal:replace="structure view.thumb_tag(obj, 'col-2', extra_cls = 'media-object')" />
+      </div>
+      <div class="media-body">
+        <h1 class="media-heading">
+            <a href="${request.resource_url(obj)}">${obj.title}</a>
+        </h1>
+        <div class="description" tal:content="structure obj.description|''"></div>
+        <div class="body" tal:condition="view.settings['show_body']|False" tal:content="structure obj.body|''"></div>
+      </div>
+    </div>
+    </tal:iterate>
+</div>
+</body>
+</html>

@@ -3,6 +3,8 @@
 
 from betahaus.viewcomponent import view_action
 
+from arche.interfaces import IContentView
+from arche.utils import get_content_views
 from arche import security
 from arche import _
 
@@ -66,6 +68,7 @@ def site_menu(context, request, va, **kw):
     return view.render_template('arche:templates/menus/site.pt')
 
 
+#FIXME: Silly to have section headers with permissions. That's going to end badly :)
 @view_action('site_menu', 'system_overview',
              title = _("Overview"),
              description = _("Technichal system information"),
@@ -94,7 +97,7 @@ def generic_submenu_items(context, request, va, **kw):
     section_header = va.kwargs.get('section_header', None)
     if section_header:
         out += """<li role="presentation" class="dropdown-header">%s</li>""" % section_header
-    out += """<li><a href="%(url)s" alt="%(desc)s">%(title)s</a></li>""" % \
+    out += """<li><a href="%(url)s" title="%(desc)s">%(title)s</a></li>""" % \
         {'url': kw.get('url', request.resource_url(view.root, va.kwargs.get('view_name', ''))),
          'title': va.title,
          'desc': va.kwargs.get('description', '')}
@@ -109,6 +112,61 @@ def profile_item(context, request, va, **kw):
         view = kw['view']
         url = request.resource_url(view.root['users'], userid)
         return generic_submenu_items(context, request, va, url = url, **kw)
+
+@view_action('actions_menu', 'delete',
+             title = _("Delete"),
+             priority = 20,
+             permisison = security.PERM_DELETE)
+def delete_context(context, request, va, **kw):
+    if context != kw['view'].root:
+        return """<li><a href="%(url)s">%(title)s</a></li>""" %\
+            {'url': request.resource_url(context, 'delete'),
+             'title': va.title}
+
+@view_action('actions_menu', 'manage_portlets',
+             title = _("Manage portlets"),
+             priority = 10,
+             permisison = security.PERM_MANAGE_SYSTEM)
+def manage_portlets(context, request, va, **kw):
+    return """<li><a href="%(url)s">%(title)s</a></li>""" %\
+            {'url': request.resource_url(context, 'manage_portlets'),
+             'title': va.title}
+
+@view_action('actions_menu', 'selectable_views',
+             priority = 30,
+             permisison = security.PERM_MANAGE_SYSTEM)
+def selectable_views(context, request, va, **kw):
+    if not hasattr(context, 'default_view'):
+        return
+    type_name = getattr(context,'type_name', None)
+    selectable_views = {'view': _(u"Default")}
+    views = get_content_views(request.registry)
+    for (name, view_cls)in views.get(type_name, {}).items():
+        selectable_views[name] = view_cls.title
+    out = """<li role="presentation" class="dropdown-header">%s</li>\n""" % _("View selection")
+    for (name, title) in selectable_views.items():
+        selected = ""
+        if context.default_view == name:
+            selected = """<span class="glyphicon glyphicon-ok pull-right"></span>"""
+        out += """<li><a href="%(url)s">%(title)s %(selected)s</a></li>""" %\
+                {'url': request.resource_url(context, 'set_view', query = {'name': name}),
+                 'title': title,
+                 'selected': selected}
+    return out
+
+@view_action('actions_menu', 'view_settings',
+             priority = 31,
+             title = _(u"View settings"),
+             permisison = security.PERM_MANAGE_SYSTEM)
+def view_settings(context, request, va, **kw):
+    view = kw['view']
+    if not IContentView.providedBy(view):
+        return
+    if view.settings_schema is not None:
+        return """<li role="presentation" class="divider"></li>
+            <li><a href="%(url)s">%(title)s</a></li>""" %\
+            {'url': request.resource_url(context, 'view_settings'),
+             'title': va.title}
 
 
 def includeme(config):

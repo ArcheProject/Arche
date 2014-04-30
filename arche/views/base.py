@@ -111,13 +111,6 @@ class BaseView(object):
                     if self.request.has_permission(security.PERM_VIEW, obj):
                         yield obj
 
-    def selectable_views(self, context):
-        type_name = getattr(context,'type_name', None)
-        selectable = {'view': _(u"Default")}
-        views = get_content_views(self.request.registry)
-        selectable.update(views.get(type_name, {}))
-        return selectable
-
     def query_view(self, context, name = '', default = ''):
         result = get_view(context, self.request, view_name = name)
         return result and name or default
@@ -370,6 +363,9 @@ def set_view(context, request, name = None):
     fm = get_flash_messages(request)
     fm.add(_(u"View set to '${title}'",
              mapping = {'title': title}))
+    #Remove settings. Should this be a subscriber instead? It's a bit destructive too, especially if clearing this isn't needed
+    if hasattr(context, '__view_settings__'):
+        delattr(context, '__view_settings__')
     return HTTPFound(location = request.resource_url(context))
 
 

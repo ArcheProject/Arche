@@ -97,18 +97,18 @@ def includeme(config):
     config.add_view(ManagePortlets,
                     context = IContent,
                     name = 'manage_portlets',
-                    permission = security.NO_PERMISSION_REQUIRED,
+                    permission = security.PERM_MANAGE_SYSTEM,
                     renderer = 'arche:templates/manage_portlets.pt')
     config.add_view(add_portlet,
                     context = IContent,
                     name = 'add_portlet',
-                    permission = security.NO_PERMISSION_REQUIRED)
+                    permission = security.PERM_MANAGE_SYSTEM)
     config.add_view(delete_portlet,
                     context = IContent,
                     name = 'delete_portlet',
-                    permission = security.NO_PERMISSION_REQUIRED)
+                    permission = security.PERM_MANAGE_SYSTEM)
     config.add_view(EditPortlet,
                     context = IContent,
                     name = 'edit_portlet',
                     renderer = u'arche:templates/form.pt',
-                    permission = security.NO_PERMISSION_REQUIRED)
+                    permission = security.PERM_MANAGE_SYSTEM)

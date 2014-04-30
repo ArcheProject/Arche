@@ -9,29 +9,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu">
-    <li role="presentation" class="dropdown-header" i18n:translate="">In context</li>
-    <li tal:condition="view.root != context"><!-- FIXME: Other perm checks -->
-        <a href="${request.resource_url(context, 'delete')}">
-            <span i18n:translate="">Delete</span>
-            <span class="glyphicon glyphicon-remove pull-right"></span>
-        </a>
-    </li>
-    <li>
-        <a href="${request.resource_url(context, 'manage_portlets')}">
-            <span i18n:translate="">Manage portlets</span>
-        </a>
-    </li>
-    <tal:view_selection condition="hasattr(context, 'default_view')">
-        <li role="presentation" class="dropdown-header" i18n:translate="">View selection</li>
-        <tal:iterate repeat="(name, title) view.selectable_views(context).items()">
-        <li>
-            <a href="${request.resource_url(context, 'set_view', query = {'name': name})}">
-                ${title}
-                <span tal:condition="context.default_view == name" class="glyphicon glyphicon-ok pull-right"></span>
-            </a>
-        </li>
-        </tal:iterate>
-    </tal:view_selection>
+    <tal:actionbar_items replace="structure view.render_view_group('actions_menu')" />
   </ul>
 </li>
 </tal:main>

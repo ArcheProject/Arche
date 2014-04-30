@@ -61,8 +61,7 @@ def add_content_view(config, type_name, name, view_cls):
         raise KeyError('No content type with name %s' % type_name)
     views = get_content_views(config.registry)
     ctype_views = views.setdefault(type_name, {})
-    #XXX: This will probably change. I'm guessing we'll want to store description etc...
-    ctype_views[name] = view_cls.title
+    ctype_views[name] = view_cls
 
 def get_content_views(registry = None):
     if registry is None:
