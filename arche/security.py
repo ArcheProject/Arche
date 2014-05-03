@@ -175,21 +175,25 @@ class Role(UserString):
 
 ROLE_ADMIN = Role('role:Administrator',
                   title = _(u"Administrator"),
+                  description = _(u"Default 'superuser' role."),
                   inheritable = True,
                   assign_local = True,
                   assign_global = True,)
 ROLE_EDITOR = Role('role:Editor',
                   title = _(u"Editor"),
+                  description = _(u"Someone who has normal edit permissions."),
                   inheritable = True,
                   assign_local = True,
                   assign_global = True,)
 ROLE_VIEWER = Role('role:Viewer',
                   title = _(u"Viewer"),
+                  description = _(u"Someone who's allowed to view."),
                   inheritable = True,
                   assign_local = True,
                   assign_global = True,)
 ROLE_OWNER = Role('role:Owner',
                   title = _(u"Owner"),
+                  description = _(u"Special role for the initial creator."),
                   inheritable = False,
                   assign_local = True,
                   assign_global = False,)

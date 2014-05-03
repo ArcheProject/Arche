@@ -1,0 +1,43 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Arche">
+  <h1 i18n:translate="">ACL</h1>
+  <p class="lead" i18n:translate="">Access control lists per content type</p>
+  <div class="panel-group">
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title" i18n:translate="">Default ACL</h4>
+      <small i18n:translate="">This ACL is used as default for any situation where no other ACL can be found.</small>
+    </div>
+        <div class="panel-body">
+              <dl>
+                  <tal:iterate repeat="(state, role, perms) acl_registry.default()">
+                      <dt>${state}: ${role_titles.get(role, role)} - (${role})</dt>
+                      <dd>${perms}</dd>
+                  </tal:iterate>
+              </dl>
+        </div>
+    </div>
+    
+    <tal:acl repeat="(name, acl) acl_registry.items()">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+              ${name}
+          </h4>
+        </div>
+          <div class="panel-body">
+          <dl>
+              <tal:iterate repeat="(state, role, perms) acl()">
+                  <dt>${state}: ${role_titles.get(role, role)} - (${role})</dt>
+                  <dd>${perms}</dd>
+              </tal:iterate>
+          </dl>
+          </div>
+      </div>
+    </tal:acl>
+  </div>
+</tal:main>
