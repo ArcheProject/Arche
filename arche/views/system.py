@@ -65,6 +65,28 @@ def acl_panel(context, request, va, **kw):
         }
     return render('arche:templates/sysinfo/acl.pt', response, request = request)
 
+@view_action('sysinfo', 'images',
+             title = _(u"Images"),
+             permission = security.PERM_MANAGE_SYSTEM)
+def images_panel(context, request, va, **kw):
+    from PIL.Image import core
+    def check_codec(feature, codec):
+        if codec + "_encoder" in dir(core):
+            return True
+    feat_codec = {
+        "JPEG": "jpeg",
+        "JPEG 2000": "jpeg2k",
+        "ZLIB (PNG/ZIP)": "zip",
+        "LIBTIFF": "libtiff",
+        "FREETYPE2": "PIL._imagingft",
+        "LITTLECMS2": "PIL._imagingcms",
+        "WEBP": "PIL._webp",
+        }
+    response = {
+        'feat_codec': feat_codec,
+        'check_codec': check_codec,
+        }
+    return render('arche:templates/sysinfo/images.pt', response, request = request)
 
 def includeme(config):
     config.add_view(SystemInformationView,

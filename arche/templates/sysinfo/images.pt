@@ -1,0 +1,26 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Arche">
+  <h1 i18n:translate="">Images</h1>
+  <p class="lead" i18n:translate="">Installed image library codecs. If you lack any important ones,
+        you may wish to rebuild the package 'Pillow' with proper support.</p>
+  <div class="panel-group">
+      <table class="table">
+          <tbody>
+              <tr tal:repeat="(feat, codec) feat_codec.items()">
+                  <td>${feat}</td>
+                  <td tal:define="available check_codec(feat, codec)">
+                      <span tal:condition="available" class="label label-success">
+                          OK
+                      </span>
+                      <span tal:condition="not available" class="label label-danger">
+                          Missing
+                      </span>
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+</tal:main>
