@@ -75,6 +75,10 @@ class BaseView(object):
             if self.request.has_permission(security.PERM_VIEW, obj):
                 yield obj
 
+    def resolve_uid(self, uid):
+        for obj in self.catalog_search(resolve = True, uid = uid):
+            return obj
+
     def breadcrumbs(self):
         return reversed(list(lineage(self.context)))
 
