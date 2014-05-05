@@ -38,5 +38,7 @@
         <metal:content define-slot="content"></metal:content>
 
     </div><!-- container -->
+    <footer tal:replace="structure view.render_template('arche:templates/footer.pt')" />
+
   </body>
 </html>
