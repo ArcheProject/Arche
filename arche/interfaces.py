@@ -51,6 +51,9 @@ class IGroups(Interface):
 class IRole(Interface):
     pass
 
+class ILink(Interface):
+    pass
+
 class IRoles(Interface):
     """ Adapter for IBase content that stores and fetches assigned roles. """
 

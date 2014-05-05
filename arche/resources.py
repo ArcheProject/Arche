@@ -167,6 +167,17 @@ class Bare(BaseMixin, ContextACLMixin, Persistent):
         super(Bare, self).__init__(**kwargs)
 
 
+@implementer(ILink)
+class Link(Bare):
+    """ A persistent way of redirecting somewhere. """
+    type_name = u"Link"
+    type_title = _(u"Link")
+    type_description = _(u"Content type that redirects to somewhere.")
+    addable_to = (u"Document", u"Root")
+    add_permission = "Add %s" % type_name
+    target = u""
+
+
 @implementer(IRoot, IIndexedContent)
 class Root(Content):
     type_name = u"Root"
@@ -251,7 +262,7 @@ class File(Bare, DCMetadataMixin):
 class Image(File):
     type_name = u"Image"
     type_title = _(u"Image")
-    addable_to = (u'Document', u"Root")
+    addable_to = (u"Document", u"Root")
     add_permission = "Add %s" % type_name
     blobfile = None
 
@@ -259,11 +270,6 @@ class Image(File):
     def thumbnail_original(self):
         return self.blobfile
 
-
-# class Link(Base):
-#     pass
-# 
-# 
 
 @implementer(IInitialSetup)
 class InitialSetup(Bare):
@@ -406,4 +412,5 @@ def includeme(config):
     config.add_content_factory(File)
     config.add_content_factory(Image)
     config.add_content_factory(Root)
+    config.add_content_factory(Link)
     config.add_subscriber(make_user_owner, [IUser, IObjectAddedEvent])

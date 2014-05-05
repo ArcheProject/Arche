@@ -115,6 +115,10 @@ class DCMetadataSchema(colander.Schema):
                                  title = _(u"Licensing"),
                                  missing = colander.null,
                                  tab = 'metadata')
+    tags = colander.SchemaNode(colander.List(),
+                               title = _("Tags"),
+                               missing = "",
+                               widget = tagging_widget)
     #type?
     #format
     #identifier -> url
@@ -122,7 +126,7 @@ class DCMetadataSchema(colander.Schema):
     #language
 
 
-class BaseSchema(DCMetadataSchema):
+class BaseSchema(colander.Schema):
     nav_visible = colander.SchemaNode(colander.Bool(),
                                       title = _(u"Show in navigations"),
                                       missing = True,
@@ -134,13 +138,9 @@ class BaseSchema(DCMetadataSchema):
                                           missing = True,
                                           default = True,
                                           tab = tabs['visibility'])
-    tags = colander.SchemaNode(colander.List(),
-                               title = _("Tags"),
-                               missing = "",
-                               widget = tagging_widget)
 
 
-class DocumentSchema(BaseSchema):
+class DocumentSchema(BaseSchema, DCMetadataSchema):
     body = colander.SchemaNode(colander.String(),
                                widget = deform.widget.RichTextWidget(),
                                missing = colander.null)
@@ -249,6 +249,10 @@ class RegisterSchema(colander.Schema):
                                    widget = deform.widget.PasswordWidget())
 
 
+class RootSchema(BaseSchema, DCMetadataSchema):
+    pass
+
+
 def permissions_schema_factory(context, request, view):
     rr = get_roles_registry(request.registry)
     values = [(role, role.title) for role in rr.assign_local()]
@@ -275,7 +279,7 @@ def permissions_schema_factory(context, request, view):
     return schema
 
 
-class AddFileSchema(BaseSchema):
+class AddFileSchema(BaseSchema, DCMetadataSchema):
     title = colander.SchemaNode(colander.String(),
                                 missing = u"")
     file_data = colander.SchemaNode(deform.FileData(),
@@ -283,11 +287,26 @@ class AddFileSchema(BaseSchema):
                                     widget = file_upload_widget)
 
 
-class EditFileSchema(AddFileSchema):
+class EditFileSchema(AddFileSchema, DCMetadataSchema):
     file_data = colander.SchemaNode(deform.FileData(),
                                     title = _(u"Replace file"),
                                     missing = colander.null,
                                     widget = file_upload_widget)
+
+
+
+class LinkSchema(BaseSchema):
+    target = colander.SchemaNode(colander.String(),
+                                 validator = colander.url)
+    title = colander.SchemaNode(colander.String(),
+                                missing = u"")
+    description = colander.SchemaNode(colander.String(),
+                                      missing = u"")
+
+
+class AddLinkSchema(LinkSchema):
+    name = colander.SchemaNode(colander.String(), #Special validator based on permission?
+                           )
 
 
 def includeme(config):
@@ -308,4 +327,6 @@ def includeme(config):
     config.add_content_schema('File', EditFileSchema, 'edit')
     config.add_content_schema('Image', AddFileSchema, 'add') #Specific schema?
     config.add_content_schema('Image', EditFileSchema, 'edit')
-    config.add_content_schema('Root', BaseSchema, 'edit')
+    config.add_content_schema('Root', RootSchema, 'edit')
+    config.add_content_schema('Link', AddLinkSchema, 'add')
+    config.add_content_schema('Link', LinkSchema, 'edit')

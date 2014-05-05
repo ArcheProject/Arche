@@ -1,0 +1,22 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/base_view.pt')">
+      i18n:domain="Arche">
+<body>
+<div metal:fill-slot="main-content">
+    <h1>${context.title}</h1>
+    <p class="description lead"
+         tal:define="description context.description|None"
+         tal:condition="description"
+         tal:content="structure description">Description text</p>
+    <dl>
+        <dt i18n:translate="">This is a link that will redirect users without edit permission to:</dt>
+        <dd>
+            <a href="${context.target}">${context.target}</a>
+        </dd>
+    </dl>
+</div>
+</body>
+</html>
