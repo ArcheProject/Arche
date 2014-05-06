@@ -134,7 +134,7 @@ class BaseView(object):
             num /= 1024.0
         return (u"%3.1f" % num, 'Tb')
 
-    def thumb_tag(self, context, scale_name, default = u"", extra_cls = '', **kw):
+    def thumb_tag(self, context, scale_name, default = u"", extra_cls = '', direction = "thumb", **kw):
         #FIXME: Default?
         url = self.request.thumb_url(context, scale_name)
         if not url:
@@ -142,7 +142,7 @@ class BaseView(object):
         thumbnails = self.request.registry.queryAdapter(context, IThumbnails)
         if not thumbnails:
             return default
-        thumb = thumbnails.get_thumb(scale_name)
+        thumb = thumbnails.get_thumb(scale_name, direction = direction)
         if thumb:
             data = {'src': url,
                     'width': thumb.width,

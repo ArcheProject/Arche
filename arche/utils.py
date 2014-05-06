@@ -219,15 +219,14 @@ class Thumbnails(object):
         """
         pass
 
-    def get_thumb(self, scale):
+    def get_thumb(self, scale, direction = "thumb"):
         """ Return data from plone scale or None"""
         scales = get_image_scales()
         maxwidth, maxheight = scales[scale]
         if not self.context.thumbnail_original:
             return
         with self.context.thumbnail_original.open() as f:
-            thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction="thumb")
-
+            thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
         return Thumbnail(thumb_data, image_type = image_type, size = size)
 
 
