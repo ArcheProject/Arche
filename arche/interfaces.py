@@ -8,6 +8,8 @@ from repoze.folder.interfaces import (IObjectAddedEvent,
 class IObjectUpdatedEvent(IObjectEvent):
     pass
 
+class IViewInitializedEvent(IObjectEvent):
+    pass
 
 class IBase(Interface):
     pass
@@ -62,6 +64,10 @@ class ICataloger(Interface):
 
 class IIndexedContent(Interface):
     """ Marker for content that belongs in catalog.
+    """
+
+class IView(Interface):
+    """ Marker for more advanced views that inherit BaseView, which should be all view classes.
     """
 
 class IThumbnailedContent(Interface):

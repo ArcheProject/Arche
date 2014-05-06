@@ -3,6 +3,7 @@ import warnings
 import colander
 import deform
 from zope.interface import implementer
+from zope.component.event import objectEventNotify
 from BTrees.OOBTree import OOBTree
 from pyramid.traversal import find_root
 from pyramid.traversal import lineage
@@ -17,21 +18,25 @@ from pyramid.view import render_view_to_response
 from pyramid_deform import FormView
 from deform_autoneed import need_lib
 from betahaus.viewcomponent import render_view_group
+
 from arche.utils import get_flash_messages
 from arche.utils import generate_slug
 from arche.utils import get_view
 from arche.utils import get_content_factories
 from arche.utils import get_content_schemas
 from arche.utils import get_content_views
+from arche.events import ViewInitializedEvent
 from arche.fanstatic_lib import main_css
 from arche.portlets import get_portlet_manager
 from arche.interfaces import IFolder
+from arche.interfaces import IView
 from arche.interfaces import IThumbnails
 from arche.interfaces import IContentView
 from arche import security
 from arche import _
 
 
+@implementer(IView)
 class BaseView(object):
     
     def __init__(self, context, request):
@@ -39,6 +44,8 @@ class BaseView(object):
         self.request = request
         need_lib('basic')
         main_css.need()
+        view_event = ViewInitializedEvent(self)
+        objectEventNotify(view_event)
 
     @reify
     def root(self):
