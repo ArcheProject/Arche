@@ -8,6 +8,7 @@
 
 <div class="col-sm-3 portlets-left dashed-border"
      metal:fill-slot="portlets-left"
+     tal:condition="'left' in view.slots"
      tal:define="portlets portlet_manager.get('left', {})">
     <tal:slot_controls replace="structure view.render_template('arche:templates/portlets/manager_slot.pt', portlets = portlets)" />
     <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" data-target="#add-portlets-left">
@@ -23,6 +24,7 @@
 <div class="col-sm-6">
     <div class="portlets-top dashed-border"
          metal:fill-slot="portlets-top"
+         tal:condition="'top' in view.slots"
          tal:define="portlets portlet_manager.get('top', {})">
         <tal:slot_controls replace="structure view.render_template('arche:templates/portlets/manager_slot.pt', portlets = portlets)" />
         <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" data-target="#add-portlets-top">
@@ -41,6 +43,7 @@
 
     <div class="portlets-bottom dashed-border"
          metal:fill-slot="portlets-bottom"
+         tal:condition="'bottom' in view.slots"
          tal:define="portlets portlet_manager.get('bottom', {})">
         <tal:slot_controls replace="structure view.render_template('arche:templates/portlets/manager_slot.pt', portlets = portlets)" />
         <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" data-target="#add-portlets-bottom">
@@ -57,6 +60,7 @@
 
 <div class="col-sm-3 portlets-right dashed-border"
      metal:fill-slot="portlets-right"
+     tal:condition="'right' in view.slots"
      tal:define="portlets portlet_manager.get('right', {})">
     <tal:slot_controls replace="structure view.render_template('arche:templates/portlets/manager_slot.pt', portlets = portlets)" />
     <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" data-target="#add-portlets-right">

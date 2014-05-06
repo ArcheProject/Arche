@@ -108,12 +108,12 @@ class DCMetadataSchema(colander.Schema):
                                missing = colander.null,
                                   tab = 'metadata')
     subject = colander.SchemaNode(colander.String(),
-                                   title = _(u"Tags or subjects"),
-                                missing = colander.null,
+                                  title = _(u"Tags or subjects"),
+                                  missing = u"",
                                   tab = 'metadata')
     rights = colander.SchemaNode(colander.String(),
                                  title = _(u"Licensing"),
-                                 missing = colander.null,
+                                 missing = u"",
                                  tab = 'metadata')
     tags = colander.SchemaNode(colander.List(),
                                title = _("Tags"),
@@ -143,9 +143,9 @@ class BaseSchema(colander.Schema):
 class DocumentSchema(BaseSchema, DCMetadataSchema):
     body = colander.SchemaNode(colander.String(),
                                widget = deform.widget.RichTextWidget(),
-                               missing = colander.null)
+                               missing = u"")
     thumbnail_data = colander.SchemaNode(deform.FileData(),
-                                         missing = colander.null,
+                                         missing = None,
                                          title = _(u"Image"),
                                          widget = file_upload_widget)
     show_byline = colander.SchemaNode(colander.Bool(),

@@ -5,6 +5,7 @@ from betahaus.viewcomponent import view_action
 
 from arche.interfaces import IContentView
 from arche.utils import get_content_views
+from arche.portlets import get_portlet_slots
 from arche import security
 from arche import _
 
@@ -128,9 +129,10 @@ def delete_context(context, request, va, **kw):
              priority = 10,
              permisison = security.PERM_MANAGE_SYSTEM)
 def manage_portlets(context, request, va, **kw):
-    return """<li><a href="%(url)s">%(title)s</a></li>""" %\
-            {'url': request.resource_url(context, 'manage_portlets'),
-             'title': va.title}
+    if get_portlet_slots(request.registry):
+        return """<li><a href="%(url)s">%(title)s</a></li>""" %\
+                {'url': request.resource_url(context, 'manage_portlets'),
+                 'title': va.title}
 
 @view_action('actions_menu', 'selectable_views',
              priority = 30,
