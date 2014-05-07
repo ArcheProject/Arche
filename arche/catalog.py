@@ -19,6 +19,11 @@ from arche.interfaces import IObjectUpdatedEvent
 from arche.interfaces import IObjectWillBeRemovedEvent
 
 
+_default_searchable_text_indexes = (
+    'title',
+    'description',
+)
+
 @implementer(ICataloger)
 @adapter(IIndexedContent)
 class Cataloger(object):
@@ -68,13 +73,18 @@ def get_userid(context, default):
     return default
 
 def get_searchable_text(context, default):
-    #FIXME: Which indexes are searchable?
-    searchable_text_discriminators = (get_title, get_description)
+    root = find_root(context)
+    catalog = root.catalog
     found_text = []
-    for discriminator in searchable_text_discriminators:
-        res = discriminator(context, default)
-        if res is not default and isinstance(res, basestring):
-            found_text.append(res.strip())
+    for index in get_searchable_text_indexes():
+        res = catalog[index].discriminator(context, default)
+        if res is default:
+            continue
+        if not isinstance(res, basestring):
+            res = str(res)
+        res = res.strip()
+        if res:
+            found_text.append(res)
     text = u" ".join(found_text)
     return text and text or default
 
@@ -101,8 +111,14 @@ def unindex_object_subscriber(context, event):
     cataloger = reg.queryAdapter(context, ICataloger)
     cataloger.unindex_object()
 
+def get_searchable_text_indexes(registry = None):
+    if registry is None:
+        registry = get_current_registry()
+    return registry._searchable_text_indexes
+
 def includeme(config):
     config.registry.registerAdapter(Cataloger)
     config.add_subscriber(index_object_subscriber, [IIndexedContent, IObjectAddedEvent])
     config.add_subscriber(index_object_subscriber, [IIndexedContent, IObjectUpdatedEvent])
     config.add_subscriber(unindex_object_subscriber, [IIndexedContent, IObjectWillBeRemovedEvent])
+    config.registry._searchable_text_indexes = set(_default_searchable_text_indexes)
