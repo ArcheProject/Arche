@@ -11,7 +11,7 @@
         <title metal:define-slot="page-title">${context.title|''}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="Description" />
-        <link rel="shortcut icon" href="${request.static_url('arche:static/favicon.ico')}" />
+        <link rel="shortcut icon" href="${request.static_url(request.registry.settings['arche.favicon'])}" />
         <metal:head define-slot="head"></metal:head>
     </head>
 

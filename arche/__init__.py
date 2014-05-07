@@ -10,6 +10,7 @@ _ = TranslationStringFactory('Arche')
 default_settings = {
     'arche.hash_method': 'arche.utils.default_hash_method',
     'arche.includes': '',
+    'arche.favicon': 'arche:static/favicon.ico',
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
 }
