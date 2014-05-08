@@ -18,11 +18,10 @@ class AddImageForm(AddFileForm):
 def thumb_view(context, request, subpath = None):
     if subpath is None:
         subpath = request.subpath
-    #FIXME: Default sizes etc?
-    if subpath:
-        scale_name = subpath[0]
-    else:
-        scale_name = u"col-1" #???
+    if len(subpath) != 2:
+        return HTTPNotFound()
+    key = subpath[0] #Usually 'image', the blob area where it's stored
+    scale_name = subpath[1] #Some scale, like 'col-1'
     scales = get_image_scales()
     if scale_name not in scales:
         return HTTPNotFound()
@@ -30,7 +29,7 @@ def thumb_view(context, request, subpath = None):
     if not thumbnails:
         #Log?
         raise HTTPNotFound()
-    thumb = thumbnails.get_thumb(scale_name)
+    thumb = thumbnails.get_thumb(scale_name, key = key)
     if thumb:
         return Response(
             body = thumb.image,

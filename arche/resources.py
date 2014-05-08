@@ -3,11 +3,10 @@ from uuid import uuid4
 from repoze.folder import Folder
 from zope.interface import implementer
 from BTrees.OOBTree import OOSet
-from ZODB.blob import Blob
 from persistent import Persistent
 from persistent.list import PersistentList
-from pyramid.threadlocal import get_current_registry, get_current_request
-
+from pyramid.threadlocal import get_current_registry
+from pyramid.threadlocal import get_current_request
 from repoze.catalog.catalog import Catalog
 from repoze.catalog.document import DocumentMap
 from zope.component.event import objectEventNotify
@@ -203,22 +202,12 @@ class Document(Content):
     addable_to = (u"Document", u"Root")
     body = u""
     add_permission = "Add %s" % type_name
-    blobfile = None
 
     @property
-    def thumbnail_original(self): return self.blobfile
-
-    @property
-    def thumbnail_data(self): pass #FIXME: Should this return something?
-
-    @thumbnail_data.setter
-    def thumbnail_data(self, value):
-        if value:
-            if self.blobfile is None:
-                self.blobfile = Blob()
-            with self.blobfile.open('w') as f:
-                fp = value['fp']
-                upload_stream(fp, f)
+    def image_data(self): pass #FIXME: Should this return something?
+    @image_data.setter
+    def image_data(self, value):
+        IBlobs(self).create_from_formdata('image', value)
 
 
 @implementer(IFile, IContent)
@@ -228,13 +217,11 @@ class File(Bare, DCMetadataMixin):
     addable_to = (u'Document', u"Root")
     add_permission = "Add %s" % type_name
     filename = u""
-    blobfile = None
     mimetype = u""
     size = 0
 
     def __init__(self, file_data, **kwargs):
         self._title = u""
-        self.blobfile = Blob()
         super(File, self).__init__(file_data = file_data, **kwargs)
 
     @property
@@ -244,18 +231,10 @@ class File(Bare, DCMetadataMixin):
     def title(self, value): self._title = value
 
     @property
-    def file_data(self):
-        pass
-        #FIXME: Should this return something?
-
+    def file_data(self): pass #FIXME: Should this return something?
     @file_data.setter
     def file_data(self, value):
-        if value:
-            with self.blobfile.open('w') as f:
-                self.filename = value['filename']
-                fp = value['fp']
-                self.mimetype = value['mimetype']
-                self.size = upload_stream(fp, f)
+        IBlobs(self).create_from_formdata('file', value)
 
 
 @implementer(IImage, IThumbnailedContent)
@@ -264,11 +243,12 @@ class Image(File):
     type_title = _(u"Image")
     addable_to = (u"Document", u"Root")
     add_permission = "Add %s" % type_name
-    blobfile = None
 
     @property
-    def thumbnail_original(self):
-        return self.blobfile
+    def image_data(self): pass #FIXME: Should this return something?
+    @image_data.setter
+    def image_data(self, value):
+        IBlobs(self).create_from_formdata('image', value)
 
 
 @implementer(IInitialSetup)
@@ -306,7 +286,6 @@ class User(Bare):
     last_name = u""
     email = u""
     add_permission = "Add %s" % type_name
-    blobfile = None
 
     @property
     def title(self):
@@ -322,22 +301,11 @@ class User(Bare):
     def password(self, value): self.__password_hash__ = hash_method(value)
 
     @property
-    def thumbnail_original(self): return self.blobfile
+    def image_data(self): pass #FIXME: Should this return something?
+    @image_data.setter
+    def image_data(self, value):
+        IBlobs(self).create_from_formdata('image', value)
 
-    @property
-    def profile_data(self): pass #FIXME: Should this return something?
-
-    @profile_data.setter
-    def profile_data(self, value):
-        if value:
-            if self.blobfile is None:
-                self.blobfile = Blob()
-            with self.blobfile.open('w') as f:
-                #self.filename = value['filename']
-                fp = value['fp']
-                #self.mimetype = value['mimetype']
-                #self.size = upload_stream(fp, f)
-                upload_stream(fp, f)
 
 @implementer(IGroups)
 class Groups(Content):

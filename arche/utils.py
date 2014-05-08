@@ -1,13 +1,16 @@
 import inspect
 from hashlib import sha512
 from StringIO import StringIO
+from UserDict import IterableUserDict
 
 from slugify import slugify
+from persistent import Persistent
 from zope.interface import providedBy
 from zope.interface import implementer
 from zope.interface.interfaces import ComponentLookupError
 from zope.component import adapter
 from BTrees.OOBTree import OOBTree
+from ZODB.blob import Blob
 from plone.scale.scale import scaleImage
 from pyramid.interfaces import IRequest
 from pyramid.interfaces import IView
@@ -17,10 +20,7 @@ from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.threadlocal import get_current_registry
 
-from arche.interfaces import (IFlashMessages,
-                              IThumbnails,
-                              IThumbnailedContent,
-                              IContentView)
+from arche.interfaces import * #FIXME: Pick import
 from arche import _
 
 
@@ -201,33 +201,82 @@ class FileUploadTempStore(object):
         return None
 
 
+@implementer(IBlobs)
+@adapter(IBase)
+class Blobs(IterableUserDict):
+    """ Adapter that handles blobs in context
+    """
+    def __init__(self, context):
+        self.context = context
+        self.data = getattr(context, '__blobs__', {})
+
+    def __setitem__(self, key, item):
+        if not isinstance(item, BlobFile):
+            raise ValueError("Only instances of BlobFile allowed.")
+        if not isinstance(self.data, OOBTree):
+            self.data = self.context.__blobs__ = OOBTree()
+        self.data[key] = item
+
+    def create(self, key, overwrite = False):
+        if key not in self or (key in self and overwrite):
+            self[key] = BlobFile()
+        return self[key]
+
+    def create_from_formdata(self, key, value):
+        """ Handle creation of a blob from a deform.FileUpload widget.
+            Expects the following keys in value.
+            
+            fp
+                A file stream
+            filename
+                Filename
+            mimetype
+                Mimetype
+            
+        """
+        if value:
+            bf = self.create(key)
+            with bf.blob.open('w') as f:
+                bf.filename = value['filename']
+                bf.mimetype = value['mimetype']
+                fp = value['fp']
+                bf.size = upload_stream(fp, f)
+        else:
+            if key in self:
+                del self[key]
+
+
+class BlobFile(Persistent):
+    size = None
+    mimetype = ""
+    filename = ""
+    blob = None
+
+    def __init__(self, size = None, mimetype = "", filename = ""):
+        super(BlobFile, self).__init__()
+        self.size = size
+        self.mimetype = mimetype
+        self.filename = filename
+        self.blob = Blob()
+
+
 @implementer(IThumbnails)
 @adapter(IThumbnailedContent)
 class Thumbnails(object):
+    """ Get a thumbnail image. A good place to add caching and similar in the future. """
 
     def __init__(self, context):
         self.context = context
-        #self.data = getattr(context, '__thumbnails__', {}) #Don't create any storage unless really needed!
-        assert hasattr(self.context, 'thumbnail_original'),\
-            "This context doesn't have an attribute called 'thumbnail_original' which it needs"
 
-    @property
-    def setting(self):
-        """ FIXME: Add available settings, like if the original should be kept,
-            If thumbs should be created on the fly, if the thumbs should be stored at all.
-            Not implemented yet
-        """
-        pass
-
-    def get_thumb(self, scale, direction = "thumb"):
+    def get_thumb(self, scale, key = "image", direction = "thumb"):
         """ Return data from plone scale or None"""
         scales = get_image_scales()
         maxwidth, maxheight = scales[scale]
-        if not self.context.thumbnail_original:
-            return
-        with self.context.thumbnail_original.open() as f:
-            thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
-        return Thumbnail(thumb_data, image_type = image_type, size = size)
+        blobs = IBlobs(self.context)
+        if key in blobs:
+            with blobs[key].blob.open() as f:
+                thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
+            return Thumbnail(thumb_data, image_type = image_type, size = size)
 
 
 class Thumbnail(object):
@@ -270,11 +319,11 @@ def get_image_scales(registry = None):
         registry = get_current_registry()
     return registry._image_scales
 
-def thumb_url(request, context, key):
+def thumb_url(request, context, scale, key = 'image'):
     scales = get_image_scales(request.registry)
-    if key in scales:
-        if IThumbnailedContent.providedBy(context) and context.thumbnail_original is not None:
-            return request.resource_url(context, 'thumbnail', key)
+    if scale in scales:
+        if IThumbnailedContent.providedBy(context) and IBlobs(context).get(key, None) is not None:
+            return request.resource_url(context, 'thumbnail', key, scale)
 
 def find_all_db_objects(context):
     """ Return all objects stored in context.values(), and all subobjects.
@@ -291,6 +340,7 @@ def find_all_db_objects(context):
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)
     config.registry.registerAdapter(Thumbnails)
+    config.registry.registerAdapter(Blobs)
     config.registry._content_factories = {}
     config.registry._content_schemas = {}
     config.registry._content_views = {}

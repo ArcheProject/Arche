@@ -75,6 +75,10 @@ class IThumbnailedContent(Interface):
     """
     thumbnail_original = Attribute("A non-opened data stream like a blobfile. It should support the same functions as an StringIO.")
 
+class IBlobs(Interface):
+    """ Adapter that handles blob storage for a content type.
+    """
+
 class IThumbnails(Interface):
     pass
 
