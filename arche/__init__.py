@@ -11,6 +11,7 @@ default_settings = {
     'arche.hash_method': 'arche.utils.default_hash_method',
     'arche.includes': '',
     'arche.favicon': 'arche:static/favicon.ico',
+    'arche.debug': True,
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
 }
@@ -20,6 +21,8 @@ def includeme(config):
     settings = config.registry.settings
     for key, value in default_settings.items():
         settings.setdefault(key, value)
+    adjust_bools(settings)
+
     config.include('arche.utils')
     config.include('arche.resources')
     config.include('arche.security')
@@ -59,6 +62,7 @@ def includeme(config):
     #Include other arche plugins
     for package in config.registry.settings.get('arche.includes', '').strip().splitlines():
         config.include(package)
+
 
 def root_factory(request):
     conn = get_connection(request)
@@ -125,6 +129,17 @@ def appmaker(zodb_root):
             zodb_root['app_root'] = root
             del zodb_root['initial_setup']
             return zodb_root['app_root']
+
+def adjust_bools(settings):
+    true_vals = set(['true', '1', 'on'])
+    false_vals = set(['false', '0', 'off'])
+    for (k, v) in settings.copy().items():
+        if not k.startswith('arche.') or not isinstance(v, basestring):
+            continue
+        if v.lower() in true_vals:
+            settings[k] = True
+        elif v.lower() in false_vals:
+            settings[k] = False
 
 def read_salt(settings):
     from uuid import uuid4
