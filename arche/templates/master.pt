@@ -7,11 +7,7 @@
       i18n:domain="Arche">
 <!-- FIXME: Set lang attr from pyramid locale -->
     <head>
-        <meta charset="utf-8" />
-        <title metal:define-slot="page-title">${context.title|''}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="Description" />
-        <link rel="shortcut icon" href="${request.static_url(request.registry.settings['arche.favicon'])}" />
+        <tal:head replace="structure view.render_template('arche:templates/head.pt')" />
         <metal:head define-slot="head"></metal:head>
     </head>
 

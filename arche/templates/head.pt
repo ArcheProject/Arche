@@ -1,0 +1,11 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Arche">
+    <meta charset="utf-8" />
+    <title metal:define-slot="page-title">${context.title|''}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Description" />
+    <link rel="shortcut icon" href="${request.static_url(request.registry.settings['arche.favicon'])}" />
+</tal:main>
