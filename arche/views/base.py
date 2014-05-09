@@ -23,6 +23,7 @@ from arche.utils import get_flash_messages
 from arche.utils import generate_slug
 from arche.utils import get_view
 from arche.utils import get_content_factories
+from arche.utils import get_addable_content
 from arche.utils import get_content_schemas
 from arche.utils import get_content_views
 from arche.events import ViewInitializedEvent
@@ -96,9 +97,13 @@ class BaseView(object):
         return get_renderer(asset_spec).implementation().macros[macro_name]
 
     def addable_content(self, context):
-        for factory in get_content_factories(self.request.registry).values():
-            if getattr(context, 'type_name', None) in getattr(factory, 'addable_to', ()):
-                if self.request.has_permission(factory.add_permission, context):
+        context_type = getattr(context, 'type_name', None)
+        factories = get_content_factories(self.request.registry)
+        for (name, addable) in get_addable_content(self.request.registry).items():
+            if context_type in addable:
+                factory = factories.get(name, None)
+                add_perm = getattr(factory, 'add_permission', None)
+                if self.request.has_permission(add_perm, context):
                     yield factory
 
     def render_template(self, renderer, **kwargs):

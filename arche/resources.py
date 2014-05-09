@@ -82,7 +82,6 @@ class BaseMixin(object):
     type_name = u""
     type_title = u""
     type_description = u""
-    addable_to = ()
     uid = None
 
     def __init__(self, **kwargs):
@@ -172,7 +171,6 @@ class Link(Bare):
     type_name = u"Link"
     type_title = _(u"Link")
     type_description = _(u"Content type that redirects to somewhere.")
-    addable_to = (u"Document", u"Root")
     add_permission = "Add %s" % type_name
     target = u""
 
@@ -181,7 +179,6 @@ class Link(Bare):
 class Root(Content):
     type_name = u"Root"
     type_title = _(u"Site root")
-    addable_to = ()
     add_permission = "Add %s" % type_name
 
     def __init__(self, data=None, **kwargs):
@@ -199,7 +196,6 @@ class Root(Content):
 class Document(Content):
     type_name = u"Document"
     type_title = _(u"Document")
-    addable_to = (u"Document", u"Root")
     body = u""
     add_permission = "Add %s" % type_name
 
@@ -214,7 +210,6 @@ class Document(Content):
 class File(Bare, DCMetadataMixin):
     type_name = u"File"
     type_title = _(u"File")
-    addable_to = (u'Document', u"Root")
     add_permission = "Add %s" % type_name
     filename = u""
     mimetype = u""
@@ -241,7 +236,6 @@ class File(Bare, DCMetadataMixin):
 class Image(File):
     type_name = u"Image"
     type_title = _(u"Image")
-    addable_to = (u"Document", u"Root")
     add_permission = "Add %s" % type_name
 
     @property
@@ -255,7 +249,6 @@ class Image(File):
 class InitialSetup(Bare):
     type_name = u"InitialSetup"
     type_title = _(u"Initial setup")
-    addable_to = () #Never!
     nav_visible = False
     title = _(u"Welcome to Arche!")
     setup_data = {}
@@ -265,7 +258,6 @@ class InitialSetup(Bare):
 class Users(Content):
     type_name = u"Users"
     type_title = _(u"Users")
-    addable_to = ()
     nav_visible = False
     listing_visible = False
     title = _(u"Users")
@@ -281,7 +273,6 @@ class Users(Content):
 class User(Bare):
     type_name = u"User"
     type_title = _(u"User")
-    addable_to = (u'Users',)
     first_name = u""
     last_name = u""
     email = u""
@@ -311,7 +302,6 @@ class User(Bare):
 class Groups(Content):
     type_name = u"Groups"
     type_title = _(u"Groups")
-    addable_to = ()
     nav_visible = False
     listing_visible = False
     title = _(u"Groups")
@@ -333,7 +323,6 @@ class Groups(Content):
 class Group(Bare):
     type_name = u"Group"
     type_title = _(u"Group")
-    addable_to = (u'Groups',)
     add_permission = "Add %s" % type_name
     title = u""
     description = u""
@@ -372,13 +361,19 @@ def make_user_owner(user, event = None):
 
 def includeme(config):
     config.add_content_factory(Document)
+    config.add_addable_content('Document', ('Document', 'Root'))
     config.add_content_factory(Users)
     config.add_content_factory(User)
+    config.add_addable_content('User', 'Users')
     config.add_content_factory(InitialSetup)
     config.add_content_factory(Groups)
     config.add_content_factory(Group)
+    config.add_addable_content('Group', 'Groups')
     config.add_content_factory(File)
+    config.add_addable_content('File', ('Root', 'Document'))
     config.add_content_factory(Image)
+    config.add_addable_content('Image', ('Root', 'Document'))
     config.add_content_factory(Root)
     config.add_content_factory(Link)
+    config.add_addable_content('Link', ('Root', 'Document'))
     config.add_subscriber(make_user_owner, [IUser, IObjectAddedEvent])

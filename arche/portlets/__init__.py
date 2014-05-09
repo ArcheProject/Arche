@@ -42,7 +42,6 @@ class Portlet(Persistent):
     type_title = _(u"Portlet")
     type_description = _(u"A mini view rendered ")
     portlet_type = u""
-    addable_to = ()
     add_permission = "Add %s" % type_name
 
     def __init__(self, portlet_type, **kw):
@@ -98,7 +97,6 @@ class PortletFolder(Folder):
     type_name = u"PortletFolder"
     type_title = _(u"Portlet folder")
     type_description = _(u"Container for portlets")
-    addable_to = ()
 
     def __init__(self, slot):
         self.slot = slot

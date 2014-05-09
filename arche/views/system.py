@@ -5,6 +5,7 @@ from pyramid.renderers import render
 from arche.views.base import BaseView
 from arche.interfaces import IRoot
 from arche.utils import (get_content_factories,
+                         get_addable_content,
                          get_content_schemas,
                          get_content_views)
 from arche import security
@@ -37,6 +38,7 @@ class SystemInformationView(BaseView):
 def content_types_panel(context, request, va, **kw):
     response = {
         'content_factories': get_content_factories(request.registry),
+        'addable_content': get_addable_content(request.registry),
         'content_views': get_content_views(request.registry),
         'content_schemas': get_content_schemas(request.registry),
         }

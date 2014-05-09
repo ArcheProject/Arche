@@ -34,6 +34,18 @@ def get_content_factories(registry = None):
         registry = get_current_registry()
     return registry._content_factories
 
+def add_addable_content(config, ctype, addable_to):
+    addable = config.registry._addable_content.setdefault(ctype, set())
+    if isinstance(addable_to, basestring):
+        addable.add(addable_to)
+    else:
+        addable.update(addable_to)
+
+def get_addable_content(registry = None):
+    if registry is None:
+        registry = get_current_registry()
+    return registry._addable_content
+
 def add_content_schema(config, type_name, schema, name):
     assert inspect.isclass(schema)
     if inspect.isclass(type_name):
@@ -345,6 +357,8 @@ def includeme(config):
     config.registry._content_schemas = {}
     config.registry._content_views = {}
     config.registry._image_scales = image_scales
+    config.registry._addable_content = {}
     config.add_directive('add_content_factory', add_content_factory)
+    config.add_directive('add_addable_content', add_addable_content)
     config.add_directive('add_content_schema', add_content_schema)
     config.add_directive('add_content_view', add_content_view)

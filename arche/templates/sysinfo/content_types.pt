@@ -23,7 +23,7 @@
                   <dd>${factory.type_description}</dd>
                   <dt i18n:translate="">Addable to</dt>
                   <dd>
-                  <tal:iter repeat="name getattr(factory, 'addable_to', ())">
+                  <tal:iter repeat="name addable_content.get(factory.type_name, ())">
                       ${name}<br/>
                   </tal:iter>
                   </dd>
