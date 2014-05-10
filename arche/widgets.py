@@ -110,20 +110,25 @@ class ReferenceWidget(Select2Widget):
 
 
 class DropzoneWidget(FileUploadWidget):
+    """ All of the class attributes can be overridden in the widget.
+    """
+    maxFilesize = 50
+    acceptedFiles = "image/*,video/*" #What's a sane default here? Where should it be configured?
+    dropzoneDefaultMessage = u'Drag and drop your files here'
+    dropzoneFallbackMessage = u'dropzoneFallbackMessage'
+    dropzoneFallbackText = u'dropzoneFallbackText'
+    dropzoneInvalidFileType = u'dropzoneInvalidFileType'
+    dropzoneFileTooBig = u'dropzoneFileTooBig'
+    dropzoneResponseError = u'dropzoneResponseError'
+    dropzoneCancelUpload = u'dropzoneCancelUpload'
+    dropzoneCancelUploadConfirmation = u'dropzoneCancelUploadConfirmation'
+    dropzoneRemoveFile = u'dropzoneRemoveFile'
+    dropzoneMaxFilesExceeded = u'dropzoneMaxFilesExceeded'
+
     def serialize(self, field, cstruct=None, readonly=False):
         dropzonejs.need()
         dropzonecss.need()
         dropzonebasiccss.need()
-        field.dropzoneDefaultMessage = u'Drag and drop your files here'
-        field.dropzoneFallbackMessage = u'dropzoneFallbackMessage'
-        field.dropzoneFallbackText = u'dropzoneFallbackText'
-        field.dropzoneInvalidFileType = u'dropzoneInvalidFileType'
-        field.dropzoneFileTooBig = u'dropzoneFileTooBig'
-        field.dropzoneResponseError = u'dropzoneResponseError'
-        field.dropzoneCancelUpload = u'dropzoneCancelUpload'
-        field.dropzoneCancelUploadConfirmation = u'dropzoneCancelUploadConfirmation'
-        field.dropzoneRemoveFile = u'dropzoneRemoveFile'
-        field.dropzoneMaxFilesExceeded = u'dropzoneMaxFilesExceeded'
         field.request = get_current_request()
         return super(DropzoneWidget, self).serialize(field, cstruct=cstruct, readonly=readonly)
 
