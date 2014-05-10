@@ -14,6 +14,7 @@ from arche.schemas import AddFileSchema
 from arche.utils import FileUploadTempStore
 from arche.utils import get_content_factories
 from arche.utils import generate_slug
+from arche.interfaces import IBlobs
 from arche import _
 
 
@@ -37,7 +38,8 @@ def file_data_response(context, request, disposition = 'inline'):
             ('Content-Type', str(context.mimetype)),
             ]
         )
-    with context.blobfile.open() as f:
+    #Should this be fault tolerant in some way?
+    with IBlobs(context)['file'].blob.open() as f:
         res.body = f.read()
     return res
 
@@ -47,7 +49,7 @@ def download_view(context, request):
 def inline_view(context, request):
     return file_data_response(context, request, disposition = 'inline')
 
-def upload_view(context, request):
+def batch_file_upload_handler_view(context, request):
     controls = request.params.items()
     controls.insert(0, ('__start__', 'file_data:mapping'))
     controls.append(('__end__', 'file_data:mapping'))
@@ -62,10 +64,6 @@ def upload_view(context, request):
     return Response()
 
 def upload_temp(context, request):
-    controls = request.params.items()
-    controls.insert(0, ('__start__', 'file_data:mapping'))
-    controls.append(('__end__', 'file_data:mapping'))
-    
     upload = request.params['upload']
     uid = None
     tmpstore = FileUploadTempStore(request)
@@ -88,9 +86,6 @@ def upload_temp(context, request):
                 preview_url = tmpstore.preview_url(uid)
                 tmpstore[uid]['preview_url'] = preview_url
                 break
-    else:
-        # the upload control had no file selected
-        return null
     return {'uid':uid}
 
 
@@ -113,7 +108,7 @@ def includeme(config):
                     context = 'arche.interfaces.IFile',
                     permission = security.PERM_VIEW,
                     name = 'view')
-    config.add_view(upload_view,
+    config.add_view(batch_file_upload_handler_view,
                     context = 'arche.interfaces.IContent',
                     permission = security.PERM_VIEW,
                     name = 'upload')

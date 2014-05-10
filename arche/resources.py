@@ -13,7 +13,6 @@ from zope.component.event import objectEventNotify
 
 from arche.interfaces import * #Pick later
 from arche.utils import hash_method
-from arche.utils import upload_stream
 from arche.events import ObjectUpdatedEvent
 from arche.security import get_local_roles
 from arche.security import get_acl_registry
@@ -119,6 +118,17 @@ class BaseMixin(object):
         local_roles = get_local_roles(self)
         local_roles.set_from_appstruct(value)
 
+    @property
+    def tags(self): return getattr(self, '__tags__', ())
+    @tags.setter
+    def tags(self, value):
+        #Is this the right way to mutate objects, or should we simply clear the contents?
+        if value:
+            self.__tags__ = OOSet(value)
+        else:
+            if hasattr(self, '__tags__'):
+                delattr(self, '__tags__')
+
 
 class ContextACLMixin(object):
 
@@ -139,17 +149,6 @@ class Content(BaseMixin, Folder, ContextACLMixin, DCMetadataMixin):
     def __init__(self, data=None, **kwargs):
         Folder.__init__(self, data = data)
         super(Content, self).__init__(**kwargs) #BaseMixin!
-
-    @property
-    def tags(self): return getattr(self, '__tags__', ())
-    @tags.setter
-    def tags(self, value):
-        #Is this the right way to mutate objects, or should we simply clear the contents?
-        if value:
-            self.__tags__ = OOSet(value)
-        else:
-            if hasattr(self, '__tags__'):
-                delattr(self, '__tags__')
 
 
 @implementer(IBare, IIndexedContent)
@@ -214,6 +213,7 @@ class File(Bare, DCMetadataMixin):
     filename = u""
     mimetype = u""
     size = 0
+    blob_key = "file"
 
     def __init__(self, file_data, **kwargs):
         self._title = u""
@@ -229,20 +229,30 @@ class File(Bare, DCMetadataMixin):
     def file_data(self): pass #FIXME: Should this return something?
     @file_data.setter
     def file_data(self, value):
-        IBlobs(self).create_from_formdata('file', value)
+        IBlobs(self).create_from_formdata(self.blob_key, value)
+
+    @property
+    def filename(self):
+        blobs = IBlobs(self)
+        return self.blob_key in blobs and blobs[self.blob_key].filename or u""
+
+    @property
+    def mimetype(self):
+        blobs = IBlobs(self)
+        return self.blob_key in blobs and blobs[self.blob_key].mimetype or u""
+
+    @property
+    def size(self):
+        blobs = IBlobs(self)
+        return self.blob_key in blobs and blobs[self.blob_key].size or u""
 
 
-@implementer(IImage, IThumbnailedContent)
+@implementer(IImage, IContent, IThumbnailedContent)
 class Image(File):
     type_name = u"Image"
     type_title = _(u"Image")
     add_permission = "Add %s" % type_name
-
-    @property
-    def image_data(self): pass #FIXME: Should this return something?
-    @image_data.setter
-    def image_data(self, value):
-        IBlobs(self).create_from_formdata('image', value)
+    blob_key = "file"
 
 
 @implementer(IInitialSetup)
