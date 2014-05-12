@@ -109,8 +109,7 @@ def check_unique_name(context, request, name):
     """
     if name in context:
         return False
-    provides = [IViewClassifier] + map(providedBy, (request, context))
-    if request.registry.adapters.lookup(provides, IView, name=name):
+    if get_view(context, request, view_name = name) is None:
         return False
     return True
 
