@@ -6,6 +6,7 @@ from arche.validators import login_password_validator
 from arche.validators import unique_userid_validator
 from arche.security import get_roles_registry
 from arche.utils import FileUploadTempStore
+from arche.utils import get_content_factories
 from arche.interfaces import IPopulator
 from arche.widgets import DropzoneWidget
 from arche.widgets import ReferenceWidget
@@ -40,7 +41,6 @@ def global_roles_widget(node, kw):
     rr = get_roles_registry(request.registry)
     values = [(role, role.title) for role in rr.assign_global()]
     return deform.widget.CheckboxChoiceWidget(values = values, inline = True)
-
 
 @colander.deferred
 def principal_hinter_widget(node, kw):
@@ -129,15 +129,22 @@ class DCMetadataSchema(colander.Schema):
 class BaseSchema(colander.Schema):
     nav_visible = colander.SchemaNode(colander.Bool(),
                                       title = _(u"Show in navigations"),
-                                      missing = True,
+                                      missing = colander.null,
                                       default = True,
                                       tab = tabs['visibility'])
     listing_visible = colander.SchemaNode(colander.Bool(),
                                           title = _(u"Show in listing or table views"),
                                           description = _(u"The content view will always show this regardless of what you set."),
-                                          missing = True,
+                                          missing = colander.null,
                                           default = True,
                                           tab = tabs['visibility'])
+    search_visible = colander.SchemaNode(colander.Bool(),
+                                         title = _(u"Include in search results"),
+                                         description = _(u"Note that this is not a permisison settiong - it's just a matter of practicality for users. "
+                                                         u"They may even disable this setting."),
+                                         missing = colander.null,
+                                         default = True,
+                                         tab = tabs['visibility'])
 
 
 class DocumentSchema(BaseSchema, DCMetadataSchema):

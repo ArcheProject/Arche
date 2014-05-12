@@ -56,6 +56,7 @@ def get_description(context, default): return getattr(context, 'description', de
 def get_type_name(context, default): return getattr(context, 'type_name', default)
 def get_path(context, default): return resource_path(context)
 def get_uid(context, default): return getattr(context, 'uid', default)
+def get_search_visible(context, default): return getattr(context, 'search_visible', default)
 
 def get_tags(context, default):
     tags = getattr(context, 'tags', ())
@@ -98,6 +99,7 @@ def populate_catalog(catalog):
     catalog['searchable_text'] = CatalogTextIndex(get_searchable_text, lexicon = lexicon)
     catalog['uid'] = CatalogFieldIndex(get_uid)
     catalog['tags'] = CatalogKeywordIndex(get_tags)
+    catalog['search_visible'] = CatalogFieldIndex(get_search_visible)
 
 # Subscribers
 def index_object_subscriber(context, event):

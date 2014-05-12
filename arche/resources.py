@@ -143,6 +143,7 @@ class Content(BaseMixin, Folder, ContextACLMixin, DCMetadataMixin):
     default_view = u"view"
     nav_visible = True
     listing_visible = True
+    search_visible = True
     show_byline = False
     related_content = None
 
@@ -157,6 +158,7 @@ class Bare(BaseMixin, ContextACLMixin, Persistent):
     __parent__ = None
     nav_visible = False
     listing_visible = False
+    search_visible = False
 
     def __init__(self, data=None, **kwargs):
         #Things like created, creator etc...
@@ -179,6 +181,7 @@ class Root(Content):
     type_name = u"Root"
     type_title = _(u"Site root")
     add_permission = "Add %s" % type_name
+    search_visible = False
 
     def __init__(self, data=None, **kwargs):
         self.catalog = Catalog()
@@ -260,6 +263,7 @@ class InitialSetup(Bare):
     type_name = u"InitialSetup"
     type_title = _(u"Initial setup")
     nav_visible = False
+    search_visible = False
     title = _(u"Welcome to Arche!")
     setup_data = {}
 
@@ -270,6 +274,7 @@ class Users(Content):
     type_title = _(u"Users")
     nav_visible = False
     listing_visible = False
+    search_visible = False
     title = _(u"Users")
 
     def get_user_by_email(self, email, default = None):
@@ -314,6 +319,7 @@ class Groups(Content):
     type_title = _(u"Groups")
     nav_visible = False
     listing_visible = False
+    search_visible = False
     title = _(u"Groups")
 
     def get_users_group_principals(self, userid):
