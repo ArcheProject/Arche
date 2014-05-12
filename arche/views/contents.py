@@ -1,16 +1,21 @@
 from arche.interfaces import IFolder
 from arche.views.base import BaseView
+
 from arche import security
 from arche import _
-from arche.fanstatic_lib import dropzonejs
+
+#from arche.fanstatic_lib import dropzonejs
+
 
 class ContentsView(BaseView):
 
     def __call__(self):
-        dropzonejs.need()
-        if IFolder.providedBy(self.context):
-            return {'contents': self.context.values()}
-        return {'contents': ()}
+#        dropzonejs.need()
+        is_folderish = IFolder.providedBy(self.context)
+        response = {'is_folderish': is_folderish, 'contents': ()}
+        if is_folderish:
+            response['contents'] = self.context.values()
+        return response
 
 
 def includeme(config):

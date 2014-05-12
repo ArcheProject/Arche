@@ -12,7 +12,7 @@
             <div class="panel panel-primary">
               <div class="panel-heading">
                 <h3 class="panel-title">
-                    <span i18n:translate="">Contents of</span>
+                    <span tal:condition="is_folderish" i18n:translate="">Contents of</span>
                     ${context.title}
                 </h3>
               </div>
@@ -23,12 +23,15 @@
                     <span i18n:translate="">Parent directory</span>
                 </a>
                 <p>&nbsp;</p>
-                
-                <table class="table table-responsive table-bordered table-striped table-hover">
+
+                <p class="lead" tal:condition="not is_folderish" i18n:translate="">Not a folder, so it can't have content</p>
+
+                <table tal:condition="contents" class="table table-responsive table-bordered table-striped table-hover sortable-table">
                     <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>Type</th>
+                            <th i18n:translate="">Title</th>
+                            <th i18n:translate="">Type</th>
+                            <th i18n:translate="">Info</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,7 +39,16 @@
                             <td>
                                 <a href="${request.resource_url(obj, view.query_view(obj, name = 'contents', default = ''))}"
                                    title="${obj.description}">${obj.title}</a></td>
-                            <td>${obj.type_title}</td>
+                            <td tal:define="mimetype getattr(obj, 'mimetype', False)">
+                                ${obj.type_title}
+                                ${mimetype and '(%s)' % mimetype or ''}
+                            </td>
+                            <td tal:define="size getattr(obj, 'size', False);">
+                                <tal:size condition="size">
+                                    <span class="glyphicon glyphicon-hdd"></span>
+                                    ${size and '%s %s' % view.byte_format(size) or ''}
+                                </tal:size>
+                            </td>
                         </tr>                
                     </tbody>
                 </table>
