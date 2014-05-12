@@ -110,8 +110,8 @@ def check_unique_name(context, request, name):
     if name in context:
         return False
     if get_view(context, request, view_name = name) is None:
-        return False
-    return True
+        return True
+    return False
 
 def get_view(context, request, view_name = ''):
     """ Returns view callable if a view is registered.
