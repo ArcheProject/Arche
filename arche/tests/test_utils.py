@@ -21,7 +21,7 @@ class GetViewTests(TestCase):
         return get_view
 
     def _fixture(self, name = ''):
-        self.config.add_view(_dummy_view, context=testing.DummyResource, name= '')
+        self.config.add_view(_dummy_view, context=testing.DummyResource, name = name)
 
     def test_no_view(self):
         context = testing.DummyResource()
@@ -35,7 +35,7 @@ class GetViewTests(TestCase):
         self.failUnless(self._fut(context, request))
 
     def test_named_view(self):
-        self._fixture()
+        self._fixture(name = 'hello')
         context = testing.DummyResource()
         request = testing.DummyRequest()
-        self.failUnless(self._fut(context, request))
+        self.failUnless(self._fut(context, request, view_name = 'hello'))

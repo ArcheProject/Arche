@@ -66,7 +66,7 @@ class IIndexedContent(Interface):
     """ Marker for content that belongs in catalog.
     """
 
-class IView(Interface):
+class IBaseView(Interface):
     """ Marker for more advanced views that inherit BaseView, which should be all view classes.
     """
 

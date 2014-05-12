@@ -30,14 +30,14 @@ from arche.events import ViewInitializedEvent
 from arche.fanstatic_lib import main_css
 from arche.portlets import get_portlet_manager
 from arche.interfaces import IFolder
-from arche.interfaces import IView
+from arche.interfaces import IBaseView
 from arche.interfaces import IThumbnails
 from arche.interfaces import IContentView
 from arche import security
 from arche import _
 
 
-@implementer(IView)
+@implementer(IBaseView)
 class BaseView(object):
     
     def __init__(self, context, request):
