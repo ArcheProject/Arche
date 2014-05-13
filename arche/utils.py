@@ -340,6 +340,7 @@ def find_all_db_objects(context):
     """ Return all objects stored in context.values(), and all subobjects.
         Great for reindexing the catalog or other database migrations.
     """
+    #FIXME: This should be a generator instead. With a large database, it will require a lot of memory and time otherwise
     result = set()
     result.add(context)
     if hasattr(context, 'values'):

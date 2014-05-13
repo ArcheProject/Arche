@@ -62,5 +62,7 @@ setup(name='Arche',
       main = arche:main
       [fanstatic.libraries]
       arche = arche.fanstatic_lib:library
+      [console_scripts]
+      arche = arche.scripts:arche_console_script
       """,
       )
