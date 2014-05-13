@@ -1,6 +1,7 @@
 from pyramid.httpexceptions import HTTPFound
 from pyramid.decorator import reify
 from BTrees.OOBTree import OOBTree
+from colander import null
 
 from arche.utils import get_content_views
 from arche.views.base import BaseForm
@@ -31,7 +32,12 @@ class ViewSettingsView(BaseForm):
 
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
-        #Must be an adapter later on
+        #Must be an adapter later on?
+        #remove all non-valid data - is this an okay way to do this?
+        keys = set(appstruct.keys())
+        for k in keys:
+            if appstruct[k] in (null, '', None):
+                appstruct.pop(k, None)
         self.context.__view_settings__ = OOBTree(appstruct)
         return HTTPFound(location = self.request.resource_url(self.context))
 
