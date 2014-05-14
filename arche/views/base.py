@@ -258,6 +258,8 @@ class DefaultAddForm(BaseForm):
 
     def __call__(self):
         factory = self.get_content_factory(self.type_name)
+        if factory is None:
+            raise HTTPNotFound()
         if not self.request.has_permission(factory.add_permission):
             raise HTTPForbidden(_(u"You're not allowed to add this content type here. "
                                   u"It requires the permission '%s'" % factory.add_permission))

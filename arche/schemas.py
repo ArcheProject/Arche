@@ -55,6 +55,7 @@ class DateTime(colander.DateTime):
         return request.dt_handler.tz_to_utc(res) #ALWAYS save UTC!
 
 
+#FIXME: This will change later
 tabs = {'': _(u"Default"),
         'visibility': _(u"Visibility"),
         'metadata': _(u"Metadata"),
