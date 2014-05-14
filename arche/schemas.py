@@ -1,17 +1,58 @@
+import datetime
+
 import colander
 import deform
+from pyramid.threadlocal import get_current_request
 
 from arche.validators import unique_context_name_validator
 from arche.validators import login_password_validator
 from arche.validators import unique_userid_validator
 from arche.security import get_roles_registry
 from arche.utils import FileUploadTempStore
-from arche.utils import get_content_factories
 from arche.interfaces import IPopulator
 from arche.widgets import DropzoneWidget
 from arche.widgets import ReferenceWidget
 from arche.widgets import TaggingWidget
 from arche import _
+
+
+class DateTime(colander.DateTime):
+    """ Override datetime to be able to handle local timezones and DST.
+        Hopefully, this sillyness will change.
+    """
+    def serialize(self, node, appstruct):
+        if not appstruct:
+            return colander.null
+
+        if type(appstruct) is datetime.date: # cant use isinstance; dt subs date
+            appstruct = datetime.datetime.combine(appstruct, datetime.time())
+
+        if not isinstance(appstruct, datetime.datetime):
+            raise colander.Invalid(node,
+                          _('"${val}" is not a datetime object',
+                            mapping={'val':appstruct})
+                          )
+
+        if appstruct.tzinfo is None:
+            appstruct = appstruct.replace(tzinfo=self.default_tzinfo)
+
+        request = get_current_request()
+        appstruct = request.dt_handler.normalize(appstruct)
+        return appstruct.isoformat()
+
+    def deserialize(self, node, cstruct):
+        if not cstruct:
+            return colander.null
+
+        #Split time and figure out if minutes and seconds  are part of the structure
+        pattern = "%Y-%m-%dT"
+        time = cstruct.split('T')[1]
+        if time:
+            parts = ('%H', '%M', '%S')
+            pattern += ":".join(parts[:len(time.split(':'))])
+        request = get_current_request()
+        res = request.dt_handler.string_convert_dt(cstruct, pattern = pattern)
+        return request.dt_handler.tz_to_utc(res) #ALWAYS save UTC!
 
 
 tabs = {'': _(u"Default"),
@@ -74,6 +115,11 @@ def tagging_widget(node, kw):
     tags = tuple(view.root.catalog['tags']._fwd_index.keys())
     return TaggingWidget(tags = tags)
 
+@colander.deferred
+def default_now(node, kw):
+    request = kw['request']
+    return request.dt_handler.utcnow()
+    
 
 class DCMetadataSchema(colander.Schema):
     title = colander.SchemaNode(colander.String())
@@ -89,7 +135,8 @@ class DCMetadataSchema(colander.Schema):
                                       widget = ReferenceWidget(query_params = {'type_name': 'User'}),
                                       tab = 'metadata',
                                       missing = colander.null)
-    created = colander.SchemaNode(colander.DateTime(),
+    created = colander.SchemaNode(DateTime(),
+                                  default = default_now,
                                   missing = colander.null,
                                   tab = 'metadata')
     relation = colander.SchemaNode(colander.List(),
@@ -98,13 +145,10 @@ class DCMetadataSchema(colander.Schema):
                                    tab = 'metadata',
                                    missing = colander.null,
                                    widget = ReferenceWidget())
-    modified = colander.SchemaNode(colander.DateTime(),
-                                   missing = colander.null,
-                                   tab = 'metadata')
     publisher = colander.SchemaNode(colander.String(),
                                     missing = colander.null,
                                   tab = 'metadata')
-    date = colander.SchemaNode(colander.DateTime(),
+    date = colander.SchemaNode(DateTime(),
                                missing = colander.null,
                                   tab = 'metadata')
     subject = colander.SchemaNode(colander.String(),

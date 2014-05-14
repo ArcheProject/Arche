@@ -11,8 +11,10 @@
       <div class="media-body">
         Created by
         <a href="${request.resource_url(profile)}">${profile.title}</a>
-        Published on (somedate)
-        etc...
+        <span tal:condition="context.created" tal:content="request.dt_handler.format_relative(context.created)">
+        <tal:modified condition="request.dt_handler.format_relative(context.modified) != request.dt_handler.format_relative(context.created)|False">
+            <span i18n:translate="">(modified <tal:ts i18n:name="datetime">${request.dt_handler.format_relative(context.modified)}</tal:ts>)</span>
+        </tal:modified>
       </div>
     </div>
 </div>
