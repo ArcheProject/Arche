@@ -13,6 +13,7 @@ from zope.component.event import objectEventNotify
 
 from arche.interfaces import * #Pick later
 from arche.utils import hash_method
+from arche.utils import utcnow
 from arche.events import ObjectUpdatedEvent
 from arche.security import get_local_roles
 from arche.security import get_acl_registry
@@ -85,14 +86,16 @@ class BaseMixin(object):
 
     def __init__(self, **kwargs):
         #IContent should be the same iface registered by the roles adapter
+        request = get_current_request()
         if 'local_roles' not in kwargs and IContent.providedBy(self):
             #Check creators attribute?
-            request = get_current_request()
             userid = getattr(request, 'authenticated_userid', None)
             if userid:
                 kwargs['local_roles'] = {userid: [ROLE_OWNER]}
         if 'uid' not in kwargs:
             kwargs['uid'] = unicode(uuid4())
+        if 'created' not in kwargs and hasattr(self, 'created'):
+            kwargs['created'] = utcnow()
         self.update(event = False, **kwargs)
 
     def update(self, event = True, **kwargs):
@@ -104,6 +107,9 @@ class BaseMixin(object):
             if getattr(self, key, _marker) != value:
                 setattr(self, key, value)
                 changed_attributes.add(key)
+        if hasattr(self, 'modified') and 'modified' not in kwargs and changed_attributes:
+            self.modified = utcnow()
+            changed_attributes.add('modified')
         if event:
             event_obj = ObjectUpdatedEvent(self, changed = changed_attributes)
             objectEventNotify(event_obj)
@@ -159,6 +165,7 @@ class Bare(BaseMixin, ContextACLMixin, Persistent):
     nav_visible = False
     listing_visible = False
     search_visible = False
+    created = None
 
     def __init__(self, data=None, **kwargs):
         #Things like created, creator etc...

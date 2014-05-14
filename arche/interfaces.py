@@ -91,6 +91,9 @@ class IPortletType(Interface):
 class IPortletManager(Interface):
     pass
 
+class IDateTimeHandler(Interface):
+    """ Date time conversion adapter for requests.
+    """
 
 class IPopulator(Interface):
     """ An adapter that populates the database with content or initial setup.

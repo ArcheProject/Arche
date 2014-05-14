@@ -12,6 +12,7 @@ default_settings = {
     'arche.includes': '',
     'arche.favicon': 'arche:static/favicon.ico',
     'arche.debug': True,
+    'arche.timezone': 'UTC', #Default timezone
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
 }
@@ -58,6 +59,10 @@ def includeme(config):
     #Add thumb_url method to request object
     from arche.utils import thumb_url
     config.add_request_method(thumb_url, name = 'thumb_url')
+
+    #Add date time helper to request object
+    from arche.utils import get_dt_handler
+    config.add_request_method(get_dt_handler, name = 'dt_handler', reify = True)
 
     #Include other arche plugins
     for package in config.registry.settings.get('arche.includes', '').strip().splitlines():

@@ -31,6 +31,8 @@
                         <tr>
                             <th i18n:translate="">Title</th>
                             <th i18n:translate="">Type</th>
+                            <th i18n:translate="">Created</th>
+                            <th i18n:translate="">Modified</th>
                             <th i18n:translate="">Info</th>
                         </tr>
                     </thead>
@@ -42,6 +44,18 @@
                             <td tal:define="mimetype getattr(obj, 'mimetype', False)">
                                 ${obj.type_title}
                                 ${mimetype and '(%s)' % mimetype or ''}
+                            </td>
+                            <td>
+                                <span tal:condition="getattr(obj, 'created', None)"
+                                    title="${request.dt_handler.format_dt(obj.created)}">
+                                    ${request.dt_handler.format_relative(obj.created)}
+                                </span>
+                            </td>
+                            <td>
+                                <span tal:condition="getattr(obj, 'modified', None)"
+                                    title="${request.dt_handler.format_dt(obj.created)}">
+                                    ${request.dt_handler.format_relative(obj.modified)}
+                                </span>
                             </td>
                             <td tal:define="size getattr(obj, 'size', False);">
                                 <tal:size condition="size">
