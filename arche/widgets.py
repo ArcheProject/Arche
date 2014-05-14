@@ -1,3 +1,4 @@
+import string
 from json import dumps
 
 from colander import null
@@ -114,7 +115,9 @@ class DropzoneWidget(FileUploadWidget):
     """
     maxFilesize = 100 # in Mb
     maxFiles = 1 # 'null' for infinite
-    acceptedFiles = "" #What's a sane default here? Where should it be configured?
+    acceptedFiles = "image/png,image/*" #What's a sane default here? Where should it be configured?
+    acceptedMimetypes = string.split(acceptedFiles, ',')
+    
     dropzoneDefaultMessage = u'Drag and drop your files here'
     dropzoneFallbackMessage = u'dropzoneFallbackMessage'
     dropzoneFallbackText = u'dropzoneFallbackText'
@@ -125,6 +128,8 @@ class DropzoneWidget(FileUploadWidget):
     dropzoneCancelUploadConfirmation = u'dropzoneCancelUploadConfirmation'
     dropzoneRemoveFile = u'dropzoneRemoveFile'
     dropzoneMaxFilesExceeded = u'dropzoneMaxFilesExceeded'
+    
+    
 
     def serialize(self, field, cstruct=None, readonly=False):
         dropzonejs.need()
@@ -136,5 +141,8 @@ class DropzoneWidget(FileUploadWidget):
     def deserialize(self, field, pstruct=None):
         if pstruct is null:
             return null
-        return self.tmpstore[pstruct]
+        mimetype = self.tmpstore[pstruct]['mimetype']
+        if mimetype in self.acceptedMimetypes or string.split(mimetype, '/')[0]+'/*' in self.acceptedMimetypes:
+            return self.tmpstore[pstruct]
+        return null
     
