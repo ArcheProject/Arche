@@ -25,6 +25,7 @@
 			dictRemoveFile: 				"${field.widget.dropzoneRemoveFile}",
 			dictMaxFilesExceeded: 			"${field.widget.dropzoneMaxFilesExceeded}",
 			addRemoveLinks: true,
+			maxFiles: ${field.widget.maxFiles},
 			init: function() {
 				this.on("addedfile", function(file) { console.log("Added file."+file); });
 				this.on("success", function(file, response) {

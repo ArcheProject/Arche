@@ -112,7 +112,8 @@ class ReferenceWidget(Select2Widget):
 class DropzoneWidget(FileUploadWidget):
     """ All of the class attributes can be overridden in the widget.
     """
-    maxFilesize = 100
+    maxFilesize = 100 # in Mb
+    maxFiles = 1 # 'null' for infinite
     acceptedFiles = "" #What's a sane default here? Where should it be configured?
     dropzoneDefaultMessage = u'Drag and drop your files here'
     dropzoneFallbackMessage = u'dropzoneFallbackMessage'
