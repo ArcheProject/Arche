@@ -1,3 +1,5 @@
+import datetime
+
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.response import Response
 from arche.views.base import DefaultView
@@ -60,9 +62,11 @@ def includeme(config):
                     name = 'download')
     config.add_view(inline_view,
                     context = 'arche.interfaces.IImage',
+                    http_cache = datetime.timedelta(days=1),
                     permission = security.PERM_VIEW,
                     name = 'view')
     config.add_view(thumb_view,
+                    http_cache = datetime.timedelta(days=1),
                     name = 'thumbnail',
                     context = 'arche.interfaces.IThumbnailedContent',
                     permission = security.PERM_VIEW)
