@@ -129,13 +129,18 @@ class DropzoneWidget(FileUploadWidget):
     dropzoneRemoveFile = u'dropzoneRemoveFile'
     dropzoneMaxFilesExceeded = u'dropzoneMaxFilesExceeded'
     
-    
-
     def serialize(self, field, cstruct=None, readonly=False):
         dropzonejs.need()
         dropzonecss.need()
         dropzonebasiccss.need()
         field.request = get_current_request()
+        field.hasfile = 'false'
+        field.filename = ''
+        field.filesize = 0
+        if hasattr(field.request.context, '__blobs__') and field.request.context.__blobs__.has_key('file'):
+            field.hasfile = 'true'
+            field.filename = field.request.context.__blobs__.get('file').filename
+            field.filesize = field.request.context.__blobs__.get('file').size
         return super(DropzoneWidget, self).serialize(field, cstruct=cstruct, readonly=readonly)
 
     def deserialize(self, field, pstruct=None):

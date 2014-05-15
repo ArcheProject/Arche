@@ -33,6 +33,21 @@
 					console.log(dropdiv);
 					dropdiv.innerHTML += "<input type='hidden' name='${field.name}' value='" +response.uid+ "'>";
 				});
+				
+				
+				if(${field.hasfile})
+				{
+					// Create the mock file:
+					var mockFile = { name: "${field.filename}", size: ${field.filesize} };
+					// Call the default addedfile event handler
+					this.emit("addedfile", mockFile);
+					// And optionally show the thumbnail of the file:
+					this.emit("thumbnail", mockFile, "/image/url");
+					// If you use the maxFiles option, make sure you adjust it to the
+					// correct amount:
+					var existingFileCount = 1; // The number of files already uploaded
+					this.options.maxFiles = myDropzone.options.maxFiles - existingFileCount;
+				}
 			}
 		});
 	});
