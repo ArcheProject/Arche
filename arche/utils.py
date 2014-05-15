@@ -3,6 +3,7 @@ from hashlib import sha512
 from StringIO import StringIO
 from UserDict import IterableUserDict
 from datetime import datetime
+from uuid import uuid4
 
 import pytz
 from babel.dates import format_date
@@ -14,6 +15,7 @@ from zope.interface import providedBy
 from zope.interface import implementer
 from zope.interface.interfaces import ComponentLookupError
 from zope.component import adapter
+from repoze.lru import LRUCache
 from BTrees.OOBTree import OOBTree
 from ZODB.blob import Blob
 from plone.scale.scale import scaleImage
@@ -275,6 +277,10 @@ class BlobFile(Persistent):
         self.filename = filename
         self.blob = Blob()
 
+#This will be moved
+#FIXME: Make caching a choice
+thumb_cache = LRUCache(100)
+
 
 @implementer(IThumbnails)
 @adapter(IThumbnailedContent)
@@ -286,13 +292,28 @@ class Thumbnails(object):
 
     def get_thumb(self, scale, key = "image", direction = "thumb"):
         """ Return data from plone scale or None"""
+        #Make cache optional
+        cachekey = (self.context.uid, scale, key)
+        cached = thumb_cache.get(cachekey)
+        if cached:
+            return cached
         scales = get_image_scales()
         maxwidth, maxheight = scales[scale]
         blobs = IBlobs(self.context)
         if key in blobs:
             with blobs[key].blob.open() as f:
                 thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
-            return Thumbnail(thumb_data, image_type = image_type, size = size)
+            thumb = Thumbnail(thumb_data, image_type = image_type, size = size)
+            thumb_cache.put(cachekey, thumb)
+            return thumb
+
+    def invalidate_context_cache(self):
+        invalidate_keys = set()
+        for k in thumb_cache.data.keys():
+            if self.context.uid in k:
+                invalidate_keys.add(k)
+        for k in invalidate_keys:
+            thumb_cache.invalidate(k)
 
 
 class Thumbnail(object):
@@ -300,11 +321,13 @@ class Thumbnail(object):
     height = 0
     image_type = u""
     image = None
+    etag = ""
 
     def __init__(self, image, size = None, image_type = u""):
         self.width, self.height = size
         self.image = image
         self.image_type = image_type
+        self.etag = str(uuid4())
 
     @property
     def mimetype(self):
@@ -450,6 +473,10 @@ def utcnow():
     datetime object, whereas this one includes the UTC tz info."""
     return pytz.utc.localize(datetime.utcnow())
 
+
+def invalidate_thumbs_in_context(context, event):
+    IThumbnails(context).invalidate_context_cache()
+
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)
     config.registry.registerAdapter(Thumbnails)
@@ -464,3 +491,4 @@ def includeme(config):
     config.add_directive('add_addable_content', add_addable_content)
     config.add_directive('add_content_schema', add_content_schema)
     config.add_directive('add_content_view', add_content_view)
+    config.add_subscriber(invalidate_thumbs_in_context, [IThumbnailedContent, IObjectUpdatedEvent])

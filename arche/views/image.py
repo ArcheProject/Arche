@@ -40,6 +40,7 @@ def thumb_view(context, request, subpath = None):
                # ('Content-Disposition', '%s;filename="%s"' % (
                #     disposition, context.filename.encode('ascii', 'ignore'))),
                 ('Content-Type', thumb.mimetype),
+                ('Etag', thumb.etag)
                 ]
             )
     raise HTTPNotFound()

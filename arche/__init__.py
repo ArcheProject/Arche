@@ -13,6 +13,7 @@ default_settings = {
     'arche.favicon': 'arche:static/favicon.ico',
     'arche.debug': True,
     'arche.timezone': 'UTC', #Default timezone
+    'arche.cache_max_age': 24*60*60, #seconds
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
 }
@@ -93,7 +94,8 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     config = base_config(**settings)
-    config.add_static_view('static', 'static', cache_max_age=3600)
+    cache_max_age = int(settings.get('arche.cache_max_age', 60*60*24))
+    config.add_static_view('static', 'static', cache_max_age = cache_max_age)
     config.include('arche') #Must be included first to adjust settings for other packages!
     config.include(override_perm_methods)
     config.include('pyramid_beaker')
