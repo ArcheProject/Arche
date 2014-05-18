@@ -281,8 +281,8 @@ class InitialSetup(colander.Schema):
 
 class LoginSchema(colander.Schema):
     validator = login_password_validator
-    email = colander.SchemaNode(colander.String(),
-                                 title = _(u"Email"),)
+    email_or_userid = colander.SchemaNode(colander.String(),
+                                          title = _(u"Email or UserID"),)
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
                                    widget = deform.widget.PasswordWidget())

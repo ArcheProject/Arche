@@ -44,9 +44,13 @@ class LoginPasswordValidator(object):
     def __call__(self, form, value):
         exc = colander.Invalid(form, u"Login invalid") #Raised if trouble
         password = value['password']
-        user = self.context['users'].get_user_by_email(value['email'])
+        email_or_userid = value['email_or_userid']
+        if '@' in email_or_userid:
+            user = self.context['users'].get_user_by_email(email_or_userid)
+        else:
+            user = self.context['users'].get(email_or_userid, None)
         if not user:
-            exc['email'] = _("Invalid email")
+            exc['email_or_userid'] = _("Invalid email or UserID")
             raise exc
         #Validate password
         if not hash_method(password) == user.password:

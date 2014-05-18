@@ -2,6 +2,7 @@ import deform
 from pyramid.security import remember
 from pyramid.security import forget
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPForbidden
 
 from arche.views.base import BaseForm
 from arche.interfaces import IRoot
@@ -22,7 +23,13 @@ class LoginForm(BaseForm):
 
     def login_success(self, appstruct):
         self.flash_messages.add(_(u"Welcome!"), type="success")
-        user = self.root['users'].get_user_by_email(appstruct['email'])
+        email_or_userid = appstruct['email_or_userid']
+        if '@' in email_or_userid:
+            user = self.context['users'].get_user_by_email(email_or_userid)
+        else:
+            user = self.context['users'].get(email_or_userid, None)
+        if user is None:
+            raise HTTPForbidden("Something went wrong during login. No user profile found.")
         headers = remember(self.request, user.userid)
         #FIXME: Came from?
         return HTTPFound(location = self.request.application_url, headers = headers)
