@@ -28,7 +28,7 @@ class DCMetadataMixin(object):
     description = u""
     created = None #FIXME
     modified = None #FIXME - also via update?
-    date = u""
+    date = None
     publisher = u""
     subject = u"" #FIXME: Same as tags?
     relation = u"" #Probably a  relation field here

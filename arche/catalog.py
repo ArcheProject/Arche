@@ -1,3 +1,6 @@
+from calendar import timegm
+from datetime import datetime
+
 from pyramid.traversal import find_root
 from pyramid.traversal import resource_path
 from pyramid.threadlocal import get_current_registry
@@ -50,6 +53,15 @@ class Cataloger(object):
             self.catalog.unindex_doc(docid)
             self.document_map.remove_address(self.path)
 
+def _get_unix_time(dt, default):
+    """ The created time is stored in the catalog as unixtime.
+        See the time.gmtime and calendar.timegm Python modules for more info.
+        http://docs.python.org/library/calendar.html#calendar.timegm
+        http://docs.python.org/library/time.html#time.gmtime
+    """
+    if isinstance(dt, datetime):
+        return timegm(dt.timetuple())
+    return default
 
 def get_title(context, default): return getattr(context, 'title', default)
 def get_description(context, default): return getattr(context, 'description', default)
@@ -57,6 +69,18 @@ def get_type_name(context, default): return getattr(context, 'type_name', defaul
 def get_path(context, default): return resource_path(context)
 def get_uid(context, default): return getattr(context, 'uid', default)
 def get_search_visible(context, default): return getattr(context, 'search_visible', default)
+
+def get_date(context, default):
+    res = getattr(context, 'date', default)
+    return _get_unix_time(res, default)
+
+def get_created(context, default):
+    res = getattr(context, 'created', default)
+    return _get_unix_time(res, default)
+
+def get_modified(context, default):
+    res = getattr(context, 'modified', default)
+    return _get_unix_time(res, default)
 
 def get_tags(context, default):
     tags = getattr(context, 'tags', ())
@@ -89,17 +113,34 @@ def get_searchable_text(context, default):
     text = u" ".join(found_text)
     return text and text or default
 
-def populate_catalog(catalog):
-    catalog['title'] = CatalogFieldIndex(get_title)
-    catalog['description'] = CatalogFieldIndex(get_description)
-    catalog['type_name'] = CatalogFieldIndex(get_type_name)
-    catalog['sortable_title'] = CatalogFieldIndex(get_sortable_title)
-    catalog['path'] = CatalogPathIndex(get_path)
-    lexicon = Lexicon(Splitter(), CaseNormalizer())
-    catalog['searchable_text'] = CatalogTextIndex(get_searchable_text, lexicon = lexicon)
-    catalog['uid'] = CatalogFieldIndex(get_uid)
-    catalog['tags'] = CatalogKeywordIndex(get_tags)
-    catalog['search_visible'] = CatalogFieldIndex(get_search_visible)
+_default_indexes = {
+    'title': CatalogFieldIndex(get_title),
+    'description': CatalogFieldIndex(get_description),
+    'type_name': CatalogFieldIndex(get_type_name),
+    'sortable_title': CatalogFieldIndex(get_sortable_title),
+    'path': CatalogPathIndex(get_path),
+    'searchable_text': CatalogTextIndex(get_searchable_text, lexicon = Lexicon(Splitter(), CaseNormalizer())),
+    'uid': CatalogFieldIndex(get_uid),
+    'tags': CatalogKeywordIndex(get_tags),
+    'search_visible': CatalogFieldIndex(get_search_visible),
+    'date': CatalogFieldIndex(get_date),
+    'modified': CatalogFieldIndex(get_modified),
+    'created': CatalogFieldIndex(get_created),
+}
+
+def populate_catalog(catalog, indexes = _default_indexes):
+    added = set()
+    changed = set()
+    for (key, index) in indexes.items():
+        if key not in catalog:
+            catalog[key] = index
+            added.add(key)
+            continue
+        if not isinstance(catalog[key], index.__class__):
+            del catalog[key]
+            catalog[key] = index
+            changed.add(key)
+    return added, changed
 
 # Subscribers
 def index_object_subscriber(context, event):

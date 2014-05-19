@@ -150,8 +150,11 @@ class DCMetadataSchema(colander.Schema):
                                     missing = colander.null,
                                   tab = 'metadata')
     date = colander.SchemaNode(DateTime(),
+                               title = _(u"Date"),
+                               description = _(u"Publish date, or used for sorting"),
+                               default = default_now,
                                missing = colander.null,
-                                  tab = 'metadata')
+                               tab = 'metadata')
     subject = colander.SchemaNode(colander.String(),
                                   title = _(u"Tags or subjects"),
                                   missing = u"",
