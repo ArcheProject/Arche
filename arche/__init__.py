@@ -96,7 +96,7 @@ def main(global_config, **settings):
     """
     config = base_config(**settings)
     cache_max_age = int(settings.get('arche.cache_max_age', 60*60*24))
-    config.add_static_view('static', 'static', cache_max_age = cache_max_age)
+    config.add_static_view('static', 'arche:static', cache_max_age = cache_max_age)
     config.include('arche') #Must be included first to adjust settings for other packages!
     config.include(override_perm_methods)
     config.include('pyramid_beaker')

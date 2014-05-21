@@ -12,7 +12,10 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">Arche XXX</a>
+      <a class="navbar-brand" href="${request.application_url}">
+          <img height="40" width="40"
+              src="${request.static_url('arche:static/images/arche_neg.png')}" />
+      </a>
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapsible">
       <ul class="nav navbar-nav">
