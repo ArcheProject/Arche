@@ -113,25 +113,26 @@ def get_searchable_text(context, default):
     text = u" ".join(found_text)
     return text and text or default
 
-_default_indexes = {
-    'title': CatalogFieldIndex(get_title),
-    'description': CatalogFieldIndex(get_description),
-    'type_name': CatalogFieldIndex(get_type_name),
-    'sortable_title': CatalogFieldIndex(get_sortable_title),
-    'path': CatalogPathIndex(get_path),
-    'searchable_text': CatalogTextIndex(get_searchable_text, lexicon = Lexicon(Splitter(), CaseNormalizer())),
-    'uid': CatalogFieldIndex(get_uid),
-    'tags': CatalogKeywordIndex(get_tags),
-    'search_visible': CatalogFieldIndex(get_search_visible),
-    'date': CatalogFieldIndex(get_date),
-    'modified': CatalogFieldIndex(get_modified),
-    'created': CatalogFieldIndex(get_created),
-}
+def _default_indexes():
+    return  {
+        'title': CatalogFieldIndex(get_title),
+        'description': CatalogFieldIndex(get_description),
+        'type_name': CatalogFieldIndex(get_type_name),
+        'sortable_title': CatalogFieldIndex(get_sortable_title),
+        'path': CatalogPathIndex(get_path),
+        'searchable_text': CatalogTextIndex(get_searchable_text, lexicon = Lexicon(Splitter(), CaseNormalizer())),
+        'uid': CatalogFieldIndex(get_uid),
+        'tags': CatalogKeywordIndex(get_tags),
+        'search_visible': CatalogFieldIndex(get_search_visible),
+        'date': CatalogFieldIndex(get_date),
+        'modified': CatalogFieldIndex(get_modified),
+        'created': CatalogFieldIndex(get_created),
+    }.items()
 
 def populate_catalog(catalog, indexes = _default_indexes):
     added = set()
     changed = set()
-    for (key, index) in indexes.items():
+    for (key, index) in indexes():
         if key not in catalog:
             catalog[key] = index
             added.add(key)
