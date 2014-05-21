@@ -7,6 +7,7 @@ from pyramid.threadlocal import get_current_request
 from arche.validators import unique_context_name_validator
 from arche.validators import login_password_validator
 from arche.validators import unique_userid_validator
+from arche.validators import existing_userid_or_email
 from arche.security import get_roles_registry
 from arche.utils import FileUploadTempStore
 from arche.interfaces import IPopulator
@@ -120,7 +121,7 @@ def tagging_widget(node, kw):
 def default_now(node, kw):
     request = kw['request']
     return request.dt_handler.utcnow()
-    
+
 
 class DCMetadataSchema(colander.Schema):
     title = colander.SchemaNode(colander.String())
@@ -304,6 +305,12 @@ class RegisterSchema(colander.Schema):
                                    widget = deform.widget.PasswordWidget())
 
 
+class RecoverPasswordSchema(colander.Schema):
+    email_or_userid = colander.SchemaNode(colander.String(),
+                                          validator = existing_userid_or_email,
+                                          title = _(u"Email or UserID"),)
+
+
 class RootSchema(BaseSchema, DCMetadataSchema):
     pass
 
@@ -375,6 +382,7 @@ def includeme(config):
     config.add_content_schema('InitialSetup', InitialSetup, 'setup')
     config.add_content_schema('Auth', LoginSchema, 'login')
     config.add_content_schema('Auth', RegisterSchema, 'register')
+    config.add_content_schema('Auth', RecoverPasswordSchema, 'recover_password')
     config.add_content_schema('Group', GroupSchema, 'add')
     config.add_content_schema('Group', GroupSchema, 'view')
     config.add_content_schema('Group', GroupSchema, 'edit')

@@ -1,4 +1,5 @@
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPForbidden
 
 from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultEditForm
@@ -23,8 +24,22 @@ class UserChangePasswordForm(DefaultEditForm):
     type_name = u'User'
     schema_name = u'change_password'
 
+    def __init__(self, context, request):
+        if request.authenticated_userid is None:
+            if len(request.subpath) == 1:
+                request_token_val = request.subpath[0]
+                token = getattr(context, 'pw_token', None)
+                if token is not None and request_token_val == token.token:
+                    return super(UserChangePasswordForm, self).__init__(context, request) 
+        else:
+            if request.has_permission(security.PERM_EDIT):
+                return super(UserChangePasswordForm, self).__init__(context, request)
+        raise HTTPForbidden()
+
     def save_success(self, appstruct):
-        #FIXME: pop old password
+        #FIXME: pop old password?
+        if getattr(self.context, 'pw_token', None) is not None:
+            self.context.pw_token = None
         return super(UserChangePasswordForm, self).save_success(appstruct)
 
 
@@ -50,7 +65,7 @@ def includeme(config):
     config.add_view(UserChangePasswordForm,
                     context = 'arche.interfaces.IUser',
                     name = 'change_password',
-                    permission = security.PERM_EDIT, #FIXME: perm check in add
+                    permission = security.NO_PERMISSION_REQUIRED,
                     renderer = 'arche:templates/form.pt')
     config.add_view(UsersView,
                     name = 'view',

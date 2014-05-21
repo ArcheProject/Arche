@@ -56,3 +56,22 @@ class LoginPasswordValidator(object):
         if not hash_method(password) == user.password:
             exc['password'] = _(u"Wrong password. Remember that passwords are case sensitive.")
             raise exc
+
+
+@colander.deferred
+def existing_userid_or_email(node, kw):
+    return ExistingUserIDOrEmail(kw['context'])
+
+
+class ExistingUserIDOrEmail(object):
+
+    def __init__(self, context):
+        self.context = find_root(context)
+
+    def __call__(self, node, value):
+        if '@' in value:
+            user = self.context['users'].get_user_by_email(value)
+        else:
+            user = self.context['users'].get(value, None)
+        if not user:
+            raise colander.Invalid(node, _("Invalid email or UserID"))

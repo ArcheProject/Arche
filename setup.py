@@ -35,6 +35,7 @@ requires = ('pyramid',
             'js.bootstrap',
             'plone.scale',
             'Pillow',
+            'html2text',
             )
 
 

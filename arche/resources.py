@@ -1,4 +1,7 @@
 from uuid import uuid4
+import string
+from random import choice
+from datetime import timedelta
 
 from repoze.folder import Folder
 from zope.interface import implementer
@@ -299,6 +302,7 @@ class User(Bare):
     last_name = u""
     email = u""
     add_permission = "Add %s" % type_name
+    pw_token = None
 
     @property
     def title(self):
@@ -373,6 +377,24 @@ class Group(Bare):
         self.__members__.update(value)
 
 
+@implementer(IToken)
+class Token(Persistent):
+    token = ""
+    created = None
+    expires = None
+    type_name = u"Token"
+    type_tile = _(u"Token")
+
+    def __init__(self, size = 40, hours = 3):
+        self.token = u''.join([choice(string.letters + string.digits) for x in range(size)])
+        self.created = utcnow()
+        self.expires = self.created + timedelta(hours = hours)
+
+    def validate(self, value):
+        if utcnow() < self.expires and value == self.token:
+            return True
+
+
 def make_user_owner(user, event = None):
     """ Whenever a user object is added, make sure the user has the role owner,
         and no one else. This might not be the default behaviour, if an
@@ -399,4 +421,5 @@ def includeme(config):
     config.add_content_factory(Root)
     config.add_content_factory(Link)
     config.add_addable_content('Link', ('Root', 'Document'))
+    config.add_content_factory(Token)
     config.add_subscriber(make_user_owner, [IUser, IObjectAddedEvent])

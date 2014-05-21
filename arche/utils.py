@@ -19,6 +19,7 @@ from repoze.lru import LRUCache
 from BTrees.OOBTree import OOBTree
 from ZODB.blob import Blob
 from plone.scale.scale import scaleImage
+from pyramid.i18n import TranslationString
 from pyramid.interfaces import IRequest
 from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
@@ -26,6 +27,9 @@ from pyramid.compat import map_
 from pyramid.renderers import render
 from pyramid.threadlocal import get_current_request
 from pyramid.threadlocal import get_current_registry
+from html2text import HTML2Text
+from pyramid_mailer import get_mailer
+from pyramid_mailer.message import Message
 
 from arche.interfaces import * #FIXME: Pick import
 from arche import _
@@ -473,9 +477,43 @@ def utcnow():
     datetime object, whereas this one includes the UTC tz info."""
     return pytz.utc.localize(datetime.utcnow())
 
-
 def invalidate_thumbs_in_context(context, event):
     IThumbnails(context).invalidate_context_cache()
+
+def send_email(subject, recipients, html, sender = None, plaintext = None, request = None, send_immediately = False, **kw):
+    """ Send an email to users. This also checks the required settings and translates
+        the subject.
+        
+        returns the message object sent, or None
+    """
+    if request is None:
+        request = get_current_request()
+    if isinstance(subject, TranslationString):
+        subject = request.localizer.translate(subject)
+    if isinstance(recipients, basestring):
+        recipients = (recipients,)
+    if plaintext is None:
+        html2text = HTML2Text()
+        html2text.ignore_links = True
+        html2text.ignore_images = True
+        html2text.body_width = 0
+        plaintext = html2text.handle(html).strip()
+    if not plaintext:
+        plaintext = None #In case it was an empty string
+    #It seems okay to leave sender blank since it's part of the default configuration
+    msg = Message(subject = subject,
+                  recipients = recipients,
+                  sender = sender,
+                  body = plaintext,
+                  html = html,
+                  **kw)
+    mailer = get_mailer(request)
+    #Note that messages are sent during the transaction process. See pyramid_mailer docs
+    if send_immediately:
+        mailer.send_immediately(msg)
+    else:
+        mailer.send(msg)
+    return msg
 
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)

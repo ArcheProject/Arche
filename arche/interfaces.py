@@ -56,6 +56,9 @@ class IRole(Interface):
 class ILink(Interface):
     pass
 
+class IToken(Interface):
+    pass
+
 class IRoles(Interface):
     """ Adapter for IBase content that stores and fetches assigned roles. """
 
