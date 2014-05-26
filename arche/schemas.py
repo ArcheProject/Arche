@@ -1,20 +1,21 @@
 import datetime
 
+from pyramid.threadlocal import get_current_request
 import colander
 import deform
-from pyramid.threadlocal import get_current_request
 
-from arche.validators import unique_context_name_validator
-from arche.validators import login_password_validator
-from arche.validators import unique_userid_validator
-from arche.validators import existing_userid_or_email
+from arche import _
+from arche.interfaces import IPopulator
 from arche.security import get_roles_registry
 from arche.utils import FileUploadTempStore
-from arche.interfaces import IPopulator
+from arche.validators import existing_userid_or_email
+from arche.validators import login_password_validator
+from arche.validators import unique_context_name_validator
+from arche.validators import unique_email_validator
+from arche.validators import unique_userid_validator
 from arche.widgets import DropzoneWidget
 from arche.widgets import ReferenceWidget
 from arche.widgets import TaggingWidget
-from arche import _
 
 
 class DateTime(colander.DateTime):
@@ -292,17 +293,19 @@ class LoginSchema(colander.Schema):
                                    widget = deform.widget.PasswordWidget())
 
 
-class RegisterSchema(colander.Schema):
+class RegistrationSchema(colander.Schema):
+    email = colander.SchemaNode(colander.String(),
+                                title = _(u"Email"),
+                                validator = unique_email_validator)
+
+
+class FinishRegistrationSchema(colander.Schema):
     userid = colander.SchemaNode(colander.String(),
                                  title = _(u"UserID"),
                                  validator = unique_userid_validator)
-    email = colander.SchemaNode(colander.String(),
-                                title = _(u"Email"),
-                                #FIXME: Validate unique email
-                                validator = colander.Email())
-    password = colander.SchemaNode(colander.String(), #FIXME REMOVE!
+    password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
-                                   widget = deform.widget.PasswordWidget())
+                                   widget = deform.widget.CheckedPasswordWidget(redisplay = True))
 
 
 class RecoverPasswordSchema(colander.Schema):
@@ -356,7 +359,6 @@ class EditFileSchema(AddFileSchema, DCMetadataSchema):
                                     widget = file_upload_widget)
 
 
-
 class LinkSchema(BaseSchema):
     target = colander.SchemaNode(colander.String(),
                                  validator = colander.url)
@@ -371,6 +373,12 @@ class AddLinkSchema(LinkSchema):
                            )
 
 
+class SiteSettingsSchema(colander.Schema):
+    allow_self_registration = colander.SchemaNode(colander.Bool(),
+                                                  title = _(u"Allow users to register themselves to this site."),
+                                                  default = False)
+
+
 def includeme(config):
     config.add_content_schema('Document', DocumentSchema, 'view')
     config.add_content_schema('Document', DocumentSchema, 'edit')
@@ -381,7 +389,8 @@ def includeme(config):
     config.add_content_schema('User', ChangePasswordSchema, 'change_password')
     config.add_content_schema('InitialSetup', InitialSetup, 'setup')
     config.add_content_schema('Auth', LoginSchema, 'login')
-    config.add_content_schema('Auth', RegisterSchema, 'register')
+    config.add_content_schema('Auth', RegistrationSchema, 'register')
+    config.add_content_schema('Auth', FinishRegistrationSchema, 'register_finish')
     config.add_content_schema('Auth', RecoverPasswordSchema, 'recover_password')
     config.add_content_schema('Group', GroupSchema, 'add')
     config.add_content_schema('Group', GroupSchema, 'view')
@@ -391,5 +400,6 @@ def includeme(config):
     config.add_content_schema('Image', AddFileSchema, 'add') #Specific schema?
     config.add_content_schema('Image', EditFileSchema, 'edit')
     config.add_content_schema('Root', RootSchema, 'edit')
+    config.add_content_schema('Root', SiteSettingsSchema, 'site_settings')
     config.add_content_schema('Link', AddLinkSchema, 'add')
     config.add_content_schema('Link', LinkSchema, 'edit')

@@ -1,10 +1,9 @@
+from datetime import timedelta
+from random import choice
 from uuid import uuid4
 import string
-from random import choice
-from datetime import timedelta
 
-from repoze.folder import Folder
-from zope.interface import implementer
+from BTrees.OOBTree import OOBTree
 from BTrees.OOBTree import OOSet
 from persistent import Persistent
 from persistent.list import PersistentList
@@ -12,17 +11,19 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
 from repoze.catalog.catalog import Catalog
 from repoze.catalog.document import DocumentMap
+from repoze.folder import Folder
 from zope.component.event import objectEventNotify
+from zope.interface import implementer
 
-from arche.interfaces import * #Pick later
+from arche import _
+from arche.catalog import populate_catalog
+from arche.events import ObjectUpdatedEvent
+from arche.interfaces import *  # Pick later
+from arche.security import ROLE_OWNER
+from arche.security import get_acl_registry
+from arche.security import get_local_roles
 from arche.utils import hash_method
 from arche.utils import utcnow
-from arche.events import ObjectUpdatedEvent
-from arche.security import get_local_roles
-from arche.security import get_acl_registry
-from arche.security import ROLE_OWNER
-from arche.catalog import populate_catalog
-from arche import _
 
 
 class DCMetadataMixin(object):
@@ -201,7 +202,15 @@ class Root(Content):
         cataloger = reg.queryAdapter(self, ICataloger)
         if cataloger: #Not needed for testing
             cataloger.index_object()
+        self.__site_settings__ = OOBTree()
         super(Root, self).__init__(data=data, **kwargs)
+
+    @property
+    def site_settings(self): return getattr(self, '__site_settings__', {})
+    @site_settings.setter
+    def site_settings(self, value):
+        self.__site_settings__.clear()
+        self.__site_settings__.update(value)
 
 
 @implementer(IDocument, IThumbnailedContent)
@@ -379,20 +388,25 @@ class Group(Bare):
 
 @implementer(IToken)
 class Token(Persistent):
-    token = ""
+    data = ""
     created = None
     expires = None
     type_name = u"Token"
     type_tile = _(u"Token")
 
     def __init__(self, size = 40, hours = 3):
-        self.token = u''.join([choice(string.letters + string.digits) for x in range(size)])
+        super(Token, self).__init__()
+        self.data = u''.join([choice(string.letters + string.digits) for x in range(size)])
         self.created = utcnow()
         self.expires = self.created + timedelta(hours = hours)
 
-    def validate(self, value):
-        if utcnow() < self.expires and value == self.token:
-            return True
+    def __eq__(self, other): return other == self.data
+    def __repr__(self): return self.data
+
+    @property
+    def valid(self):
+        return utcnow() < self.expires
+
 
 
 def make_user_owner(user, event = None):

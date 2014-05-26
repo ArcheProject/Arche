@@ -1,9 +1,9 @@
-import colander
 from pyramid.traversal import find_root
+import colander
 
+from arche import _
 from arche.utils import check_unique_name
 from arche.utils import hash_method
-from arche import _
 
 
 @colander.deferred
@@ -75,3 +75,19 @@ class ExistingUserIDOrEmail(object):
             user = self.context['users'].get(value, None)
         if not user:
             raise colander.Invalid(node, _("Invalid email or UserID"))
+
+
+@colander.deferred
+def unique_email_validator(node, kw):
+    return UniqueEmail(kw['context'])
+
+
+class UniqueEmail(object):
+    def __init__(self, context):
+        self.context = find_root(context)
+
+    def __call__(self, node, value):
+        email_val = colander.Email()
+        email_val(node, value)
+        if self.context['users'].get_user_by_email(value) is not None:
+            raise colander.Invalid(node, _("Already registered. You may recover your password if you've lost it."))

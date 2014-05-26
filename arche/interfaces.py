@@ -98,6 +98,9 @@ class IDateTimeHandler(Interface):
     """ Date time conversion adapter for requests.
     """
 
+class IRegistrationTokens(Interface):
+    pass
+
 class IPopulator(Interface):
     """ An adapter that populates the database with content or initial setup.
         Should accept root as context.

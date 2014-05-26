@@ -1,11 +1,11 @@
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPForbidden
 
+from arche import _
+from arche import security
+from arche.views.base import BaseView
 from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultEditForm
-from arche.views.base import BaseView
-from arche import security
-from arche import _
 
 
 class UserAddForm(DefaultAddForm):
@@ -26,21 +26,26 @@ class UserChangePasswordForm(DefaultEditForm):
 
     def __init__(self, context, request):
         if request.authenticated_userid is None:
-            if len(request.subpath) == 1:
-                request_token_val = request.subpath[0]
-                token = getattr(context, 'pw_token', None)
-                if token is not None and request_token_val == token.token:
-                    return super(UserChangePasswordForm, self).__init__(context, request) 
+            token = getattr(context, 'pw_token', None)
+            rtoken = request.GET.get('t', object())
+            if token == rtoken and token.valid:
+                super(UserChangePasswordForm, self).__init__(context, request)
+                return
         else:
             if request.has_permission(security.PERM_EDIT):
-                return super(UserChangePasswordForm, self).__init__(context, request)
-        raise HTTPForbidden()
+                super(UserChangePasswordForm, self).__init__(context, request)
+                return
+        raise HTTPForbidden(_("Not allowed"))
 
     def save_success(self, appstruct):
-        #FIXME: pop old password?
         if getattr(self.context, 'pw_token', None) is not None:
             self.context.pw_token = None
-        return super(UserChangePasswordForm, self).save_success(appstruct)
+        #This is the only thing that should ever be changed here!
+        self.context.update(password = appstruct['password'])
+        self.flash_messages.add(_(u"Password changed"))
+        if self.request.authenticated_userid:
+            return HTTPFound(location = self.request.resource_url(self.context))
+        return HTTPFound(location = self.request.resource_url(self.root, 'login'))
 
 
 class UsersView(BaseView):

@@ -3,8 +3,8 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
-<p>Click link to reset your password:</p>
-<a href="${request.resource_url(user, 'change_password', query = {'t': user.pw_token})}">
-    ${request.resource_url(user, 'change_password', query = {'t': user.pw_token})}
+<p>Click link to complete registration:</p>
+<a href="${request.resource_url(view.root, 'register_finish', query = {'t': token, 'e': email})}">
+    ${request.resource_url(view.root, 'register_finish', query = {'t': token, 'e': email})}
 </a>
 </tal:main>

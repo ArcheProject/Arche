@@ -1,35 +1,35 @@
-import inspect
-from hashlib import sha512
 from StringIO import StringIO
 from UserDict import IterableUserDict
 from datetime import datetime
+from hashlib import sha512
 from uuid import uuid4
+import inspect
 
-import pytz
-from babel.dates import format_date
-from babel.dates import format_time
-from babel.dates import format_datetime
-from slugify import slugify
-from persistent import Persistent
-from zope.interface import providedBy
-from zope.interface import implementer
-from zope.interface.interfaces import ComponentLookupError
-from zope.component import adapter
-from repoze.lru import LRUCache
 from BTrees.OOBTree import OOBTree
 from ZODB.blob import Blob
+from babel.dates import format_date
+from babel.dates import format_datetime
+from babel.dates import format_time
+from html2text import HTML2Text
+from persistent import Persistent
 from plone.scale.scale import scaleImage
+from pyramid.compat import map_
 from pyramid.i18n import TranslationString
 from pyramid.interfaces import IRequest
 from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
-from pyramid.compat import map_
 from pyramid.renderers import render
-from pyramid.threadlocal import get_current_request
 from pyramid.threadlocal import get_current_registry
-from html2text import HTML2Text
+from pyramid.threadlocal import get_current_request
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
+from repoze.lru import LRUCache
+from slugify import slugify
+from zope.component import adapter
+from zope.interface import implementer
+from zope.interface import providedBy
+from zope.interface.interfaces import ComponentLookupError
+import pytz
 
 from arche.interfaces import * #FIXME: Pick import
 from arche import _
@@ -515,11 +515,42 @@ def send_email(subject, recipients, html, sender = None, plaintext = None, reque
         mailer.send(msg)
     return msg
 
+
+class AttributeAnnotations(IterableUserDict):
+    """ Handles a named storage for keys/values. It's always a named adapter
+        and the name attribute should be the same as the name it was registered with. 
+    """
+    attr_name = None
+
+    def __init__(self, context):
+        self.context = context
+        try:
+            self.data = getattr(context, self.attr_name)
+        except AttributeError:
+            setattr(context, self.attr_name, OOBTree())
+            self.data = getattr(context, self.attr_name)
+
+
+@implementer(IRegistrationTokens)
+@adapter(IRoot)
+class RegistrationTokens(AttributeAnnotations):
+    attr_name = '__registration_tokens__'
+
+    def cleanup(self):
+        expired = set()
+        for (email, token) in self.items():
+            if not token.valid:
+                expired.add(email)
+        for email in expired:
+            del self[email]
+    
+
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)
     config.registry.registerAdapter(Thumbnails)
     config.registry.registerAdapter(Blobs)
     config.registry.registerAdapter(DateTimeHandler)
+    config.registry.registerAdapter(RegistrationTokens)
     config.registry._content_factories = {}
     config.registry._content_schemas = {}
     config.registry._content_views = {}
