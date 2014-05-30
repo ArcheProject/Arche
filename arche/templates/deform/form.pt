@@ -35,9 +35,9 @@
 
       <div class="panel panel-primary">
         <div class="panel-heading" tal:condition="heading">
-                    <!-- Nav tabs -->
           <h3 class="panel-title">${heading}</h3>
         </div>
+        <!-- Nav tabs -->
         <div class="panel-footer">
             <ul class="nav nav-pills" tal:condition="len(tabbed_fields) > 1">
                 <tal:iterate repeat="name tabbed_fields">
