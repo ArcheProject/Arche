@@ -10,6 +10,7 @@ from repoze.catalog.query import Any
 
 from arche.fanstatic_lib import dropzonejs
 from arche.fanstatic_lib import dropzonecss
+from arche.fanstatic_lib import dropzonebootstrapcss
 from arche.fanstatic_lib import dropzonebasiccss
 from arche import _
 
@@ -131,7 +132,8 @@ class DropzoneWidget(FileUploadWidget):
     
     def serialize(self, field, cstruct=None, readonly=False):
         dropzonejs.need()
-        dropzonecss.need()
+        #dropzonecss.need()
+        dropzonebootstrapcss.need()
         dropzonebasiccss.need()
         field.request = get_current_request()
         field.hasfile = 'false'
@@ -141,6 +143,7 @@ class DropzoneWidget(FileUploadWidget):
             field.hasfile = 'true'
             field.filename = field.request.context.__blobs__.get('file').filename
             field.filesize = field.request.context.__blobs__.get('file').size
+            import pdb;pdb.set_trace();
         return super(DropzoneWidget, self).serialize(field, cstruct=cstruct, readonly=readonly)
 
     def deserialize(self, field, pstruct=None):
