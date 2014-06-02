@@ -4,24 +4,22 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
 <div class="panel panel-default portlet">
-    <div class="panel-heading">
-        <h4 class="panel-title">
-            ${portlet.title}
-        </h4>
+  <div class="panel-heading">
+      <h4 class="panel-title">
+          ${portlet.title}
+      </h4>
+  </div>
+  <!-- Button trigger modal -->
+  <button class="btn btn-primary btn-sm btn-block" data-toggle="modal" data-target="#myModal">
+    Login 
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div id="login-form"></div>
     </div>
-    <ul class="list-group">
-        <li class="list-group-item">
-            <a href="${request.resource_url(view.root, 'login')}" i18n:translate="">
-                Login
-            </a>
-        </li>
-        <!--
-        <li class="list-group-item">
-            <a href="#" i18n:translate="">
-                Register
-            </a>
-        </li>-->
-    </ul>
-    <div class="panel-footer"></div>
+  </div>
 </div>
+<script>$( "#login-form" ).load( "${request.resource_url(view.root, 'login')} #deform" );</script>
 </tal:main>
