@@ -11,7 +11,7 @@
         <div class="panel-heading">
           <h4 class="panel-title">
             <a data-toggle="collapse" data-parent="#accordion_content_types" href="#collapse_${factory.type_name}">
-              ${factory.type_title} - (${factory.type_name})
+              ${factory.type_title|factory.type_name} - (${factory.type_name})
             </a>
             <small tal:content="factory.type_description|''"></small>
           </h4>
@@ -20,7 +20,7 @@
           <div class="panel-body">
               <dl>
                   <dt i18n:translate="">Description</dt>
-                  <dd>${factory.type_description}</dd>
+                  <dd>${factory.type_description|''}</dd>
                   <dt i18n:translate="">Addable to</dt>
                   <dd>
                   <tal:iter repeat="name addable_content.get(factory.type_name, ())">
