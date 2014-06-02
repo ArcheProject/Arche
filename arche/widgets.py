@@ -143,7 +143,6 @@ class DropzoneWidget(FileUploadWidget):
             field.hasfile = 'true'
             field.filename = field.request.context.__blobs__.get('file').filename
             field.filesize = field.request.context.__blobs__.get('file').size
-            import pdb;pdb.set_trace();
         return super(DropzoneWidget, self).serialize(field, cstruct=cstruct, readonly=readonly)
 
     def deserialize(self, field, pstruct=None):
