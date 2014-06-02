@@ -102,6 +102,9 @@ def get_searchable_text(context, default):
     catalog = root.catalog
     found_text = []
     for index in get_searchable_text_indexes():
+        if index not in catalog:
+            #Log?
+            continue
         res = catalog[index].discriminator(context, default)
         if res is default:
             continue
