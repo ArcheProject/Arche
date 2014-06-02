@@ -1,5 +1,7 @@
 import colander
+
 from pyramid.renderers import render
+
 
 from arche.portlets import PortletType
 from arche import _
@@ -9,10 +11,10 @@ class LoginSettingsSchema(colander.Schema):
     pass #FIXME
 
 
-class LoginPortlet(PortletType):
+class LoginPortlet(PortletType): 
     name = u"login"
     schema_factory = LoginSettingsSchema
-    title = _(u"Login")
+    title = _(u"Authentication")
 
     def render(self, context, request, view, **kwargs):
         if request.authenticated_userid:
