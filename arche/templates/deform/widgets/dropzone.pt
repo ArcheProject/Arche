@@ -54,7 +54,7 @@
 			addRemoveLinks: false,
 			previewTemplate: mytemplate,
 			autoQueue: true,
-        	previewsContainer: "#previews", // Define the container to display the previews
+        	previewsContainer: "#previews-${field.oid}", // Define the container to display the previews
         	clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
 			init: function() {
 				this.on("addedfile", function(file) { console.log("Added file."+file); });
@@ -103,7 +103,7 @@
 
 </div>
 
-<div class="table table-striped" class="files" id="previews">
+<div class="table table-striped" class="files" id="previews-${field.oid}">
 </div>
 
 </tal:main>
