@@ -56,6 +56,9 @@ class IRole(Interface):
 class ILink(Interface):
     pass
 
+class IExternalResource(Interface):
+    pass
+
 class IToken(Interface):
     pass
 

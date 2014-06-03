@@ -543,7 +543,11 @@ class RegistrationTokens(AttributeAnnotations):
                 expired.add(email)
         for email in expired:
             del self[email]
-    
+
+
+#FIXME: This will be moved
+remote_cache = LRUCache(200)
+
 
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)

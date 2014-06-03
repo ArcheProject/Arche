@@ -1,0 +1,49 @@
+<span tal:define="name name|field.name;
+                  css_class css_class|field.widget.css_class;
+                  oid oid|field.oid;
+                  mask mask|field.widget.mask;
+                  mask_placeholder mask_placeholder|field.widget.mask_placeholder;
+                  style style|field.widget.style;">
+    <input type="text" name="${name}" value="${cstruct}" 
+           tal:attributes="class string: form-control ${css_class};
+                           style style"
+           id="${oid}"/>
+    <button id="${oid}-check">
+        <span  i18n:translate="">Check</span>
+    </button>
+    <div id="${oid}-preview"></div>
+    <script type="text/javascript">
+      deform.addCallback(
+         '${oid}',
+         function (oid) {
+            $("#" + oid + "-check").on('click', function(event) {
+                //Generic request function here
+                event.preventDefault();
+                console.log('clicked');
+                var url = $('#' + oid).val();
+                var data = {url: url, async: true};
+                request = arche.do_request('/embed_query.json', {data: data});
+                request.done(function(data) {
+                    console.log(data);
+                    var preview = $('#' + oid + '-preview');
+                    preview.empty();
+                    if ('thumbnail_url' in data) {
+                        var ttag = $('<img>');
+                        ttag.attr('src', data['thumbnail_url']);
+                        preview.append(ttag);
+                    }
+                    if (data['oembed_json_url'] !== url) {
+                        $('#' + oid).val(data['oembed_json_url']);
+                    }
+                })
+            });
+         });
+    </script>
+    <script type="text/javascript" tal:condition="mask">
+      deform.addCallback(
+         '${oid}',
+         function (oid) {
+            $("#" + oid).mask("${mask}",  {placeholder:"${mask_placeholder}"});
+         });
+    </script>
+</span>

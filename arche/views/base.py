@@ -1,40 +1,41 @@
 import warnings
 
-import colander
-import deform
-from zope.interface import implementer
-from zope.component.event import objectEventNotify
 from BTrees.OOBTree import OOBTree
-from pyramid.traversal import find_root
-from pyramid.traversal import lineage
-from pyramid.traversal import find_resource
-from pyramid.httpexceptions import HTTPFound
-from pyramid.httpexceptions import HTTPForbidden
-from pyramid.httpexceptions import HTTPNotFound
+from betahaus.viewcomponent import render_view_group
+from deform_autoneed import need_lib
 from pyramid.decorator import reify
+from pyramid.httpexceptions import HTTPForbidden
+from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
+from pyramid.traversal import find_resource
+from pyramid.traversal import find_root
+from pyramid.traversal import lineage
 from pyramid.view import render_view_to_response
 from pyramid_deform import FormView
-from deform_autoneed import need_lib
-from betahaus.viewcomponent import render_view_group
+from zope.component.event import objectEventNotify
+from zope.interface import implementer
+import colander
+import deform
 
-from arche.utils import get_flash_messages
+from arche import _
+from arche import security
+from arche.events import ViewInitializedEvent
+from arche.fanstatic_lib import common_js
+from arche.fanstatic_lib import main_css
+from arche.interfaces import IBaseView
+from arche.interfaces import IContentView
+from arche.interfaces import IFolder
+from arche.interfaces import IThumbnails
+from arche.portlets import get_portlet_manager
 from arche.utils import generate_slug
-from arche.utils import get_view
-from arche.utils import get_content_factories
 from arche.utils import get_addable_content
+from arche.utils import get_content_factories
 from arche.utils import get_content_schemas
 from arche.utils import get_content_views
-from arche.events import ViewInitializedEvent
-from arche.fanstatic_lib import main_css
-from arche.portlets import get_portlet_manager
-from arche.interfaces import IFolder
-from arche.interfaces import IBaseView
-from arche.interfaces import IThumbnails
-from arche.interfaces import IContentView
-from arche import security
-from arche import _
+from arche.utils import get_flash_messages
+from arche.utils import get_view
 
 
 @implementer(IBaseView)
@@ -45,6 +46,7 @@ class BaseView(object):
         self.request = request
         need_lib('basic')
         main_css.need()
+        common_js.need()
         view_event = ViewInitializedEvent(self)
         objectEventNotify(view_event)
 

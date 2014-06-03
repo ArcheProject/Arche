@@ -1,18 +1,19 @@
-import string
 from json import dumps
+import string
 
 from colander import null
-from deform.widget import Select2Widget
 from deform.widget import FileUploadWidget
+from deform.widget import Select2Widget
+from deform.widget import TextInputWidget
 from pyramid.threadlocal import get_current_request 
 from pyramid.traversal import find_resource
 from repoze.catalog.query import Any
 
-from arche.fanstatic_lib import dropzonejs
-from arche.fanstatic_lib import dropzonecss
-from arche.fanstatic_lib import dropzonebootstrapcss
-from arche.fanstatic_lib import dropzonebasiccss
 from arche import _
+from arche.fanstatic_lib import dropzonebasiccss
+from arche.fanstatic_lib import dropzonebootstrapcss
+from arche.fanstatic_lib import dropzonecss
+from arche.fanstatic_lib import dropzonejs
 
 
 class TaggingWidget(Select2Widget):
@@ -152,4 +153,8 @@ class DropzoneWidget(FileUploadWidget):
         if mimetype in self.acceptedMimetypes or string.split(mimetype, '/')[0]+'/*' in self.acceptedMimetypes:
             return self.tmpstore[pstruct]
         return null
-    
+
+
+class EmbedWidget(TextInputWidget):
+    template = 'widgets/embed_textinput'
+    #readonly?

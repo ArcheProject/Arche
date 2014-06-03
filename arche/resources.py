@@ -14,6 +14,7 @@ from repoze.catalog.document import DocumentMap
 from repoze.folder import Folder
 from zope.component.event import objectEventNotify
 from zope.interface import implementer
+import requests
 
 from arche import _
 from arche.catalog import populate_catalog
@@ -23,6 +24,7 @@ from arche.security import ROLE_OWNER
 from arche.security import get_acl_registry
 from arche.security import get_local_roles
 from arche.utils import hash_method
+from arche.utils import remote_cache
 from arche.utils import utcnow
 
 
@@ -185,6 +187,33 @@ class Link(Bare):
     type_description = _(u"Content type that redirects to somewhere.")
     add_permission = "Add %s" % type_name
     target = u""
+
+
+@implementer(IExternalResource)
+class ExternalResource(Bare):
+    type_name = u"ExternalResource"
+    type_title = _(u"External Resource")
+    type_description = _(u"Some kind of external resource.")
+    add_permission = "Add %s" % type_name
+    target = u""
+
+    @property
+    def data(self):
+        if self.target:
+            data = remote_cache.get(self.target, None)
+            if data is not None:
+                return data
+            response = requests.get(self.target, verify = False)
+            if response.ok:
+                data = response.json()
+                remote_cache.put(self.target, data)
+                return data
+        return {}
+
+    @property
+    def title(self):
+        return self.data.get('title', u'')
+
 
 
 @implementer(IRoot, IIndexedContent)
@@ -408,7 +437,6 @@ class Token(Persistent):
         return utcnow() < self.expires
 
 
-
 def make_user_owner(user, event = None):
     """ Whenever a user object is added, make sure the user has the role owner,
         and no one else. This might not be the default behaviour, if an
@@ -435,5 +463,7 @@ def includeme(config):
     config.add_content_factory(Root)
     config.add_content_factory(Link)
     config.add_addable_content('Link', ('Root', 'Document'))
+    config.add_content_factory(ExternalResource)
+    config.add_addable_content('ExternalResource', ('Root', 'Document'))
     config.add_content_factory(Token)
     config.add_subscriber(make_user_owner, [IUser, IObjectAddedEvent])
