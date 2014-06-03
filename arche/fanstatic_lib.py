@@ -10,3 +10,5 @@ dropzonejs = Resource(library, 'dropzone.js', depends=(jquery,))
 dropzonecss = Resource(library, 'css/dropzone.css', depends=(dropzonejs,))
 dropzonebootstrapcss = Resource(library, 'css/dropzone-bootstrap.css', depends=(dropzonejs,))
 dropzonebasiccss = Resource(library, 'css/basic.css', depends=(dropzonejs,))
+
+jqueryui = Resource(library, 'jquery-ui-1.10.4.min.js', depends=(jquery,))

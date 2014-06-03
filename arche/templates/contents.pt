@@ -22,50 +22,82 @@
                     <span class="glyphicon glyphicon-arrow-up"></span>
                     <span i18n:translate="">Parent directory</span>
                 </a>
-                <p>&nbsp;</p>
+                <p>
+                	<script tal:condition="contents">
+						$(function() {
+						$( "#sortable" ).sortable();
+						$( "#sortable" ).disableSelection();
+						});
+						
+						function toggleSorting()
+						{
+							if($("#sortable").sortable( "option", "disabled" ))
+							{
+								$( "#sortable" ).sortable( "enable" );
+								$( "#sortable" ).disableSelection();
+							}
+							else
+							{
+								$( "#sortable" ).sortable( "disable" );
+								$( "#sortable" ).enableSelection();
+								
+								jQuery.post("/sorted", $( "#sortable-form" ).serialize());
+							}
+							$("#sort-toggle-btn").toggleClass("active");
+							$("#sort-toggle-btn").toggleClass("btn-default");
+							$("#sort-toggle-btn").toggleClass("btn-primary");
+						}
+					</script>
+					
+					<button tal:condition="contents" id="sort-toggle-btn" type="button" class="btn btn-primary pull-right active" onclick="toggleSorting()" i18n:translate="">Sorting</button>
+					<div class="clearfix"></div>
+				</p>
 
                 <p class="lead" tal:condition="not is_folderish" i18n:translate="">Not a folder, so it can't have content</p>
 
-                <table tal:condition="contents" class="table table-responsive table-bordered table-striped table-hover sortable-table">
-                    <thead>
-                        <tr>
-                            <th i18n:translate="">Title</th>
-                            <th i18n:translate="">Type</th>
-                            <th i18n:translate="">Created</th>
-                            <th i18n:translate="">Modified</th>
-                            <th i18n:translate="">Info</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr tal:repeat="obj contents">
-                            <td>
-                                <a href="${request.resource_url(obj, view.query_view(obj, name = 'contents', default = ''))}"
-                                   title="${obj.description}">${obj.title}</a></td>
-                            <td tal:define="mimetype getattr(obj, 'mimetype', False)">
-                                ${obj.type_title}
-                                ${mimetype and '(%s)' % mimetype or ''}
-                            </td>
-                            <td>
-                                <span tal:condition="getattr(obj, 'created', None)"
-                                    title="${request.dt_handler.format_dt(obj.created)}">
-                                    ${request.dt_handler.format_relative(obj.created)}
-                                </span>
-                            </td>
-                            <td>
-                                <span tal:condition="getattr(obj, 'modified', None)"
-                                    title="${request.dt_handler.format_dt(obj.created)}">
-                                    ${request.dt_handler.format_relative(obj.modified)}
-                                </span>
-                            </td>
-                            <td tal:define="size getattr(obj, 'size', False);">
-                                <tal:size condition="size">
-                                    <span class="glyphicon glyphicon-hdd"></span>
-                                    ${size and '%s %s' % view.byte_format(size) or ''}
-                                </tal:size>
-                            </td>
-                        </tr>                
-                    </tbody>
-                </table>
+				<form id="sortable-form">
+	                <table tal:condition="contents" class="table table-responsive table-bordered table-striped table-hover sortable-table">
+	                    <thead>
+	                        <tr>
+	                            <th i18n:translate="">Title</th>
+	                            <th i18n:translate="">Type</th>
+	                            <th i18n:translate="">Created</th>
+	                            <th i18n:translate="">Modified</th>
+	                            <th i18n:translate="">Info</th>
+	                        </tr>
+	                    </thead>
+	                    <tbody  id="sortable">
+	                        <tr tal:repeat="obj contents">
+	                            <td>
+	                            	<input type="hidden" name="content_name" value="${obj.__name__}" />
+	                                <a href="${request.resource_url(obj, view.query_view(obj, name = 'contents', default = ''))}"
+	                                   title="${obj.description}">${obj.title}</a></td>
+	                            <td tal:define="mimetype getattr(obj, 'mimetype', False)">
+	                                ${obj.type_title}
+	                                ${mimetype and '(%s)' % mimetype or ''}
+	                            </td>
+	                            <td>
+	                                <span tal:condition="getattr(obj, 'created', None)"
+	                                    title="${request.dt_handler.format_dt(obj.created)}">
+	                                    ${request.dt_handler.format_relative(obj.created)}
+	                                </span>
+	                            </td>
+	                            <td>
+	                                <span tal:condition="getattr(obj, 'modified', None)"
+	                                    title="${request.dt_handler.format_dt(obj.created)}">
+	                                    ${request.dt_handler.format_relative(obj.modified)}
+	                                </span>
+	                            </td>
+	                            <td tal:define="size getattr(obj, 'size', False);">
+	                                <tal:size condition="size">
+	                                    <span class="glyphicon glyphicon-hdd"></span>
+	                                    ${size and '%s %s' % view.byte_format(size) or ''}
+	                                </tal:size>
+	                            </td>
+	                        </tr>                
+	                    </tbody>
+	                </table>
+                </form>
               </div>
             </div>
 
