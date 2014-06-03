@@ -25,8 +25,8 @@
                 <p>
                 	<script tal:condition="contents">
 						$(function() {
-						$( "#sortable" ).sortable();
-						$( "#sortable" ).disableSelection();
+							$( "#sortable" ).sortable({ disabled: true });
+							//$( "#sortable" ).disableSelection();
 						});
 						
 						function toggleSorting()
@@ -49,7 +49,7 @@
 						}
 					</script>
 					
-					<button tal:condition="contents" id="sort-toggle-btn" type="button" class="btn btn-primary pull-right active" onclick="toggleSorting()" i18n:translate="">Sorting</button>
+					<button tal:condition="contents" id="sort-toggle-btn" type="button" class="btn btn-default pull-right" onclick="toggleSorting()" i18n:translate="">Change order</button>
 					<div class="clearfix"></div>
 				</p>
 
