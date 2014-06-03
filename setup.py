@@ -37,7 +37,7 @@ requires = ('pyramid',
             'Pillow',
             'html2text',
             'requests',
-            'BeautifulSoup',
+            'beautifulsoup4',
             'lxml',
             )
 
