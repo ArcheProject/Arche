@@ -3,6 +3,7 @@ from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
 import requests
 
+from arche import _
 from arche import security
 from arche.interfaces import IRoot
 from arche.utils import generate_slug
@@ -13,17 +14,21 @@ from arche.views.base import DefaultAddForm
 def embed_query(context, request):
     #FIXME: think about security here. Is it a bad idea to have this open?
     url = request.params.get('url', None)
-    response = requests.get(url, verify = False) #FIXME: We need root certs to make this work!
-    if response.headers.get('content-type') != 'application/json':
+    try:
+        response = requests.get(url, verify = False) #FIXME: We need root certs to make this work!
+    except requests.exceptions.RequestException as e:
+        raise HTTPForbidden(str(e))
+    if 'application/json' not in response.headers.get('content-type'):
         url = _resolve_oembed_url(response)
-        response = requests.get(url, verify = False)
+        try:
+            response = requests.get(url, verify = False)
+        except requests.exceptions.RequestException as e:
+            raise HTTPForbidden(str(e))
     if response.status_code != 200:
-        raise HTTPForbidden()
-    if response.ok:
-        result = response.json()
-        result['oembed_json_url'] = url
-        return result
-    raise HTTPForbidden()
+        raise HTTPForbidden(_("Server didn't return a response I could understand"))
+    result = response.json()
+    result['oembed_json_url'] = url
+    return result
 
 def _resolve_oembed_url(response):
     soup = BeautifulSoup(response.content)

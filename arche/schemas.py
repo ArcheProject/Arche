@@ -8,6 +8,7 @@ from arche import _
 from arche.interfaces import IPopulator
 from arche.security import get_roles_registry
 from arche.utils import FileUploadTempStore
+from arche.validators import JSONURL
 from arche.validators import existing_userid_or_email
 from arche.validators import login_password_validator
 from arche.validators import unique_context_name_validator
@@ -382,6 +383,7 @@ class SiteSettingsSchema(colander.Schema):
 
 class ExternalResourceSchema(BaseSchema):
     target = colander.SchemaNode(colander.String(),
+                                 validator = JSONURL(),
                                  widget = EmbedWidget())
 
 

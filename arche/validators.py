@@ -1,5 +1,6 @@
 from pyramid.traversal import find_root
 import colander
+import requests
 
 from arche import _
 from arche.utils import check_unique_name
@@ -91,3 +92,18 @@ class UniqueEmail(object):
         email_val(node, value)
         if self.context['users'].get_user_by_email(value) is not None:
             raise colander.Invalid(node, _("Already registered. You may recover your password if you've lost it."))
+
+
+class JSONURL(object):
+
+    def __init__(self):
+        pass
+
+    def __call__(self, node, value):
+        colander.url(node, value)
+        try:
+            response = requests.get(value, verify = False) #FIXME: SSL problem here too
+        except requests.exceptions.RequestException as e:
+            raise colander.Invalid(node, str(e))
+        if 'application/json' not in response.headers.get('content-type'):
+            raise colander.Invalid(node, _(u"URL didn't return information on a shared object. (Must be a json response)"))
