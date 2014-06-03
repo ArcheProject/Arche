@@ -132,9 +132,8 @@ def appmaker(zodb_root):
             #FIXME move this population to its own method so tests can use it
             #Root added
             data = dict(zodb_root['initial_setup'].setup_data)
-            root = root_populator(**data)
             #Attach and remove setup context
-            zodb_root['app_root'] = root
+            zodb_root['app_root'] = root_populator(**data)
             del zodb_root['initial_setup']
             return zodb_root['app_root']
 

@@ -227,10 +227,6 @@ class Root(Content):
         self.catalog = Catalog()
         self.document_map = DocumentMap()
         populate_catalog(self.catalog)
-        reg = get_current_registry()
-        cataloger = reg.queryAdapter(self, ICataloger)
-        if cataloger: #Not needed for testing
-            cataloger.index_object()
         self.__site_settings__ = OOBTree()
         super(Root, self).__init__(data=data, **kwargs)
 
