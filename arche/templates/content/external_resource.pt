@@ -8,6 +8,8 @@
 <div metal:fill-slot="main-content">
     <h1>${context.title}</h1>
 
+    <div tal:condition="'html' in context.data" tal:content="structure context.data['html']"></div>
+
     <div>${context.data}</div>
 
 </div>
