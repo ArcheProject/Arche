@@ -10,8 +10,15 @@
 
     <div tal:condition="context.data['type'] == 'rich'" tal:content="structure context.data['html']"></div>
     <div tal:condition="context.data['type'] == 'video'" tal:content="structure context.data['html']"></div>
-    <img tal:condition="context.data['type'] == 'photo'" tal:attributes="src context.data['url']; width context.data['width']; height context.data['height']" />
-    
+    <div tal:condition="context.data['type'] == 'photo'">
+    	<img tal:attributes="src context.data['url']; width context.data['width']; height context.data['height']" />
+    	<div tal:condition="context.data.get('author_name', 'False')">
+    		<span i18n:translate="">Image by</span> 
+    		<a tal:condition="context.data.get('author_url', 'False')" href="${context.data.get('author_url', '')}">
+    			${context.data['author_name']}
+			</a>
+		</div>
+    </div>
     
     <ul>
     <tal:iterate repeat="data context.data">
