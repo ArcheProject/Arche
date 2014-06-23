@@ -12,8 +12,13 @@
     <div tal:condition="context.data['type'] == 'video'" tal:content="structure context.data['html']"></div>
     <img tal:condition="context.data['type'] == 'photo'" tal:attributes="src context.data['url']; width context.data['width']; height context.data['height']" />
     
-    <div>${context.data}</div>
-
+    
+    <ul>
+    <tal:iterate repeat="data context.data">
+    	<li>${data} = ${context.data[data]}</li>
+    </tal:iterate>
+	</ul>
+	
 </div>
 </body>
 </html>
