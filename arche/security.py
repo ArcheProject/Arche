@@ -108,20 +108,23 @@ class ACLEntry(IterableUserDict):
         This is the way to create custom permissions for some workflow states or similar.
     """
     def __init__(self):
-        self.roleperms = {}
         self.data = {}
 
     def add(self, role, perms):
         #Check what kind of role?
-        current = self.roleperms.setdefault(role, set())
+        if isinstance(perms, basestring):
+            perms = (perms,)
+        current = self.setdefault(role, set())
         current.update(perms)
 
     def remove(self, role, perms):
-        current = self.roleperms.get(role, set())
+        if isinstance(perms, basestring):
+            perms = (perms,)
+        current = self.get(role, set())
         [current.remove(x) for x in perms if x in current]
 
     def __call__(self):
-        items = [(Allow, role, perms) for (role, perms) in self.roleperms.items()]
+        items = [(Allow, role, perms) for (role, perms) in self.items()]
         items.append(DENY_ALL)
         return items
 
@@ -134,7 +137,7 @@ class ACLRegistry(IterableUserDict):
 
     def __setitem__(self, key, aclentry):
         assert isinstance(aclentry, ACLEntry)
-        self.data[key] = aclentry
+        self[key] = aclentry
 
     def get_acl(self, type_name, workflow = None):
         if type_name in self:
