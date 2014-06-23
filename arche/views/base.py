@@ -58,6 +58,14 @@ class BaseView(object):
     def flash_messages(self):
         return get_flash_messages(self.request)
 
+    @reify
+    def profile(self):
+        """ Note: this attr may change or move.
+        """
+        userid = self.request.authenticated_userid
+        if userid:
+            return self.root['users'].get(userid, None)
+
     def render_portlet_slot(self, slot, **kw):
         results = []
         context = self.context
