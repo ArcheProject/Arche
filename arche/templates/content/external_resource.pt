@@ -20,7 +20,10 @@
 		</div>
     </div>
     
-    <ul>
+    <button type="button" class="btn btn-default" onclick="$('.external-resource-json').toggle()">
+    	<span class="glyphicon glyphicon-th-list"></span> Json data
+	</button>
+    <ul class="external-resource-json" style="display:none">
     <tal:iterate repeat="data context.data">
     	<li>${data} = ${context.data[data]}</li>
     </tal:iterate>
