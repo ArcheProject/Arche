@@ -1,0 +1,8 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:define-macro="main"
+      i18n:domain="Arche">
+<tal:main-column metal:define-slot="main-content"></tal:main-column>
+</tal:main>

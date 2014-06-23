@@ -103,7 +103,9 @@ class BaseView(object):
     def get_content_factory(self, name):
         return get_content_factories(self.request.registry).get(name)
 
-    def macro(self, asset_spec, macro_name='main'):
+    def macro(self, asset_spec, xhr_asset = None, macro_name='main'):
+        if xhr_asset and self.request.is_xhr:
+            asset_spec = xhr_asset
         return get_renderer(asset_spec).implementation().macros[macro_name]
 
     def addable_content(self, context):
