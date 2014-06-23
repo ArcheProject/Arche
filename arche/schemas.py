@@ -125,6 +125,10 @@ def default_now(node, kw):
     request = kw['request']
     return request.dt_handler.utcnow()
 
+def to_lowercase(value):
+    if isinstance(value, basestring):
+        return value.lower()
+    return value
 
 class DCMetadataSchema(colander.Schema):
     title = colander.SchemaNode(colander.String())
@@ -289,6 +293,7 @@ class InitialSetup(colander.Schema):
 class LoginSchema(colander.Schema):
     validator = login_password_validator
     email_or_userid = colander.SchemaNode(colander.String(),
+                                          preparer = to_lowercase,
                                           title = _(u"Email or UserID"),)
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
@@ -298,12 +303,14 @@ class LoginSchema(colander.Schema):
 class RegistrationSchema(colander.Schema):
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Email"),
+                                preparer = to_lowercase,
                                 validator = unique_email_validator)
 
 
 class FinishRegistrationSchema(colander.Schema):
     userid = colander.SchemaNode(colander.String(),
                                  title = _(u"UserID"),
+                                 preparer = to_lowercase,
                                  validator = unique_userid_validator)
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
