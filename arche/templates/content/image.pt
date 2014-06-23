@@ -13,7 +13,7 @@
          tal:condition="description"
          tal:content="structure description">Description text</p>
 
-    <img tal:replace="structure view.thumb_tag(context, 'col-6')" />
+    <img tal:replace="structure view.thumb_tag(context, 'col-6', key = 'file')" />
 
     <div class="well well-sm">
       <span class="glyphicon glyphicon-save"></span>
@@ -28,8 +28,6 @@
       <span><span i18n:translate="">Size</span> ${'%s %s' % view.byte_format(context.size)|context.size}</span>
       <span><span i18n:translate="">Type</span> ${context.mimetype}</span>
     </div>
-    
-    <img src="${request.resource_url(context, 'view')}" />
 </div>
 </body>
 </html>

@@ -6,24 +6,21 @@
       i18n:domain="Arche">
 <body>
 <div metal:fill-slot="main-content">
+
+    <img tal:replace="structure view.thumb_tag(context, 'col-2', extra_cls = 'pull-right')" />
+
     <h1>${context.title}</h1>
+
     <p class="description lead"
          tal:define="description context.description|None"
          tal:condition="description"
          tal:content="structure description">Description text</p>
-    <div class="well well-sm">
-      <span class="glyphicon glyphicon-save"></span>
-      <a href="${request.resource_url(context, 'download')}" i18n:translate="">
-        Download file
-      </a>
-      <span class="glyphicon glyphicon-eye-open"></span>
-      <a href="${request.resource_url(context, 'view')}" i18n:translate="">
-        View
-      </a>
-      <span class="glyphicon glyphicon-hdd"></span>
-      <span><span i18n:translate="">Size</span> ${'%s %s' % view.byte_format(context.size)|context.size}</span>
-      <span><span i18n:translate="">Type</span> ${context.mimetype}</span>
-    </div>
+    <div class="body"
+         tal:define="body context.body|None"
+         tal:condition="body"
+         tal:content="structure body">Body text</div>
+    <div class="clearfix"><!-- --></div>
+
 </div>
 </body>
 </html>

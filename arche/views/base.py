@@ -157,7 +157,7 @@ class BaseView(object):
         if not url:
             return default
         thumbnails = self.request.registry.queryAdapter(context, IThumbnails)
-        if not thumbnails:
+        if thumbnails is None:
             return default
         thumb = thumbnails.get_thumb(scale_name, direction = direction, key = key)
         if thumb:
@@ -419,7 +419,7 @@ def includeme(config):
                     name = 'view',
                     context = 'arche.interfaces.IContent',
                     permission = security.PERM_VIEW,
-                    renderer = 'arche:templates/base_view.pt')
+                    renderer = 'arche:templates/content/basic.pt')
     config.add_view(DynamicView,
                     name = 'dynamic_view',
                     context = 'arche.interfaces.IContent', #Should this be used?

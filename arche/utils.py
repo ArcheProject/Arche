@@ -365,7 +365,7 @@ def get_image_scales(registry = None):
 def thumb_url(request, context, scale, key = 'image'):
     scales = get_image_scales(request.registry)
     if scale in scales:
-        if IThumbnailedContent.providedBy(context) and IBlobs(context).get(key, None) is not None:
+        if IThumbnailedContent.providedBy(context):
             return request.resource_url(context, 'thumbnail', key, scale)
 
 def find_all_db_objects(context):
