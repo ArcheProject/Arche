@@ -147,14 +147,13 @@ class FlashMessages(object):
         css_classes.append('alert-%s' % type)
         if dismissable:
             css_classes.append('alert-dismissable')
-        if auto_destruct:
-            css_classes.append('auto-destruct')
         css_classes = " ".join(css_classes)
-        flash = {'msg':msg, 'dismissable': dismissable, 'css_classes': css_classes}
+        flash = {'msg':msg, 'dismissable': dismissable, 'css_classes': css_classes, 'auto_destruct': auto_destruct}
         self.request.session.flash(flash)
 
     def get_messages(self):
         for message in self.request.session.pop_flash():
+            message['id'] = unicode(uuid4())
             yield message
 
     def render(self):
