@@ -10,7 +10,11 @@
       </a>
       <ul class="dropdown-menu">
         <tal:iterate repeat="factory view.addable_content(context)">
-            <li><a href="${request.resource_url(context, 'add', query = {'content_type': factory.type_name})}">${factory.type_title}</a></li>
+            <li><a href="${request.resource_url(context, 'add', query = {'content_type': factory.type_name})}"
+                tal:define="icon getattr(factory, 'icon', '')">
+                <span tal:condition="icon" class="glyphicon glyphicon-${icon}"></span>
+                ${factory.type_title}
+            </a></li>
         </tal:iterate>
       </ul>
     </li>
