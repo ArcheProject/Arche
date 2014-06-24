@@ -89,6 +89,7 @@ class BaseMixin(object):
     type_title = u""
     type_description = u""
     uid = None
+    icon = u""
 
     def __init__(self, **kwargs):
         #IContent should be the same iface registered by the roles adapter
@@ -187,7 +188,12 @@ class Link(Bare):
     type_description = _(u"Content type that redirects to somewhere.")
     add_permission = "Add %s" % type_name
     target = u""
+    icon = u"link"
 
+external_type_icons = {'photo': 'picture',
+                       'video': 'film',
+                       'rich': 'cloud'}
+#Set this via subscriber? Propbably
 
 @implementer(IExternalResource)
 class ExternalResource(Bare):
@@ -196,6 +202,7 @@ class ExternalResource(Bare):
     type_description = _(u"Some kind of external resource.")
     add_permission = "Add %s" % type_name
     target = u""
+    icon = u"cloud"
 
     @property
     def data(self):
@@ -213,7 +220,6 @@ class ExternalResource(Bare):
     @property
     def title(self):
         return self.data.get('title', u'')
-
 
 
 @implementer(IRoot, IIndexedContent)
@@ -244,6 +250,7 @@ class Document(Content):
     type_title = _(u"Document")
     body = u""
     add_permission = "Add %s" % type_name
+    icon = u"font"
 
     @property
     def image_data(self): pass #FIXME: Should this return something?
@@ -261,6 +268,7 @@ class File(Bare, DCMetadataMixin):
     mimetype = u""
     size = 0
     blob_key = "file"
+    icon = u"file"
 
     def __init__(self, file_data, **kwargs):
         self._title = u""
@@ -300,6 +308,7 @@ class Image(File):
     type_title = _(u"Image")
     add_permission = "Add %s" % type_name
     blob_key = "file"
+    icon = u"picture"
 
 
 @implementer(IInitialSetup)
@@ -337,6 +346,7 @@ class User(Bare):
     email = u""
     add_permission = "Add %s" % type_name
     pw_token = None
+    icon = u"user"
 
     @property
     def title(self):
@@ -387,6 +397,7 @@ class Group(Bare):
     add_permission = "Add %s" % type_name
     title = u""
     description = u""
+    icon = u"user" #FIXME no group icon!?
 
     def __init__(self, **kwargs):
         #Things like created, creator etc...

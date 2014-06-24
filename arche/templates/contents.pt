@@ -72,7 +72,9 @@
 	                            	<input type="hidden" name="content_name" value="${obj.__name__}" />
 	                                <a href="${request.resource_url(obj, view.query_view(obj, name = 'contents', default = ''))}"
 	                                   title="${obj.description}">${obj.title}</a></td>
-	                            <td tal:define="mimetype getattr(obj, 'mimetype', False)">
+	                            <td tal:define="mimetype getattr(obj, 'mimetype', '');
+	                                            icon getattr(obj, 'icon', 'file');">
+	                                <span class="glyphicon glyphicon-${icon}"></span>
 	                                ${obj.type_title}
 	                                ${mimetype and '(%s)' % mimetype or ''}
 	                            </td>
