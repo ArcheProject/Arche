@@ -13,6 +13,8 @@ from arche.views.base import DefaultAddForm
 
 def embed_query(context, request):
     #FIXME: think about security here. Is it a bad idea to have this open?
+    #This also needs to be rewritten since mosly the same code is being called twice.
+    #Also, there's no error checking and no proper errors returned to the user.
     url = request.params.get('url', None)
     try:
         response = requests.get(url, verify = False) #FIXME: We need root certs to make this work!
@@ -32,6 +34,8 @@ def embed_query(context, request):
 
 def _resolve_oembed_url(response):
     soup = BeautifulSoup(response.content)
+    if soup.head is None:
+        raise HTTPForbidden()
     tags = soup.head.findAll(type = 'application/json+oembed')
     if not tags:
         raise HTTPForbidden()
