@@ -13,9 +13,11 @@
          tal:condition="description"
          tal:content="structure description">Description text</p>
 
+    <p>
 	<a href="${request.resource_url(context, 'view')}">
-    	<img tal:replace="structure view.thumb_tag(context, 'col-6', key = 'file')" />
+        <img tal:replace="structure view.thumb_tag(context, 'col-12', key = 'file')" />
 	</a>
+	</p>
 
     <div class="well well-sm">
       <span class="glyphicon glyphicon-save"></span>
