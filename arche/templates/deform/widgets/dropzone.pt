@@ -6,7 +6,7 @@
 
 <script type="text/javascript">
 	var mytemplate = ""
-	+"<div id='template' class='file-row'>"
+	+"<div class='file-row'>"
 	+"	<!-- This is used as the file preview template -->"
 	+"	<div>"
 	+"		<span class='preview'>"
@@ -57,7 +57,8 @@
 	        	previewsContainer: "#previews-${field.oid}", // Define the container to display the previews
 	        	clickable: ".fileinput-button", // Define the element that should be used as click trigger to select files.
 				init: function() {
-					this.on("addedfile", function(file) { console.log("Added file."+file); });
+					//this.on("addedfile", function(file) { console.log("Added file."+file); });
+					//this.on("thumbnail", function(file, dataUrl) { console.log("thumbnail created for file "+file+" with url "+dataUrl); });
 					this.on("success", function(file, response) {
 						dropdiv = $("div#${field.oid}")[0];
 						console.log(dropdiv);
@@ -73,14 +74,18 @@
 						// Create the mock file:
 						var mockFile = { name: "${field.filename}", size: ${field.filesize} };
 						// Call the default addedfile event handler
+						
 						this.emit("addedfile", mockFile);
-						this.emit("success", mockFile);
+						
 						// And optionally show the thumbnail of the file:
-						this.emit("thumbnail", mockFile, "/image/url");
+						this.emit("thumbnail", mockFile, "${field.request.thumb_url(field.request.context, 'col-2', key='file')}");
 						// If you use the maxFiles option, make sure you adjust it to the
 						// correct amount:
 						var existingFileCount = 1; // The number of files already uploaded
-						this.options.maxFiles = myDropzone.options.maxFiles - existingFileCount;
+						this.options.maxFiles = this.options.maxFiles - existingFileCount;
+						
+						//do this one last
+						this.emit("success", mockFile);
 					}
 				}
 			});
