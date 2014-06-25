@@ -26,7 +26,6 @@
                 	<script tal:condition="contents">
 						$(function() {
 							$( "#sortable" ).sortable({ disabled: true });
-							//$( "#sortable" ).disableSelection();
 						});
 						
 						function toggleSorting()
@@ -41,7 +40,7 @@
 								$( "#sortable" ).sortable( "disable" );
 								$( "#sortable" ).enableSelection();
 								
-								jQuery.post("/sorted", $( "#sortable-form" ).serialize());
+								$.post("${request.resource_url(context, 'sorted')}", $( "#sortable-form" ).serialize());
 							}
 							$("#sort-toggle-btn").toggleClass("active");
 							$("#sort-toggle-btn").toggleClass("btn-default");
