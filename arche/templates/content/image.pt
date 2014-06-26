@@ -12,21 +12,16 @@
          tal:define="description context.description|None"
          tal:condition="description"
          tal:content="structure description">Description text</p>
-    <div class="row">   
-    	<a href="${request.resource_url(context, 'view')}">
-        <span data-picture data-alt="${context.title}">
-          <span data-src="${view.request.thumb_url(context, 'col-6', key = 'file')}"></span>
-          <span data-src="${view.request.thumb_url(context, 'col-9', key = 'file')}"     data-media="(min-width: 480px)"></span>
-          <span data-src="${view.request.thumb_url(context, 'col-12', key = 'file')}"      data-media="(min-width: 768px)"></span>
-          <span data-src="${view.request.thumb_url(context, 'col-12', key = 'file')}" data-media="(min-width: 992px)"></span>
-
-          <!-- Fallback content for non-JS browsers. Same img src as the initial, unqualified source element. -->
-          <noscript>
-            <img src="${view.request.thumb_url(context, 'col-6', key = 'file')}" alt="${context.title}">
-          </noscript>
-        </span>
-      </a>
-    </div>
+  	<a href="${request.resource_url(context, 'view')}">
+      <picture style="max-width: 100%;height: auto;">
+        <!--[if IE 9]><video style="display: none;"><![endif]-->
+        <source srcset="${view.request.thumb_url(context, 'col-12', key = 'file')}" media="(min-width: 768px)">
+        <source srcset="${view.request.thumb_url(context, 'col-9', key = 'file')}" media="(min-width: 480px)">
+        <source srcset="${view.request.thumb_url(context, 'col-6', key = 'file')}">
+        <!--[if IE 9]></video><![endif]-->
+        <img srcset="${view.request.thumb_url(context, 'col-6', key = 'file')}" alt="${context.title}">
+      </picture>
+    </a>
     <img tal:replace="structure view.thumb_tag(context, 'col-12', key = 'file')" />
     <div class="well well-sm">
       <span class="glyphicon glyphicon-save"></span>
