@@ -13,3 +13,4 @@ dropzonebasiccss = Resource(library, 'css/basic.css', depends=(dropzonejs,))
 
 common_js = Resource(library, 'common.js', depends = (jquery,))
 jqueryui = Resource(library, 'jquery-ui-1.10.4.min.js', depends=(jquery,)) #FIXME: Doesn't this exist in deform?
+picturefill_js = Resource(library, "picturefill-1.2.1.js")

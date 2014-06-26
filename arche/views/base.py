@@ -24,6 +24,7 @@ from arche import security
 from arche.events import ViewInitializedEvent
 from arche.fanstatic_lib import common_js
 from arche.fanstatic_lib import main_css
+from arche.fanstatic_lib import picturefill_js
 from arche.interfaces import IBaseView
 from arche.interfaces import IContentView
 from arche.interfaces import IFolder
@@ -47,6 +48,7 @@ class BaseView(object):
         need_lib('basic')
         main_css.need()
         common_js.need()
+        picturefill_js.need()
         view_event = ViewInitializedEvent(self)
         objectEventNotify(view_event)
 
