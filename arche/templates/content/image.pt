@@ -13,16 +13,13 @@
          tal:condition="description"
          tal:content="structure description">Description text</p>
   	<a href="${request.resource_url(context, 'view')}">
-      <picture style="max-width: 100%;height: auto;">
-        <!--[if IE 9]><video style="display: none;"><![endif]-->
-        <source srcset="${view.request.thumb_url(context, 'col-12', key = 'file')}" media="(min-width: 768px)">
-        <source srcset="${view.request.thumb_url(context, 'col-9', key = 'file')}" media="(min-width: 480px)">
-        <source srcset="${view.request.thumb_url(context, 'col-6', key = 'file')}">
-        <!--[if IE 9]></video><![endif]-->
-        <img srcset="${view.request.thumb_url(context, 'col-6', key = 'file')}" alt="${context.title}">
-      </picture>
+      <img class="img-responsive" sizes="100vw"
+        srcset="${view.request.thumb_url(context, 'col-12', key = 'file')} 1160w,
+                ${view.request.thumb_url(context, 'col-9', key = 'file')} 860w, 
+                ${view.request.thumb_url(context, 'col-6', key = 'file')} 560w,
+                ${view.request.thumb_url(context, 'col-4', key = 'file')} 360w" 
+        alt="${context.title}" />
     </a>
-    <img tal:replace="structure view.thumb_tag(context, 'col-12', key = 'file')" />
     <div class="well well-sm">
       <span class="glyphicon glyphicon-save"></span>
       <a href="${request.resource_url(context, 'download')}" i18n:translate="">
