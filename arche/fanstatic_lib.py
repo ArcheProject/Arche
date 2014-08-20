@@ -2,6 +2,7 @@ from fanstatic import Library
 from fanstatic import Resource
 from js.jquery import jquery
 from js.bootstrap import bootstrap_css
+from fanstatic.core import render_js
 
 library = Library('arche', 'static')
 
@@ -14,6 +15,9 @@ dropzonebasiccss = Resource(library, 'css/basic.css', depends=(dropzonejs,))
 common_js = Resource(library, 'common.js', depends = (jquery,))
 jqueryui = Resource(library, 'jquery-ui-1.10.4.min.js', depends=(jquery,)) #FIXME: Doesn't this exist in deform?
 picturefill_js = Resource(library, "picturefill.js")
+
 #IE8 fixes for Twitter Bootstrap
-html5shiv_js = Resource(library, "html5shiv.min.js")
-respond_js = Resource(library, "respond.min.js")
+def render_conditional_comment_js(url, condition = 'lt', version = '9'):
+    return '<!--[if %s IE %s]>%s<![endif]-->' % (condition, version, render_js(url))
+html5shiv_js = Resource(library, "html5shiv.min.js", renderer = render_conditional_comment_js)
+respond_js = Resource(library, "respond.min.js", renderer = render_conditional_comment_js)
