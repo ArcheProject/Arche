@@ -69,8 +69,9 @@ class RegisterForm(BaseForm):
         send_email(_(u"Registration link"),
                    [email],
                    html,
-                   request = self.request)
-        self.flash_messages.add(_(u"A mail with registration instructions have been sent!"), type="success")
+                   request = self.request,
+                   send_immediately = True)
+        self.flash_messages.add(_(u"A mail with registration instructions have been sent!" + html), type="success")
         return HTTPFound(location = self.request.resource_url(self.root))
 
 
