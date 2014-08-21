@@ -129,7 +129,7 @@ class BaseView(object):
         return render(renderer, kwargs, self.request)
 
     def render_actionbar(self, context):
-        if self.request.authenticated_userid:
+        if self.request.has_permission(security.PERM_EDIT):
             return self.render_template('arche:templates/action_bar.pt')
 
     def render_view_group(self, group, context = None, **kw):
