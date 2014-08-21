@@ -479,7 +479,7 @@ def utcnow():
 def invalidate_thumbs_in_context(context, event):
     IThumbnails(context).invalidate_context_cache()
 
-def send_email(subject, recipients, html, sender = None, plaintext = None, request = None, send_immediately = False, **kw):
+def send_email(subject, recipients, html, sender = "noreply@localhost.com", plaintext = None, request = None, send_immediately = False, **kw):
     """ Send an email to users. This also checks the required settings and translates
         the subject.
         
