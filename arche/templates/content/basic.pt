@@ -6,9 +6,12 @@
       i18n:domain="Arche">
 <body>
 <div metal:fill-slot="main-content">
-
+	<a class="btn btn-default" href="${request.resource_url(context.__parent__)}">
+      <span class="glyphicon glyphicon-th-large"></span> Back to module
+    </a>
+    
     <img tal:replace="structure view.thumb_tag(context, 'col-2', extra_cls = 'pull-right')" />
-
+	
     <h1>${context.title}</h1>
 
     <p class="description lead"
