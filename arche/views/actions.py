@@ -119,7 +119,7 @@ def profile_item(context, request, va, **kw):
              priority = 20,
              permisison = security.PERM_DELETE)
 def delete_context(context, request, va, **kw):
-    if context != kw['view'].root:
+    if context != kw['view'].root and not hasattr(context, 'is_permanent'):
         return """<li><a href="%(url)s">%(title)s</a></li>""" %\
             {'url': request.resource_url(context, 'delete'),
              'title': va.title}

@@ -329,6 +329,7 @@ class Users(Content):
     listing_visible = False
     search_visible = False
     title = _(u"Users")
+    is_permanent = True
 
     def get_user_by_email(self, email, default = None):
         #FIXME use catalog instead?

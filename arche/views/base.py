@@ -347,6 +347,8 @@ class DefaultDeleteForm(BaseForm):
     def delete_success(self, appstruct):
         if self.root == self.context:
             raise HTTPForbidden("Can't delete root")
+        if hasattr(self.context, 'is_permanent'):
+            raise HTTPForbidden("Can't delete this object because it is permanent.")
         msg = _(u"Deleted '${title}'",
                 mapping = {'title': self.context.title})
         parent = self.context.__parent__
