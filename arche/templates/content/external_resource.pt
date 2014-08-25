@@ -6,10 +6,6 @@
       i18n:domain="Arche">
 <body>
 <div metal:fill-slot="main-content">
-    <a class="btn btn-default" href="${request.resource_url(context.__parent__)}">
-      <span class="glyphicon glyphicon-th-large"></span> Back to module
-    </a>
-    
     <h1>${context.title}</h1>
 
     <div tal:condition="context.data['type'] == 'rich'" tal:content="structure context.data['html']"></div>
