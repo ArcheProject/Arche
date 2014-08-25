@@ -325,7 +325,10 @@ class DefaultEditForm(BaseForm):
 class DefaultDeleteForm(BaseForm):
     appstruct =lambda x: {}
     schema_name = u'delete'
-    heading = _(u"Delete")
+    
+    @property
+    def heading(self):
+        return _(u"Delete " + self.context.title + u" ( " + self.context.type_name + u" ) ?")
 
     @property
     def type_name(self):
