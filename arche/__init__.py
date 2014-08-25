@@ -30,6 +30,7 @@ def includeme(config):
     config.include('arche.security')
     config.include('arche.schemas')
     config.include('arche.views')
+    config.scan('arche.views')
     config.include('arche.catalog')
     config.include('arche.portlets')
     config.include('arche.populators')
