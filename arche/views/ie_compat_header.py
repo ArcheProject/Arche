@@ -6,3 +6,6 @@ def add_xua_header(event):
   if ('MSIE' in (event.request.user_agent or '') and
       'html' in (event.response.content_type or '')):
     event.response.headers['X-UA-Compatible'] = 'IE=edge,chrome=1'
+
+def includeme(config):
+    config.scan('arche.views.ie_compat_header')

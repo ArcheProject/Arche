@@ -8,6 +8,7 @@ def includeme(config):
     config.include('arche.views.embed')
     config.include('arche.views.file')
     config.include('arche.views.groups')
+    config.include('arche.views.ie_compat_header')
     config.include('arche.views.image')
     config.include('arche.views.initial_setup')
     config.include('arche.views.link')
