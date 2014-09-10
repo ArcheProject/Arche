@@ -202,7 +202,7 @@ class ExternalResource(Bare):
     type_description = _(u"Some kind of external resource.")
     add_permission = "Add %s" % type_name
     target = u""
-    icon = u"cloud"
+    icon = u"film"
 
     @property
     def data(self):
