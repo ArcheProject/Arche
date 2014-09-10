@@ -13,15 +13,7 @@
          tal:condition="description"
          tal:content="structure description">Description text</p>
   	<a href="${request.resource_url(context, 'view')}">
-      <picture>
-        <!--[if IE 9]><video style="display: none;"><![endif]-->
-        <source srcset="${view.request.thumb_url(context, 'col-12', key = 'file')} 1160w,
-                ${view.request.thumb_url(context, 'col-9', key = 'file')} 860w, 
-                ${view.request.thumb_url(context, 'col-6', key = 'file')} 560w,
-                ${view.request.thumb_url(context, 'col-4', key = 'file')} 360w" sizes="100vw">
-        <!--[if IE 9]></video><![endif]-->
-        <img class="img-responsive" srcset="${view.request.thumb_url(context, 'col-12', key = 'file')} 1160w" alt="${context.title}">
-      </picture>
+      <img class="img-responsive" src="${view.request.thumb_url(context, 'col-12', key = 'file')}" alt="${context.title}">
     </a>
     <div class="well well-sm">
       <span class="glyphicon glyphicon-save"></span>
