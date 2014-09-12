@@ -1,13 +1,13 @@
+from __future__ import unicode_literals
 from datetime import timedelta
 from random import choice
 from uuid import uuid4
 import string
 
-from BTrees.OOBTree import OOBTree
-from BTrees.OOBTree import OOSet
+from BTrees.OOBTree import (OOBTree,
+                            OOSet)
 from persistent import Persistent
 from persistent.list import PersistentList
-from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
 from repoze.catalog.catalog import Catalog
 from repoze.catalog.document import DocumentMap
@@ -19,17 +19,35 @@ import requests
 from arche import _
 from arche.catalog import populate_catalog
 from arche.events import ObjectUpdatedEvent
-from arche.interfaces import *  # Pick later
-from arche.security import ROLE_OWNER
-from arche.security import get_acl_registry
-from arche.security import get_local_roles
-from arche.utils import hash_method
-from arche.utils import remote_cache
-from arche.utils import utcnow
+from arche.interfaces import (IBase,
+                              IBlobs,
+                              IContent,
+                              IDocument,
+                              IExternalResource,
+                              IFile,
+                              IGroup,
+                              IGroups,
+                              IImage,
+                              IIndexedContent,
+                              IInitialSetup,
+                              ILink,
+                              ILocalRoles,
+                              IObjectAddedEvent,
+                              IRoot,
+                              IThumbnailedContent,
+                              IToken,
+                              IUser,
+                              IUsers,)
+from arche.security import (ROLE_OWNER,
+                            get_acl_registry,
+                            get_local_roles)
+from arche.utils import (hash_method,
+                         remote_cache,
+                         utcnow)
 
 
 class DCMetadataMixin(object):
-    """ Should always be used as a mixin of another persistent object! """
+    """ Dublin Core metadata"""
     title = u""
     description = u""
     created = None #FIXME
@@ -43,10 +61,7 @@ class DCMetadataMixin(object):
     #type = u"" #FIXME?
     format = u"" #Mimetype or similar?
     source = u"" #Sources?
-
-    @property
-    def identifier(self):
-        return self.request.resource_url(self.context)
+    #identifier (Something like current url?)
 
     @property
     def contributor(self): return getattr(self, '__contributor__', ())
@@ -82,19 +97,18 @@ class DCMetadataMixin(object):
 
 
 @implementer(IBase)
-class BaseMixin(object):
-    title = u""
-    description = u""
-    type_name = u""
-    type_title = u""
-    type_description = u""
+class Base(Persistent):
+    type_name = ""
+    type_title = ""
+    type_description = ""
     uid = None
-    icon = u""
+    created = ""
+#    icon = u""
 
     def __init__(self, **kwargs):
         #IContent should be the same iface registered by the roles adapter
-        request = get_current_request()
-        if 'local_roles' not in kwargs and IContent.providedBy(self):
+        if 'local_roles' not in kwargs and ILocalRoles.providedBy(self):
+            request = get_current_request()
             #Check creators attribute?
             userid = getattr(request, 'authenticated_userid', None)
             if userid:
@@ -103,6 +117,8 @@ class BaseMixin(object):
             kwargs['uid'] = unicode(uuid4())
         if 'created' not in kwargs and hasattr(self, 'created'):
             kwargs['created'] = utcnow()
+        if 'data' in kwargs: #Shouldn't be set here. Create a proper blocklist?
+            del kwargs['data']
         self.update(event = False, **kwargs)
 
     def update(self, event = True, **kwargs):
@@ -122,6 +138,10 @@ class BaseMixin(object):
             objectEventNotify(event_obj)
         return changed_attributes
 
+
+@implementer(ILocalRoles)
+class LocalRolesMixin(object):
+
     @property
     def local_roles(self): return get_local_roles(self)
 
@@ -130,6 +150,29 @@ class BaseMixin(object):
         #Note that you can also set roles via the property, like self.local_roles['admin'] = ['role:Admin']
         local_roles = get_local_roles(self)
         local_roles.set_from_appstruct(value)
+
+
+class ContextACLMixin(object):
+
+    @property
+    def __acl__(self):
+        acl_reg = get_acl_registry()
+        return acl_reg.get_acl(self.type_name) #FIXME wf here
+
+
+@implementer(IContent, IIndexedContent)
+class Content(Base, Folder, ContextACLMixin):
+    title = ""
+    description = ""
+    default_view = u"view"
+    nav_visible = True
+    listing_visible = True
+    search_visible = True
+    show_byline = False
+
+    def __init__(self, **kw):
+        Folder.__init__(self)
+        super(Content, self).__init__(**kw)
 
     @property
     def tags(self): return getattr(self, '__tags__', ())
@@ -143,45 +186,8 @@ class BaseMixin(object):
                 delattr(self, '__tags__')
 
 
-class ContextACLMixin(object):
-
-    @property
-    def __acl__(self):
-        acl_reg = get_acl_registry()
-        return acl_reg.get_acl(self.type_name) #FIXME wf here
-
-
-@implementer(IContent, IIndexedContent)
-class Content(BaseMixin, Folder, ContextACLMixin, DCMetadataMixin):
-    default_view = u"view"
-    nav_visible = True
-    listing_visible = True
-    search_visible = True
-    show_byline = False
-    related_content = None
-
-    def __init__(self, data=None, **kwargs):
-        Folder.__init__(self, data = data)
-        super(Content, self).__init__(**kwargs) #BaseMixin!
-
-
-@implementer(IBare, IIndexedContent)
-class Bare(BaseMixin, ContextACLMixin, Persistent):
-    __name__ = None
-    __parent__ = None
-    nav_visible = False
-    listing_visible = False
-    search_visible = False
-    created = None
-
-    def __init__(self, data=None, **kwargs):
-        #Things like created, creator etc...
-        Persistent.__init__(self)
-        super(Bare, self).__init__(**kwargs)
-
-
 @implementer(ILink)
-class Link(Bare):
+class Link(Content):
     """ A persistent way of redirecting somewhere. """
     type_name = u"Link"
     type_title = _(u"Link")
@@ -196,7 +202,7 @@ external_type_icons = {'photo': 'picture',
 #Set this via subscriber? Propbably
 
 @implementer(IExternalResource)
-class ExternalResource(Bare):
+class ExternalResource(Content):
     type_name = u"ExternalResource"
     type_title = _(u"External Resource")
     type_description = _(u"Some kind of external resource.")
@@ -223,7 +229,7 @@ class ExternalResource(Bare):
 
 
 @implementer(IRoot, IIndexedContent)
-class Root(Content):
+class Root(Content, LocalRolesMixin):
     type_name = u"Root"
     type_title = _(u"Site root")
     add_permission = "Add %s" % type_name
@@ -245,7 +251,7 @@ class Root(Content):
 
 
 @implementer(IDocument, IThumbnailedContent)
-class Document(Content):
+class Document(Content, DCMetadataMixin, LocalRolesMixin):
     type_name = u"Document"
     type_title = _(u"Document")
     body = u""
@@ -259,16 +265,16 @@ class Document(Content):
         IBlobs(self).create_from_formdata('image', value)
 
 
-@implementer(IFile, IContent)
-class File(Bare, DCMetadataMixin):
-    type_name = u"File"
-    type_title = _(u"File")
+@implementer(IFile)
+class File(Content, DCMetadataMixin):
+    type_name = "File"
+    type_title = _("File")
     add_permission = "Add %s" % type_name
-    filename = u""
-    mimetype = u""
+    filename = ""
+    mimetype = ""
     size = 0
     blob_key = "file"
-    icon = u"file"
+    icon = "file"
 
     def __init__(self, file_data, **kwargs):
         self._title = u""
@@ -302,22 +308,22 @@ class File(Bare, DCMetadataMixin):
         return self.blob_key in blobs and blobs[self.blob_key].size or u""
 
 
-@implementer(IImage, IContent, IThumbnailedContent)
-class Image(File):
-    type_name = u"Image"
-    type_title = _(u"Image")
+@implementer(IImage, IThumbnailedContent)
+class Image(File, DCMetadataMixin):
+    type_name = "Image"
+    type_title = _("Image")
     add_permission = "Add %s" % type_name
     blob_key = "file"
-    icon = u"picture"
+    icon = "picture"
 
 
 @implementer(IInitialSetup)
-class InitialSetup(Bare):
-    type_name = u"InitialSetup"
-    type_title = _(u"Initial setup")
+class InitialSetup(Content):
+    type_name = "InitialSetup"
+    type_title = _("Initial setup")
     nav_visible = False
     search_visible = False
-    title = _(u"Welcome to Arche!")
+    title = _("Welcome to Arche!")
     setup_data = {}
 
 
@@ -339,7 +345,7 @@ class Users(Content):
 
 
 @implementer(IUser, IThumbnailedContent, IContent)
-class User(Bare):
+class User(Content, LocalRolesMixin):
     type_name = u"User"
     type_title = _(u"User")
     first_name = u""
@@ -392,7 +398,7 @@ class Groups(Content):
 
 
 @implementer(IGroup)
-class Group(Bare):
+class Group(Content):
     type_name = u"Group"
     type_title = _(u"Group")
     add_permission = "Add %s" % type_name

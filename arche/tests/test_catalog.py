@@ -30,9 +30,9 @@ class CatalogIntegrationTests(TestCase):
         return Root()
 
     def _mk_context(self):
-        from arche.resources import BaseMixin
+        from arche.resources import Base
         @implementer(IIndexedContent)
-        class _DummyIndexedContent(BaseMixin, testing.DummyModel):
+        class _DummyIndexedContent(Base):
             title = u"hello"
             description = u"world"
         return _DummyIndexedContent()

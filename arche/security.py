@@ -234,6 +234,8 @@ class Roles(IterableUserDict):
 
     def __init__(self, context):
         self.context = context
+        #FIXME: Don't write OOBTrees unless they're needed!
+        #Change it on setitem instead
         try:
             self.data = self.context.__local_roles__
         except AttributeError:

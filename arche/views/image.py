@@ -7,7 +7,6 @@ from arche import security
 from arche.utils import IThumbnails
 from arche.utils import get_image_scales
 from arche.views.file import (AddFileForm,
-                              file_data_response,
                               download_view,
                               inline_view)
 from arche import _

@@ -14,6 +14,9 @@ class IViewInitializedEvent(IObjectEvent):
 class IBase(Interface):
     pass
 
+class ILocalRoles(Interface):
+    pass
+
 class IBare(Interface):
     pass
 
@@ -79,7 +82,7 @@ class IBaseView(Interface):
 class IThumbnailedContent(Interface):
     """ Marker for content that could have a thumbnail.
     """
-    thumbnail_original = Attribute("A non-opened data stream like a blobfile. It should support the same functions as an StringIO.")
+
 
 class IBlobs(Interface):
     """ Adapter that handles blob storage for a content type.
