@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import warnings
 
 from BTrees.OOBTree import OOBTree
@@ -200,14 +201,14 @@ class ContentView(BaseView):
 class BaseForm(BaseView, FormView):
     default_success = _(u"Done")
     default_cancel = _(u"Canceled")
-    schema_name = u''
-    type_name = u''
-    heading = u''
+    schema_name = ""
+    type_name = ""
+    heading = ""
 
-    button_delete = deform.Button('delete', title = _(u"Delete"), css_class = 'btn btn-danger')
-    button_cancel = deform.Button('cancel', title = _(u"Cancel"), css_class = 'btn btn-default')
-    button_save = deform.Button('save', title = _(u"Save"), css_class = 'btn btn-primary')
-    button_add = deform.Button('add', title = _(u"Add"), css_class = 'btn btn-primary')
+    button_delete = deform.Button('delete', title = _("Delete"), css_class = 'btn btn-danger')
+    button_cancel = deform.Button('cancel', title = _("Cancel"), css_class = 'btn btn-default')
+    button_save = deform.Button('save', title = _("Save"), css_class = 'btn btn-primary')
+    button_add = deform.Button('add', title = _("Add"), css_class = 'btn btn-primary')
 
     buttons = (button_save, button_cancel,)
 
@@ -217,8 +218,8 @@ class BaseForm(BaseView, FormView):
         if not getattr(self, 'schema', False):
             schema_factory = self.get_schema_factory(self.type_name, self.schema_name)
             if not schema_factory:
-                err = _(u"Schema type '${type_name}' not registered for content type '${schema_name}'.",
-                        mapping = {'type_name': self.type_name, 'schema_name': self.schema_name})
+                err = "Schema type '%s' not registered for content type '%s'." %\
+                      (self.type_name, self.schema_name)
                 raise HTTPForbidden(err)
             self.schema = schema_factory()
         result = super(BaseForm, self).__call__()
@@ -279,8 +280,8 @@ class DefaultAddForm(BaseForm):
         if factory is None:
             raise HTTPNotFound()
         if not self.request.has_permission(factory.add_permission):
-            raise HTTPForbidden(_(u"You're not allowed to add this content type here. "
-                                  u"It requires the permission '%s'" % factory.add_permission))
+            raise HTTPForbidden(_("You're not allowed to add this content type here. "
+                                  "It requires the permission '%s'" % factory.add_permission))
         return super(DefaultAddForm, self).__call__()
 
     @property
@@ -349,7 +350,7 @@ class DefaultDeleteForm(BaseForm):
             raise HTTPForbidden("Can't delete root")
         if hasattr(self.context, 'is_permanent'):
             raise HTTPForbidden("Can't delete this object because it is permanent.")
-        msg = _(u"Deleted '${title}'",
+        msg = _("Deleted '${title}'",
                 mapping = {'title': self.context.title})
         parent = self.context.__parent__
         del parent[self.context.__name__]
@@ -361,7 +362,7 @@ class DynamicView(BaseForm, ContentView):
     """ Based on view schemas. """
     schema_name = u'view'
     buttons = ()
-    title = _(u"Dynamic view")
+    title = _("Dynamic view")
 
     @property
     def type_name(self):
@@ -400,9 +401,9 @@ def set_view(context, request, name = None):
     if name != 'view':
         title = get_content_views(request.registry)[context.type_name][name]
     else:
-        title = _(u"Default view")
+        title = _("Default view")
     fm = get_flash_messages(request)
-    fm.add(_(u"View set to '${title}'",
+    fm.add(_("View set to '${title}'",
              mapping = {'title': title}))
     #Remove settings. Should this be a subscriber instead? It's a bit destructive too, especially if clearing this isn't needed
     if hasattr(context, '__view_settings__'):
