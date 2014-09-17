@@ -85,7 +85,7 @@
 	                            </td>
 	                            <td>
 	                                <span tal:condition="getattr(obj, 'modified', None)"
-	                                    title="${request.dt_handler.format_dt(obj.created)}">
+	                                    title="${request.dt_handler.format_dt(obj.modified)}">
 	                                    ${request.dt_handler.format_relative(obj.modified)}
 	                                </span>
 	                            </td>
