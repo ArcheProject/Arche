@@ -84,7 +84,7 @@ class EditPortlet(BaseForm):
         return get_portlet_manager(self.context, self.request.registry)
 
     @property
-    def heading(self):
+    def title(self):
         return _(u"Edit portlet")
 
     def save_success(self, appstruct):

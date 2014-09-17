@@ -203,7 +203,7 @@ class BaseForm(BaseView, FormView):
     default_cancel = _(u"Canceled")
     schema_name = ""
     type_name = ""
-    heading = ""
+    title = ""
 
     button_delete = deform.Button('delete', title = _("Delete"), css_class = 'btn btn-danger')
     button_cancel = deform.Button('cancel', title = _("Cancel"), css_class = 'btn btn-default')
@@ -248,7 +248,7 @@ class BaseForm(BaseView, FormView):
     @property
     def form_options(self):
         return {'action': self.request.url,
-                'heading': getattr(self, 'heading', ''),
+                'title': getattr(self, 'title', getattr(self.schema, 'title', '')),
                 'tab_fields': self._tab_fields,
                 'tab_titles': self.tab_titles}
 
@@ -289,7 +289,7 @@ class DefaultAddForm(BaseForm):
         return self.request.GET.get('content_type', u'')
 
     @property
-    def heading(self):
+    def title(self):
         factory =  self.get_content_factory(self.type_name)
         if factory:
             type_title = factory.type_title
@@ -314,7 +314,7 @@ class DefaultEditForm(BaseForm):
         return self.context.type_name
 
     @property
-    def heading(self):
+    def title(self):
         return _(u"Edit ${type_title}", mapping = {'type_title': self.context.type_title})
 
     def save_success(self, appstruct):
@@ -328,7 +328,7 @@ class DefaultDeleteForm(BaseForm):
     schema_name = u'delete'
     
     @property
-    def heading(self):
+    def title(self):
         return _(u"Delete " + self.context.title + u" ( " + self.context.type_name + u" ) ?")
 
     @property

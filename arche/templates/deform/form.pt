@@ -34,8 +34,8 @@
     <input type="hidden" name="__formid__" value="${formid}"/>
 
       <div class="panel panel-primary">
-        <div class="panel-heading" tal:condition="heading">
-          <h3 class="panel-title">${heading}</h3>
+        <div class="panel-heading" tal:condition="heading or title">
+          <h3 class="panel-title">${heading and heading or title}</h3>
         </div>
         <!-- Nav tabs -->
         <div class="panel-footer">

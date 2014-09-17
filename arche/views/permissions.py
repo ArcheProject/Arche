@@ -7,7 +7,7 @@ from arche import _
 class PermissionsForm(DefaultEditForm):
 
     @property
-    def heading(self):
+    def title(self):
         return _("Local permissions for ${title}",
                  mapping = {'title': self.context.title})
 

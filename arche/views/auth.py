@@ -15,7 +15,7 @@ from arche.views.base import BaseForm
 class LoginForm(BaseForm):
     type_name = u'Auth'
     schema_name = 'login'
-    heading = _(u"Login")
+    title = _(u"Login")
 
     @property
     def buttons(self):
@@ -44,7 +44,7 @@ class LoginForm(BaseForm):
 class RegisterForm(BaseForm):
     type_name = u'Auth'
     schema_name = 'register'
-    heading = _(u"Register")
+    title = _(u"Register")
 
     def __init__(self, context, request):
         if request.authenticated_userid is None and context.site_settings.get('allow_self_registration'):
@@ -78,7 +78,7 @@ class RegisterForm(BaseForm):
 class RegisterFinishForm(BaseForm):
     type_name = u'Auth'
     schema_name = 'register_finish'
-    heading = _(u"Complete registration")
+    title = _(u"Complete registration")
 
     def __init__(self, context, request):
         super(RegisterFinishForm, self).__init__(context, request)
@@ -115,7 +115,7 @@ class RegisterFinishForm(BaseForm):
 class RecoverPasswordForm(BaseForm):
     type_name = u'Auth'
     schema_name = 'recover_password'
-    heading = _(u"Recover password")
+    title = _(u"Recover password")
 
     @property
     def buttons(self):
