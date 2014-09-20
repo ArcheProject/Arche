@@ -186,7 +186,6 @@ class ContentView(BaseView):
     """ Use this for more complex views that can have settings and be dynamically selected
         as a view for content types
     """
-    title = u""
     description = u""
     settings_schema = None
 
@@ -203,7 +202,7 @@ class BaseForm(BaseView, FormView):
     default_cancel = _(u"Canceled")
     schema_name = ""
     type_name = ""
-    title = ""
+    title = None
 
     button_delete = deform.Button('delete', title = _("Delete"), css_class = 'btn btn-danger')
     button_cancel = deform.Button('cancel', title = _("Cancel"), css_class = 'btn btn-default')
@@ -248,9 +247,14 @@ class BaseForm(BaseView, FormView):
     @property
     def form_options(self):
         return {'action': self.request.url,
-                'title': getattr(self, 'title', getattr(self.schema, 'title', '')),
+                'title': self.get_schema_title(),
                 'tab_fields': self._tab_fields,
                 'tab_titles': self.tab_titles}
+
+    def get_schema_title(self):
+        if getattr(self, 'title', None) is not None:
+            return self.title
+        return getattr(self.schema, 'title', '')
 
     def get_bind_data(self):
         return {'context': self.context, 'request': self.request, 'view': self}
@@ -315,7 +319,7 @@ class DefaultEditForm(BaseForm):
 
     @property
     def title(self):
-        return _(u"Edit ${type_title}", mapping = {'type_title': self.context.type_title})
+        return _("Edit ${type_title}", mapping = {'type_title': self.context.type_title})
 
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
@@ -329,7 +333,7 @@ class DefaultDeleteForm(BaseForm):
     
     @property
     def title(self):
-        return _(u"Delete " + self.context.title + u" ( " + self.context.type_name + u" ) ?")
+        return _("Delete " + self.context.title + " ( " + self.context.type_name + " ) ?")
 
     @property
     def type_name(self):
