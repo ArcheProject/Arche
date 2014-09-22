@@ -247,11 +247,11 @@ class BaseForm(BaseView, FormView):
     @property
     def form_options(self):
         return {'action': self.request.url,
-                'title': self.get_schema_title(),
+                'heading': self.get_schema_heading(),
                 'tab_fields': self._tab_fields,
                 'tab_titles': self.tab_titles}
 
-    def get_schema_title(self):
+    def get_schema_heading(self):
         if getattr(self, 'title', None) is not None:
             return self.title
         return getattr(self.schema, 'title', '')
