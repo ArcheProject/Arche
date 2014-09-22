@@ -44,6 +44,7 @@ from arche.security import (ROLE_OWNER,
 from arche.utils import (hash_method,
                          remote_cache,
                          utcnow)
+from UserString import UserString
 
 
 class DCMetadataMixin(object):
@@ -430,22 +431,19 @@ class Group(Content):
 
 
 @implementer(IToken)
-class Token(Persistent):
-    data = ""
+class Token(UserString, Persistent):
+    #data = ""
     created = None
     expires = None
     type_name = u"Token"
     type_tile = _(u"Token")
 
     def __init__(self, size = 40, hours = 3):
-        super(Token, self).__init__()
-        self.data = u''.join([choice(string.letters + string.digits) for x in range(size)])
+        token = ''.join([choice(string.letters + string.digits) for x in range(size)])
+        super(Token, self).__init__(token)
         self.created = utcnow()
         if hours:
             self.expires = self.created + timedelta(hours = hours)
-
-    def __eq__(self, other): return other == self.data
-    def __repr__(self): return self.data
 
     @property
     def valid(self):
