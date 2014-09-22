@@ -441,14 +441,17 @@ class Token(Persistent):
         super(Token, self).__init__()
         self.data = u''.join([choice(string.letters + string.digits) for x in range(size)])
         self.created = utcnow()
-        self.expires = self.created + timedelta(hours = hours)
+        if hours:
+            self.expires = self.created + timedelta(hours = hours)
 
     def __eq__(self, other): return other == self.data
     def __repr__(self): return self.data
 
     @property
     def valid(self):
-        return utcnow() < self.expires
+        if self.expires is None:
+            return True
+        return self.expires and utcnow()
 
 
 def make_user_owner(user, event = None):
