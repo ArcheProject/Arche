@@ -6,10 +6,10 @@
       metal:define-macro="main"
       i18n:domain="Arche">
 <!-- FIXME: Set lang attr from pyramid locale -->
-    <head>
-        <tal:head replace="structure view.render_template('arche:templates/head.pt')" />
-        <metal:head define-slot="head"></metal:head>
-    </head>
+  <head>
+    <tal:head replace="structure view.render_template('arche:templates/head.pt')" />
+    <metal:head define-slot="head"></metal:head>
+  </head>
 
   <body class="view-${request.view_name or 'default'}"
         tal:define="portlets_left view.render_portlet_slot('left');

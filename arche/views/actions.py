@@ -4,6 +4,7 @@
 from betahaus.viewcomponent import view_action
 
 from arche.interfaces import IContentView
+from arche.interfaces import ILocalRoles
 from arche.utils import get_content_views
 from arche.portlets import get_portlet_slots
 from arche import security
@@ -29,7 +30,8 @@ from arche import _
              title = _("Permissions"),
              permission = security.PERM_MANAGE_USERS,#XXX: ?
              view_name = 'permissions',
-             priority = 40)
+             priority = 40,
+             interface = ILocalRoles)
 def actionbar_main_generic(context, request, va, **kw):
     return """<li><a href="%(url)s" alt="%(desc)s">%(title)s</a></li>""" % \
         {'url': request.resource_url(context, va.kwargs['view_name']),
