@@ -230,7 +230,7 @@ class ExternalResource(Content):
 
 
 @implementer(IRoot, IIndexedContent)
-class Root(Content, LocalRolesMixin):
+class Root(Content, LocalRolesMixin, DCMetadataMixin):
     type_name = u"Root"
     type_title = _(u"Site root")
     add_permission = "Add %s" % type_name
