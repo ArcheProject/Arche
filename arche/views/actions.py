@@ -2,13 +2,14 @@
 #from __future__ import unicode_literals
 
 from betahaus.viewcomponent import view_action
+from repoze.folder.interfaces import IFolder
 
+from arche import _
+from arche import security
 from arche.interfaces import IContentView
 from arche.interfaces import ILocalRoles
-from arche.utils import get_content_views
 from arche.portlets import get_portlet_slots
-from arche import security
-from arche import _
+from arche.utils import get_content_views
 
 
 @view_action('actionbar_main', 'view',
@@ -24,6 +25,7 @@ from arche import _
 @view_action('actionbar_main', 'contents',
              title = _("Contents"),
              permission = security.PERM_EDIT,#XXX: ?
+             interface = IFolder,
              view_name = 'contents',
              priority = 30)
 @view_action('actionbar_main', 'permissions',
