@@ -10,6 +10,7 @@ from arche.interfaces import IContentView
 from arche.interfaces import ILocalRoles
 from arche.portlets import get_portlet_slots
 from arche.utils import get_content_views
+from arche.views.cut_copy_paste import can_paste
 
 
 @view_action('actionbar_main', 'view',
@@ -126,6 +127,37 @@ def delete_context(context, request, va, **kw):
     if context != kw['view'].root and not hasattr(context, 'is_permanent'):
         return """<li><a href="%(url)s">%(title)s</a></li>""" %\
             {'url': request.resource_url(context, 'delete'),
+             'title': va.title}
+
+@view_action('actions_menu', 'cut',
+             title = _("Cut"),
+             priority = 20,
+             permisison = security.PERM_DELETE)
+def cut_context(context, request, va, **kw):
+    if context != kw['view'].root and not hasattr(context, 'is_permanent'):
+        return """<li><a href="%(url)s">%(title)s</a></li>""" %\
+            {'url': request.resource_url(context, '__cut_context__'),
+             'title': va.title}
+
+@view_action('actions_menu', 'copy',
+             title = _("Copy"),
+             priority = 20,
+             permisison = security.PERM_VIEW) #FIXME: Permission?
+def copy_context(context, request, va, **kw):
+    #Copying objects with subobjects aren't supported yet, since subobjects and references need to be updated.
+    if context != kw['view'].root and not len(context):
+        return """<li><a href="%(url)s">%(title)s</a></li>""" %\
+            {'url': request.resource_url(context, '__copy_context__'),
+             'title': va.title}
+
+@view_action('actions_menu', 'paste',
+             title = _("Paste"),
+             priority = 20)
+def paste_context(context, request, va, **kw):
+    view = kw['view']
+    if can_paste(context, request, view):
+        return """<li><a href="%(url)s">%(title)s</a></li>""" %\
+            {'url': request.resource_url(context, '__paste_context__'),
              'title': va.title}
 
 @view_action('actions_menu', 'manage_portlets',
