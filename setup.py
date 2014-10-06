@@ -36,9 +36,6 @@ requires = ('pyramid',
             'plone.scale',
             'Pillow',
             'html2text',
-            'requests',
-            'beautifulsoup4',
-            'lxml',
             )
 
 

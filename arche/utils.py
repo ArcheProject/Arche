@@ -544,10 +544,6 @@ class RegistrationTokens(AttributeAnnotations):
             del self[email]
 
 
-#FIXME: This will be moved
-remote_cache = LRUCache(200)
-
-
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)
     config.registry.registerAdapter(Thumbnails)

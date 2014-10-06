@@ -8,14 +8,12 @@ from arche import _
 from arche.interfaces import IPopulator
 from arche.security import get_roles_registry
 from arche.utils import FileUploadTempStore
-from arche.validators import JSONURL
 from arche.validators import existing_userid_or_email
 from arche.validators import login_password_validator
 from arche.validators import unique_context_name_validator
 from arche.validators import unique_email_validator
 from arche.validators import unique_userid_validator
 from arche.widgets import DropzoneWidget
-from arche.widgets import EmbedWidget
 from arche.widgets import ReferenceWidget
 from arche.widgets import TaggingWidget
 
@@ -388,12 +386,6 @@ class SiteSettingsSchema(colander.Schema):
                                                   default = False)
 
 
-class ExternalResourceSchema(BaseSchema):
-    target = colander.SchemaNode(colander.String(),
-                                 validator = JSONURL(),
-                                 widget = EmbedWidget())
-
-
 def includeme(config):
     config.add_content_schema('Document', DocumentSchema, 'view')
     config.add_content_schema('Document', DocumentSchema, 'edit')
@@ -418,5 +410,3 @@ def includeme(config):
     config.add_content_schema('Root', SiteSettingsSchema, 'site_settings')
     config.add_content_schema('Link', AddLinkSchema, 'add')
     config.add_content_schema('Link', LinkSchema, 'edit')
-    config.add_content_schema('ExternalResource', ExternalResourceSchema, 'add')
-    config.add_content_schema('ExternalResource', ExternalResourceSchema, 'edit')

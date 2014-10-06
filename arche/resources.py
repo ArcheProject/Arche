@@ -14,7 +14,6 @@ from repoze.catalog.document import DocumentMap
 from repoze.folder import Folder
 from zope.component.event import objectEventNotify
 from zope.interface import implementer
-import requests
 
 from arche import _
 from arche.catalog import populate_catalog
@@ -23,7 +22,6 @@ from arche.interfaces import (IBase,
                               IBlobs,
                               IContent,
                               IDocument,
-                              IExternalResource,
                               IFile,
                               IGroup,
                               IGroups,
@@ -42,7 +40,6 @@ from arche.security import (ROLE_OWNER,
                             get_acl_registry,
                             get_local_roles)
 from arche.utils import (hash_method,
-                         remote_cache,
                          utcnow)
 from UserString import UserString
 
@@ -104,7 +101,10 @@ class Base(Persistent):
     type_description = ""
     uid = None
     created = ""
-#    icon = u""
+    nav_visible = False
+    listing_visible = True
+    search_visible = False
+    show_byline = False
 
     def __init__(self, **kwargs):
         #IContent should be the same iface registered by the roles adapter
@@ -201,32 +201,6 @@ external_type_icons = {'photo': 'picture',
                        'video': 'film',
                        'rich': 'cloud'}
 #Set this via subscriber? Propbably
-
-@implementer(IExternalResource)
-class ExternalResource(Content):
-    type_name = u"ExternalResource"
-    type_title = _(u"External Resource")
-    type_description = _(u"Some kind of external resource.")
-    add_permission = "Add %s" % type_name
-    target = u""
-    icon = u"film"
-
-    @property
-    def data(self):
-        if self.target:
-            data = remote_cache.get(self.target, None)
-            if data is not None:
-                return data
-            response = requests.get(self.target, verify = False)
-            if response.ok:
-                data = response.json()
-                remote_cache.put(self.target, data)
-                return data
-        return {}
-
-    @property
-    def title(self):
-        return self.data.get('title', u'')
 
 
 @implementer(IRoot, IIndexedContent)
@@ -478,7 +452,5 @@ def includeme(config):
     config.add_content_factory(Root)
     config.add_content_factory(Link)
     config.add_addable_content('Link', ('Root', 'Document'))
-    config.add_content_factory(ExternalResource)
-    config.add_addable_content('ExternalResource', ('Root', 'Document'))
     config.add_content_factory(Token)
     config.add_subscriber(make_user_owner, [IUser, IObjectAddedEvent])
