@@ -26,6 +26,7 @@ def includeme(config):
     adjust_bools(settings)
 
     config.include('arche.utils')
+    config.include('arche.subscribers')
     config.include('arche.resources')
     config.include('arche.security')
     config.include('arche.schemas')
