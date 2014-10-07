@@ -5,5 +5,7 @@
       metal:define-macro="main"
       i18n:domain="Arche">
 <!-- Don't treat this as API-stable! -->
-<tal:main-column metal:define-slot="main-content"></tal:main-column>
+<tal:content metal:define-slot="content">
+  <tal:main-column metal:define-slot="main-content"></tal:main-column>
+</tal:content>
 </tal:main>
