@@ -10,14 +10,15 @@ from pyramid.security import (NO_PERMISSION_REQUIRED,
                               Allow,
                               Deny,
                               Allowed,
-                              DENY_ALL)
+                              DENY_ALL,
+                              ALL_PERMISSIONS,
+                              AllPermissionsList)
 from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import find_root
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
 from zope.component import adapter
 from zope.interface import implementer
-from zope.component import ComponentLookupError
 
 from arche import _
 from arche.interfaces import IContent
@@ -114,13 +115,23 @@ class ACLEntry(IterableUserDict):
         #Check what kind of role?
         if isinstance(perms, basestring):
             perms = (perms,)
-        current = self.setdefault(role, set())
-        current.update(perms)
+        if isinstance(perms, AllPermissionsList):
+            self[role] = perms
+        else:
+            current = self.setdefault(role, set())
+            if not isinstance(current, AllPermissionsList):
+                current.update(perms)
 
     def remove(self, role, perms):
         if isinstance(perms, basestring):
             perms = (perms,)
+        if isinstance(perms, AllPermissionsList):
+            del self[role]
+            return
         current = self.get(role, set())
+        if isinstance(current, AllPermissionsList):
+            raise ValueError("Permission list for '%s' currently set to Pyramids all permissions object. "
+                             "It doesn't support clearing some permissions. ")
         [current.remove(x) for x in perms if x in current]
 
     def __call__(self):
@@ -137,13 +148,13 @@ class ACLRegistry(IterableUserDict):
 
     def __setitem__(self, key, aclentry):
         assert isinstance(aclentry, ACLEntry)
-        self[key] = aclentry
+        self.data[key] = aclentry
 
-    def get_acl(self, type_name, workflow = None):
+    def get_acl(self, type_name, subentry = None):
         if type_name in self:
             aclentry = self[type_name]
-            if workflow in aclentry:
-                return aclentry[workflow]()
+            if subentry in aclentry:
+                return aclentry[subentry]()
             return aclentry()
         return self.default()
 
@@ -269,7 +280,6 @@ def get_local_roles(context, registry = None):
 
 def includeme(config):
     from arche.utils import get_content_factories
-    from arche.security import ROLE_ADMIN
 
     config.registry._roles = rr = RolesRegistry()
     rr.add(ROLE_ADMIN)
@@ -278,7 +288,7 @@ def includeme(config):
     rr.add(ROLE_OWNER)
     config.registry.registerAdapter(Roles)
     config.registry._acl = aclreg =  ACLRegistry()
-    aclreg.default.add(ROLE_ADMIN, [PERM_VIEW, PERM_EDIT, PERM_DELETE, PERM_MANAGE_SYSTEM, PERM_MANAGE_USERS])
+    aclreg.default.add(ROLE_ADMIN, ALL_PERMISSIONS)
     aclreg.default.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     aclreg.default.add(ROLE_VIEWER, [PERM_VIEW])
     aclreg.default.add(Everyone, [PERM_VIEW])
