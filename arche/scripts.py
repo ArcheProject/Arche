@@ -37,6 +37,10 @@ def arche_console_script():
         #Lockfile?
 
 def reindex_catalog(args, root, registry, **kw):
+    root.catalog.clear()
+    root.document_map.docid_to_address.clear()
+    root.document_map.address_to_docid.clear()
+    root.document_map.docid_to_metadata.clear()
     i = 0
     limit = 500
     total = 0
