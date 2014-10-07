@@ -30,27 +30,23 @@ class WorkflowIntegrationTests(TestCase):
         self.assertEqual(wfs.get_wf('Document'), 'simple_workflow')
 
     def test_get_context_wf(self):
-        from arche.workflow import get_workflows
         from arche.workflow import get_context_wf
-        wfs = get_workflows()
         dummy = _mk_dummy()
         #self.assertEqual(get_context_wf(dummy), None)
-        wfs.set_wf('Dummy', 'simple_workflow')
+        self.config.set_content_workflow('Dummy', 'simple_workflow')
         wf_obj = get_context_wf(dummy)
         self.assertTrue(IWorkflow.providedBy(wf_obj))
 
     def test_do_transition(self):
-        from arche.workflow import get_workflows, get_context_wf
-        wfs = get_workflows()
-        wfs.set_wf('Dummy', 'simple_workflow')
+        from arche.workflow import get_context_wf
+        self.config.set_content_workflow('Dummy', 'simple_workflow')
         dummy = _mk_dummy()
         wf = get_context_wf(dummy)
         wf.do_transition('private:public')
 
     def test_do_transiton_events(self):
-        from arche.workflow import get_workflows, get_context_wf
-        wfs = get_workflows()
-        wfs.set_wf('Dummy', 'simple_workflow')
+        from arche.workflow import get_context_wf
+        self.config.set_content_workflow('Dummy', 'simple_workflow')
         dummy = _mk_dummy()
         wf = get_context_wf(dummy)
         before_events = []
@@ -64,3 +60,5 @@ class WorkflowIntegrationTests(TestCase):
         wf.do_transition('private:public')
         self.assertEqual(before_events[0], 'private')
         self.assertEqual(after_events[0], 'public')
+
+#FIXME: Test changing workflow for something that has a different state

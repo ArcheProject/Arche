@@ -23,6 +23,8 @@ class WorkflowException(Exception):
 @implementer(IWorkflow)
 @adapter(IContextACL)
 class Workflow(object):
+    """ Base adapter for workflows. All workflows should inherit this one.
+    """
     name = ''
     title = ''
     description = ''
@@ -70,6 +72,8 @@ class Workflow(object):
 
 
 class Transition(object):
+    """ Simple transition objects to keep track of transitions and what they do.
+    """
     from_state = ''
     to_state = ''
     permission = ''
@@ -97,6 +101,7 @@ _private_to_public = Transition(from_state = 'private',
 
 
 class SimpleWorkflow(Workflow):
+    """ Private public workflow."""
     name = 'simple_workflow'
     title = _("Simple")
     states = {'private': _("Private"),
@@ -116,12 +121,15 @@ class SimpleWorkflow(Workflow):
 
 
 class WorkflowRegistry(IterableUserDict):
+    """ Registry for workflow information, and set workflow for different content types. """
+
     def __init__(self):
         self.data = {}
         self.content_type_mapping = {}
 
-    def set_wf(self, type_name, wf):
-        self.content_type_mapping[type_name] = wf
+    def set_wf(self, type_name, wf_name):
+        """ Set workflow for a specific content type. """
+        self.content_type_mapping[type_name] = wf_name
 
     def get_wf(self, type_name):
         """ Return mapped workflow name for a content type. """
@@ -129,6 +137,9 @@ class WorkflowRegistry(IterableUserDict):
 
 
 def get_context_wf(context, registry = None):
+    """ Get workflow for a specific context. It must implement the
+        arche.interfaces.IContextACL to be able to work, and a workflow must be set.
+    """
     if registry is None:
         registry = get_current_registry()
     wfs = get_workflows(registry)
@@ -136,24 +147,31 @@ def get_context_wf(context, registry = None):
     return registry.queryAdapter(context, IWorkflow, name = wf_name)
 
 def get_workflows(registry = None):
+    """ Returns the workflow registry. """
     if registry is None:
         registry = get_current_registry()
     try:
         return registry._workflows
     except AttributeError:
         raise WorkflowException("Workflows not configured")
-    
 
 def add_workflow(config, workflow):
+    """ Add a workflow object so it will be usable by Arche or subcomponents.
+    """
     assert IWorkflow.implementedBy(workflow), "Workflows must always implement IWorkflow"
     config.registry.registerAdapter(workflow, name = workflow.name)
     wfs = config.registry._workflows
     wfs[workflow.name] = workflow
     workflow.init_acl(config.registry)
 
+def set_content_workflow(config, type_name, wf_name):
+    """ Set workflow for a specific content type. """
+    wfs = get_workflows(config.registry)
+    wfs.set_wf(type_name, wf_name)
+
 
 def includeme(config):
     config.registry._workflows = WorkflowRegistry()
     config.add_directive('add_workflow', add_workflow)
     config.add_workflow(SimpleWorkflow)
-    
+    config.add_directive('set_content_workflow', set_content_workflow)
