@@ -194,7 +194,7 @@ class BaseSchema(colander.Schema):
                                           tab = tabs['visibility'])
     search_visible = colander.SchemaNode(colander.Bool(),
                                          title = _(u"Include in search results"),
-                                         description = _(u"Note that this is not a permisison settiong - it's just a matter of practicality for users. "
+                                         description = _(u"Note that this is not a permission setting - it's just a matter of practicality for users. "
                                                          u"They may even disable this setting."),
                                          missing = colander.null,
                                          default = True,

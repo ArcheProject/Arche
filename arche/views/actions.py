@@ -122,7 +122,7 @@ def profile_item(context, request, va, **kw):
 @view_action('actions_menu', 'delete',
              title = _("Delete"),
              priority = 20,
-             permisison = security.PERM_DELETE)
+             permission = security.PERM_DELETE)
 def delete_context(context, request, va, **kw):
     if context != kw['view'].root and not hasattr(context, 'is_permanent'):
         return """<li><a href="%(url)s">%(title)s</a></li>""" %\
@@ -132,7 +132,7 @@ def delete_context(context, request, va, **kw):
 @view_action('actions_menu', 'cut',
              title = _("Cut"),
              priority = 20,
-             permisison = security.PERM_DELETE)
+             permission = security.PERM_DELETE)
 def cut_context(context, request, va, **kw):
     if context != kw['view'].root and not hasattr(context, 'is_permanent'):
         return """<li><a href="%(url)s">%(title)s</a></li>""" %\
@@ -142,7 +142,7 @@ def cut_context(context, request, va, **kw):
 @view_action('actions_menu', 'copy',
              title = _("Copy"),
              priority = 20,
-             permisison = security.PERM_VIEW) #FIXME: Permission?
+             permission = security.PERM_VIEW) #FIXME: Permission?
 def copy_context(context, request, va, **kw):
     #Copying objects with subobjects aren't supported yet, since subobjects and references need to be updated.
     if context != kw['view'].root and not len(context):
@@ -163,7 +163,7 @@ def paste_context(context, request, va, **kw):
 @view_action('actions_menu', 'manage_portlets',
              title = _("Manage portlets"),
              priority = 10,
-             permisison = security.PERM_MANAGE_SYSTEM)
+             permission = security.PERM_MANAGE_SYSTEM)
 def manage_portlets(context, request, va, **kw):
     if get_portlet_slots(request.registry):
         return """<li><a href="%(url)s">%(title)s</a></li>""" %\
@@ -172,7 +172,7 @@ def manage_portlets(context, request, va, **kw):
 
 @view_action('actions_menu', 'selectable_views',
              priority = 30,
-             permisison = security.PERM_MANAGE_SYSTEM)
+             permission = security.PERM_MANAGE_SYSTEM)
 def selectable_views(context, request, va, **kw):
     if not hasattr(context, 'default_view'):
         return
@@ -195,7 +195,7 @@ def selectable_views(context, request, va, **kw):
 @view_action('actions_menu', 'view_settings',
              priority = 31,
              title = _(u"View settings"),
-             permisison = security.PERM_MANAGE_SYSTEM)
+             permission = security.PERM_MANAGE_SYSTEM)
 def view_settings(context, request, va, **kw):
     view = kw['view']
     if not IContentView.providedBy(view):
