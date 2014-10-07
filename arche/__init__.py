@@ -34,6 +34,7 @@ def includeme(config):
     config.include('arche.catalog')
     config.include('arche.portlets')
     config.include('arche.populators')
+    config.include('arche.workflow')
     #Portlets
     config.include('arche.portlets.byline')
     config.include('arche.portlets.login')

@@ -23,6 +23,7 @@ class ContextPermIntegrationTests(TestCase):
         self.config.include('arche.utils')
         self.config.include('arche.security')
         self.config.include('arche.resources')
+        self.config.include('arche.workflow')
         setup_security(self.config, userid = 'tester', debug = False)
         root = root_populator(userid = 'admin')
         root['a'] = Document()
@@ -46,7 +47,7 @@ class ContextPermIntegrationTests(TestCase):
         self.assertEqual(groupfinder('tester', request), set([security.ROLE_ADMIN]))
         self.assertEqual(groupfinder('admin', request), set([security.ROLE_ADMIN, 'group:administrators']))
 
-    def test_request_context_not_used_for_another_context(self):        
+    def test_request_context_not_used_for_another_context(self):
         root = self._fixture()
         request = testing.DummyRequest(context = root['a'])
         self.assertEqual(request.authenticated_userid, 'tester') #Just to make sure

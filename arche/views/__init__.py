@@ -21,3 +21,4 @@ def includeme(config):
     config.include('arche.views.system')
     config.include('arche.views.users')
     config.include('arche.views.view_settings')
+    config.include('arche.views.workflow')

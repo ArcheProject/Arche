@@ -41,6 +41,9 @@ class IImage(Interface):
 class IFlashMessages(Interface):
     pass
 
+class IWorkflow(Interface):
+    pass
+
 class IRoot(Interface):
     """ Marker interface for the site root."""
 
@@ -60,6 +63,9 @@ class ILink(Interface):
     pass
 
 class IToken(Interface):
+    pass
+
+class IContextACL(Interface):
     pass
 
 class IRoles(Interface):

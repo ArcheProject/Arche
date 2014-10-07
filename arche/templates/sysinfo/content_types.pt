@@ -27,6 +27,10 @@
                       ${name}<br/>
                   </tal:iter>
                   </dd>
+                  <tal:wf define="wf workflows.get_wf(factory.type_name)" condition="wf">
+                  <dt i18n:translate="">Workflow</dt>
+                  <dd>${wf}</dd>
+                  </tal:wf>
                   <dt i18n:translate="">Selectable views</dt>
                   <dd>
                   <tal:iter repeat="(name, title) content_views.get(factory.type_name, {}).items()">

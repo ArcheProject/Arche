@@ -21,6 +21,7 @@ from arche.events import ObjectUpdatedEvent
 from arche.interfaces import (IBase,
                               IBlobs,
                               IContent,
+                              IContextACL,
                               IDocument,
                               IFile,
                               IGroup,
@@ -42,6 +43,7 @@ from arche.security import (ROLE_OWNER,
 from arche.utils import (hash_method,
                          utcnow)
 from UserString import UserString
+from arche.workflow import get_context_wf
 
 
 class DCMetadataMixin(object):
@@ -153,12 +155,17 @@ class LocalRolesMixin(object):
         local_roles.set_from_appstruct(value)
 
 
+@implementer(IContextACL)
 class ContextACLMixin(object):
+    """ Mixin for content that cares about security in some way. Could either be workflows or ACL."""
 
     @property
     def __acl__(self):
         acl_reg = get_acl_registry()
-        return acl_reg.get_acl(self.type_name) #FIXME wf here
+        wf = get_context_wf(self)
+        if wf:
+            return acl_reg.get_acl("%s:%s" % (wf.name, wf.state))
+        return acl_reg.get_acl(self.type_name)
 
 
 @implementer(IContent, IIndexedContent)

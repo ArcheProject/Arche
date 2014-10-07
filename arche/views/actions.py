@@ -6,11 +6,24 @@ from repoze.folder.interfaces import IFolder
 
 from arche import _
 from arche import security
-from arche.interfaces import IContentView
+from arche.interfaces import IContentView, IContextACL
 from arche.interfaces import ILocalRoles
 from arche.portlets import get_portlet_slots
 from arche.utils import get_content_views
 from arche.views.cut_copy_paste import can_paste
+from arche.workflow import get_context_wf
+
+
+@view_action('actionbar_main', 'wf',
+             title = _("Workflow"),
+             priority = 5)
+def wf_menu(context, request, va, **kw):
+    if not IContextACL.providedBy(context):
+        return
+    wf = get_context_wf(context)
+    if wf:
+        view = kw['view']
+        return view.render_template('arche:templates/menus/workflow.pt', wf = wf)
 
 
 @view_action('actionbar_main', 'view',
