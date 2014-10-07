@@ -3,7 +3,9 @@ from repoze.folder.events import (ObjectAddedEvent,
                                   ObjectWillBeRemovedEvent) #API
 
 from arche.interfaces import (IObjectUpdatedEvent,
-                              IViewInitializedEvent)
+                              IViewInitializedEvent,
+                              IWorkflowBeforeTransition,
+                              IWorkflowAfterTransition)
 
 
 @implementer(IObjectUpdatedEvent)
@@ -25,3 +27,21 @@ class ViewInitializedEvent(object):
 
     def __init__(self, _object):
         self.object = _object
+
+
+class _WorkflowTransition(object):
+
+    def __init__(self, _object, workflow, transition):
+        self.object = _object
+        self.workflow = workflow
+        self.transition = transition
+
+
+@implementer(IWorkflowBeforeTransition)
+class WorkflowBeforeTransition(_WorkflowTransition):
+    pass
+
+
+@implementer(IWorkflowAfterTransition)
+class WorkflowAfterTransition(_WorkflowTransition):
+    pass

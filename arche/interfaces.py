@@ -8,6 +8,12 @@ from repoze.folder.interfaces import (IObjectAddedEvent,
 class IObjectUpdatedEvent(IObjectEvent):
     pass
 
+class IWorkflowBeforeTransition(IObjectEvent):
+    pass
+
+class IWorkflowAfterTransition(IObjectEvent):
+    pass
+
 class IViewInitializedEvent(IObjectEvent):
     pass
 

@@ -1,18 +1,24 @@
 from __future__ import unicode_literals
+from UserDict import IterableUserDict
 
-from pyramid.threadlocal import get_current_request, get_current_registry
-from zope.interface.declarations import implementer
+from pyramid.httpexceptions import HTTPForbidden
+from pyramid.threadlocal import get_current_registry
+from pyramid.threadlocal import get_current_request
 from zope.component import adapter
+from zope.component.event import objectEventNotify
+from zope.interface.declarations import implementer
 
 from arche import _
 from arche import security
-from arche.interfaces import IWorkflow, IContextACL
-from UserDict import IterableUserDict
-from pyramid.httpexceptions import HTTPForbidden
+from arche.events import WorkflowAfterTransition
+from arche.events import WorkflowBeforeTransition
+from arche.interfaces import IContextACL
+from arche.interfaces import IWorkflow
 
 
 class WorkflowException(Exception):
     pass
+
 
 @implementer(IWorkflow)
 @adapter(IContextACL)
@@ -56,11 +62,11 @@ class Workflow(object):
         trans = self.transitions[name]
         if trans.from_state != self.state:
             raise ValueError("The transition '%s' cant go from state '%s'" % (trans.name, self.state))
-        
         if not request.has_permission(trans.permission, self.context):
             raise HTTPForbidden("Wrong permissions for this transition")
-        #FIXME: raise event
+        objectEventNotify(WorkflowBeforeTransition(self.context, self, trans))
         self.state = trans.to_state
+        objectEventNotify(WorkflowAfterTransition(self.context, self, trans))
 
 
 class Transition(object):
