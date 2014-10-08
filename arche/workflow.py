@@ -70,6 +70,7 @@ class Workflow(object):
         objectEventNotify(WorkflowBeforeTransition(self.context, self, trans))
         self.state = trans.to_state
         objectEventNotify(WorkflowAfterTransition(self.context, self, trans))
+        return trans
 
 
 class Transition(object):
@@ -79,12 +80,15 @@ class Transition(object):
     to_state = ''
     permission = ''
     title = ''
+    message = ''
 
-    def __init__(self, from_state = '', to_state = '', permission = '', title = ''):
+    def __init__(self, from_state = '', to_state = '',
+                 permission = '', title = '', message = ''):
         self.from_state = from_state
         self.to_state = to_state
         self.permission = permission
         self.title = title
+        self.message = message
 
     @property
     def name(self):
@@ -94,11 +98,13 @@ class Transition(object):
 _public_to_private = Transition(from_state = 'public',
                                 to_state = 'private',
                                 permission = security.PERM_EDIT,
-                                title = _("Make private"))
+                                title = _("Make private"),
+                                message = _("Now private"))
 _private_to_public = Transition(from_state = 'private',
                                 to_state = 'public',
                                 permission = security.PERM_EDIT,
-                                title = _("Make public"))
+                                title = _("Publish"),
+                                message = _("Published"))
 
 
 class SimpleWorkflow(Workflow):
