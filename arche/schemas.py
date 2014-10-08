@@ -133,6 +133,11 @@ class DCMetadataSchema(colander.Schema):
     description = colander.SchemaNode(colander.String(),
                                       widget = deform.widget.TextAreaWidget(rows = 5),
                                       missing = u"")
+    tags = colander.SchemaNode(colander.List(),
+                               title = _("Tags or subjects"),
+                               missing = "",
+                               tab = 'metadata',
+                               widget = tagging_widget)
     creator = colander.SchemaNode(colander.List(),
                                   tab = 'metadata',
                                   widget = ReferenceWidget(query_params = {'type_name': 'User'}),
@@ -161,18 +166,10 @@ class DCMetadataSchema(colander.Schema):
                                default = default_now,
                                missing = colander.null,
                                tab = 'metadata')
-    subject = colander.SchemaNode(colander.String(),
-                                  title = _(u"Tags or subjects"),
-                                  missing = u"",
-                                  tab = 'metadata')
     rights = colander.SchemaNode(colander.String(),
                                  title = _(u"Licensing"),
                                  missing = u"",
                                  tab = 'metadata')
-    tags = colander.SchemaNode(colander.List(),
-                               title = _("Tags"),
-                               missing = "",
-                               widget = tagging_widget)
     #type?
     #format
     #identifier -> url
