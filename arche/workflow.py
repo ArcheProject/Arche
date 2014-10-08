@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from UserDict import IterableUserDict
+from logging import getLogger
 
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.threadlocal import get_current_registry
@@ -169,9 +170,30 @@ def set_content_workflow(config, type_name, wf_name):
     wfs = get_workflows(config.registry)
     wfs.set_wf(type_name, wf_name)
 
+def read_paster_wf_config(config):
+    """ Read workflow configuration from paster settings.
+        Expects input like:
+        
+        arche.workflows =
+            Document simple_workflow
+            Image other_workflow
+    """
+    settings = config.registry.settings
+    wf_conf = settings.get('arche.workflows', '')
+    for row in wf_conf.splitlines():
+        if not row:
+            continue
+        try:
+            type_name, wf_name = row.split()
+        except ValueError:
+            logger = getLogger(__name__)
+            msg = "Workflow configuration error - can't understand this line: '%s'" % row
+            logger.warn(msg)
+        config.set_content_workflow(type_name, wf_name)
 
 def includeme(config):
     config.registry._workflows = WorkflowRegistry()
     config.add_directive('add_workflow', add_workflow)
     config.add_workflow(SimpleWorkflow)
     config.add_directive('set_content_workflow', set_content_workflow)
+    read_paster_wf_config(config)
