@@ -23,14 +23,24 @@ def wf_menu(context, request, va, **kw):
     wf = get_context_wf(context)
     if wf:
         view = kw['view']
-        return view.render_template('arche:templates/menus/workflow.pt', wf = wf)
-
+        transitions = tuple(wf.get_transitions(request))
+        if transitions or request.has_permission(security.PERM_EDIT, context):
+            return view.render_template('arche:templates/menus/workflow.pt', wf = wf, transitions = transitions)
 
 @view_action('actionbar_main', 'view',
              title = _("View"),
              permission = security.PERM_VIEW,
-             view_name = '',
              priority = 10)
+def actionbar_view(context, request, va, **kw):
+    candidates = set(['', 'view'])
+    for name in get_content_views(request.registry).get(context.type_name, {}):
+        candidates.add(name)
+    active_cls = request.view_name in candidates and 'active' or ''
+    return """<li class="%(active_cls)s"><a href="%(url)s">%(title)s</a></li>""" % \
+        {'url': request.resource_url(context),
+         'active_cls': active_cls,
+         'title': va.title,}
+
 @view_action('actionbar_main', 'edit',
              title = _("Edit"),
              permission = security.PERM_EDIT,
@@ -49,9 +59,11 @@ def wf_menu(context, request, va, **kw):
              priority = 40,
              interface = ILocalRoles)
 def actionbar_main_generic(context, request, va, **kw):
-    return """<li><a href="%(url)s" alt="%(desc)s">%(title)s</a></li>""" % \
+    active_cls = request.view_name == va.kwargs['view_name'] and 'active' or ''
+    return """<li class="%(active_cls)s"><a href="%(url)s" alt="%(desc)s">%(title)s</a></li>""" % \
         {'url': request.resource_url(context, va.kwargs['view_name']),
          'title': va.title,
+         'active_cls': active_cls,
          'desc': va.kwargs.get('description', '')}
 
 #Permission to add handled by content types!
@@ -60,15 +72,19 @@ def actionbar_main_generic(context, request, va, **kw):
              priority = 50)
 def add_menu(context, request, va, **kw):
     view = kw['view']
-    return view.render_template('arche:templates/menus/add_content.pt')
+    addable_content = tuple(view.addable_content(context))
+    if addable_content:
+        return view.render_template('arche:templates/menus/add_content.pt', addable_content = addable_content)
 
 @view_action('actionbar_main', 'actions',
              title = _("Actions"),
-             permission = security.PERM_EDIT,#XXX: ?
              priority = 60)
 def action_menu(context, request, va, **kw):
-    view = kw['view']
-    return view.render_template('arche:templates/menus/actions.pt')
+    if request.authenticated_userid:
+        view = kw['view']
+        actions_output = view.render_view_group('actions_menu')
+        if actions_output:
+            return view.render_template('arche:templates/menus/actions.pt', actions_output = actions_output)
 
 @view_action('actionbar_right', 'user',
              title = _("User menu"),

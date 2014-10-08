@@ -9,7 +9,7 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu">
-    <tal:actionbar_items replace="structure view.render_view_group('actions_menu')" />
+    <tal:actionbar_items replace="structure actions_output" />
   </ul>
 </li>
 </tal:main>

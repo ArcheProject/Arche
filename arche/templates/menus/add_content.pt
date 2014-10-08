@@ -9,7 +9,7 @@
         <span class="caret"></span>
       </a>
       <ul class="dropdown-menu">
-        <tal:iterate repeat="factory view.addable_content(context)">
+        <tal:iterate repeat="factory addable_content">
             <li><a href="${request.resource_url(context, 'add', query = {'content_type': factory.type_name})}"
                 tal:define="icon getattr(factory, 'icon', '')">
                 <span tal:condition="icon" class="glyphicon glyphicon-${icon}"></span>

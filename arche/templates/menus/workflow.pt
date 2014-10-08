@@ -3,17 +3,18 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
-    <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        ${wf.state_title}
-        <span class="caret"></span>
-      </a>
-      <ul class="dropdown-menu">
-        <tal:iterate repeat="transition wf.get_transitions(request)">
-            <li><a href="${request.resource_url(context, '__wf_transition__', query = {'id': transition.name, 'return_url': request.url})}">
-                ${transition.title}
-            </a></li>
-        </tal:iterate>
-      </ul>
-    </li>
+  <li tal:condition="not transitions"><p class="navbar-text">${wf.state_title}</p></li>
+  <li class="dropdown" tal:condition="transitions">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+      ${wf.state_title}
+      <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <tal:iterate repeat="transition transitions">
+          <li><a href="${request.resource_url(context, '__wf_transition__', query = {'id': transition.name, 'return_url': request.url})}">
+              ${transition.title}
+          </a></li>
+      </tal:iterate>
+    </ul>
+  </li>
 </tal:main>
