@@ -3,16 +3,14 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
-    <li class="dropdown ${request.view_name == 'add' and 'active' or None}">
+    <li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        <tal:ts i18n:translate="">${wf.state_title}</tal:ts>
+        ${wf.state_title}
         <span class="caret"></span>
       </a>
       <ul class="dropdown-menu">
         <tal:iterate repeat="transition wf.get_transitions(request)">
-            <li><a href="${request.resource_url(context, '__wf_transition__', query = {'id': transition.name, 'return_url': request.url})}"
-                tal:define="icon getattr(context, 'icon', '')">
-                <span tal:condition="icon" class="glyphicon glyphicon-${icon}"></span>
+            <li><a href="${request.resource_url(context, '__wf_transition__', query = {'id': transition.name, 'return_url': request.url})}">
                 ${transition.title}
             </a></li>
         </tal:iterate>
