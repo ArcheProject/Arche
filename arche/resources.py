@@ -169,7 +169,7 @@ class ContextACLMixin(object):
 
 
 @implementer(IContent, IIndexedContent)
-class Content(Base, Folder, ContextACLMixin):
+class Content(Base, Folder):
     title = ""
     description = ""
     default_view = u"view"
@@ -211,7 +211,7 @@ external_type_icons = {'photo': 'picture',
 
 
 @implementer(IRoot, IIndexedContent)
-class Root(Content, LocalRolesMixin, DCMetadataMixin):
+class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
     type_name = u"Root"
     type_title = _(u"Site root")
     add_permission = "Add %s" % type_name
@@ -233,7 +233,7 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin):
 
 
 @implementer(IDocument, IThumbnailedContent)
-class Document(Content, DCMetadataMixin, LocalRolesMixin):
+class Document(Content, DCMetadataMixin, LocalRolesMixin, ContextACLMixin):
     type_name = u"Document"
     type_title = _(u"Document")
     body = u""
@@ -310,7 +310,7 @@ class InitialSetup(Content):
 
 
 @implementer(IUsers)
-class Users(Content):
+class Users(Content, LocalRolesMixin, ContextACLMixin):
     type_name = u"Users"
     type_title = _(u"Users")
     nav_visible = False
@@ -327,7 +327,7 @@ class Users(Content):
 
 
 @implementer(IUser, IThumbnailedContent, IContent)
-class User(Content, LocalRolesMixin):
+class User(Content, LocalRolesMixin, ContextACLMixin):
     type_name = u"User"
     type_title = _(u"User")
     first_name = u""
@@ -358,7 +358,7 @@ class User(Content, LocalRolesMixin):
 
 
 @implementer(IGroups)
-class Groups(Content):
+class Groups(Content, LocalRolesMixin, ContextACLMixin):
     type_name = u"Groups"
     type_title = _(u"Groups")
     nav_visible = False
@@ -380,7 +380,7 @@ class Groups(Content):
 
 
 @implementer(IGroup)
-class Group(Content):
+class Group(Content, LocalRolesMixin, ContextACLMixin):
     type_name = u"Group"
     type_title = _(u"Group")
     add_permission = "Add %s" % type_name
@@ -413,7 +413,6 @@ class Group(Content):
 
 @implementer(IToken)
 class Token(UserString, Persistent):
-    #data = ""
     created = None
     expires = None
     type_name = u"Token"
