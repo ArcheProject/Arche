@@ -31,8 +31,17 @@ from zope.interface import providedBy
 from zope.interface.interfaces import ComponentLookupError
 import pytz
 
-from arche.interfaces import * #FIXME: Pick import
 from arche import _
+from arche.interfaces import (IBase,
+                              IBlobs,
+                              IFlashMessages,
+                              IThumbnails,
+                              IThumbnailedContent,
+                              IRoot,
+                              IRegistrationTokens,
+                              IDateTimeHandler,
+                              IObjectUpdatedEvent,
+                              IContentView)
 
 
 def add_content_factory(config, ctype):
@@ -43,7 +52,11 @@ def add_content_factory(config, ctype):
 def get_content_factories(registry = None):
     if registry is None:
         registry = get_current_registry()
-    return registry._content_factories
+    try:
+        return registry._content_factories
+    except AttributeError:
+        raise Exception("Content factories registry not initialized, include arche.utils")
+
 
 def add_addable_content(config, ctype, addable_to):
     addable = config.registry._addable_content.setdefault(ctype, set())
@@ -55,7 +68,10 @@ def add_addable_content(config, ctype, addable_to):
 def get_addable_content(registry = None):
     if registry is None:
         registry = get_current_registry()
-    return registry._addable_content
+    try:
+        return registry._addable_content
+    except AttributeError:
+        raise Exception("Addable content registry not initialized, include arche.utils")
 
 def add_content_schema(config, type_name, schema, name):
     assert inspect.isclass(schema)

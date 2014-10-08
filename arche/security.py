@@ -34,6 +34,9 @@ PERM_MANAGE_SYSTEM = 'perm:Manage system'
 PERM_MANAGE_USERS = 'perm:Manage users'
 
 
+class ACLException(Exception):
+    """ When ACL isn't registered, or something else goes wrong. """
+
 @contextmanager
 def authz_context(context, request):
     before = request.environ.pop('authz_context', None)
@@ -100,7 +103,10 @@ def get_acl_registry(registry = None):
     """ Get ACL registry"""
     if registry is None:
         registry = get_current_registry()
-    return registry._acl
+    try:
+        return registry._acl
+    except AttributeError:
+        raise ACLException("ACL not initialized, include arche.security")
 
 
 class ACLEntry(IterableUserDict):
