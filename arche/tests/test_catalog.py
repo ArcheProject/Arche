@@ -10,6 +10,19 @@ from arche.interfaces import IIndexedContent
 def _dummy_func(*args):
     return args
 
+def _wf_fixture(config):
+    from arche.resources import ContextACLMixin
+
+    @implementer(IIndexedContent)
+    class Dummy(testing.DummyResource, ContextACLMixin):
+        type_name = 'Dummy'
+
+    config.include('arche.utils')
+    config.include('arche.security')
+    config.include('arche.workflow')
+    config.set_content_workflow('Dummy', 'simple_workflow')
+    return Dummy()
+
 
 class CatalogIntegrationTests(TestCase):
      
@@ -84,6 +97,40 @@ class CatalogIntegrationTests(TestCase):
         res = obj.catalog.query("searchable_text == 'hel*'")
         self.assertEqual(res[0], 1)
         res = obj.catalog.query("searchable_text == 'world'")
+        self.assertEqual(res[0], 1)
+
+    def test_wf_state_index(self):
+        root = self._fixture()
+        root['a'] = context = _wf_fixture(self.config)
+        obj = self._cut(context)
+        obj.index_object()
+        res = obj.catalog.query("wf_state == 'private'")
+        self.assertEqual(res[0], 1)
+
+    def test_workflow_index(self):
+        root = self._fixture()
+        root['a'] = context = _wf_fixture(self.config)
+        obj = self._cut(context)
+        obj.index_object()
+        res = obj.catalog.query("workflow == 'simple_workflow'")
+        self.assertEqual(res[0], 1)
+
+    def test_workflow_subscriber(self):
+        from arche.workflow import get_context_wf
+
+        root = self._fixture()
+        root['a'] = context = _wf_fixture(self.config)
+        obj = self._cut(context)
+        obj.index_object()
+        res = obj.catalog.query("wf_state == 'private'")
+        self.assertEqual(res[0], 1)
+
+        request = testing.DummyRequest()
+        wf = get_context_wf(context)
+        wf.do_transition('private:public', request)
+        res = obj.catalog.query("wf_state == 'private'")
+        self.assertEqual(res[0], 0)
+        res = obj.catalog.query("wf_state == 'public'")
         self.assertEqual(res[0], 1)
 
     def test_subscribers(self):

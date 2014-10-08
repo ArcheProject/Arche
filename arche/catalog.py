@@ -15,11 +15,14 @@ from zope.index.text.lexicon import Lexicon
 from zope.index.text.lexicon import Splitter
 
 from arche.interfaces import ICataloger
-from arche.interfaces import IUser
 from arche.interfaces import IIndexedContent
 from arche.interfaces import IObjectAddedEvent
 from arche.interfaces import IObjectUpdatedEvent
 from arche.interfaces import IObjectWillBeRemovedEvent
+from arche.interfaces import IUser
+from arche.interfaces import IWorkflowAfterTransition
+from arche.workflow import get_context_wf
+from arche.workflow import WorkflowException
 
 
 _default_searchable_text_indexes = (
@@ -116,6 +119,20 @@ def get_searchable_text(context, default):
     text = u" ".join(found_text)
     return text and text or default
 
+def get_wf_state(context, default):
+    try:
+        wf = get_context_wf(context)
+    except WorkflowException:
+        return default
+    return wf and wf.state or default
+
+def get_workflow(context, default):
+    try:
+        wf = get_context_wf(context)
+    except WorkflowException:
+        return default
+    return wf and wf.name or default
+
 def _default_indexes():
     return  {
         'title': CatalogFieldIndex(get_title),
@@ -130,6 +147,8 @@ def _default_indexes():
         'date': CatalogFieldIndex(get_date),
         'modified': CatalogFieldIndex(get_modified),
         'created': CatalogFieldIndex(get_created),
+        'wf_state': CatalogFieldIndex(get_wf_state),
+        'workflow': CatalogFieldIndex(get_workflow),
     }.items()
 
 def populate_catalog(catalog, indexes = _default_indexes):
@@ -163,9 +182,11 @@ def get_searchable_text_indexes(registry = None):
         registry = get_current_registry()
     return registry._searchable_text_indexes
 
+
 def includeme(config):
     config.registry.registerAdapter(Cataloger)
     config.add_subscriber(index_object_subscriber, [IIndexedContent, IObjectAddedEvent])
     config.add_subscriber(index_object_subscriber, [IIndexedContent, IObjectUpdatedEvent])
+    config.add_subscriber(index_object_subscriber, [IIndexedContent, IWorkflowAfterTransition])
     config.add_subscriber(unindex_object_subscriber, [IIndexedContent, IObjectWillBeRemovedEvent])
     config.registry._searchable_text_indexes = set(_default_searchable_text_indexes)
