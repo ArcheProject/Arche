@@ -95,16 +95,18 @@ class Transition(object):
         return "%s:%s" % (self.from_state, self.to_state)
 
 
-_public_to_private = Transition(from_state = 'public',
-                                to_state = 'private',
-                                permission = security.PERM_EDIT,
-                                title = _("Make private"),
-                                message = _("Now private"))
-_private_to_public = Transition(from_state = 'private',
-                                to_state = 'public',
-                                permission = security.PERM_EDIT,
-                                title = _("Publish"),
-                                message = _("Published"))
+_simple_public_to_private = \
+    Transition(from_state = 'public',
+               to_state = 'private',
+               permission = security.PERM_EDIT,
+               title = _("Make private"),
+               message = _("Now private"))
+_simple_private_to_public = \
+    Transition(from_state = 'private',
+               to_state = 'public',
+               permission = security.PERM_EDIT,
+               title = _("Publish"),
+               message = _("Published"))
 
 
 class SimpleWorkflow(Workflow):
@@ -113,18 +115,90 @@ class SimpleWorkflow(Workflow):
     title = _("Simple")
     states = {'private': _("Private"),
               'public': _("Public")}
-    transitions = {_public_to_private.name: _public_to_private,
-                   _private_to_public.name: _private_to_public}
+    transitions = {_simple_public_to_private.name: _simple_public_to_private,
+                   _simple_private_to_public.name: _simple_private_to_public}
     initial_state = 'private'
 
     @classmethod
     def init_acl(cls, registry):
         acl_reg = security.get_acl_registry(registry)
-        acl_reg["simple_workflow:private"] = security.ACLEntry()
-        acl_reg["simple_workflow:private"].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
-        acl_reg["simple_workflow:private"].add(security.ROLE_OWNER, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
-        acl_reg["simple_workflow:private"].add(security.ROLE_EDITOR, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
-        acl_reg["simple_workflow:private"].add(security.ROLE_VIEWER, [security.PERM_VIEW])
+        priv_name = "%s:private" % cls.name
+        acl_reg[priv_name] = security.ACLEntry()
+        acl_reg[priv_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
+        acl_reg[priv_name].add(security.ROLE_OWNER, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
+        acl_reg[priv_name].add(security.ROLE_EDITOR, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
+        acl_reg[priv_name].add(security.ROLE_VIEWER, [security.PERM_VIEW])
+
+
+_rev_public_to_private = Transition(from_state = 'public',
+                                    to_state = 'private',
+                                    permission = security.PERM_EDIT,
+                                    title = _("Make private"),
+                                    message = _("Now private"))
+_rev_private_to_public = Transition(from_state = 'private',
+                                    to_state = 'public',
+                                    permission = security.PERM_REVIEW_CONTENT,
+                                    title = _("Publish"),
+                                    message = _("Published"))
+_rev_private_to_review = Transition(from_state = 'private',
+                                    to_state = 'review',
+                                    permission = security.PERM_EDIT,
+                                    title = _("Submit for review"),
+                                    message = _("Submitted for review"))
+_rev_review_to_private = Transition(from_state = 'review',
+                                    to_state = 'private',
+                                    permission = security.PERM_EDIT,
+                                    title = _("Make private"),
+                                    message = _("Now private"))
+_rev_public_to_review = Transition(from_state = 'public',
+                                    to_state = 'review',
+                                    permission = security.PERM_REVIEW_CONTENT,
+                                    title = _("Retract and resubmit for review"),
+                                    message = _("Retracted and resubmitted for review"))
+_rev_review_to_public = Transition(from_state = 'review',
+                                    to_state = 'public',
+                                    permission = security.PERM_REVIEW_CONTENT,
+                                    title = _("Publish"),
+                                    message = _("Published"))
+
+
+class ReviewWorkflow(Workflow):
+    """ Content must be reviewed before published."""
+    name = 'review_workflow'
+    title = _("Review workflow")
+    states = {'private': _("Private"),
+              'public': _("Public"),
+              'review': _("Review")}
+    transitions = {_rev_public_to_private.name: _rev_public_to_private,
+                   _rev_private_to_public.name: _rev_private_to_public,
+                   _rev_private_to_review.name: _rev_private_to_review,
+                   _rev_review_to_private.name: _rev_review_to_private,
+                   _rev_public_to_review.name: _rev_public_to_review,
+                   _rev_review_to_public.name: _rev_review_to_public,}
+    initial_state = 'private'
+
+    @classmethod
+    def init_acl(cls, registry):
+        acl_reg = security.get_acl_registry(registry)
+        priv_name = "%s:private" % cls.name
+        acl_reg[priv_name] = security.ACLEntry()
+        acl_reg[priv_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
+        acl_reg[priv_name].add(security.ROLE_OWNER, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
+        acl_reg[priv_name].add(security.ROLE_EDITOR, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
+        acl_reg[priv_name].add(security.ROLE_VIEWER, [security.PERM_VIEW])
+        acl_reg[priv_name].add(security.ROLE_REVIEWER, [security.PERM_REVIEW_CONTENT]) #May not be able to view
+        rev_name = "%s:review" % cls.name
+        acl_reg[rev_name] = security.ACLEntry()
+        acl_reg[rev_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
+        acl_reg[rev_name].add(security.ROLE_OWNER, [security.PERM_VIEW])
+        acl_reg[rev_name].add(security.ROLE_EDITOR, [security.PERM_VIEW])
+        acl_reg[rev_name].add(security.ROLE_VIEWER, [security.PERM_VIEW])
+        acl_reg[rev_name].add(security.ROLE_REVIEWER, [security.PERM_VIEW, security.PERM_REVIEW_CONTENT])
+        pub_name = "%s:public" % cls.name
+        acl_reg[pub_name] = security.ACLEntry()
+        acl_reg[pub_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
+        acl_reg[pub_name].add(security.Everyone, [security.PERM_VIEW])
+        acl_reg[pub_name].add(security.ROLE_REVIEWER, [security.PERM_REVIEW_CONTENT])
 
 
 class WorkflowRegistry(IterableUserDict):
@@ -201,5 +275,6 @@ def includeme(config):
     config.registry._workflows = WorkflowRegistry()
     config.add_directive('add_workflow', add_workflow)
     config.add_workflow(SimpleWorkflow)
+    config.add_workflow(ReviewWorkflow)
     config.add_directive('set_content_workflow', set_content_workflow)
     read_paster_wf_config(config)

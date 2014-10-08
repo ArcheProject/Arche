@@ -32,6 +32,7 @@ PERM_REGISTER = 'perm:Register'
 PERM_DELETE = 'perm:Delete'
 PERM_MANAGE_SYSTEM = 'perm:Manage system'
 PERM_MANAGE_USERS = 'perm:Manage users'
+PERM_REVIEW_CONTENT = 'perm:Review content'
 
 
 class ACLException(Exception):
@@ -191,6 +192,7 @@ class Role(UserString):
                 raise AttributeError("This class doesn't have any '%s' attribute." % key)
             setattr(self, key, value)
 
+
 ROLE_ADMIN = Role('role:Administrator',
                   title = _(u"Administrator"),
                   description = _(u"Default 'superuser' role."),
@@ -213,6 +215,12 @@ ROLE_OWNER = Role('role:Owner',
                   title = _(u"Owner"),
                   description = _(u"Special role for the initial creator."),
                   inheritable = False,
+                  assign_local = True,
+                  assign_global = False,)
+ROLE_REVIEWER = Role('role:Reviewer',
+                  title = _(u"Reviewer"),
+                  description = _(u"Review and publish content. Usable when combined with a workflow that implements review before publish."),
+                  inheritable = True,
                   assign_local = True,
                   assign_global = False,)
 
@@ -290,11 +298,13 @@ def includeme(config):
     rr.add(ROLE_EDITOR)
     rr.add(ROLE_VIEWER)
     rr.add(ROLE_OWNER)
+    rr.add(ROLE_REVIEWER)
     config.registry.registerAdapter(Roles)
     config.registry._acl = aclreg =  ACLRegistry()
     aclreg.default.add(ROLE_ADMIN, ALL_PERMISSIONS)
     aclreg.default.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     aclreg.default.add(ROLE_VIEWER, [PERM_VIEW])
+    aclreg.default.add(ROLE_REVIEWER, [PERM_VIEW, PERM_REVIEW_CONTENT])
     aclreg.default.add(Everyone, [PERM_VIEW])
     #Default add perms - perhaps configurable somewhere else?
     #Anyway, factories need to be included first otherwise this won't work!
