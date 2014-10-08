@@ -105,8 +105,7 @@ def get_acl_registry(registry = None):
 
 class ACLEntry(IterableUserDict):
     """ Contains ACL information.
-        ACL entries behave like dicts, and ACL entries can be added to other ACL entries.
-        This is the way to create custom permissions for some workflow states or similar.
+        Behaves like a callable dict.
     """
     def __init__(self):
         self.data = {}
@@ -150,13 +149,12 @@ class ACLRegistry(IterableUserDict):
         assert isinstance(aclentry, ACLEntry)
         self.data[key] = aclentry
 
-    def get_acl(self, type_name, subentry = None):
-        if type_name in self:
-            aclentry = self[type_name]
-            if subentry in aclentry:
-                return aclentry[subentry]()
-            return aclentry()
-        return self.default()
+    def get_acl(self, acl_name):
+        try:
+            return self[acl_name]()
+        except KeyError:
+            return self.default()
+
 
 def get_roles_registry(registry = None):
     """ Get roles registry"""

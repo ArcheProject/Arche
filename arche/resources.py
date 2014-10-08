@@ -165,7 +165,7 @@ class ContextACLMixin(object):
         wf = get_context_wf(self)
         if wf:
             return acl_reg.get_acl("%s:%s" % (wf.name, wf.state))
-        return acl_reg.get_acl(self.type_name)
+        return acl_reg.default()
 
 
 @implementer(IContent, IIndexedContent)
