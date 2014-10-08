@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import argparse
 #import sys
 #import textwrap
@@ -11,9 +12,17 @@ from arche.interfaces import ICataloger
 
 
 def arche_console_script():
+    #Move this to some configurable place...
+    available_commands = {'reindex_catalog': reindex_catalog,
+                          'populate_catalog': populate_catalog_script}
     #description = """Blabla"""
     #usage = """Usage instructions"""
-    parser = argparse.ArgumentParser()
+    #Format and make this cuter
+    desc = "Available commands: \n"
+    for k in available_commands:
+        desc += "%s \n \n" % k
+    desc += "\n"
+    parser = argparse.ArgumentParser(description = desc)
     parser.add_argument("config_uri", help="Paster ini file to load settings from")
     parser.add_argument("command", help="What to actually do")
     args = parser.parse_args()
@@ -21,8 +30,6 @@ def arche_console_script():
     #print args
     env = bootstrap(args.config_uri)
     
-    available_commands = {'reindex_catalog': reindex_catalog,
-                          'populate_catalog': populate_catalog_script}
     if args.command not in available_commands:
         print "ERROR: No such command, must be one of:"
         print ", ".join(available_commands.keys())
