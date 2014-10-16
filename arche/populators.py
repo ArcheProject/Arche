@@ -4,13 +4,15 @@ from zope.component import adapter
 from zope.interface import implementer
 from pyramid.threadlocal import get_current_registry
 
-from arche.utils import get_content_factories
-from arche.security import get_local_roles
-from arche.security import ROLE_ADMIN
-from arche.interfaces import (IPopulator,
-                              IRoot)
 from arche import _
-        
+from arche.interfaces import IPopulator
+from arche.interfaces import IRoot
+from arche.security import ROLE_ADMIN
+from arche.security import get_local_roles
+from arche.utils import get_content_factories
+from arche.workflow import WorkflowException
+from arche.workflow import get_context_wf
+
 
 def root_populator(title = "", userid = "", email = "", password = "", populator_name = ""):
     factories = get_content_factories()
@@ -35,6 +37,12 @@ def root_populator(title = "", userid = "", email = "", password = "", populator
         reg = get_current_registry()
         populator = reg.getAdapter(root, IPopulator, name = populator_name)
         populator.populate()
+    #Publish root
+    try:
+        wf = get_context_wf(root)
+        wf.do_transition('private:public', force = True)
+    except WorkflowException:
+        pass
     return root
 
 

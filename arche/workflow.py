@@ -58,14 +58,14 @@ class Workflow(object):
             if trans.from_state == self.state and request.has_permission(trans.permission, self.context):
                 yield trans
 
-    def do_transition(self, name, request = None):
+    def do_transition(self, name, request = None, force = False):
         #Check permission, treat input as unsafe!
         if request is None:
             request = get_current_request()
         trans = self.transitions[name]
-        if trans.from_state != self.state:
+        if trans.from_state != self.state and force is False:
             raise ValueError("The transition '%s' cant go from state '%s'" % (trans.name, self.state))
-        if not request.has_permission(trans.permission, self.context):
+        if not request.has_permission(trans.permission, self.context) and force is False:
             raise HTTPForbidden("Wrong permissions for this transition")
         objectEventNotify(WorkflowBeforeTransition(self.context, self, trans))
         self.state = trans.to_state
@@ -128,6 +128,13 @@ class SimpleWorkflow(Workflow):
         acl_reg[priv_name].add(security.ROLE_OWNER, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
         acl_reg[priv_name].add(security.ROLE_EDITOR, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
         acl_reg[priv_name].add(security.ROLE_VIEWER, [security.PERM_VIEW])
+        pub_name = "%s:public" % cls.name
+        acl_reg[pub_name] = security.ACLEntry()
+        acl_reg[pub_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
+        acl_reg[pub_name].add(security.ROLE_OWNER, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
+        acl_reg[pub_name].add(security.ROLE_EDITOR, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
+        acl_reg[pub_name].add(security.ROLE_VIEWER, [security.PERM_VIEW])
+        acl_reg[pub_name].add(security.Everyone, [security.PERM_VIEW])
 
 
 _rev_public_to_private = Transition(from_state = 'public',
@@ -277,4 +284,5 @@ def includeme(config):
     config.add_workflow(SimpleWorkflow)
     config.add_workflow(ReviewWorkflow)
     config.add_directive('set_content_workflow', set_content_workflow)
+    config.set_content_workflow('Root', 'simple_workflow')
     read_paster_wf_config(config)

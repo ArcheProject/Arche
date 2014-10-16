@@ -305,7 +305,6 @@ def includeme(config):
     aclreg.default.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     aclreg.default.add(ROLE_VIEWER, [PERM_VIEW])
     aclreg.default.add(ROLE_REVIEWER, [PERM_VIEW, PERM_REVIEW_CONTENT])
-    aclreg.default.add(Everyone, [PERM_VIEW])
     #Default add perms - perhaps configurable somewhere else?
     #Anyway, factories need to be included first otherwise this won't work!
     factories = get_content_factories(config.registry)
