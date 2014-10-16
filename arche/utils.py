@@ -24,7 +24,7 @@ from pyramid.threadlocal import get_current_request
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 from repoze.lru import LRUCache
-from slugify import slugify
+from slugify import UniqueSlugify
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import providedBy
@@ -111,24 +111,29 @@ def generate_slug(parent, text, limit=40):
     """ Suggest a name for content that will be added.
         text is a title or similar to be used.
     """
-    text = unicode(text)
-    suggestion = slugify(text[:limit])
+    #Stop words configurable?
+    #We don't have any language settings anywhere
+    #Note about kw uids: It's keys already used.
+    used_names = set(parent.keys())
+    request = get_current_request()
+    used_names.update(get_context_view_names(parent, request))
+    sluggo = UniqueSlugify(to_lower = True,
+                           stop_words = ['a', 'an', 'the'],
+                           max_length = 80,
+                           uids = used_names)
+    suggestion = sluggo(text)
     if not len(suggestion):
         raise ValueError("When text was made URL-friendly, nothing remained.")
-    request = get_current_request()
-    #Is the suggested ID already unique?
     if check_unique_name(parent, request, suggestion):
         return suggestion
-    #ID isn't unique, let's try to generate a unique one.
-    RETRY = 100
-    i = 1
-    while i <= RETRY:
-        new_s = "%s-%s" % (suggestion, str(i))
-        if check_unique_name(parent, request, new_s):
-            return new_s
-        i += 1
-    #If no id was found, don't just continue
     raise KeyError("No unique id could be found")
+
+def get_context_view_names(context, request):
+    provides = [IViewClassifier] + map_(
+        providedBy,
+        (request, context)
+    )
+    return [x for (x, y) in request.registry.adapters.lookupAll(provides, IView)]
 
 def check_unique_name(context, request, name):
     """ Check if there's an object with the same name or a registered view with the same name.

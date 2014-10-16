@@ -1,11 +1,12 @@
-import pytz
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from unittest import TestCase
 from datetime import datetime
 from datetime import timedelta
 from calendar import timegm
 
 from pyramid import testing
-import pytz
 from pyramid.i18n import get_localizer
 
 
@@ -165,3 +166,43 @@ class DateTimeHandlerTests(TestCase):
         time = obj.utcnow() + timedelta(minutes = 10)
         out = obj.format_relative(time)
         self.assertEqual(out, obj.format_dt(time))
+
+
+class GenerateSlugTests(TestCase):
+
+    def setUp(self):
+        request = testing.DummyRequest()
+        self.config = testing.setUp(request = request)
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _fut(self):
+        from arche.utils import generate_slug
+        return generate_slug
+
+    def test_chineese(self):
+        context = testing.DummyResource()
+        hello = "您好"
+        self.assertEqual(self._fut(context, hello), "nin-hao")
+
+    def test_ukranian(self):
+        context = testing.DummyResource()
+        hello = "Привіт"
+        self.assertEqual(self._fut(context, hello), "privit")
+
+    def test_swedish(self):
+        context = testing.DummyResource()
+        text = "Héj åäö"
+        self.assertEqual(self._fut(context, text), "hej-aao")
+
+    def test_registered_views(self):
+        self.config.add_view(_dummy_view, name = 'dummy', context = testing.DummyResource)
+        context = testing.DummyResource()
+        self.assertEqual(self._fut(context, 'dummy'), "dummy-1")
+
+    def test_with_existing_keys(self):
+        context = testing.DummyResource()
+        context['hello'] = testing.DummyResource()
+        self.assertEqual(self._fut(context, 'hello'), "hello-1")
