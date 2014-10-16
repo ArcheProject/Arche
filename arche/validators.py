@@ -2,7 +2,9 @@ from pyramid.traversal import find_root
 import colander
 
 from arche import _
+from arche.interfaces import IUsers
 from arche.utils import check_unique_name
+from arche.utils import generate_slug
 from arche.utils import hash_method
 
 
@@ -15,17 +17,29 @@ def unique_context_name_validator(node, kw):
 def unique_userid_validator(node, kw):
     root = find_root(kw['context'])
     request = kw['request']
-    return UniqueContextNameValidator(root['users'], request)
+    return UniqueUserIDValidator(root['users'], request)
 
 
-class UniqueContextNameValidator(object):
+class _BaseValidator(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
+
+class UniqueContextNameValidator(_BaseValidator):
     def __call__(self, node, value):
         if not check_unique_name(self.context, self.request, value):
             raise colander.Invalid(node, msg = _(u"Already used within this context"))
+
+
+class UniqueUserIDValidator(_BaseValidator):
+    def __call__(self, node, value):
+        assert IUsers.providedBy(self.context), "Can only be used on a Users object."
+        if value in self.context:
+            msg = _("Already taken")
+            raise colander.Invalid(node, msg = msg)
+        if generate_slug(self.context, value) != value:
+            raise colander.Invalid(node, msg = _("Use lowercase with only a-z or numbers."))
 
 
 @colander.deferred
