@@ -44,7 +44,6 @@ from arche.utils import (hash_method,
                          utcnow)
 from UserString import UserString
 from arche.workflow import get_context_wf
-from colander import null
 
 
 class DCMetadataMixin(object):
@@ -132,9 +131,6 @@ class Base(Persistent):
             if not hasattr(self, key):
                 raise AttributeError("This class doesn't have any '%s' attribute." % key)
             if getattr(self, key, _marker) != value:
-                if isinstance(value, null.__class__):
-                    raise ValueError("You can't store colander.null as a value. "
-                                     "You need to define something else as a missing value. Key was '%s' for object %s" % (key, self))
                 setattr(self, key, value)
                 changed_attributes.add(key)
         if hasattr(self, 'modified') and 'modified' not in kwargs and changed_attributes:

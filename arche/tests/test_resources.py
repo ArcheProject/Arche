@@ -3,7 +3,6 @@ from unittest import TestCase
 from pyramid import testing
 from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
-import colander
 
 from arche.interfaces import IBase
 from arche.interfaces import IToken
@@ -27,10 +26,6 @@ class BaseTests(TestCase):
 
     def test_verify_object(self):
         verifyObject(IBase, self._cut())
-
-    def test_update_with_null_value(self):
-        obj = self._cut()
-        self.assertRaises(ValueError, obj.update, uid = colander.null)
 
 
 class TokenTests(TestCase):
