@@ -146,11 +146,18 @@ class ACLEntry(IterableUserDict):
         return items
 
 
+class _InheritACL(ACLEntry):
+    def add(self, role, perms): pass
+    def remove(self, role, perms): pass
+    def __call__(self): raise AttributeError()
+
+
 class ACLRegistry(IterableUserDict):
     """ Manages available ACL. """
     def __init__(self):
         self.data = {}
         self.default = ACLEntry()
+        self.data['inherit'] = _InheritACL()
 
     def __setitem__(self, key, aclentry):
         assert isinstance(aclentry, ACLEntry)

@@ -208,6 +208,20 @@ class ReviewWorkflow(Workflow):
         acl_reg[pub_name].add(security.ROLE_REVIEWER, [security.PERM_REVIEW_CONTENT])
 
 
+class InheritWorkflow(Workflow):
+    """ Always inherit workflow from it's parent. Make sure there is a parent somewhere to inherit from!"""
+    name = 'inherit'
+    title = _("Inherit workflow")
+    states = {'inherit': _("Inherit")}
+    transitions = {}
+    initial_state = 'inherit'
+
+    @classmethod
+    def init_acl(cls, registry):
+        acl_reg = security.get_acl_registry(registry)
+        acl_reg['%s:inherit' % cls.name] = acl_reg['inherit']
+
+
 class WorkflowRegistry(IterableUserDict):
     """ Registry for workflow information, and set workflow for different content types. """
 
@@ -283,6 +297,7 @@ def includeme(config):
     config.add_directive('add_workflow', add_workflow)
     config.add_workflow(SimpleWorkflow)
     config.add_workflow(ReviewWorkflow)
+    config.add_workflow(InheritWorkflow)
     config.add_directive('set_content_workflow', set_content_workflow)
     config.set_content_workflow('Root', 'simple_workflow')
     read_paster_wf_config(config)

@@ -164,7 +164,8 @@ class ContextACLMixin(object):
         acl_reg = get_acl_registry()
         wf = get_context_wf(self)
         if wf:
-            return acl_reg.get_acl("%s:%s" % (wf.name, wf.state))
+            state = wf.state in wf.states and wf.state or wf.initial_state
+            return acl_reg.get_acl("%s:%s" % (wf.name, state))
         return acl_reg.default()
 
 
