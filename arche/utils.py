@@ -340,7 +340,11 @@ class Thumbnails(object):
         blobs = IBlobs(self.context)
         if key in blobs:
             with blobs[key].blob.open() as f:
-                thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
+                try:
+                    thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
+                except IOError:
+                    #FIXME: Logging?
+                    return
             thumb = Thumbnail(thumb_data, image_type = image_type, size = size)
             thumb_cache.put(cachekey, thumb)
             return thumb
