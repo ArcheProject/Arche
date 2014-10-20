@@ -1,4 +1,3 @@
-from StringIO import StringIO
 from UserDict import IterableUserDict
 from datetime import datetime
 from hashlib import sha512
@@ -30,6 +29,7 @@ from zope.interface import implementer
 from zope.interface import providedBy
 from zope.interface.interfaces import ComponentLookupError
 import pytz
+import six
 
 from arche import _
 from arche.interfaces import (IBase,
@@ -44,10 +44,24 @@ from arche.interfaces import (IBase,
                               IContentView)
 
 
-def add_content_factory(config, ctype):
+def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
+    """ Add a class as a content factory. It will be addable through the add menu
+        for anyone with the correct add permission, in a context where it's marked
+        as addable. You may set an addable context here as well.
+        
+        Example:
+            config.add_content_factory(MyClass, addable_to = ('Root', 'Document',), addable_in = 'Image')
+    """
     assert inspect.isclass(ctype)
     factories = get_content_factories(config.registry)
     factories[ctype.type_name] = ctype
+    if addable_to:
+        config.add_addable_content(ctype.type_name, addable_to)
+    if addable_in:
+        if isinstance(addable_in, six.string_types):
+            addable_in = (addable_in,)
+        for ctype_name in addable_in:
+            config.add_addable_content(ctype_name, ctype.type_name)
 
 def get_content_factories(registry = None):
     if registry is None:
@@ -60,7 +74,7 @@ def get_content_factories(registry = None):
 
 def add_addable_content(config, ctype, addable_to):
     addable = config.registry._addable_content.setdefault(ctype, set())
-    if isinstance(addable_to, basestring):
+    if isinstance(addable_to, six.string_types):
         addable.add(addable_to)
     else:
         addable.update(addable_to)
@@ -233,7 +247,7 @@ class FileUploadTempStore(object):
 
     def __getitem__(self, name):
         value = self.session[name].copy()
-        value['fp'] = StringIO(value.pop('file_contents'))
+        value['fp'] = six.StringIO(value.pop('file_contents'))
         return value
 
     def __delitem__(self, name):
