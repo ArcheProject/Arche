@@ -189,6 +189,15 @@ def paste_context(context, request, va, **kw):
             {'url': request.resource_url(context, '__paste_context__'),
              'title': va.title}
 
+@view_action('actions_menu', 'rename',
+             title = _("Rename"),
+             priority = 25)
+def rename_context(context, request, va, **kw):
+    if context != kw['view'].root and not hasattr(context, 'is_permanent'):
+        return """<li><a href="%(url)s">%(title)s</a></li>""" %\
+            {'url': request.resource_url(context, '__rename_context__'),
+             'title': va.title}
+
 @view_action('actions_menu', 'manage_portlets',
              title = _("Manage portlets"),
              priority = 10,

@@ -1,15 +1,18 @@
+from __future__ import unicode_literals
 from copy import deepcopy
 from uuid import uuid4
 
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
+from pyramid.traversal import resource_path
+import colander
 
 from arche import _
 from arche import security
 from arche.utils import generate_slug
 from arche.utils import get_addable_content
-from arche.views.base import BaseView
-from pyramid.traversal import resource_path
+from arche.views.base import BaseView, BaseForm
+from arche.validators import unique_context_name_validator
 
 
 def can_paste(context, request, view):
@@ -68,6 +71,31 @@ class PasteContext(BaseView):
         return HTTPFound(location = self.request.resource_url(self.context))
 
 
+class RenameContext(BaseForm):
+
+    def __call__(self):
+        class _RenameSchema(colander.Schema):
+            name = colander.SchemaNode(colander.String(),
+                                       title = _("Name, this will be part of the url"),
+                                       default = self.context.__name__,
+                                       validator = unique_context_name_validator,
+                                       )
+        self.schema = _RenameSchema()
+        return super(RenameContext, self).__call__()
+
+    @property
+    def title(self):
+        return _("Rename '${name}'", mapping = {'name': self.context.__name__})
+
+    def save_success(self, appstruct):
+        self.flash_messages.add(self.default_success, type="success")
+        name = appstruct['name']
+        parent = self.context.__parent__
+        del parent[self.context.__name__]
+        parent[name] = self.context
+        return HTTPFound(location = self.request.resource_url(self.context))
+
+
 def includeme(config):
     config.add_view(CutContext,
                     name = '__cut_context__',
@@ -79,4 +107,9 @@ def includeme(config):
                     context = 'arche.interfaces.IContent')
     config.add_view(PasteContext,
                     name = '__paste_context__',
+                    context = 'arche.interfaces.IContent')
+    config.add_view(RenameContext,
+                    renderer = 'arche:templates/form.pt',
+                    name = '__rename_context__',
+                    permission = security.PERM_MANAGE_SYSTEM,
                     context = 'arche.interfaces.IContent')
