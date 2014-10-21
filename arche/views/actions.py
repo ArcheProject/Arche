@@ -60,7 +60,7 @@ def actionbar_view(context, request, va, **kw):
              interface = ILocalRoles)
 def actionbar_main_generic(context, request, va, **kw):
     active_cls = request.view_name == va.kwargs['view_name'] and 'active' or ''
-    return """<li class="%(active_cls)s"><a href="%(url)s" alt="%(desc)s">%(title)s</a></li>""" % \
+    return """<li class="%(active_cls)s"><a href="%(url)s" title="%(desc)s">%(title)s</a></li>""" % \
         {'url': request.resource_url(context, va.kwargs['view_name']),
          'title': va.title,
          'active_cls': active_cls,
