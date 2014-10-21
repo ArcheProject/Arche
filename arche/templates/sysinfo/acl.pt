@@ -31,7 +31,7 @@
         </div>
           <div class="panel-body">
           <dl>
-              <tal:iterate repeat="(state, role, perms) acl()">
+              <tal:iterate repeat="(state, role, perms) acl()|()">
                   <dt>${state}: ${role_titles.get(role, role)} - (${role})</dt>
                   <dd>${perms}</dd>
               </tal:iterate>
