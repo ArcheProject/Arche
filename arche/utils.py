@@ -1,4 +1,3 @@
-from StringIO import StringIO
 from UserDict import IterableUserDict
 from datetime import datetime
 from hashlib import sha512
@@ -24,12 +23,13 @@ from pyramid.threadlocal import get_current_request
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 from repoze.lru import LRUCache
-from slugify import slugify
+from slugify import UniqueSlugify
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import providedBy
 from zope.interface.interfaces import ComponentLookupError
 import pytz
+import six
 
 from arche import _
 from arche.interfaces import (IBase,
@@ -44,10 +44,24 @@ from arche.interfaces import (IBase,
                               IContentView)
 
 
-def add_content_factory(config, ctype):
+def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
+    """ Add a class as a content factory. It will be addable through the add menu
+        for anyone with the correct add permission, in a context where it's marked
+        as addable. You may set an addable context here as well.
+        
+        Example:
+            config.add_content_factory(MyClass, addable_to = ('Root', 'Document',), addable_in = 'Image')
+    """
     assert inspect.isclass(ctype)
     factories = get_content_factories(config.registry)
     factories[ctype.type_name] = ctype
+    if addable_to:
+        config.add_addable_content(ctype.type_name, addable_to)
+    if addable_in:
+        if isinstance(addable_in, six.string_types):
+            addable_in = (addable_in,)
+        for ctype_name in addable_in:
+            config.add_addable_content(ctype_name, ctype.type_name)
 
 def get_content_factories(registry = None):
     if registry is None:
@@ -60,7 +74,7 @@ def get_content_factories(registry = None):
 
 def add_addable_content(config, ctype, addable_to):
     addable = config.registry._addable_content.setdefault(ctype, set())
-    if isinstance(addable_to, basestring):
+    if isinstance(addable_to, six.string_types):
         addable.add(addable_to)
     else:
         addable.update(addable_to)
@@ -111,24 +125,29 @@ def generate_slug(parent, text, limit=40):
     """ Suggest a name for content that will be added.
         text is a title or similar to be used.
     """
-    text = unicode(text)
-    suggestion = slugify(text[:limit])
+    #Stop words configurable?
+    #We don't have any language settings anywhere
+    #Note about kw uids: It's keys already used.
+    used_names = set(parent.keys())
+    request = get_current_request()
+    used_names.update(get_context_view_names(parent, request))
+    sluggo = UniqueSlugify(to_lower = True,
+                           stop_words = ['a', 'an', 'the'],
+                           max_length = 80,
+                           uids = used_names)
+    suggestion = sluggo(text)
     if not len(suggestion):
         raise ValueError("When text was made URL-friendly, nothing remained.")
-    request = get_current_request()
-    #Is the suggested ID already unique?
     if check_unique_name(parent, request, suggestion):
         return suggestion
-    #ID isn't unique, let's try to generate a unique one.
-    RETRY = 100
-    i = 1
-    while i <= RETRY:
-        new_s = "%s-%s" % (suggestion, str(i))
-        if check_unique_name(parent, request, new_s):
-            return new_s
-        i += 1
-    #If no id was found, don't just continue
     raise KeyError("No unique id could be found")
+
+def get_context_view_names(context, request):
+    provides = [IViewClassifier] + map_(
+        providedBy,
+        (request, context)
+    )
+    return [x for (x, y) in request.registry.adapters.lookupAll(provides, IView)]
 
 def check_unique_name(context, request, name):
     """ Check if there's an object with the same name or a registered view with the same name.
@@ -228,7 +247,7 @@ class FileUploadTempStore(object):
 
     def __getitem__(self, name):
         value = self.session[name].copy()
-        value['fp'] = StringIO(value.pop('file_contents'))
+        value['fp'] = six.StringIO(value.pop('file_contents'))
         return value
 
     def __delitem__(self, name):
@@ -321,7 +340,11 @@ class Thumbnails(object):
         blobs = IBlobs(self.context)
         if key in blobs:
             with blobs[key].blob.open() as f:
-                thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
+                try:
+                    thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
+                except IOError:
+                    #FIXME: Logging?
+                    return
             thumb = Thumbnail(thumb_data, image_type = image_type, size = size)
             thumb_cache.put(cachekey, thumb)
             return thumb

@@ -4,7 +4,28 @@ from pyramid import testing
 from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
 
+from arche.interfaces import IBase
 from arche.interfaces import IToken
+
+
+class BaseTests(TestCase):
+    
+    def setUp(self):
+        self.config = testing.setUp()
+ 
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.resources import Base
+        return Base
+
+    def test_verify_class(self):
+        verifyClass(IBase, self._cut)
+
+    def test_verify_object(self):
+        verifyObject(IBase, self._cut())
 
 
 class TokenTests(TestCase):

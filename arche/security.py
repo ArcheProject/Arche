@@ -146,11 +146,18 @@ class ACLEntry(IterableUserDict):
         return items
 
 
+class _InheritACL(ACLEntry):
+    def add(self, role, perms): pass
+    def remove(self, role, perms): pass
+    def __call__(self): raise AttributeError()
+
+
 class ACLRegistry(IterableUserDict):
     """ Manages available ACL. """
     def __init__(self):
         self.data = {}
         self.default = ACLEntry()
+        self.data['inherit'] = _InheritACL()
 
     def __setitem__(self, key, aclentry):
         assert isinstance(aclentry, ACLEntry)
@@ -305,7 +312,6 @@ def includeme(config):
     aclreg.default.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     aclreg.default.add(ROLE_VIEWER, [PERM_VIEW])
     aclreg.default.add(ROLE_REVIEWER, [PERM_VIEW, PERM_REVIEW_CONTENT])
-    aclreg.default.add(Everyone, [PERM_VIEW])
     #Default add perms - perhaps configurable somewhere else?
     #Anyway, factories need to be included first otherwise this won't work!
     factories = get_content_factories(config.registry)

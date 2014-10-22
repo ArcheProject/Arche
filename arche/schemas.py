@@ -10,7 +10,6 @@ from arche.security import get_roles_registry
 from arche.utils import FileUploadTempStore
 from arche.validators import existing_userid_or_email
 from arche.validators import login_password_validator
-from arche.validators import unique_context_name_validator
 from arche.validators import unique_email_validator
 from arche.validators import unique_userid_validator
 from arche.widgets import DropzoneWidget
@@ -231,7 +230,7 @@ class UserSchema(colander.Schema):
 
 class AddUserSchema(UserSchema):
     userid = colander.SchemaNode(colander.String(),
-                                 validator = unique_context_name_validator)
+                                 validator = unique_userid_validator)
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
                                    widget = deform.widget.CheckedPasswordWidget())

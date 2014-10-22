@@ -5,12 +5,13 @@ from arche.views.base import BaseView
 
 from arche import security
 from arche import _
-from arche.fanstatic_lib import jqueryui
+from arche.fanstatic_lib import jqueryui, touchpunch_js
 
 class ContentsView(BaseView):
 
     def __call__(self):
         jqueryui.need()
+        touchpunch_js.need()
         is_folderish = IFolder.providedBy(self.context)
         response = {'is_folderish': is_folderish, 'contents': ()}
         if is_folderish:

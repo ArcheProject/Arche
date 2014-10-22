@@ -116,14 +116,16 @@ class BaseView(object):
         return get_renderer(asset_spec).implementation().macros[macro_name]
 
     def addable_content(self, context):
+        _marker = object()
         context_type = getattr(context, 'type_name', None)
         factories = get_content_factories(self.request.registry)
         for (name, addable) in get_addable_content(self.request.registry).items():
             if context_type in addable:
                 factory = factories.get(name, None)
-                add_perm = getattr(factory, 'add_permission', None)
-                if self.request.has_permission(add_perm, context):
-                    yield factory
+                if factory is not None:
+                    add_perm = getattr(factory, 'add_permission', _marker)
+                    if self.request.has_permission(add_perm, context):
+                        yield factory
 
     def render_template(self, renderer, **kwargs):
         kwargs.setdefault('view', self)
