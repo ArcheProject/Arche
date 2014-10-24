@@ -17,6 +17,9 @@ jqueryui = Resource(library, 'jquery-ui-1.10.4.min.js', depends=(jquery,)) #FIXM
 touchpunch_js = Resource(library, 'jquery.ui.touch-punch.min.js', depends = (jquery, jqueryui))
 picturefill_js = Resource(library, "picturefill.js")
 
+pure_js = Resource(library, 'pure.js', minified = 'pure.min.js', depends = (jquery,))
+
+
 #IE8 fixes for Twitter Bootstrap
 def render_conditional_comment_js(url, condition = 'lt', version = '9'):
     return '<!--[if %s IE %s]>%s<![endif]-->' % (condition, version, render_js(url))

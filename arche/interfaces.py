@@ -113,6 +113,10 @@ class IDateTimeHandler(Interface):
     """ Date time conversion adapter for requests.
     """
 
+class IJSONData(Interface):
+    """ Adapter that pulls json data out of a context object.
+    """
+
 class IRegistrationTokens(Interface):
     pass
 

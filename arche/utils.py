@@ -35,6 +35,7 @@ from arche import _
 from arche.interfaces import (IBase,
                               IBlobs,
                               IFlashMessages,
+                              IJSONData,
                               IThumbnails,
                               IThumbnailedContent,
                               IRoot,
@@ -583,12 +584,44 @@ class RegistrationTokens(AttributeAnnotations):
             del self[email]
 
 
+@implementer(IJSONData)
+@adapter(IBase)
+class JSONData(object):
+    """ Adater for creating json data from an IBase object.
+        This is a prototype and might not be included later on.
+    """
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, request, dt_formater = None):
+        #FIXME: This should be configurable
+        normal_attrs = ('title', 'description', 'type_name',
+                        'type_title', 'uid',
+                        '__name__', 'size', 'mimetype')
+        dt_attrs = ('created', 'modified')
+        #wf_state and name?
+        results = {}
+        results['icon'] = getattr(self.context, 'icon', 'file')
+        results['tags'] = tuple(getattr(self.context, 'tags', ()))
+        for attr in normal_attrs:
+            results[attr] = getattr(self.context, attr, '')
+        for attr in dt_attrs:
+            val = getattr(self.context, attr, '')
+            if val and dt_formater:
+                results[attr] = request.localizer.translate(dt_formater(val))
+            else:
+                results[attr] = val
+        return results
+
+
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)
     config.registry.registerAdapter(Thumbnails)
     config.registry.registerAdapter(Blobs)
     config.registry.registerAdapter(DateTimeHandler)
     config.registry.registerAdapter(RegistrationTokens)
+    config.registry.registerAdapter(JSONData)
     config.registry._content_factories = {}
     config.registry._content_schemas = {}
     config.registry._content_views = {}

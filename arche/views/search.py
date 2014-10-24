@@ -1,15 +1,13 @@
-from repoze.catalog.query import Eq
-from repoze.catalog.query import Contains
-from repoze.catalog.query import Name
+from pyramid.view import view_config
+from pyramid.view import view_defaults
 from repoze.catalog.query import Any
+from repoze.catalog.query import Contains
+from repoze.catalog.query import Eq
 from zope.index.text.parsetree import ParseError
-from pyramid.traversal import resource_path
-from pyramid.traversal import find_resource
-from pyramid.view import view_config, view_defaults
 
-from arche.views.base import BaseView
-from arche import security
 from arche import _
+from arche import security
+from arche.views.base import BaseView
 
 
 @view_defaults(permission = security.PERM_VIEW, context = 'arche.interfaces.IRoot')
