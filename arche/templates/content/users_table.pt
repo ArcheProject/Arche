@@ -6,28 +6,55 @@
       i18n:domain="Arche">
 <body>
 <div metal:fill-slot="main-content">
-    <table class="table table-responsive table-bordered table-striped table-hover">
-        <thead>
-            <tr>
-                <th>UserID</th>
-                <th>Email</th>
-                <th>First</th>
-                <th>Last</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr tal:repeat="obj contents">
-                <td>
-                    <a href="${request.resource_url(obj, 'edit')}">
-                        ${obj.userid}
-                    </a>
-                </td>
-                <td>${obj.email}</td>
-                <td>${obj.first_name}</td>
-                <td>${obj.last_name}</td>
-            </tr>
-        </tbody>
-    </table>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var request = arche.do_request("${request.resource_url(context, 'users.json')}");
+      request.done(function(response) {
+        //$('.tmp-msg').remove();
+        var directive = {'tr':
+          {'user<-items':
+            {'.userid': 'user.userid',
+             '.created': 'user.created',
+             '.email': 'user.email',
+             '.first_name': 'user.first_name',
+             '.last_name': 'user.last_name',
+             'a@href': function(arg) {
+               return './' + arg.item['__name__'] + '/edit';
+             }
+            }
+          }
+        };
+        $('#users').render(response, directive);
+      })
+    })
+  </script>
+
+
+  <table class="table table-responsive table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th i18n:translate="">UserID</th>
+        <th i18n:translate="">Email</th>
+        <th i18n:translate="">Firstname</th>
+        <th i18n:translate="">Lastname</th>
+        <th i18n:translate="">Created</th>
+      </tr>
+    </thead>
+    <tbody id="users">
+      <tr>
+        <td>
+          <a href="">
+              <span class="userid"></span>
+          </a>
+        </td>
+        <td><span class="email"></span></td>
+        <td><span class="first_name"></span></td>
+        <td><span class="last_name"></span></td>
+        <td><span class="created"></span></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 </body>
 </html>

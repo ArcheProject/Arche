@@ -594,12 +594,13 @@ class JSONData(object):
     def __init__(self, context):
         self.context = context
 
-    def __call__(self, request, dt_formater = None):
-        #FIXME: This should be configurable
-        normal_attrs = ('title', 'description', 'type_name',
+    def __call__(self, request, dt_formater = None, attrs = (), dt_atts = ()):
+        normal_attrs = ['title', 'description', 'type_name',
                         'type_title', 'uid',
-                        '__name__', 'size', 'mimetype')
-        dt_attrs = ('created', 'modified')
+                        '__name__', 'size', 'mimetype']
+        normal_attrs.extend(attrs)
+        dt_attrs = ['created', 'modified']
+        dt_attrs.extend(dt_attrs)
         #wf_state and name?
         results = {}
         results['icon'] = getattr(self.context, 'icon', 'file')
