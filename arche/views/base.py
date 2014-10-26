@@ -188,7 +188,8 @@ class ContentView(BaseView):
     """ Use this for more complex views that can have settings and be dynamically selected
         as a view for content types
     """
-    description = u""
+    title = ""
+    description = ""
     settings_schema = None
 
     @property

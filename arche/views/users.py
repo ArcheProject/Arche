@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.decorator import reify
@@ -13,7 +15,7 @@ from arche.views.base import DefaultEditForm
 
 
 class UserAddForm(DefaultAddForm):
-    type_name = u'User'
+    type_name = 'User'
 
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
@@ -25,8 +27,8 @@ class UserAddForm(DefaultAddForm):
 
 
 class UserChangePasswordForm(DefaultEditForm):
-    type_name = u'User'
-    schema_name = u'change_password'
+    type_name = 'User'
+    schema_name = 'change_password'
 
     def __init__(self, context, request):
         if request.authenticated_userid is None:
@@ -46,13 +48,15 @@ class UserChangePasswordForm(DefaultEditForm):
             self.context.pw_token = None
         #This is the only thing that should ever be changed here!
         self.context.update(password = appstruct['password'])
-        self.flash_messages.add(_(u"Password changed"))
+        self.flash_messages.add(_("Password changed"))
         if self.request.authenticated_userid:
             return HTTPFound(location = self.request.resource_url(self.context))
         return HTTPFound(location = self.request.resource_url(self.root, 'login'))
 
 
 class UsersView(BaseView):
+    """ A table listing of all users.
+    """
 
     def __call__(self):
         pure_js.need()
