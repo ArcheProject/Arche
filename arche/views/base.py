@@ -84,24 +84,25 @@ class BaseView(object):
             context = getattr(context, '__parent__', None)
         return results
 
-    def catalog_search(self, resolve = False, **kwargs):
+    def catalog_search(self, resolve = False, perm = security.PERM_VIEW, **kwargs):
         results = self.root.catalog.search(**kwargs)[1]
         if resolve:
-            results = self.resolve_docids(results)
+            results = self.resolve_docids(results, perm = perm)
         return results
 
-    def resolve_docids(self, docids):
+    def resolve_docids(self, docids, perm = security.PERM_VIEW):
         if isinstance(docids, basestring):
             docids = (docids,)
         for docid in docids:
             path = self.root.document_map.address_for_docid(docid)
             obj = find_resource(self.root, path)
             #FIXME: Have perm check here?
-            if self.request.has_permission(security.PERM_VIEW, obj):
-                yield obj
+            if perm and not self.request.has_permission(perm, obj):
+                continue
+            yield obj
 
-    def resolve_uid(self, uid):
-        for obj in self.catalog_search(resolve = True, uid = uid):
+    def resolve_uid(self, uid, perm = security.PERM_VIEW):
+        for obj in self.catalog_search(resolve = True, uid = uid, perm = perm):
             return obj
 
     def breadcrumbs(self):
