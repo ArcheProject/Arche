@@ -7,9 +7,9 @@ from arche import security
 from arche.fanstatic_lib import jqueryui
 from arche.fanstatic_lib import touchpunch_js
 from arche.fanstatic_lib import pure_js
-from arche.interfaces import IFolder
 from arche.interfaces import IJSONData
 from arche.interfaces import IDateTimeHandler
+from arche.interfaces import IFolder
 from arche.views.base import BaseView
 
 
@@ -19,12 +19,8 @@ class ContentsView(BaseView):
         jqueryui.need()
         touchpunch_js.need()
         pure_js.need()
-        is_folderish = IFolder.providedBy(self.context)
-        response = {'is_folderish': is_folderish, 'contents': ()}
-        if is_folderish:
-            response['contents'] = self.context.values()
-        return response
-    
+        return {'is_folderish': IFolder.providedBy(self.context)}
+
 
 class SortedView(BaseView):
 

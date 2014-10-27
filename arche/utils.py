@@ -35,6 +35,7 @@ from arche import _
 from arche.interfaces import (IBase,
                               IBlobs,
                               IFlashMessages,
+                              IFolder,
                               IJSONData,
                               IThumbnails,
                               IThumbnailedContent,
@@ -605,6 +606,7 @@ class JSONData(object):
         results = {}
         results['icon'] = getattr(self.context, 'icon', 'file')
         results['tags'] = tuple(getattr(self.context, 'tags', ()))
+        results['is_folder'] = IFolder.providedBy(self.context)
         for attr in normal_attrs:
             results[attr] = getattr(self.context, attr, '')
         for attr in dt_attrs:
