@@ -23,6 +23,7 @@
            '.mimetype': 'obj.mimetype',
            '.created': 'obj.created',
            '.modified': 'obj.modified',
+           '.tags': 'obj.tags',
            '.size': 'obj.size',
            'a@href': function(arg) {
              var out = './' + arg.item['__name__']
@@ -96,6 +97,7 @@
                   <th i18n:translate="">Type</th>
                   <th i18n:translate="">Created</th>
                   <th i18n:translate="">Modified</th>
+                  <th i18n:translate="">Tags</th>
                   <th i18n:translate="">Info</th>
                 </tr>
               </thead>
@@ -116,6 +118,7 @@
                    </td>
                    <td><span class="created"></span></td>
                    <td><span class="modified"></span></td>
+                   <td><span class="tags"></span></td>
                    <td><span class="size"></span></td>
                 </tr>
               </tbody>
