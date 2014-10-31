@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      metal:use-macro="view.macro('arche:templates/master.pt', 'arche:templates/inline.pt')"
-      i18n:domain="Arche">
-  <div metal:fill-slot="content">
-      <div class="row">
-        <div class="col-md-12">
-            <form tal:replace="structure form" />
-        </div>
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  metal:use-macro="view.macro('arche:templates/master.pt', 'arche:templates/inline.pt')"
+  i18n:domain="Arche">
+  <div metal:fill-slot="content" class="row">
+    <div class="col-md-12">
+      <form tal:replace="structure form" />
     </div>
   </div>
 </html>
