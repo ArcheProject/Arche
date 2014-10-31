@@ -1,34 +1,63 @@
-from arche.views.base import DefaultEditForm
-from arche.security import PERM_MANAGE_USERS
-from arche.schemas import permissions_schema_factory
+from peppercorn import parse
+
 from arche import _
+from arche.fanstatic_lib import pure_js
+from arche.security import PERM_MANAGE_USERS
+from arche.security import get_roles_registry
+from arche.views.base import BaseView
 
 
-class PermissionsForm(DefaultEditForm):
-
-    @property
-    def title(self):
-        return _("Local permissions for ${title}",
-                 mapping = {'title': self.context.title})
+class PermissionsForm(BaseView):
 
     def __call__(self):
-        self.schema = permissions_schema_factory(self.context, self.request, self)
-        return super(PermissionsForm, self).__call__()
+        pure_js.need()
+        return {'roles': get_roles_registry(self.request.registry)}
 
-    def appstruct(self):
-        """ Default values differ in permissions form, since local roles is used.
-        """
-        return self.context.local_roles
 
-    def save_success(self, appstruct):
-        #Change appstruct to set local_roles instead
-        appstruct = {'local_roles': appstruct}
-        return super(PermissionsForm, self).save_success(appstruct)
+class PermissionsJSON(BaseView):
+
+    def __call__(self):
+        return {'principals': self.get_principals()}
+
+    def get_principals(self):
+        roles = get_roles_registry(self.request.registry)
+        principals = []
+        for (k, v) in self.context.local_roles.items():
+            row = {'name': k}
+            for role in roles:
+                row[str(role)] = role in v
+            principals.append(row)
+        return principals
+
+
+class HandlePermissions(PermissionsJSON):
+
+    def __call__(self):
+        appstruct = parse(self.request.POST.items())
+        appstruct.pop('csrf_token', None)
+        method = appstruct.pop('method', None)
+        if method == 'add':
+            self.context.local_roles[appstruct['principal']] = appstruct['roles']
+        elif method == 'set':
+            self.context.local_roles = appstruct
+        return {'principals': self.get_principals()}
 
 
 def includeme(config):
     config.add_view(PermissionsForm,
                     name = 'permissions',
                     context = 'arche.interfaces.IContent',
-                    permission = PERM_MANAGE_USERS, #FIXME: Admin
-                    renderer = 'arche:templates/form.pt')
+                    permission = PERM_MANAGE_USERS,
+                    renderer = 'arche:templates/permissions.pt')
+    config.add_view(PermissionsJSON,
+                    name = 'permissions.json',
+                    context = 'arche.interfaces.IContent',
+                    permission = PERM_MANAGE_USERS,
+                    renderer = 'json')
+    config.add_view(HandlePermissions,
+                    check_csrf = True,
+                    request_method = 'POST',
+                    name = 'permissions.json',
+                    context = 'arche.interfaces.IContent',
+                    permission = PERM_MANAGE_USERS,
+                    renderer = 'json')

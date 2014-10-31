@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  metal:use-macro="view.macro('arche:templates/base_view.pt')"
+  i18n:domain="Arche">
+<div metal:fill-slot="main-content">
+  <script type="text/javascript">
+    var tpl;
+  
+    function update_table_from_response(response) {
+      var directive = {'tr':
+      {'principal<-principals':
+        {'.name': 'principal.name',
+         '[name="__start__"]@value': function(arg) {
+           return arg.item['name'] + ':sequence'
+         },
+         '[name="__end__"]@value': function(arg) {
+           return arg.item['name'] + ':sequence'
+         },
+         //<tal:iterate repeat="role roles">
+         'input[value="${role}"]@checked': function(arg) {
+           return arg.item["${role}"]
+         },
+        //</tal:iterate>
+         }
+        }
+      };
+      $('#principals').html(tpl);
+      $('#principals').render(response, directive);
+    }
+  
+    $(document).ready(function() {
+      $('[data-toggle="popover"]').popover();
+
+      tpl = $('#principals').html();
+
+      var request = arche.do_request("${request.resource_url(context, 'permissions.json')}");
+      request.done(update_table_from_response);
+      
+      $('.permissions-form').on('submit', function(event) {
+        event.preventDefault();
+        var request = arche.do_request("${request.resource_url(context, 'permissions.json')}", {data: $(this).serialize(), method: 'post'});
+        request.done(update_table_from_response);
+      });
+      
+    })
+  </script>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#current" role="tab" data-toggle="tab">Current</a></li>
+    <li role="presentation"><a href="#add-principal" role="tab" data-toggle="tab">Add</a></li>
+  </ul>
+  
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="current">
+      <form class="permissions-form" method="post" tal:attributes="action request.resource_url(context, 'permissions.json')">
+        <table class="table table-responsive table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th i18n:translate="">UserID or Group</th>
+              <tal:roles repeat="role roles">
+                <th>
+                  <a href="#" data-toggle="popover" data-placement="top" data-content="${role.description}">
+                    ${role.title}
+                  </a>
+                </th>
+              </tal:roles>
+            </tr>
+          </thead>
+          <tbody id="principals">
+            <tr>
+              <td>
+                <a href="">
+                  <span class="name"></span>
+                </a>
+              </td>
+              <input type="hidden" name="__start__" value="principal:sequence" />
+              <tal:roles repeat="role roles">
+                <td>
+                  <span class="role">
+                    <input type="checkbox" name="checkbox" value="${role}" tal:attributes="disabled not role.assign_local and 'true' or None" />
+                  </span>
+                </td>
+              </tal:roles>
+              <input type="hidden" name="__end__" value="principal:sequence"/ >
+            </tr>
+          </tbody>
+        </table>
+        <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}" />
+        <input type="hidden" name="method" value="set" />
+        <input type="submit" value="Save" class="btn btn-primary" />
+      </form>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="add-principal">
+      <form class="permissions-form" method="post" tal:attributes="action request.resource_url(context, 'permissions.json')">
+        <table class="table table-responsive table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th i18n:translate="">UserID or Group</th>
+              <tal:roles repeat="role [x for x in roles if x.assign_local]">
+                <th>
+                  <a href="#" data-toggle="popover" data-placement="top" data-content="${role.description}">
+                    ${role.title}
+                  </a>
+                </th>
+              </tal:roles>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input type="text" name="principal" class="form-control" />
+              </td>
+              <input type="hidden" name="__start__" value="roles:sequence" />
+              <tal:roles repeat="role [x for x in roles if x.assign_local]">
+                <td>
+                  <span class="role">
+                    <input type="checkbox" name="checkbox" value="${role}" tal:attributes="disabled not role.assign_local and 'true' or None" />
+                  </span>
+                </td>
+              </tal:roles>
+              <input type="hidden" name="__end__" value="roles:sequence"/ >
+            </tr>
+          </tbody>
+        </table>
+        <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}" />
+        <input type="hidden" name="method" value="add" />
+        <input type="submit" value="Add" class="btn btn-primary" />
+      </form>
+    </div>
+  </div>
+
+</div>
+</html>

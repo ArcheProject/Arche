@@ -79,20 +79,6 @@ def current_users_uid(node, kw):
             return (user.uid,)
 
 @colander.deferred
-def global_roles_widget(node, kw):
-    request = kw['request']
-    rr = get_roles_registry(request.registry)
-    values = [(role, role.title) for role in rr.assign_global()]
-    return deform.widget.CheckboxChoiceWidget(values = values, inline = True)
-
-@colander.deferred
-def principal_hinter_widget(node, kw):
-    view = kw['view']
-    values = set(view.root['users'].keys())
-    values.update(view.root['groups'].get_group_principals())
-    return deform.widget.AutocompleteInputWidget(values = tuple(values))
-
-@colander.deferred
 def userid_hinder_widget(node, kw):
     view = kw['view']
     return deform.widget.AutocompleteInputWidget(values = tuple(view.root['users'].keys()))
@@ -319,32 +305,6 @@ class RecoverPasswordSchema(colander.Schema):
 
 class RootSchema(BaseSchema, DCMetadataSchema):
     pass
-
-
-def permissions_schema_factory(context, request, view):
-    rr = get_roles_registry(request.registry)
-    values = [(role, role.title) for role in rr.assign_local()]
-    roles_widget = deform.widget.CheckboxChoiceWidget(values = values,
-                                                      inline = True)
-    schema = colander.Schema()
-    for user in view.root['users'].values():
-        schema.add(colander.SchemaNode(
-            colander.Set(),
-            tab = 'users',
-            name = user.userid,
-            title = user.title,
-            widget = roles_widget,)
-        )
-    for group in view.root['groups'].values():
-        schema.add(colander.SchemaNode(
-            colander.Set(),
-            tab = 'groups',
-            name = group.principal_name,
-            title = group.title,
-            description = group.description,
-            widget = roles_widget,)
-        )
-    return schema
 
 
 class AddFileSchema(BaseSchema, DCMetadataSchema):

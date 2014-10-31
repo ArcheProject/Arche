@@ -222,7 +222,7 @@ ROLE_OWNER = Role('role:Owner',
                   title = _(u"Owner"),
                   description = _(u"Special role for the initial creator."),
                   inheritable = False,
-                  assign_local = True,
+                  assign_local = False,
                   assign_global = False,)
 ROLE_REVIEWER = Role('role:Reviewer',
                   title = _(u"Reviewer"),
@@ -276,6 +276,8 @@ class Roles(IterableUserDict):
         if value:
             #Make sure it exist
             roles_principals = get_roles_registry()
+            if IRole.providedBy(value):
+                value = [value]
             for role in value:
                 assert role in roles_principals, "'%s' isn't a role" % role
             self.data[key] = OOSet(value)
