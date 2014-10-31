@@ -42,7 +42,6 @@ from arche.security import (ROLE_OWNER,
                             get_local_roles)
 from arche.utils import (hash_method,
                          utcnow)
-from UserString import UserString
 from arche.workflow import get_context_wf
 
 
@@ -413,18 +412,21 @@ class Group(Content, LocalRolesMixin, ContextACLMixin):
 
 
 @implementer(IToken)
-class Token(UserString, Persistent):
+class Token(Persistent):
     created = None
     expires = None
     type_name = u"Token"
     type_tile = _(u"Token")
 
     def __init__(self, size = 40, hours = 3):
-        token = ''.join([choice(string.letters + string.digits) for x in range(size)])
-        super(Token, self).__init__(token)
+        self.token = ''.join([choice(string.letters + string.digits) for x in range(size)])
         self.created = utcnow()
         if hours:
             self.expires = self.created + timedelta(hours = hours)
+
+    def __str__(self): return str(self.token)
+    def __repr__(self): return repr(self.token)
+    def __cmp__(self, string): return cmp(self.token, string)
 
     @property
     def valid(self):

@@ -51,5 +51,5 @@ class TokenTests(TestCase):
         obj1 = self._cut()
         obj2 = self._cut()
         self.assertNotEqual(obj1, obj2)
-        obj2.data = obj1.data = '1'
+        obj2.token = obj1.token = '1'
         self.assertEqual(obj1, obj2)

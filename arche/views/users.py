@@ -29,6 +29,7 @@ class UserAddForm(DefaultAddForm):
 class UserChangePasswordForm(DefaultEditForm):
     type_name = 'User'
     schema_name = 'change_password'
+    title = _("Change password")
 
     def __init__(self, context, request):
         if request.authenticated_userid is None:

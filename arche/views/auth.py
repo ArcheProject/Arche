@@ -134,7 +134,6 @@ class RecoverPasswordForm(BaseForm):
             raise HTTPForbidden("Something went wrong during login. No user profile found.")
         user.pw_token = factory()
         html = self.render_template("arche:templates/emails/recover_password.pt", user = user)
-        print html
         send_email(_(u"Password recovery request"),
                    [user.email],
                    html,
