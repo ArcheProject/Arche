@@ -117,7 +117,6 @@ class DropzoneWidget(FileUploadWidget):
     maxFilesize = 100 # in Mb
     maxFiles = 1 # 'null' for infinite
     acceptedFiles = "image/png,image/*" #What's a sane default here? Where should it be configured?
-    acceptedMimetypes = string.split(acceptedFiles, ',')
     
     dropzoneDefaultMessage = u'Drag and drop your files here'
     dropzoneFallbackMessage = u'dropzoneFallbackMessage'
@@ -129,7 +128,12 @@ class DropzoneWidget(FileUploadWidget):
     dropzoneCancelUploadConfirmation = u'dropzoneCancelUploadConfirmation'
     dropzoneRemoveFile = u'dropzoneRemoveFile'
     dropzoneMaxFilesExceeded = u'dropzoneMaxFilesExceeded'
-    
+
+    @property
+    def acceptedMimetypes(self):
+        """ Deprecated property in Dropzone js, but used here to figure out mimetype. """
+        return string.split(self.acceptedFiles, ',')
+
     def serialize(self, field, cstruct=None, readonly=False):
         dropzonejs.need()
         #dropzonecss.need()

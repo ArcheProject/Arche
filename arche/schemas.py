@@ -87,7 +87,7 @@ def userid_hinder_widget(node, kw):
 def file_upload_widget(node, kw):
     request = kw['request']
     tmpstorage = FileUploadTempStore(request)
-    return DropzoneWidget(tmpstorage, template='arche:templates/deform/widgets/dropzone.pt')
+    return DropzoneWidget(tmpstorage, template='arche:templates/deform/widgets/dropzone.pt', acceptedFiles = 'application/pdf,video/*,image/*')
 
 @colander.deferred
 def populators_choice(node, kw):
