@@ -36,11 +36,27 @@ class HandlePermissions(PermissionsJSON):
         appstruct = parse(self.request.POST.items())
         appstruct.pop('csrf_token', None)
         method = appstruct.pop('method', None)
+        response = {}
         if method == 'add':
-            self.context.local_roles[appstruct['principal']] = appstruct['roles']
+            principal = appstruct['principal']
+            if principal.startswith('group:'):
+                if principal in self.root['groups']:
+                    self.context.local_roles[principal] = appstruct['roles']
+                else:
+                    response['errors'] = {'principal': _("That GroupID don't exist")}
+            else:
+                if principal in self.root['users']:
+                    self.context.local_roles[principal] = appstruct['roles']
+                else:
+                    response['errors'] = {'principal': _("That UserID don't exist")}
         elif method == 'set':
             self.context.local_roles = appstruct
-        return {'principals': self.get_principals()}
+            #Validate, return a proper response
+        else:
+            pass
+            #response['errors']?
+        response['principals'] = self.get_principals()
+        return response
 
 
 def includeme(config):
