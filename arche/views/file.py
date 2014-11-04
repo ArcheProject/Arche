@@ -2,10 +2,10 @@ import random
 import string
 
 import deform
-from colander import null
 from deform.compat import uppercase
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.response import Response
+from pyramid.view import render_view_to_response
 
 from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultView
@@ -16,7 +16,7 @@ from arche.utils import get_content_factories
 from arche.utils import generate_slug
 from arche.interfaces import IBlobs
 from arche import _
-from pyramid.view import render_view_to_response
+
 
 
 class AddFileForm(DefaultAddForm):

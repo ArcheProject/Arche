@@ -8,6 +8,7 @@ from calendar import timegm
 
 from pyramid import testing
 from pyramid.i18n import get_localizer
+from pyramid.response import Response
 
 
 def _dummy_view(*args):
@@ -237,7 +238,37 @@ class MIMETypeViewsTests(TestCase):
         obj['video/*'] = 'hello'
         self.assertIn('video/hello', obj)
         
-    
+    def test_get_with_generic(self):
+        obj = self._cut()
+        obj['video/mp4'] = 'hello'
+        self.assertEqual(obj.get('video/mp4'), 'hello')
+        self.assertEqual(obj.get('video/something'), None)
+        obj['video/*'] = 'world'
+        self.assertEqual(obj.get('video/mp4'), 'hello')
+        self.assertEqual(obj.get('video/something'), 'world')
+        self.assertEqual(obj.get('video/*'), 'world')
         
+    def test_get_mimetype_views(self):
+        self.config.include('arche.utils')
+        from arche.utils import get_mimetype_views
+        self.assertIsInstance(get_mimetype_views(), self._cut)
         
+    def test_integration(self):
+        self.config.include('arche.utils')
+        from arche.views.file import mimetype_view_selector
+        self.config.add_mimetype_view('test/*', 'helloworld')
         
+        class DummyContext(testing.DummyResource):
+            mimetype = 'test/boo'
+            
+        L = []
+        def dummy_view(*args):
+            L.append(args)
+            return ''
+            
+        self.config.add_view(dummy_view, context=DummyContext, name='helloworld', renderer='string')
+        context = DummyContext()
+        request = testing.DummyRequest()
+        result = mimetype_view_selector(context, request)
+        self.assertEqual(len(L), 1)
+        self.assertIsInstance(result, Response)
