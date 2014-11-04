@@ -221,3 +221,23 @@ class MIMETypeViewsTests(TestCase):
     def _cut(self):
         from arche.utils import MIMETypeViews
         return MIMETypeViews
+    
+    def test_get_mimetype(self):
+        obj = self._cut()
+        obj['video/mp4'] = 'hello'
+        self.assertEqual(obj['video/mp4'], 'hello') 
+        
+    def test_get_with_generic_type(self):
+        obj = self._cut()
+        obj['video/*'] = 'hello'
+        self.assertEqual(obj['video/mp4'], 'hello')
+        
+    def test_contains_with_generic(self):
+        obj = self._cut()
+        obj['video/*'] = 'hello'
+        self.assertIn('video/hello', obj)
+        
+    
+        
+        
+        
