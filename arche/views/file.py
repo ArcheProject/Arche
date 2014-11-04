@@ -11,11 +11,12 @@ from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultView
 from arche import security
 from arche.schemas import AddFileSchema
-from arche.utils import FileUploadTempStore
+from arche.utils import FileUploadTempStore, get_mimetype_views
 from arche.utils import get_content_factories
 from arche.utils import generate_slug
 from arche.interfaces import IBlobs
 from arche import _
+from pyramid.view import render_view_to_response
 
 
 class AddFileForm(DefaultAddForm):
@@ -89,6 +90,15 @@ def upload_temp(context, request):
     return {'uid':uid}
 
 
+def mimetype_view_selector(context, request):
+    mime_views = get_mimetype_views(request.registry)
+    name = mime_views.get(context.mimetype, 'view')
+    response = render_view_to_response(context, request, name = name)
+    if response is None:
+        raise HTTPNotFound()
+    return response
+
+
 def includeme(config):
     config.add_view(AddFileForm,
                     context = 'arche.interfaces.IContent',
@@ -96,7 +106,11 @@ def includeme(config):
                     request_param = "content_type=File",
                     permission = security.NO_PERMISSION_REQUIRED, #FIXME: perm check in add
                     renderer = 'arche:templates/form.pt')
+    config.add_view(mimetype_view_selector,
+                    context = 'arche.interfaces.IFile',
+                    permission = security.NO_PERMISSION_REQUIRED)
     config.add_view(DefaultView,
+                    name = 'view',
                     context = 'arche.interfaces.IFile',
                     permission = security.PERM_VIEW,
                     renderer = 'arche:templates/content/file.pt')
@@ -107,7 +121,7 @@ def includeme(config):
     config.add_view(inline_view,
                     context = 'arche.interfaces.IFile',
                     permission = security.PERM_VIEW,
-                    name = 'view')
+                    name = 'inline')
     config.add_view(batch_file_upload_handler_view,
                     context = 'arche.interfaces.IContent',
                     permission = security.PERM_VIEW,

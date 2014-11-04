@@ -206,3 +206,18 @@ class GenerateSlugTests(TestCase):
         context = testing.DummyResource()
         context['hello'] = testing.DummyResource()
         self.assertEqual(self._fut(context, 'hello'), "hello-1")
+
+
+class MIMETypeViewsTests(TestCase):
+
+    def setUp(self):
+        request = testing.DummyRequest()
+        self.config = testing.setUp(request = request)
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.utils import MIMETypeViews
+        return MIMETypeViews
