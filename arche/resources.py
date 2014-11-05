@@ -256,10 +256,9 @@ class File(Content, DCMetadataMixin):
     type_name = "File"
     type_title = _("File")
     add_permission = "Add %s" % type_name
+    blob_key = "file"
     filename = ""
     mimetype = ""
-    size = 0
-    blob_key = "file"
     icon = "file"
 
     def __init__(self, file_data, **kwargs):
@@ -279,17 +278,14 @@ class File(Content, DCMetadataMixin):
             return blobs.formdata_dict(self.blob_key)
     @file_data.setter
     def file_data(self, value):
-        IBlobs(self).create_from_formdata(self.blob_key, value)
-
-    @property
-    def filename(self):
-        blobs = IBlobs(self)
-        return self.blob_key in blobs and blobs[self.blob_key].filename or u""
-
-    @property
-    def mimetype(self):
-        blobs = IBlobs(self)
-        return self.blob_key in blobs and blobs[self.blob_key].mimetype or u""
+        blob_file = IBlobs(self).create_from_formdata(self.blob_key, value)
+        if blob_file:
+            self.filename = blob_file.filename
+            self.mimetype = blob_file.mimetype
+            styles = {'video': 'film',
+                      'image': 'picture'}
+            main = self.mimetype.split('/')[0]
+            self.icon = styles.get(main, 'file')
 
     @property
     def size(self):

@@ -330,6 +330,7 @@ class Blobs(IterableUserDict):
                     bf.mimetype = value['mimetype']
                     fp = value['fp']
                     bf.size = upload_stream(fp, f)
+                return bf
 
 
 class BlobFile(Persistent):
@@ -626,7 +627,7 @@ class JSONData(object):
         self.context = context
 
     def __call__(self, request, dt_formater = None, attrs = (), dt_atts = ()):
-        normal_attrs = ['title', 'description', 'type_name',
+        normal_attrs = ['description', 'type_name',
                         'type_title', 'uid',
                         '__name__', 'size', 'mimetype']
         normal_attrs.extend(attrs)
@@ -637,6 +638,10 @@ class JSONData(object):
         results['icon'] = getattr(self.context, 'icon', 'file')
         results['tags'] = tuple(getattr(self.context, 'tags', ()))
         results['is_folder'] = IFolder.providedBy(self.context)
+        title = getattr(self.context, 'title', None)
+        if not title:
+            title = self.context.__name__
+        results['title'] = title
         for attr in normal_attrs:
             results[attr] = getattr(self.context, attr, '')
         for attr in dt_attrs:
