@@ -106,7 +106,7 @@
                   <td>
                     <span class="tmp-msg" i18n:translate="">Loading...</span>
                     <input type="hidden" name="content_name" value="" />
-                    <a href="${request.resource_url(context)}{{__name__}}/contents"
+                    <a href="#"
                       title="">
                       <span class="title"></span>
                     </a>
