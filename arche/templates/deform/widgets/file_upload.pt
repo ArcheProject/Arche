@@ -1,9 +1,9 @@
 <div class="deformFileupload"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="Arche"  
-     tal:define="oid oid|field.oid;
-                 css_class css_class|field.widget.css_class;
-                 style style|field.widget.style">
+    tal:define="oid oid|field.oid;
+                css_class css_class|field.widget.css_class;
+                style style|field.widget.style">
 
   ${field.start_mapping()}
 
@@ -20,8 +20,10 @@
         <dt i18n:translate="">Type</dt>
         <dd>${cstruct.get('mimetype')}</dd>
       </dl>
-      <input type="checkbox" value="delete" name="delete" id="${oid}-delete" />
-      <label for="${oid}-delete" i18n:translate="">Delete</label>
+      <div tal:condition="not field.schema.required">
+        <input type="checkbox" value="delete" name="delete" id="${oid}-delete" />
+        <label for="${oid}-delete" i18n:translate="">Delete</label>
+      </div>
     </div>
   </div>
 
