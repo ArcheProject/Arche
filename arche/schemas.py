@@ -6,13 +6,13 @@ import deform
 
 from arche import _
 from arche.interfaces import IPopulator
-from arche.security import get_roles_registry
 from arche.utils import FileUploadTempStore
 from arche.validators import existing_userid_or_email
 from arche.validators import login_password_validator
 from arche.validators import unique_email_validator
 from arche.validators import unique_userid_validator
 from arche.widgets import DropzoneWidget
+from arche.widgets import FileAttachmentWidget
 from arche.widgets import ReferenceWidget
 from arche.widgets import TaggingWidget
 
@@ -87,7 +87,7 @@ def userid_hinder_widget(node, kw):
 def file_upload_widget(node, kw):
     request = kw['request']
     tmpstorage = FileUploadTempStore(request)
-    return DropzoneWidget(tmpstorage, template='arche:templates/deform/widgets/dropzone.pt', acceptedFiles = 'application/pdf,video/*,image/*')
+    return FileAttachmentWidget(tmpstorage)
 
 @colander.deferred
 def populators_choice(node, kw):
@@ -190,6 +190,7 @@ class DocumentSchema(BaseSchema, DCMetadataSchema):
     image_data = colander.SchemaNode(deform.FileData(),
                                          missing = None,
                                          title = _(u"Image"),
+                                         blob_key = 'image',
                                          widget = file_upload_widget)
     show_byline = colander.SchemaNode(colander.Bool(),
                                       default = True,
@@ -210,7 +211,8 @@ class UserSchema(colander.Schema):
                                 validator = colander.Email())
     image_data = colander.SchemaNode(deform.FileData(),
                                        missing = colander.null,
-                                       title = _(u"Replace profile image"),
+                                       blob_key = 'image',
+                                       title = _(u"Profile image"),
                                        widget = file_upload_widget)
     
 
@@ -306,19 +308,28 @@ class RecoverPasswordSchema(colander.Schema):
 class RootSchema(BaseSchema, DCMetadataSchema):
     pass
 
+@colander.deferred
+def default_blob_key(node, kw):
+    context = kw['context']
+    return getattr(context, 'blob_key', 'file')
+
 
 class AddFileSchema(BaseSchema, DCMetadataSchema):
     title = colander.SchemaNode(colander.String(),
+                                title = _("Titile"),
+                                description = _("Filename will be used if you leave this blank"),
                                 missing = u"")
     file_data = colander.SchemaNode(deform.FileData(),
                                     title = _(u"Upload file"),
+                                    blob_key = default_blob_key,
                                     widget = file_upload_widget)
 
 
 class EditFileSchema(AddFileSchema, DCMetadataSchema):
     file_data = colander.SchemaNode(deform.FileData(),
-                                    title = _(u"Replace file"),
+                                    title = _(u"Change file"),
                                     missing = colander.null,
+                                    blob_key = default_blob_key,
                                     widget = file_upload_widget)
 
 

@@ -241,7 +241,10 @@ class Document(Content, DCMetadataMixin, LocalRolesMixin, ContextACLMixin):
     icon = u"font"
 
     @property
-    def image_data(self): pass #FIXME: Should this return something?
+    def image_data(self):
+        blobs = IBlobs(self, None)
+        if blobs:
+            return blobs.formdata_dict('image')
     @image_data.setter
     def image_data(self, value):
         IBlobs(self).create_from_formdata('image', value)
@@ -269,7 +272,10 @@ class File(Content, DCMetadataMixin):
     def title(self, value): self._title = value
 
     @property
-    def file_data(self): pass #FIXME: Should this return something?
+    def file_data(self):
+        blobs = IBlobs(self, None)
+        if blobs:
+            return blobs.formdata_dict(self.blob_key)
     @file_data.setter
     def file_data(self, value):
         IBlobs(self).create_from_formdata(self.blob_key, value)
@@ -351,7 +357,10 @@ class User(Content, LocalRolesMixin, ContextACLMixin):
     def password(self, value): self.__password_hash__ = hash_method(value)
 
     @property
-    def image_data(self): pass #FIXME: Should this return something?
+    def image_data(self):
+        blobs = IBlobs(self, None)
+        if blobs:
+            return blobs.formdata_dict('image')
     @image_data.setter
     def image_data(self, value):
         IBlobs(self).create_from_formdata('image', value)

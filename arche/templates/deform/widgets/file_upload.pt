@@ -1,0 +1,38 @@
+<div class="deformFileupload"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    i18n:domain="Arche"  
+     tal:define="oid oid|field.oid;
+                 css_class css_class|field.widget.css_class;
+                 style style|field.widget.style">
+
+  ${field.start_mapping()}
+
+  <div tal:condition="cstruct" class="row">
+    <div class="col-sm-2" tal:condition="request.thumb_url(context, 'col-2', key = blob_key)">
+      <img tal:replace="structure view.thumb_tag(context, 'col-2', key = blob_key, extra_cls = 'img-responsive')" />
+    </div>
+    <div class="col-sm-10">
+      <dl>
+        <dt i18n:translate="">Filename</dt>
+        <dd>${cstruct.get('filename')}</dd>
+        <dt i18n:translate="">Size</dt>
+        <dd>${"%s %s" % (view.byte_format(cstruct.get('size')))|''}</dd>
+        <dt i18n:translate="">Type</dt>
+        <dd>${cstruct.get('mimetype')}</dd>
+      </dl>
+      <input type="checkbox" value="delete" name="delete" id="${oid}-delete" />
+      <label for="${oid}-delete" i18n:translate="">Delete</label>
+    </div>
+  </div>
+
+  <br/>
+  <input type="file" name="upload" 
+         tal:attributes="class css_class;
+                         style style;"
+         id="${oid}"/>
+  <p tal:condition="cstruct" class="help-block"
+    i18n:translate="upload_replace_help_text">If you select a new file here, it will replace the old one</p>
+
+  ${field.end_mapping()}
+
+</div>

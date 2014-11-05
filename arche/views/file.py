@@ -18,7 +18,6 @@ from arche.interfaces import IBlobs
 from arche import _
 
 
-
 class AddFileForm(DefaultAddForm):
     type_name = u"File"
     

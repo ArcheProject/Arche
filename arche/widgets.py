@@ -7,6 +7,7 @@ from deform.widget import Select2Widget
 from pyramid.threadlocal import get_current_request 
 from pyramid.traversal import find_resource
 from repoze.catalog.query import Any
+from deform.widget import filedict
 
 from arche import _
 from arche.fanstatic_lib import dropzonebasiccss
@@ -156,3 +157,74 @@ class DropzoneWidget(FileUploadWidget):
         if mimetype in self.acceptedMimetypes or string.split(mimetype, '/')[0]+'/*' in self.acceptedMimetypes:
             return self.tmpstore[pstruct]
         return null
+
+
+class FileAttachmentWidget(FileUploadWidget):
+    """ Show if a file is uploaded, give the option to delete or replace it.
+    """
+    acceptedMimetypes = None
+    template = 'widgets/file_upload'
+    readonly_template = 'widgets/file_upload'
+
+    def serialize(self, field, cstruct, **kw):
+        if cstruct in (null, None):
+            cstruct = {}
+        if cstruct:
+            uid = cstruct['uid']
+            if uid is not None and not uid in self.tmpstore:
+                self.tmpstore[uid] = cstruct
+        readonly = kw.get('readonly', self.readonly)
+        template = readonly and self.readonly_template or self.template
+        values = {'view': field.schema.bindings.get('view'),
+                  'request': field.schema.bindings.get('request'),
+                  'context': field.schema.bindings.get('context')}
+        values['blob_key'] = getattr(field.schema, 'blob_key', 'file')
+        values.update(self.get_template_values(field, cstruct, kw))
+        return field.renderer(template, **values)
+
+    def deserialize(self, field, pstruct):
+        if pstruct is null:
+            return null
+        upload = pstruct.get('upload')
+        uid = pstruct.get('uid')
+
+        if hasattr(upload, 'file'):
+            # the upload control had a file selected
+            data = filedict()
+            data['fp'] = upload.file
+            filename = upload.filename
+            # sanitize IE whole-path filenames
+            filename = filename[filename.rfind('\\')+1:].strip()
+            data['filename'] = filename
+            data['mimetype'] = upload.type
+            data['size']  = upload.length
+            if uid is None:
+                # no previous file exists
+                while 1:
+                    uid = self.random_id()
+                    if self.tmpstore.get(uid) is None:
+                        data['uid'] = uid
+                        self.tmpstore[uid] = data
+                        preview_url = self.tmpstore.preview_url(uid)
+                        self.tmpstore[uid]['preview_url'] = preview_url
+                        break
+            else:
+                # a previous file exists
+                data['uid'] = uid
+                self.tmpstore[uid] = data
+                preview_url = self.tmpstore.preview_url(uid)
+                self.tmpstore[uid]['preview_url'] = preview_url
+        elif pstruct.get('delete') == 'delete':
+            data = filedict(delete = 'delete')
+        else:
+            # the upload control had no file selected
+            if uid is None:
+                # no previous file exists
+                return null
+            else:
+                # a previous file should exist
+                data = self.tmpstore.get(uid)
+                # but if it doesn't, don't blow up
+                if data is None:
+                    return null
+        return data

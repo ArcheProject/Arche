@@ -44,6 +44,7 @@ from arche.interfaces import (IBase,
                               IDateTimeHandler,
                               IObjectUpdatedEvent,
                               IContentView)
+from deform.widget import filedict
 
 
 def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
@@ -280,6 +281,14 @@ class Blobs(IterableUserDict):
             self[key] = BlobFile()
         return self[key]
 
+    def formdata_dict(self, key):
+        blob = self.get(key)
+        if blob:
+            return filedict(mimetype = blob.mimetype,
+                            size = blob.size,
+                            filename = blob.filename,
+                            uid = None)
+            
     def create_from_formdata(self, key, value):
         """ Handle creation of a blob from a deform.FileUpload widget.
             Expects the following keys in value.
@@ -291,17 +300,21 @@ class Blobs(IterableUserDict):
             mimetype
                 Mimetype
             
+            if 'delete' is a present key and set to something that is true,
+            data will be deleted.
+            
         """
         if value:
-            bf = self.create(key)
-            with bf.blob.open('w') as f:
-                bf.filename = value['filename']
-                bf.mimetype = value['mimetype']
-                fp = value['fp']
-                bf.size = upload_stream(fp, f)
-        else:
-            if key in self:
-                del self[key]
+            if value.get('delete'):
+                if key in self:
+                    del self[key]
+            else:
+                bf = self.create(key)
+                with bf.blob.open('w') as f:
+                    bf.filename = value['filename']
+                    bf.mimetype = value['mimetype']
+                    fp = value['fp']
+                    bf.size = upload_stream(fp, f)
 
 
 class BlobFile(Persistent):
