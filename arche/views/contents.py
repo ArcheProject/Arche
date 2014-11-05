@@ -52,7 +52,6 @@ class JSONContents(BaseView):
         if  action == 'delete':
             for item in self.request.POST.getall('select'):
                 obj = self.context.get(item)
-                import pdb;pdb.set_trace()
                 if self.request.has_permission(security.PERM_DELETE, obj) and self.root != obj and not hasattr(obj, 'is_permanent'):
                     del self.context[item]
         results = []
