@@ -66,7 +66,10 @@ class JSONContents(BaseView):
         res = []
         for obj in items:
             adapted = IJSONData(obj)
-            res.append(adapted(self.request, dt_formater = self.dt_handler.format_relative))
+            result = adapted(self.request, dt_formater = self.dt_handler.format_relative)
+            if result.get('size', None):
+                result['size'] = "%s %s" % self.byte_format(result['size'])
+            res.append(result)
         return res
 
 
