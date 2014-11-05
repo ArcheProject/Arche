@@ -216,6 +216,7 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
     type_title = _(u"Site root")
     add_permission = "Add %s" % type_name
     search_visible = False
+    is_permanent = True
 
     def __init__(self, data=None, **kwargs):
         self.catalog = Catalog()
@@ -374,6 +375,7 @@ class Groups(Content, LocalRolesMixin, ContextACLMixin):
     listing_visible = False
     search_visible = False
     title = _(u"Groups")
+    is_permanent = True
 
     def get_users_group_principals(self, userid):
         #Cache memberships? Needed on sites with many groups
