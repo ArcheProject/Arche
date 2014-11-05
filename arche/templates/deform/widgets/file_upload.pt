@@ -7,9 +7,9 @@
 
   ${field.start_mapping()}
 
-  <div tal:condition="cstruct" class="row">
-    <div class="col-sm-2" tal:condition="request.thumb_url(context, 'col-2', key = blob_key)">
-      <img tal:replace="structure view.thumb_tag(context, 'col-2', key = blob_key, extra_cls = 'img-responsive')" />
+  <div tal:condition="cstruct" class="row" tal:define="img_tag view.thumb_tag(context, 'col-2', key = blob_key, extra_cls = 'img-responsive')">
+    <div class="col-sm-2" tal:condition="img_tag">
+      <img tal:replace="structure img_tag" />
     </div>
     <div class="col-sm-10">
       <dl>
@@ -30,8 +30,6 @@
          tal:attributes="class css_class;
                          style style;"
          id="${oid}"/>
-  <p tal:condition="cstruct" class="help-block"
-    i18n:translate="upload_replace_help_text">If you select a new file here, it will replace the old one</p>
 
   ${field.end_mapping()}
 
