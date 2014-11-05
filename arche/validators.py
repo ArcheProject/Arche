@@ -118,12 +118,12 @@ def supported_thumbnail_mimetype(node, kw):
             suggested.add(v)
     msg = _("Not a valid image file! Any of these image types are supported: ${suggested}",
             mapping = {'suggested': ", ".join(request.localizer.translate(x) for x in suggested)})
-    return MimeTypeValidator(supported_mimes, msg = msg)
+    return FileUploadValidator(mimetypes = supported_mimes, msg = msg)
 
 
-class MimeTypeValidator(object):
+class FileUploadValidator(object):
 
-    def __init__(self, mimetypes, msg = None):
+    def __init__(self, mimetypes = (), msg = None):
         self.mimetypes = mimetypes
         self.msg = msg
 
