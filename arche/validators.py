@@ -7,6 +7,7 @@ from arche.utils import check_unique_name
 from arche.utils import generate_slug
 from arche.utils import hash_method
 from arche.utils import image_mime_to_title
+from pyramid.threadlocal import get_current_request
 
 @colander.deferred
 def unique_context_name_validator(node, kw):
@@ -109,26 +110,31 @@ class UniqueEmail(object):
 
 @colander.deferred
 def supported_thumbnail_mimetype(node, kw):
-    return SupportedThumbnailMimetype(kw['request'])
+    request = kw['request']
+    supported_mimes = request.registry.settings['supported_thumbnail_mimetypes']
+    suggested = set()
+    for (k, v) in image_mime_to_title.items():
+        if k in supported_mimes:
+            suggested.add(v)
+    msg = _("Not a valid image file! Any of these image types are supported: ${suggested}",
+            mapping = {'suggested': ", ".join(request.localizer.translate(x) for x in suggested)})
+    return MimeTypeValidator(supported_mimes, msg = msg)
 
 
-class SupportedThumbnailMimetype(object):
+class MimeTypeValidator(object):
 
-    def __init__(self, request):
-        self.request = request
+    def __init__(self, mimetypes, msg = None):
+        self.mimetypes = mimetypes
+        self.msg = msg
 
     def __call__(self, node, value):
         mimetype = value.get('mimetype')
         if not mimetype:
             return #We're okay with other kinds of data here!
-        supported_mimes = self.request.registry.settings['supported_thumbnail_mimetypes']
-        if mimetype not in supported_mimes:
-            suggested = set()
-            for (k, v) in image_mime_to_title.items():
-                if k in supported_mimes:
-                    suggested.add(v)
-            if suggested:
-                raise colander.Invalid(node, _("Not a valid image file! Any of these image types are supported: ${suggested}",
-                                               mapping = {'suggested': ", ".join(self.request.localizer.translate(x) for x in suggested)}))
-            else:
-                raise colander.Invalid(node, _("No image codecs installed on this system. Rebuild PIL with proper image support."))
+        if mimetype not in self.mimetypes:
+            msg = self.msg
+            if msg is None:
+                request = get_current_request()
+                msg = _("Not a valid file type, try any of the following: ${suggested}",
+                        mapping = {'suggested': ", ".join(request.localizer.translate(x) for x in self.mimetypes)})
+            raise colander.Invalid(node, msg)
