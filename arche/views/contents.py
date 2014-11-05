@@ -1,3 +1,5 @@
+from peppercorn import parse
+
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.decorator import reify
@@ -11,6 +13,7 @@ from arche.interfaces import IJSONData
 from arche.interfaces import IDateTimeHandler
 from arche.interfaces import IFolder
 from arche.views.base import BaseView
+from pyramid.traversal import find_interface
 
 
 class ContentsView(BaseView):
@@ -44,11 +47,22 @@ class JSONContents(BaseView):
         return IDateTimeHandler(self.request)
 
     def __call__(self):
+        response = {}
+        action = self.request.POST.get('action', None)
+        if  action == 'delete':
+            for item in self.request.POST.getall('select'):
+                obj = self.context.get(item)
+                if self.request.has_permission(security.PERM_DELETE, obj):
+                    if self.root == obj:
+                        raise HTTPForbidden("Can't delete root")
+                    if hasattr(obj, 'is_permanent'):
+                        raise HTTPForbidden("Can't delete this object because it is permanent.")
+                    del self.context[item]
         results = []
         for obj in self.context.values():
             if self.request.has_permission(security.PERM_VIEW, obj):
                 results.append(obj)
-        response = {}
+        
         response['items'] = self.json_format_objects(results)
         return response
 

@@ -10,37 +10,88 @@
 <div metal:fill-slot="content">
   
 <script type="text/javascript">
+var tpl;
+
+function update_table_from_response(response) {
+	var directive = {'tr':
+		{'obj<-items':
+			{
+				'.title': 'obj.title',
+				'input[name="select"]@value': 'obj.__name__',
+				'input[name="content_name"]@value': 'obj.__name__',
+				'a@title': 'obj.description',
+				'.type_title': 'obj.type_title',
+				'.mimetype': 'obj.mimetype',
+				'.created': 'obj.created',
+				'.modified': 'obj.modified',
+				'.tags': 'obj.tags',
+				'.size': 'obj.size',
+				'a@href': function(arg) {
+					var out = './' + arg.item['__name__']
+					if (arg.item['is_folder']) {
+						out += '/contents';
+					}
+					return out
+				},
+				'.glyphicon@class+': function(arg) {
+					return arg.item['icon'];
+				}
+			}
+		}
+	};
+	$('#sortable').html(tpl);
+	$('#sortable').render(response, directive);
+	$('.tmp-msg').remove();
+}
+
   $(document).ready(function() {
+  	tpl = $('#sortable').html();
+  
     var request = arche.do_request('./contents.json');
-    request.done(function(response) {
-      $('.tmp-msg').remove();
-      var directive = {'tr':
-        {'obj<-items':
-          {'.title': 'obj.title',
-           'input[name="content_name"]@value': 'obj.__name__',
-           'a@title': 'obj.description',
-           '.type_title': 'obj.type_title',
-           '.mimetype': 'obj.mimetype',
-           '.created': 'obj.created',
-           '.modified': 'obj.modified',
-           '.tags': 'obj.tags',
-           '.size': 'obj.size',
-           'a@href': function(arg) {
-             var out = './' + arg.item['__name__']
-             if (arg.item['is_folder']) {
-               out += '/contents';
-             }
-             return out
-           },
-           '.glyphicon@class+': function(arg) {
-             return arg.item['icon'];
-           }
-          }
-        }
-      };
-      $('#sortable').render(response, directive);
-    })
-  })
+    request.done(update_table_from_response);
+    
+	$('#contents-form').on('submit', function(event) {
+		event.preventDefault();
+		data = $(this).serialize();
+		data += "&action=delete"
+		var request = arche.do_request("${request.resource_url(context, 'contents.json')}", {data: data, method: 'post'});
+		request.done(update_table_from_response);
+	});
+  });
+  
+	function toggleSelect(chkbox)
+	{
+		if(chkbox.checked)
+		{
+			$( ".select-content" ).each(function(){
+				this.checked = true;
+			});
+		}
+		else
+		{
+			$( ".select-content" ).each(function(){
+				this.checked = false;
+			});
+		}
+	}
+	
+	function updateMultiselect(chkbox)
+	{
+		if(chkbox.checked)
+		{
+			$( "#multi-select" ).prop("checked", true);
+			$( ".select-content" ).each(function(){
+				if(!this.checked)
+				{
+					$( "#multi-select" ).prop("checked", false);
+				}
+			});
+		}
+		else
+		{
+			$( "#multi-select" ).prop("checked", false);
+		}
+	}
 </script>
 <script tal:condition="len(context)|False">
   $(function() {
@@ -58,7 +109,7 @@
     {
       $( "#sortable" ).sortable( "disable" );
       $( "#sortable" ).enableSelection();
-      $.post("${request.resource_url(context, 'sorted')}", $( "#sortable-form" ).serialize());
+      $.post("${request.resource_url(context, 'sorted')}", $( "#contents-form" ).serialize());
     }
     $("#sort-toggle-btn").toggleClass("active");
     $("#sort-toggle-btn").toggleClass("btn-default");
@@ -89,10 +140,11 @@
           <p class="lead" tal:condition="not is_folderish"
             i18n:translate="">Not a folder, so it can't have content</p>
 
-          <form id="sortable-form">
+          <form id="contents-form">
             <table tal:condition="is_folderish" class="table table-responsive table-bordered table-striped table-hover sortable-table">
               <thead>
                 <tr>
+                  <th><input type="checkbox" id="multi-select" onChange="toggleSelect(this)"></input></th>
                   <th i18n:translate="">Title</th>
                   <th i18n:translate="">Type</th>
                   <th i18n:translate="">Created</th>
@@ -103,6 +155,7 @@
               </thead>
               <tbody id="sortable">
                 <tr>
+                	<td><input type="checkbox" class="select-content" name="select" value="" onChange="updateMultiselect(this)"></input></td>
                   <td>
                     <span class="tmp-msg" i18n:translate="">Loading...</span>
                     <input type="hidden" name="content_name" value="" />
@@ -123,6 +176,9 @@
                 </tr>
               </tbody>
             </table>
+            
+            
+            <input type="submit" name="delete" value="Delete"></input>
           </form>
         </div>
       </div>
