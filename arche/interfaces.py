@@ -117,6 +117,9 @@ class IJSONData(Interface):
     """ Adapter that pulls json data out of a context object.
     """
 
+class IFileUploadTempStore(Interface):
+    pass
+
 class IRegistrationTokens(Interface):
     pass
 

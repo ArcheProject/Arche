@@ -11,6 +11,7 @@ from arche.validators import existing_userid_or_email
 from arche.validators import login_password_validator
 from arche.validators import unique_email_validator
 from arche.validators import unique_userid_validator
+from arche.validators import supported_thumbnail_mimetype
 from arche.widgets import DropzoneWidget
 from arche.widgets import FileAttachmentWidget
 from arche.widgets import ReferenceWidget
@@ -82,12 +83,6 @@ def current_users_uid(node, kw):
 def userid_hinder_widget(node, kw):
     view = kw['view']
     return deform.widget.AutocompleteInputWidget(values = tuple(view.root['users'].keys()))
-
-@colander.deferred
-def file_upload_widget(node, kw):
-    request = kw['request']
-    tmpstorage = FileUploadTempStore(request)
-    return FileAttachmentWidget(tmpstorage)
 
 @colander.deferred
 def populators_choice(node, kw):
@@ -191,7 +186,8 @@ class DocumentSchema(BaseSchema, DCMetadataSchema):
                                          missing = None,
                                          title = _(u"Image"),
                                          blob_key = 'image',
-                                         widget = file_upload_widget)
+                                         validator = supported_thumbnail_mimetype,
+                                         widget = FileAttachmentWidget())
     show_byline = colander.SchemaNode(colander.Bool(),
                                       default = True,
                                       tab = tabs['visibility'],
@@ -213,7 +209,8 @@ class UserSchema(colander.Schema):
                                        missing = colander.null,
                                        blob_key = 'image',
                                        title = _(u"Profile image"),
-                                       widget = file_upload_widget)
+                                       validator = supported_thumbnail_mimetype,
+                                       widget = FileAttachmentWidget())
     
 
 class AddUserSchema(UserSchema):
@@ -222,10 +219,6 @@ class AddUserSchema(UserSchema):
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
                                    widget = deform.widget.CheckedPasswordWidget())
-    image_data = colander.SchemaNode(deform.FileData(),
-                                       missing = colander.null,
-                                       title = _(u"Add profile image"),
-                                       widget = file_upload_widget)
 
 
 class GroupSchema(colander.Schema):
@@ -322,7 +315,7 @@ class AddFileSchema(BaseSchema, DCMetadataSchema):
     file_data = colander.SchemaNode(deform.FileData(),
                                     title = _(u"Upload file"),
                                     blob_key = default_blob_key,
-                                    widget = file_upload_widget)
+                                    widget = FileAttachmentWidget())
 
 
 class EditFileSchema(AddFileSchema, DCMetadataSchema):
@@ -330,7 +323,7 @@ class EditFileSchema(AddFileSchema, DCMetadataSchema):
                                     title = _(u"Change file"),
                                     missing = colander.null,
                                     blob_key = default_blob_key,
-                                    widget = file_upload_widget)
+                                    widget = FileAttachmentWidget())
 
 
 class LinkSchema(BaseSchema):

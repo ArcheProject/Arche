@@ -250,7 +250,7 @@ class Document(Content, DCMetadataMixin, LocalRolesMixin, ContextACLMixin):
         IBlobs(self).create_from_formdata('image', value)
 
 
-@implementer(IFile)
+@implementer(IFile, IThumbnailedContent)
 class File(Content, DCMetadataMixin):
     type_name = "File"
     type_title = _("File")
@@ -296,7 +296,7 @@ class File(Content, DCMetadataMixin):
         return self.blob_key in blobs and blobs[self.blob_key].size or u""
 
 
-@implementer(IImage, IThumbnailedContent)
+@implementer(IImage)
 class Image(File, DCMetadataMixin):
     type_name = "Image"
     type_title = _("Image")

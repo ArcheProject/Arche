@@ -1,19 +1,22 @@
 from json import dumps
 import string
+import random
 
 from colander import null
-from deform.widget import FileUploadWidget
 from deform.widget import Select2Widget
+from deform.widget import Widget
+from deform.widget import FileUploadWidget
+from deform.widget import filedict
 from pyramid.threadlocal import get_current_request 
 from pyramid.traversal import find_resource
 from repoze.catalog.query import Any
-from deform.widget import filedict
 
 from arche import _
 from arche.fanstatic_lib import dropzonebasiccss
 from arche.fanstatic_lib import dropzonebootstrapcss
 from arche.fanstatic_lib import dropzonecss
 from arche.fanstatic_lib import dropzonejs
+from arche.interfaces import IFileUploadTempStore
 
 
 class TaggingWidget(Select2Widget):
@@ -159,18 +162,27 @@ class DropzoneWidget(FileUploadWidget):
         return null
 
 
-class FileAttachmentWidget(FileUploadWidget):
+class FileAttachmentWidget(Widget):
     """ Show if a file is uploaded, give the option to delete or replace it.
     """
     acceptedMimetypes = None
     template = 'widgets/file_upload'
     readonly_template = 'widgets/file_upload'
 
+    @property
+    def tmpstore(self):
+        request = get_current_request()
+        return IFileUploadTempStore(request)
+
+    def random_id(self):
+        return ''.join(
+            [random.choice(string.letters) for i in range(10)])
+
     def serialize(self, field, cstruct, **kw):
         if cstruct in (null, None):
             cstruct = {}
         if cstruct:
-            uid = cstruct['uid']
+            uid = cstruct.get('uid')
             if uid is not None and not uid in self.tmpstore:
                 self.tmpstore[uid] = cstruct
         readonly = kw.get('readonly', self.readonly)

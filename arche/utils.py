@@ -5,6 +5,7 @@ from uuid import uuid4
 import inspect
 
 from BTrees.OOBTree import OOBTree
+from PIL.Image import core as pilcore
 from ZODB.blob import Blob
 from babel.dates import format_date
 from babel.dates import format_datetime
@@ -33,6 +34,7 @@ import six
 
 from arche import _
 from arche.interfaces import (IBase,
+                              IFileUploadTempStore,
                               IBlobs,
                               IFlashMessages,
                               IFolder,
@@ -223,6 +225,8 @@ def upload_stream(stream, _file):
     return size
 
 
+@adapter(IRequest)
+@implementer(IFileUploadTempStore)
 class FileUploadTempStore(object):
     """
     A temporary storage for file file uploads
@@ -233,30 +237,41 @@ class FileUploadTempStore(object):
     """
 
     def __init__(self, request):
-        self.session = request.session
+        self.request = request
+
+    @property
+    def storage(self):
+        return self.request.session.setdefault('upload_tmp', {})
 
     def keys(self):
-        return [k for k in self.session.keys() if not k.startswith('_')]
+        return [k for k in self.storage.keys() if not k.startswith('_')]
 
     def get(self, key, default = None):
-        return key in self.keys() and self.session[key] or default
+        return key in self.keys() and self.storage[key] or default
+
+    def clear(self):
+        self.request.session.pop('upload_tmp')
 
     def __setitem__(self, name, value):
         value = value.copy()
         fp = value.pop('fp')
         value['file_contents'] = fp.read()
         fp.seek(0)
-        self.session[name] = value
+        self.storage[name] = value
 
     def __getitem__(self, name):
-        value = self.session[name].copy()
-        value['fp'] = six.StringIO(value.pop('file_contents'))
+        value = self.storage[name].copy()
+        value['fp'] = six.StringIO(value.get('file_contents'))
         return value
 
     def __delitem__(self, name):
-        del self.session[name]
+        del self.storage[name]
+
+    def __contains__(self, name):
+        return name in self.storage
 
     def preview_url(self, name):
+        #To make deform happy
         return None
 
 
@@ -287,7 +302,7 @@ class Blobs(IterableUserDict):
             return filedict(mimetype = blob.mimetype,
                             size = blob.size,
                             filename = blob.filename,
-                            uid = None)
+                            uid = None) #uid has to be there to make colander happy
             
     def create_from_formdata(self, key, value):
         """ Handle creation of a blob from a deform.FileUpload widget.
@@ -354,15 +369,17 @@ class Thumbnails(object):
         maxwidth, maxheight = scales[scale]
         blobs = IBlobs(self.context)
         if key in blobs:
-            with blobs[key].blob.open() as f:
-                try:
-                    thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
-                except IOError:
-                    #FIXME: Logging?
-                    return
-            thumb = Thumbnail(thumb_data, image_type = image_type, size = size)
-            thumb_cache.put(cachekey, thumb)
-            return thumb
+            registry = get_current_registry()
+            if blobs[key].mimetype in registry.settings['supported_thumbnail_mimetypes']:
+                with blobs[key].blob.open() as f:
+                    try:
+                        thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
+                    except IOError:
+                        #FIXME: Logging?
+                        return
+                thumb = Thumbnail(thumb_data, image_type = image_type, size = size)
+                thumb_cache.put(cachekey, thumb)
+                return thumb
 
     def invalidate_context_cache(self):
         invalidate_keys = set()
@@ -669,6 +686,24 @@ def get_mimetype_views(registry = None):
     except AttributeError:
         raise Exception("Mime type views must be registered first. Include 'arche.utils'")
 
+_pil_codecs_to_mimetypes = {
+    'jpeg_encoder': ('image/jpeg', 'image/pjpeg',),
+    'zip_encoder': ('image/png',),
+    'gif_encoder': ('image/gif',),
+}
+image_mime_to_title = {'image/jpeg': _("JPEG"),
+                       'image/png': _("PNG"),
+                       'image/gif': _("GIF")}
+#FIXME: Add more codecs that work for web!
+
+def check_supported_thumbnail_mimetypes():
+    results = set()
+    pil_methods = dir(pilcore)
+    for (k, v) in _pil_codecs_to_mimetypes.items():
+        if k in pil_methods:
+            results.update(v)
+    return results
+
 
 def includeme(config):
     config.registry.registerAdapter(FlashMessages)
@@ -677,6 +712,7 @@ def includeme(config):
     config.registry.registerAdapter(DateTimeHandler)
     config.registry.registerAdapter(RegistrationTokens)
     config.registry.registerAdapter(JSONData)
+    config.registry.registerAdapter(FileUploadTempStore)
     config.registry._content_factories = {}
     config.registry._content_schemas = {}
     config.registry._content_views = {}
@@ -690,3 +726,4 @@ def includeme(config):
     config.add_directive('add_content_view', add_content_view)
     config.add_directive('add_mimetype_view', add_mimetype_view)
     config.add_subscriber(invalidate_thumbs_in_context, [IThumbnailedContent, IObjectUpdatedEvent])
+    config.registry.settings['supported_thumbnail_mimetypes'] = check_supported_thumbnail_mimetypes()

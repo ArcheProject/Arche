@@ -6,7 +6,7 @@ from arche.interfaces import IUsers
 from arche.utils import check_unique_name
 from arche.utils import generate_slug
 from arche.utils import hash_method
-
+from arche.utils import image_mime_to_title
 
 @colander.deferred
 def unique_context_name_validator(node, kw):
@@ -105,3 +105,30 @@ class UniqueEmail(object):
         email_val(node, value)
         if self.context['users'].get_user_by_email(value) is not None:
             raise colander.Invalid(node, _("Already registered. You may recover your password if you've lost it."))
+
+
+@colander.deferred
+def supported_thumbnail_mimetype(node, kw):
+    return SupportedThumbnailMimetype(kw['request'])
+
+
+class SupportedThumbnailMimetype(object):
+
+    def __init__(self, request):
+        self.request = request
+
+    def __call__(self, node, value):
+        mimetype = value.get('mimetype')
+        if not mimetype:
+            return #We're okay with other kinds of data here!
+        supported_mimes = self.request.registry.settings['supported_thumbnail_mimetypes']
+        if mimetype not in supported_mimes:
+            suggested = set()
+            for (k, v) in image_mime_to_title.items():
+                if k in supported_mimes:
+                    suggested.add(v)
+            if suggested:
+                raise colander.Invalid(node, _("Not a valid image file! Any of these image types are supported: ${suggested}",
+                                               mapping = {'suggested': ", ".join(self.request.localizer.translate(x) for x in suggested)}))
+            else:
+                raise colander.Invalid(node, _("No image codecs installed on this system. Rebuild PIL with proper image support."))

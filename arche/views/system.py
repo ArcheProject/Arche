@@ -8,7 +8,8 @@ from arche.interfaces import (IContextACL,
 from arche.utils import (get_content_factories,
                          get_addable_content,
                          get_content_schemas,
-                         get_content_views)
+                         get_content_views,
+                         image_mime_to_title)
 from arche.views.base import BaseView
 from arche import security
 from arche import _
@@ -77,24 +78,7 @@ def acl_panel(context, request, va, **kw):
              title = _(u"Images"),
              permission = security.PERM_MANAGE_SYSTEM)
 def images_panel(context, request, va, **kw):
-    from PIL.Image import core
-    def check_codec(feature, codec):
-        if codec + "_encoder" in dir(core):
-            return True
-    feat_codec = {
-        "JPEG": "jpeg",
-        "JPEG 2000": "jpeg2k",
-        "ZLIB (PNG/ZIP)": "zip",
-        "LIBTIFF": "libtiff",
-        "FREETYPE2": "PIL._imagingft",
-        "LITTLECMS2": "PIL._imagingcms",
-        "WEBP": "PIL._webp",
-        }
-    response = {
-        'feat_codec': feat_codec,
-        'check_codec': check_codec,
-        }
-    return render('arche:templates/sysinfo/images.pt', response, request = request)
+    return render('arche:templates/sysinfo/images.pt', {'mime_to_title': image_mime_to_title}, request = request)
 
 def includeme(config):
     config.add_view(SystemInformationView,
