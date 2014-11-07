@@ -28,6 +28,7 @@
   </div>
 
   <br/>
+  <p tal:condition="cstruct" i18n:translate="">Replace current file:</p>
   <input type="file" name="upload" 
          tal:attributes="class css_class;
                          style style;"
