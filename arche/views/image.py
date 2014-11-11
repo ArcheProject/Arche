@@ -8,7 +8,7 @@ from arche.utils import IThumbnails
 from arche.utils import get_image_scales
 from arche.views.file import (AddFileForm,
                               download_view,
-                              inline_view)
+                              inline_browser_view)
 from arche import _
 
 
@@ -60,7 +60,7 @@ def includeme(config):
                     context = 'arche.interfaces.IImage',
                     permission = security.PERM_VIEW,
                     name = 'download')
-    config.add_view(inline_view,
+    config.add_view(inline_browser_view,
                     context = 'arche.interfaces.IImage',
                     http_cache = datetime.timedelta(days=1),
                     permission = security.PERM_VIEW,
