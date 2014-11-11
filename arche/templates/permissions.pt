@@ -96,7 +96,7 @@
                 <tal:roles repeat="role roles">
                   <td>
                     <span class="role">
-                      <input type="checkbox" name="checkbox" value="${role}" tal:attributes="disabled not role.assign_local and 'true' or None" />
+                      <input type="checkbox" name="checkbox" value="${role}" />
                     </span>
                   </td>
                 </tal:roles>
