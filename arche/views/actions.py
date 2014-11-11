@@ -193,6 +193,7 @@ def paste_context(context, request, va, **kw):
 
 @view_action('actions_menu', 'rename',
              title = _("Rename"),
+             permission = security.PERM_MANAGE_SYSTEM,
              priority = 25)
 def rename_context(context, request, va, **kw):
     if context != kw['view'].root and not hasattr(context, 'is_permanent'):
