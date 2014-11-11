@@ -92,9 +92,13 @@ def groupfinder(name, request):
         #Fetch any local roles for group
         for group in groups:
             result.update(groupfinder(group, request))
+    initial_context = context
     while context:
         try:
-            result.update([x for x in context.local_roles.get(name, ()) if x in inherited_roles])
+            if context == initial_context:
+                result.update([x for x in context.local_roles.get(name, ())])
+            else:
+                result.update([x for x in context.local_roles.get(name, ()) if x in inherited_roles])
         except AttributeError:
             pass
         context = context.__parent__
@@ -312,6 +316,7 @@ def includeme(config):
     config.registry._acl = aclreg =  ACLRegistry()
     aclreg.default.add(ROLE_ADMIN, ALL_PERMISSIONS)
     aclreg.default.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
+    aclreg.default.add(ROLE_OWNER, [PERM_VIEW, PERM_EDIT])
     aclreg.default.add(ROLE_VIEWER, [PERM_VIEW])
     aclreg.default.add(ROLE_REVIEWER, [PERM_VIEW, PERM_REVIEW_CONTENT])
     #Default add perms - perhaps configurable somewhere else?
