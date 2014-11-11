@@ -17,6 +17,9 @@ class IWorkflowAfterTransition(IObjectEvent):
 class IViewInitializedEvent(IObjectEvent):
     pass
 
+class ISchemaCreatedEvent(IObjectEvent):
+    pass
+
 class IBase(Interface):
     pass
 
