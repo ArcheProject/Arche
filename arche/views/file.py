@@ -46,7 +46,7 @@ def file_data_response(context, request, disposition = 'inline'):
 def download_view(context, request):
     return file_data_response(context, request, disposition = 'attachment')
 
-def inline_browser_view(context, request):
+def inline_view(context, request):
     return file_data_response(context, request, disposition = 'inline')
 
 def batch_file_upload_handler_view(context, request):
@@ -117,11 +117,7 @@ def includeme(config):
                     context = 'arche.interfaces.IFile',
                     permission = security.PERM_VIEW,
                     name = 'download')
-    config.add_view(inline_browser_view,
-                    context = 'arche.interfaces.IFile',
-                    permission = security.PERM_VIEW,
-                    name = 'inline_browser')
-    config.add_view(mimetype_view_selector,
+    config.add_view(inline_view,
                     context = 'arche.interfaces.IFile',
                     permission = security.PERM_VIEW,
                     name = 'inline')
