@@ -19,7 +19,7 @@
              '.first_name': 'user.first_name',
              '.last_name': 'user.last_name',
              'a@href': function(arg) {
-               return './users/' + arg.item['__name__'] + '/edit';
+               return './users/' + arg.item['__name__'];
              }
             }
           }
