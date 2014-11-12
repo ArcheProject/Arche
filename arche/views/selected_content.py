@@ -9,7 +9,7 @@ from arche import _
 class SelectContentSchema(colander.Schema):
     selected_content = colander.SchemaNode(colander.List(),
                                    title = _(u"Select content to show"),
-                                   missing = colander.null,
+                                   missing = (),
                                    widget = ReferenceWidget())
     show_body = colander.SchemaNode(colander.Bool(),
                                     title = _(u"Show content body, if any"),

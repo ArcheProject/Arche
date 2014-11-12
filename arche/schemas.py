@@ -121,12 +121,12 @@ class DCMetadataSchema(colander.Schema):
     creator = colander.SchemaNode(colander.List(),
                                   tab = 'metadata',
                                   widget = ReferenceWidget(query_params = {'type_name': 'User'}),
-                                  missing = colander.null,
+                                  missing = (),
                                   default = current_users_uid)
     contributor = colander.SchemaNode(colander.List(),
                                       widget = ReferenceWidget(query_params = {'type_name': 'User'}),
                                       tab = 'metadata',
-                                      missing = colander.null)
+                                      missing = ())
     created = colander.SchemaNode(DateTime(),
                                   default = default_now,
                                   missing = colander.null,
@@ -135,10 +135,10 @@ class DCMetadataSchema(colander.Schema):
                                    title = _(u"Related content"),
                                    description = _(u"Can be used to link to other content"),
                                    tab = 'metadata',
-                                   missing = colander.null,
+                                   missing = (),
                                    widget = ReferenceWidget())
     publisher = colander.SchemaNode(colander.String(),
-                                    missing = colander.null,
+                                    missing = "",
                                   tab = 'metadata')
     date = colander.SchemaNode(DateTime(),
                                title = _(u"Date"),

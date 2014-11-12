@@ -14,6 +14,7 @@ from repoze.catalog.document import DocumentMap
 from repoze.folder import Folder
 from zope.component.event import objectEventNotify
 from zope.interface import implementer
+from colander import null
 
 from arche import _
 from arche.catalog import populate_catalog
@@ -129,6 +130,8 @@ class Base(Persistent):
         for (key, value) in kwargs.items():
             if not hasattr(self, key):
                 raise AttributeError("This class doesn't have any '%s' attribute." % key)
+            if value == null:
+                value = None
             if getattr(self, key, _marker) != value:
                 setattr(self, key, value)
                 changed_attributes.add(key)
