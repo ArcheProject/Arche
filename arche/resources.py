@@ -206,6 +206,9 @@ class Link(Content):
     add_permission = "Add %s" % type_name
     target = u""
     icon = u"link"
+    nav_visible = False
+    listing_visible = False
+    search_visible = False
 
 external_type_icons = {'photo': 'picture',
                        'video': 'film',

@@ -6,7 +6,7 @@ import deform
 
 from arche import _
 from arche.interfaces import IPopulator
-from arche.utils import FileUploadTempStore
+from arche.utils import get_content_factories
 from arche.validators import existing_userid_or_email
 from arche.validators import login_password_validator
 from arche.validators import unique_email_validator
@@ -156,25 +156,37 @@ class DCMetadataSchema(colander.Schema):
     #source
     #language
 
+@colander.deferred
+def default_factory_attr(node, kw):
+    """ This probably won't fire unless you add something,
+        but it might be useful for other forms aswell.
+    """
+    request = kw['request']
+    if request.view_name == 'add':
+        content_type = request.GET.get('content_type')
+        factory = get_content_factories()[content_type]
+        return getattr(factory, node.name)
+    getattr(kw['context'], node.name)
+
 
 class BaseSchema(colander.Schema):
     nav_visible = colander.SchemaNode(colander.Bool(),
                                       title = _(u"Show in navigations"),
                                       missing = colander.null,
-                                      default = True,
+                                      default = default_factory_attr,
                                       tab = tabs['visibility'])
     listing_visible = colander.SchemaNode(colander.Bool(),
                                           title = _(u"Show in listing or table views"),
                                           description = _(u"The content view will always show this regardless of what you set."),
                                           missing = colander.null,
-                                          default = True,
+                                          default = default_factory_attr,
                                           tab = tabs['visibility'])
     search_visible = colander.SchemaNode(colander.Bool(),
                                          title = _(u"Include in search results"),
                                          description = _(u"Note that this is not a permission setting - it's just a matter of practicality for users. "
                                                          u"They may even disable this setting."),
                                          missing = colander.null,
-                                         default = True,
+                                         default = default_factory_attr,
                                          tab = tabs['visibility'])
 
 
