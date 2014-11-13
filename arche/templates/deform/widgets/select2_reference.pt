@@ -95,12 +95,6 @@
     });
     $('#' + oid).select2('data', ${preload_data} );
 });
-    /*
-    dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
-    formatResult: movieFormatResult, // omitted for brevity, see the source of this page
-    formatSelection: movieFormatSelection,  // omitted for brevity, see the source of this page
-    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
-    */
   </script>
 
 </tal:widget>
