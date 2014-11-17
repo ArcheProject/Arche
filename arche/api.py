@@ -7,3 +7,4 @@ from arche.resources import LocalRolesMixin
 from arche.resources import Persistent
 from arche.resources import Root
 from arche.resources import Token
+from arche.resources import User
