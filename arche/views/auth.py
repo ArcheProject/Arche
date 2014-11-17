@@ -47,10 +47,15 @@ class RegisterForm(BaseForm):
     title = _(u"Register")
 
     def __init__(self, context, request):
-        if request.authenticated_userid is None and context.site_settings.get('allow_self_registration'):
-            super(RegisterForm, self).__init__(context, request)
-            return
-        raise HTTPForbidden()
+        super(RegisterForm, self).__init__(context, request)
+        if request.authenticated_userid:
+            msg = _("Already logged in.")
+            self.flash_messages.add(msg, type = 'danger')
+            raise HTTPFound(location = request.resource_url(context))
+        elif context.site_settings.get('allow_self_registration'):
+            return #Ie allowed
+        msg = _("This site doesn't allow you to register")
+        raise HTTPForbidden(msg)
 
     @property
     def buttons(self):
@@ -65,7 +70,6 @@ class RegisterForm(BaseForm):
         rtokens = IRegistrationTokens(self.context)
         rtokens[email] = token
         html = self.render_template("arche:templates/emails/register.pt", token = token, email = email)
-        print html
         send_email(_(u"Registration link"),
                    [email],
                    html,
