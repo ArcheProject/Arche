@@ -223,7 +223,7 @@ class BaseForm(BaseView, FormView):
             schema_factory = self.get_schema_factory(self.type_name, self.schema_name)
             if not schema_factory:
                 err = "Schema type '%s' not registered for content type '%s'." %\
-                      (self.type_name, self.schema_name)
+                      (self.schema_name, self.type_name)
                 raise HTTPForbidden(err)
             self.schema = schema_factory()
             event = SchemaCreatedEvent(self.schema)
