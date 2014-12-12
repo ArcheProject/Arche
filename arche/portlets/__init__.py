@@ -1,23 +1,27 @@
+from __future__ import unicode_literals
+
 from UserDict import IterableUserDict
+from logging import getLogger
 from uuid import uuid4
 
-from zope.interface import implementer
-from zope.interface.verify import verifyClass
-from zope.component import adapter
-from zope.component import ComponentLookupError
+from BTrees.OOBTree import OOBTree
 from persistent import Persistent
 from persistent.list import PersistentList
-from BTrees.OOBTree import OOBTree
 from pyramid.threadlocal import get_current_registry
 from repoze.folder import Folder
+from zope.component import ComponentLookupError
+from zope.component import adapter
+from zope.interface import implementer
+from zope.interface.verify import verifyClass
 
-from arche.interfaces import IPortlet
-from arche.interfaces import IPortletType
-from arche.interfaces import IPortletManager
-from arche.interfaces import IContent
-from arche.utils import get_content_factories
-#from arche.resources import Bare
 from arche import _
+from arche.interfaces import IContent
+from arche.interfaces import IPortlet
+from arche.interfaces import IPortletManager
+from arche.interfaces import IPortletType
+from arche.utils import get_content_factories
+
+_logger = getLogger(__name__)
 
 
 @adapter(IPortlet)
@@ -87,7 +91,11 @@ class Portlet(Persistent):
             pass
 
     def render(self, context, request, view, **kw):
-        return self.portlet_adapter.render(context, request, view, **kw)
+        try:
+            return self.portlet_adapter.render(context, request, view, **kw)
+        except ComponentLookupError:
+            _logger.error("portlet %r not found for context %r" % (self.portlet_type, context))
+        return ""
         
 
 class PortletFolder(Folder):
