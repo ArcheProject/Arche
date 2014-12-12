@@ -24,12 +24,12 @@ class ContextPermIntegrationTests(TestCase):
         self.config.include('arche.security')
         self.config.include('arche.resources')
         self.config.include('arche.workflow')
-        setup_security(self.config, userid = 'tester', debug = False)
         root = root_populator(userid = 'admin')
         root['a'] = Document()
         a_roles = get_local_roles(root['a'])
         a_roles['tester'] = ['role:Administrator']
         root['b'] = Document()
+        setup_security(self.config, userid = 'tester', debug = False)
         return root
 
     def test_effective_principals(self):
