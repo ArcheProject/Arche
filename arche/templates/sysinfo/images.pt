@@ -3,20 +3,41 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
+
   <h1 i18n:translate="">Images</h1>
-  <p class="lead" i18n:translate="">Installed image library codecs. If you lack any important ones,
-        you may wish to rebuild the package 'Pillow' with proper support.</p>
   <div class="panel-group">
-      <table class="table">
-          <tbody>
-              <tr tal:repeat="(mime, title) mime_to_title.items()">
-                  <td>${title}</td>
-                  <td tal:define="available mime in request.registry.settings['supported_thumbnail_mimetypes']">
-                      <span tal:condition="available" class="label label-success" i18n:translate="">OK</span>
-                      <span tal:condition="not available" class="label label-danger" i18n:translate="">Missing</span>
-                  </td>
-              </tr>
-          </tbody>
-      </table>
+
+    <p class="lead" i18n:translate="">Installed image library codecs. If you lack any important ones,
+          you may wish to rebuild the package 'Pillow' with proper support.</p>
+    <table class="table">
+      <tbody>
+        <tr tal:repeat="(mime, title) mime_to_title.items()">
+          <td>${title}</td>
+          <td tal:define="available mime in request.registry.settings['supported_thumbnail_mimetypes']">
+              <span tal:condition="available" class="label label-success" i18n:translate="">OK</span>
+              <span tal:condition="not available" class="label label-danger" i18n:translate="">Missing</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="lead" i18n:translate="">Auto-generated scales</p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th i18n:translate="">Name</th>
+          <th i18n:translate="">Width</th>
+          <th i18n:translate="">Height</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr tal:repeat="(name, scale) scales.items()">
+          <td>${name}</td>
+          <td>${scale[0]}</td>
+          <td>${scale[1]}</td>
+        </tr>
+      </tbody>
+    </table>
+
   </div>
 </tal:main>
