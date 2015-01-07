@@ -129,7 +129,7 @@ class Base(Persistent):
         changed_attributes = set()
         for (key, value) in kwargs.items():
             if not hasattr(self, key):
-                raise AttributeError("This class doesn't have any '%s' attribute." % key)
+                raise AttributeError("%r doesn't have any '%s' attribute." % (self, key))
             if value == null:
                 value = None
             if getattr(self, key, _marker) != value:
