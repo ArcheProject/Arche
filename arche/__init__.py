@@ -11,7 +11,7 @@ default_settings = {
     'arche.hash_method': 'arche.utils.default_hash_method',
     'arche.includes': '',
  #   'arche.favicon': 'arche:static/favicon.ico',
-    'arche.debug': True,
+    'arche.debug': False,
     'arche.timezone': 'UTC', #Default timezone
     'arche.cache_max_age': 24*60*60, #seconds
     #Set template dir for deform overrides
@@ -80,15 +80,15 @@ def root_factory(request):
     return appmaker(conn.root())
 
 def base_config(**settings):
-    from .security import groupfinder
+    from arche.security import groupfinder
     authn_policy = AuthTktAuthenticationPolicy(secret = read_salt(settings),
                                                callback = groupfinder,
                                                hashalg = 'sha512')
     authz_policy = ACLAuthorizationPolicy()
     return Configurator(root_factory = root_factory,
                         settings = settings,
-                        authentication_policy=authn_policy,
-                        authorization_policy=authz_policy,)
+                        authentication_policy = authn_policy,
+                        authorization_policy = authz_policy,)
 
 def override_perm_methods(config):
     """ Important override, see has_permission. """

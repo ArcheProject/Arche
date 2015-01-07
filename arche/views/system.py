@@ -9,7 +9,8 @@ from arche.utils import (get_content_factories,
                          get_addable_content,
                          get_content_schemas,
                          get_content_views,
-                         image_mime_to_title)
+                         image_mime_to_title,
+                         get_image_scales)
 from arche.views.base import BaseView
 from arche import security
 from arche import _
@@ -78,7 +79,9 @@ def acl_panel(context, request, va, **kw):
              title = _(u"Images"),
              permission = security.PERM_MANAGE_SYSTEM)
 def images_panel(context, request, va, **kw):
-    return render('arche:templates/sysinfo/images.pt', {'mime_to_title': image_mime_to_title}, request = request)
+    response = {'mime_to_title': image_mime_to_title,
+                'scales': get_image_scales(request.registry)}
+    return render('arche:templates/sysinfo/images.pt', response, request = request)
 
 def includeme(config):
     config.add_view(SystemInformationView,
