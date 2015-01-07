@@ -95,11 +95,6 @@ def get_sortable_title(context, default):
     title = getattr(context, 'title', default)
     return title and title.lower() or default
 
-def get_userid(context, default):
-    if IUser.providedBy(context):
-        return context.userid and context.userid or default
-    return default
-
 def get_searchable_text(context, default):
     root = find_root(context)
     catalog = root.catalog
@@ -133,6 +128,11 @@ def get_workflow(context, default):
         return default
     return wf and wf.name or default
 
+def get_creator(context, default):
+    creator = getattr(context, 'creator', None)
+    return creator and tuple(creator) or default
+    
+
 def _default_indexes():
     return  {
         'title': CatalogFieldIndex(get_title),
@@ -149,6 +149,7 @@ def _default_indexes():
         'created': CatalogFieldIndex(get_created),
         'wf_state': CatalogFieldIndex(get_wf_state),
         'workflow': CatalogFieldIndex(get_workflow),
+        'creator': CatalogFieldIndex(get_creator),
     }.items()
 
 def populate_catalog(catalog, indexes = _default_indexes):
