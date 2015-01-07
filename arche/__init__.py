@@ -10,7 +10,7 @@ _ = TranslationStringFactory('Arche')
 default_settings = {
     'arche.hash_method': 'arche.utils.default_hash_method',
     'arche.includes': '',
-    'arche.favicon': 'arche:static/favicon.ico',
+ #   'arche.favicon': 'arche:static/favicon.ico',
     'arche.debug': True,
     'arche.timezone': 'UTC', #Default timezone
     'arche.cache_max_age': 24*60*60, #seconds

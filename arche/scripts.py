@@ -11,7 +11,7 @@ from arche.catalog import populate_catalog
 from arche.interfaces import ICataloger
 
 
-def arche_console_script():
+def arche_console_script(*args):
     #Move this to some configurable place...
     available_commands = {'reindex_catalog': reindex_catalog,
                           'populate_catalog': populate_catalog_script}
