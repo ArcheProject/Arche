@@ -87,9 +87,12 @@ def userid_hinder_widget(node, kw):
 @colander.deferred
 def populators_choice(node, kw):
     request = kw['request']
-    values = [('', _('No thanks'))]
-    values.extend([(x.name, x.name) for x in request.registry.registeredAdapters() if x.provided == IPopulator])
-    return deform.widget.SelectWidget(values = values)
+    class _NoThanks(object):
+        title = _('No thanks')
+        description = _("Don't install or change anything")
+    values = [('', _NoThanks())]
+    values.extend([(x.name, x.factory) for x in request.registry.registeredAdapters() if x.provided == IPopulator])
+    return deform.widget.RadioChoiceWidget(values = values, template = "widgets/object_radio_choice")
 
 @colander.deferred
 def tagging_widget(node, kw):
