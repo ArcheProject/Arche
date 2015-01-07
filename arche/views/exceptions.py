@@ -2,6 +2,7 @@ from logging import getLogger
 
 from pyramid.httpexceptions import HTTPFound
 
+from arche.security import NO_PERMISSION_REQUIRED
 from arche.views.base import BaseView
 from arche import _
 
@@ -41,6 +42,11 @@ class ForbiddenExceptionView(ExceptionView):
 
 
 def includeme(config):
-    config.add_forbidden_view(ForbiddenExceptionView, renderer = "arche:templates/exceptions/403.pt")
-    config.add_notfound_view(NotFoundExceptionView, renderer = "arche:templates/exceptions/404.pt")
-    config.add_view(ExceptionView, context = Exception, renderer = "arche:templates/exceptions/generic.pt")
+    config.add_forbidden_view(ForbiddenExceptionView,
+                              renderer = "arche:templates/exceptions/403.pt")
+    config.add_notfound_view(NotFoundExceptionView,
+                             renderer = "arche:templates/exceptions/404.pt")
+    config.add_view(ExceptionView,
+                    context = Exception,
+                    renderer = "arche:templates/exceptions/generic.pt",
+                    permission = NO_PERMISSION_REQUIRED)

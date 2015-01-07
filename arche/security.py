@@ -1,6 +1,7 @@
 from UserDict import IterableUserDict
 from UserString import UserString
 from contextlib import contextmanager
+from hashlib import sha512
 
 from BTrees.OOBTree import OOBTree
 from BTrees.OOBTree import OOSet
@@ -19,6 +20,7 @@ from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
 from zope.component import adapter
 from zope.interface import implementer
+import bcrypt
 
 from arche import _
 from arche.interfaces import IContent
@@ -302,6 +304,17 @@ def get_local_roles(context, registry = None):
         registry = get_current_registry()
     return registry.queryAdapter(context, IRoles)
 
+
+def sha512_hash_method(value, hashed = None):
+    return sha512(value).hexdigest()
+
+def bcrypt_hash_method(value, hashed = None):
+    if hashed is None:
+        hashed = bcrypt.gensalt()
+    try:
+        return bcrypt.hashpw(value.encode('utf-8'), hashed)
+    except ValueError: #Invalid salt
+        return bcrypt.hashpw(value.encode('utf-8'), bcrypt.gensalt())
 
 def includeme(config):
     from arche.utils import get_content_factories

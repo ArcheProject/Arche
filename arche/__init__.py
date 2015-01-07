@@ -8,7 +8,7 @@ _ = TranslationStringFactory('Arche')
 
 
 default_settings = {
-    'arche.hash_method': 'arche.utils.default_hash_method',
+    'arche.hash_method': 'arche.security.sha512_hash_method',
     'arche.includes': '',
  #   'arche.favicon': 'arche:static/favicon.ico',
     'arche.debug': False,

@@ -68,7 +68,7 @@ class LoginPasswordValidator(object):
             exc['email_or_userid'] = _("Invalid email or UserID")
             raise exc
         #Validate password
-        if not hash_method(password) == user.password:
+        if not hash_method(password, hashed = user.password) == user.password:
             exc['password'] = _(u"Wrong password. Remember that passwords are case sensitive.")
             raise exc
 

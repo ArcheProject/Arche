@@ -1,6 +1,5 @@
 from UserDict import IterableUserDict
 from datetime import datetime
-from hashlib import sha512
 from uuid import uuid4
 import inspect
 
@@ -206,13 +205,10 @@ def get_flash_messages(request):
     except ComponentLookupError:
         return FlashMessages(request)
 
-def hash_method(value, registry = None):
+def hash_method(value, registry = None, hashed = None):
     if registry is None:
         registry = get_current_registry()
-    return registry.settings['arche.hash_method'](value)
-
-def default_hash_method(value):
-    return sha512(value).hexdigest()
+    return registry.settings['arche.hash_method'](value, hashed = hashed)
 
 def upload_stream(stream, _file):
     size = 0
