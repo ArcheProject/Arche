@@ -171,7 +171,7 @@ def includeme(config):
                     name = 'recover_password',
                     permission = security.NO_PERMISSION_REQUIRED,
                     renderer = 'arche:templates/form.pt')
+    config.add_route('logout', '/logout')
     config.add_view(logout,
-                    context = IRoot,
-                    name = 'logout',
+                    route_name = 'logout',
                     permission = security.NO_PERMISSION_REQUIRED)
