@@ -2,6 +2,9 @@ from logging import getLogger
 
 from pyramid.httpexceptions import HTTPFound
 
+import sys
+import traceback
+
 from arche.security import NO_PERMISSION_REQUIRED
 from arche.views.base import BaseView
 from arche import _
@@ -15,12 +18,20 @@ class ExceptionView(BaseView):
         """ Exception - context is the exception here. """
         super(ExceptionView, self).__init__(context, request)
         self.exc = context
-        self.context = request.context
+        self.context = getattr(request, 'context', None)
 
     def __call__(self):
         response = {}
         response['debug'] = debug = self.request.registry.settings.get('arche.debug', False)
-        if not debug:
+        if debug:
+            exception_list = traceback.format_stack()
+            exception_list = exception_list[:-2]
+            exception_list.extend(traceback.format_tb(sys.exc_info()[2]))
+            exception_list.extend(traceback.format_exception_only(sys.exc_info()[0], sys.exc_info()[1]))
+            exception_str = "Traceback (most recent call last):\n"
+            exception_str += "".join(exception_list)
+            response['exception_str'] = exception_str
+        else:
             _log.critical(self.exc)
         return response
 

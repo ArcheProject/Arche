@@ -18,7 +18,7 @@
       <p tal:condition="not debug" class="lead" i18n:translate="">Something isn't behaving the way it should. The error has been logged.</p>
       <tal:show_error condition="debug">
         <p class="lead" i18n:translate="">arche.debug is set to True, so this error will be printed instead of logged.</p>
-        <pre tal:content="structure view.exc">
+        <pre tal:content="structure exception_str">
             (error)
         </pre>
       </tal:show_error>
