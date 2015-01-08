@@ -410,7 +410,8 @@ def set_view(context, request, name = None):
                             u"Perhaps you forgot to register the view for this context?")
     context.default_view = name
     if name != 'view':
-        title = get_content_views(request.registry)[context.type_name][name]
+        view_cls = get_content_views(request.registry)[context.type_name][name]
+        title = getattr(view_cls, 'title', name)
     else:
         title = _("Default view")
     fm = get_flash_messages(request)
