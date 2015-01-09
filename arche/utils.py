@@ -5,19 +5,12 @@ import inspect
 
 from BTrees.OOBTree import OOBTree
 from PIL.Image import core as pilcore
-from ZODB.blob import Blob
-from babel.dates import format_date
-from babel.dates import format_datetime
-from babel.dates import format_time
 from html2text import HTML2Text
-from persistent import Persistent
 from plone.scale.scale import scaleImage
 from pyramid.compat import map_
 from pyramid.i18n import TranslationString
-from pyramid.interfaces import IRequest
 from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
-from pyramid.renderers import render
 from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
 from pyramid_mailer import get_mailer
@@ -32,12 +25,8 @@ import pytz
 import six
 
 from arche import _
-from arche.interfaces import (IBase,
-                              IFileUploadTempStore,
-                              IBlobs,
+from arche.interfaces import (IBlobs,
                               IFlashMessages,
-                              IFolder,
-                              IJSONData,
                               IThumbnails,
                               IThumbnailedContent,
                               IRoot,
@@ -45,7 +34,7 @@ from arche.interfaces import (IBase,
                               IDateTimeHandler,
                               IObjectUpdatedEvent,
                               IContentView)
-from deform.widget import filedict
+from arche.models.blob import BlobFile #Keep untill db changed
 
 
 def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
@@ -173,36 +162,11 @@ def get_view(context, request, view_name = ''):
     return request.registry.adapters.lookup(provides, IView, name=view_name)
 
 
-@adapter(IRequest)
-@implementer(IFlashMessages)
-class FlashMessages(object):
-    """ See IFlashMessages"""
-
-    def __init__(self, request):
-        self.request = request
-
-    def add(self, msg, type='info', dismissable = True, auto_destruct = True):
-        css_classes = ['alert']
-        css_classes.append('alert-%s' % type)
-        if dismissable:
-            css_classes.append('alert-dismissable')
-        css_classes = " ".join(css_classes)
-        flash = {'msg':msg, 'dismissable': dismissable, 'css_classes': css_classes, 'auto_destruct': auto_destruct}
-        self.request.session.flash(flash)
-
-    def get_messages(self):
-        for message in self.request.session.pop_flash():
-            message['id'] = unicode(uuid4())
-            yield message
-
-    def render(self):
-        response = {'get_messages': self.get_messages}
-        return render("arche:templates/flash_messages.pt", response, request = self.request)
-
 def get_flash_messages(request):
     try:
         return request.registry.getAdapter(request, IFlashMessages)
     except ComponentLookupError:
+        from arche.models.flash_messages import FlashMessages
         return FlashMessages(request)
 
 def hash_method(value, registry = None, hashed = None):
@@ -210,137 +174,6 @@ def hash_method(value, registry = None, hashed = None):
         registry = get_current_registry()
     return registry.settings['arche.hash_method'](value, hashed = hashed)
 
-def upload_stream(stream, _file):
-    size = 0
-    while 1:
-        data = stream.read(1<<21)
-        if not data:
-            break
-        size += len(data)
-        _file.write(data)
-    return size
-
-
-@adapter(IRequest)
-@implementer(IFileUploadTempStore)
-class FileUploadTempStore(object):
-    """
-    A temporary storage for file file uploads
-
-    File uploads are stored in the session so that you don't need
-    to upload your file again if validation of another schema node
-    fails.
-    """
-
-    def __init__(self, request):
-        self.request = request
-
-    @property
-    def storage(self):
-        return self.request.session.setdefault('upload_tmp', {})
-
-    def keys(self):
-        return [k for k in self.storage.keys() if not k.startswith('_')]
-
-    def get(self, key, default = None):
-        return key in self.keys() and self.storage[key] or default
-
-    def clear(self):
-        self.request.session.pop('upload_tmp')
-
-    def __setitem__(self, name, value):
-        value = value.copy()
-        fp = value.pop('fp')
-        value['file_contents'] = fp.read()
-        fp.seek(0)
-        self.storage[name] = value
-
-    def __getitem__(self, name):
-        value = self.storage[name].copy()
-        value['fp'] = six.StringIO(value.get('file_contents'))
-        return value
-
-    def __delitem__(self, name):
-        del self.storage[name]
-
-    def __contains__(self, name):
-        return name in self.storage
-
-    def preview_url(self, name):
-        #To make deform happy
-        return None
-
-
-@implementer(IBlobs)
-@adapter(IBase)
-class Blobs(IterableUserDict):
-    """ Adapter that handles blobs in context
-    """
-    def __init__(self, context):
-        self.context = context
-        self.data = getattr(context, '__blobs__', {})
-
-    def __setitem__(self, key, item):
-        if not isinstance(item, BlobFile):
-            raise ValueError("Only instances of BlobFile allowed.")
-        if not isinstance(self.data, OOBTree):
-            self.data = self.context.__blobs__ = OOBTree()
-        self.data[key] = item
-
-    def create(self, key, overwrite = False):
-        if key not in self or (key in self and overwrite):
-            self[key] = BlobFile()
-        return self[key]
-
-    def formdata_dict(self, key):
-        blob = self.get(key)
-        if blob:
-            return filedict(mimetype = blob.mimetype,
-                            size = blob.size,
-                            filename = blob.filename,
-                            uid = None) #uid has to be there to make colander happy
-            
-    def create_from_formdata(self, key, value):
-        """ Handle creation of a blob from a deform.FileUpload widget.
-            Expects the following keys in value.
-            
-            fp
-                A file stream
-            filename
-                Filename
-            mimetype
-                Mimetype
-            
-            if 'delete' is a present key and set to something that is true,
-            data will be deleted.
-            
-        """
-        if value:
-            if value.get('delete'):
-                if key in self:
-                    del self[key]
-            else:
-                bf = self.create(key)
-                with bf.blob.open('w') as f:
-                    bf.filename = value['filename']
-                    bf.mimetype = value['mimetype']
-                    fp = value['fp']
-                    bf.size = upload_stream(fp, f)
-                return bf
-
-
-class BlobFile(Persistent):
-    size = None
-    mimetype = ""
-    filename = ""
-    blob = None
-
-    def __init__(self, size = None, mimetype = "", filename = ""):
-        super(BlobFile, self).__init__()
-        self.size = size
-        self.mimetype = mimetype
-        self.filename = filename
-        self.blob = Blob()
 
 #This will be moved
 #FIXME: Make caching a choice
@@ -451,91 +284,6 @@ def get_dt_handler(request):
     return IDateTimeHandler(request)
 
 
-@implementer(IDateTimeHandler)
-@adapter(IRequest)
-class DateTimeHandler(object):
-    """ Handle conversion and printing of date and time.
-    """
-    locale = None
-    timezone = None
-
-    def __init__(self, request = None, tz_name = None, locale = None):
-        if request is None:
-            request = get_current_request()
-        self.request = request
-        if tz_name is None:
-            tz_name = request.registry.settings.get('arche.timezone', 'UTC')
-        try:
-            self.timezone = pytz.timezone(tz_name)
-        except pytz.UnknownTimeZoneError:
-            self.timezone = pytz.timezone('UTC')
-        if locale is None:
-            locale = request.locale_name
-        self.locale = locale
-
-    def normalize(self, value):
-        return self.timezone.normalize(value.astimezone(self.timezone))
-
-    def format_dt(self, value, format='short', parts = 'dt', localtime = True):
-        if localtime:
-            dt = self.normalize(value)
-        else:
-            dt = value
-        if parts == 'd':
-            return format_date(dt, format = format, locale = self.locale)
-        if parts == 't':
-            return format_time(dt, format = format, locale = self.locale)
-        return format_datetime(dt, format = format, locale = self.locale)
-
-    def string_convert_dt(self, value, pattern = "%Y-%m-%dT%H:%M:%S"):
-        """ Convert a string to a localized datetime. """
-        return self.timezone.localize(datetime.strptime(value, pattern))
-
-    def utcnow(self):
-        return utcnow()
-
-    def localnow(self):
-        return datetime.now(self.timezone)
-
-    def tz_to_utc(self, value):
-        return value.astimezone(pytz.utc)
-
-    def format_relative(self, value):
-        """ Get a datetime object or a int() Epoch timestamp and return a
-            pretty string like 'an hour ago', 'Yesterday', '3 months ago',
-            'just now', etc
-        """
-        if isinstance(value, int):
-            value = datetime.fromtimestamp(value, pytz.utc)
-        #Check if timezone is naive, convert
-        if value.tzinfo is None:
-            raise ValueError("Not possible to use format_relative with timezone naive datetimes.")
-        elif value.tzinfo is not pytz.utc:
-            value = self.tz_to_utc(value)
-
-        now = self.utcnow()
-        diff = now - value
-        second_diff = diff.seconds
-        day_diff = diff.days
-
-        if day_diff < 0:
-            #FIXME: Shouldn't future be handled as well? :)
-            return self.format_dt(value)
-
-        if day_diff == 0:
-            if second_diff < 10:
-                return _("Just now")
-            if second_diff < 60:
-                return _("${diff} seconds ago", mapping={'diff': str(second_diff)})
-            if second_diff < 120:
-                return  _("1 minute ago")
-            if second_diff < 3600:
-                return _("${diff} minutes ago", mapping={'diff': str(second_diff / 60)})
-            if second_diff < 7200:
-                return _("1 hour ago")
-            if second_diff < 86400:
-                return _("${diff} hours ago", mapping={'diff': str(second_diff / 3600)})
-        return self.format_dt(value)
 
 def utcnow():
     """Get the current datetime localized to UTC.
@@ -612,43 +360,6 @@ class RegistrationTokens(AttributeAnnotations):
             del self[email]
 
 
-@implementer(IJSONData)
-@adapter(IBase)
-class JSONData(object):
-    """ Adater for creating json data from an IBase object.
-        This is a prototype and might not be included later on.
-    """
-
-    def __init__(self, context):
-        self.context = context
-
-    def __call__(self, request, dt_formater = None, attrs = (), dt_atts = ()):
-        normal_attrs = ['description', 'type_name',
-                        'type_title', 'uid',
-                        '__name__', 'size', 'mimetype']
-        normal_attrs.extend(attrs)
-        dt_attrs = ['created', 'modified']
-        dt_attrs.extend(dt_attrs)
-        #wf_state and name?
-        results = {}
-        results['icon'] = getattr(self.context, 'icon', 'file')
-        results['tags'] = tuple(getattr(self.context, 'tags', ()))
-        results['is_folder'] = IFolder.providedBy(self.context)
-        title = getattr(self.context, 'title', None)
-        if not title:
-            title = self.context.__name__
-        results['title'] = title
-        for attr in normal_attrs:
-            results[attr] = getattr(self.context, attr, '')
-        for attr in dt_attrs:
-            val = getattr(self.context, attr, '')
-            if val and dt_formater:
-                results[attr] = request.localizer.translate(dt_formater(val))
-            else:
-                results[attr] = val
-        return results
-
-
 class MIMETypeViews(IterableUserDict):
 
     def __getitem__(self, key):
@@ -707,13 +418,8 @@ def check_supported_thumbnail_mimetypes():
 
 
 def includeme(config):
-    config.registry.registerAdapter(FlashMessages)
     config.registry.registerAdapter(Thumbnails)
-    config.registry.registerAdapter(Blobs)
-    config.registry.registerAdapter(DateTimeHandler)
     config.registry.registerAdapter(RegistrationTokens)
-    config.registry.registerAdapter(JSONData)
-    config.registry.registerAdapter(FileUploadTempStore)
     config.registry._content_factories = {}
     config.registry._content_schemas = {}
     config.registry._content_views = {}

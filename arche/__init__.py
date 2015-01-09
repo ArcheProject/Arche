@@ -29,6 +29,7 @@ def includeme(config):
     config.include('arche.subscribers')
     config.include('arche.resources')
     config.include('arche.security')
+    config.include('arche.models')
     config.include('arche.schemas')
     config.include('arche.views')
     config.include('arche.catalog')

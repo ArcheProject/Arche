@@ -71,7 +71,6 @@ def has_permission(request, permission, context=None):
         principals = authn_policy.effective_principals(request)
         return authz_policy.permits(context, principals, permission)
 
-
 def groupfinder(name, request):
     """ This method is called on each request to determine which
         principals a user has.
@@ -285,7 +284,7 @@ class Roles(IterableUserDict):
             if IRole.providedBy(value):
                 value = [value]
             for role in value:
-                assert role in roles_principals, "'%s' isn't a role" % role
+                assert role in roles_principals, "'%s' isn't a registered role. Context: %r" % (role, self.context)
             self.data[key] = OOSet(value)
         elif key in self.data:
             del self.data[key]
