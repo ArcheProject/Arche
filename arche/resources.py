@@ -17,7 +17,7 @@ from zope.interface import implementer
 from colander import null
 
 from arche import _
-from arche.catalog import populate_catalog
+from arche.models.catalog import populate_catalog
 from arche.events import ObjectUpdatedEvent
 from arche.interfaces import (IBase,
                               IBlobs,

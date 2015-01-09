@@ -28,14 +28,14 @@ class CatalogIntegrationTests(TestCase):
      
     def setUp(self):
         self.config = testing.setUp()
-        self.config.include('arche.catalog')
+        self.config.include('arche.models.catalog')
  
     def tearDown(self):
         testing.tearDown()
 
     @property
     def _cut(self):
-        from arche.catalog import Cataloger
+        from arche.models.catalog import Cataloger
         return Cataloger
 
     def _fixture(self):

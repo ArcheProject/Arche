@@ -1,6 +1,7 @@
 from pyramid.interfaces import IRequest
 from zope.component import adapter
 from zope.interface import implementer
+import six
 
 from arche.interfaces import IFileUploadTempStore
 

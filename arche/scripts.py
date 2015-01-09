@@ -7,7 +7,7 @@ from pyramid.paster import bootstrap
 import transaction
 
 from arche.utils import find_all_db_objects
-from arche.catalog import populate_catalog
+from arche.models.catalog import populate_catalog
 from arche.interfaces import ICataloger
 
 

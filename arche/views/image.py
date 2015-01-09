@@ -4,7 +4,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from pyramid.response import Response
 from arche.views.base import DefaultView
 from arche import security
-from arche.utils import IThumbnails
+from arche.interfaces import IThumbnails
 from arche.utils import get_image_scales
 from arche.views.file import (AddFileForm,
                               download_view,

@@ -32,7 +32,6 @@ def includeme(config):
     config.include('arche.models')
     config.include('arche.schemas')
     config.include('arche.views')
-    config.include('arche.catalog')
     config.include('arche.portlets')
     config.include('arche.populators')
     config.include('arche.workflow')
@@ -62,14 +61,6 @@ def includeme(config):
     bootstrap_js_path = 'deform:static/scripts/bootstrap.min.js'
     if resource_registry.find_resource(bootstrap_js_path):
         resource_registry.replace_resource(bootstrap_js_path, bootstrap_js)
-
-    #Add thumb_url method to request object
-    from arche.utils import thumb_url
-    config.add_request_method(thumb_url, name = 'thumb_url')
-
-    #Add date time helper to request object
-    from arche.utils import get_dt_handler
-    config.add_request_method(get_dt_handler, name = 'dt_handler', reify = True)
 
     #Include other arche plugins
     for package in config.registry.settings.get('arche.includes', '').strip().splitlines():

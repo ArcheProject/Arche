@@ -1,12 +1,9 @@
 from UserDict import IterableUserDict
 from datetime import datetime
-from uuid import uuid4
 import inspect
 
 from BTrees.OOBTree import OOBTree
-from PIL.Image import core as pilcore
 from html2text import HTML2Text
-from plone.scale.scale import scaleImage
 from pyramid.compat import map_
 from pyramid.i18n import TranslationString
 from pyramid.interfaces import IView
@@ -15,7 +12,6 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
-from repoze.lru import LRUCache
 from slugify import UniqueSlugify
 from zope.component import adapter
 from zope.interface import implementer
@@ -25,16 +21,14 @@ import pytz
 import six
 
 from arche import _
-from arche.interfaces import (IBlobs,
-                              IFlashMessages,
-                              IThumbnails,
+from arche.interfaces import (IFlashMessages,
                               IThumbnailedContent,
                               IRoot,
                               IRegistrationTokens,
                               IDateTimeHandler,
-                              IObjectUpdatedEvent,
                               IContentView)
 from arche.models.blob import BlobFile #Keep untill db changed
+from arche.models.mimetype_views import get_mimetype_views #b/c
 
 
 def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
@@ -46,7 +40,10 @@ def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
             config.add_content_factory(MyClass, addable_to = ('Root', 'Document',), addable_in = 'Image')
     """
     assert inspect.isclass(ctype)
-    factories = get_content_factories(config.registry)
+    try:
+        factories = config.registry._content_factories
+    except AttributeError:
+        factories = config.registry._content_factories = {}
     factories[ctype.type_name] = ctype
     if addable_to:
         config.add_addable_content(ctype.type_name, addable_to)
@@ -59,14 +56,14 @@ def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
 def get_content_factories(registry = None):
     if registry is None:
         registry = get_current_registry()
-    try:
-        return registry._content_factories
-    except AttributeError:
-        raise Exception("Content factories registry not initialized, include arche.utils")
-
+    return getattr(registry, '_content_factories', {})
 
 def add_addable_content(config, ctype, addable_to):
-    addable = config.registry._addable_content.setdefault(ctype, set())
+    try:
+        addable_content = config.registry._addable_content
+    except AttributeError:
+        addable_content = config.registry._addable_content = {}
+    addable = addable_content.setdefault(ctype, set())
     if isinstance(addable_to, six.string_types):
         addable.add(addable_to)
     else:
@@ -75,23 +72,23 @@ def add_addable_content(config, ctype, addable_to):
 def get_addable_content(registry = None):
     if registry is None:
         registry = get_current_registry()
-    try:
-        return registry._addable_content
-    except AttributeError:
-        raise Exception("Addable content registry not initialized, include arche.utils")
+    return getattr(registry, '_addable_content', {})
 
 def add_content_schema(config, type_name, schema, name):
     assert inspect.isclass(schema)
     if inspect.isclass(type_name):
         type_name = type_name.__name__
-    schemas = get_content_schemas(config.registry)
+    try:
+        schemas = config.registry._content_schemas
+    except AttributeError:
+        schemas = config.registry._content_schemas = {}
     ctype_schemas = schemas.setdefault(type_name, {})
     ctype_schemas[name] = schema
 
 def get_content_schemas(registry = None):
     if registry is None:
         registry = get_current_registry()
-    return registry._content_schemas
+    return getattr(registry, '_content_schemas', {})
 
 def add_content_view(config, type_name, name, view_cls):
     """ Register a view as selectable for a content type.
@@ -105,14 +102,17 @@ def add_content_view(config, type_name, name, view_cls):
     content_factories = get_content_factories(config.registry)
     if type_name not in content_factories:
         raise KeyError('No content type with name %s' % type_name)
-    views = get_content_views(config.registry)
+    try:
+        views = config.registry._content_views
+    except AttributeError:
+        views = config.registry._content_views = {}
     ctype_views = views.setdefault(type_name, {})
     ctype_views[name] = view_cls
 
 def get_content_views(registry = None):
     if registry is None:
         registry = get_current_registry()
-    return registry._content_views
+    return getattr(registry, '_content_views', {})
 
 def generate_slug(parent, text, limit=40):
     """ Suggest a name for content that will be added.
@@ -175,69 +175,6 @@ def hash_method(value, registry = None, hashed = None):
     return registry.settings['arche.hash_method'](value, hashed = hashed)
 
 
-#This will be moved
-#FIXME: Make caching a choice
-thumb_cache = LRUCache(100)
-
-
-@implementer(IThumbnails)
-@adapter(IThumbnailedContent)
-class Thumbnails(object):
-    """ Get a thumbnail image. A good place to add caching and similar in the future. """
-
-    def __init__(self, context):
-        self.context = context
-
-    def get_thumb(self, scale, key = "image", direction = "thumb"):
-        """ Return data from plone scale or None"""
-        #Make cache optional
-        cachekey = (self.context.uid, scale, key)
-        cached = thumb_cache.get(cachekey)
-        if cached:
-            return cached
-        scales = get_image_scales()
-        maxwidth, maxheight = scales[scale]
-        blobs = IBlobs(self.context)
-        if key in blobs:
-            registry = get_current_registry()
-            if blobs[key].mimetype in registry.settings['supported_thumbnail_mimetypes']:
-                with blobs[key].blob.open() as f:
-                    try:
-                        thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
-                    except IOError:
-                        #FIXME: Logging?
-                        return
-                thumb = Thumbnail(thumb_data, image_type = image_type, size = size)
-                thumb_cache.put(cachekey, thumb)
-                return thumb
-
-    def invalidate_context_cache(self):
-        invalidate_keys = set()
-        for k in thumb_cache.data.keys():
-            if self.context.uid in k:
-                invalidate_keys.add(k)
-        for k in invalidate_keys:
-            thumb_cache.invalidate(k)
-
-
-class Thumbnail(object):
-    width = 0
-    height = 0
-    image_type = u""
-    image = None
-    etag = ""
-
-    def __init__(self, image, size = None, image_type = u""):
-        self.width, self.height = size
-        self.image = image
-        self.image_type = image_type
-        self.etag = str(uuid4())
-
-    @property
-    def mimetype(self):
-        return "image/%s" % self.image_type
-
-
 #Default image scales - mapped to twitter bootstrap columns
 image_scales = {
     'icon': [20, 20],
@@ -256,11 +193,17 @@ image_scales = {
     'col-12': [1160, 2320],
     }
 
+def add_image_scale(config, name, width, height):
+    try:
+        scales = config.registry._image_scales
+    except AttributeError:
+        scales = config.registry._image_scales = {}
+    scales[name] = (width, height)
 
 def get_image_scales(registry = None):
     if registry is None:
         registry = get_current_registry()
-    return registry._image_scales
+    return getattr(registry, '_image_scales', {})
 
 def thumb_url(request, context, scale, key = 'image'):
     scales = get_image_scales(request.registry)
@@ -283,17 +226,12 @@ def find_all_db_objects(context):
 def get_dt_handler(request):
     return IDateTimeHandler(request)
 
-
-
 def utcnow():
     """Get the current datetime localized to UTC.
     The difference between this method and datetime.utcnow() is
     that datetime.utcnow() returns the current UTC time but as a naive
     datetime object, whereas this one includes the UTC tz info."""
     return pytz.utc.localize(datetime.utcnow())
-
-def invalidate_thumbs_in_context(context, event):
-    IThumbnails(context).invalidate_context_cache()
 
 def send_email(subject, recipients, html, sender = "noreply@localhost.com", plaintext = None, request = None, send_immediately = False, **kw):
     """ Send an email to users. This also checks the required settings and translates
@@ -360,77 +298,21 @@ class RegistrationTokens(AttributeAnnotations):
             del self[email]
 
 
-class MIMETypeViews(IterableUserDict):
-
-    def __getitem__(self, key):
-        try:
-            return self.data[key]
-        except KeyError:
-            pass
-        try:
-            main_key = key.split('/')[0]
-            return self.data["%s/*" % main_key]
-        except KeyError:
-            raise KeyError("Mime type %s wasn't found in views")
-
-    def get(self, key, failobj=None):
-        if key not in self:
-            key = "%s/*" % key.split('/')[0]
-            if key not in self:
-                return failobj
-        return self[key]
-
-    def __contains__(self, key):
-        return key in self.data or "%s/*" % key.split('/')[0] in self.data
-
-
-def add_mimetype_view(config, mimetype, view_name):
-    assert isinstance(mimetype, six.string_types), "%s is not a string" % mimetype
-    assert isinstance(view_name, six.string_types), "%s is not a string" % view_name
-    views = get_mimetype_views(config.registry)
-    views[mimetype] = view_name
-
-def get_mimetype_views(registry = None):
-    if registry is None:
-        registry = get_current_registry()
-    try:
-        return registry._mime_type_views
-    except AttributeError:
-        raise Exception("Mime type views must be registered first. Include 'arche.utils'")
-
-_pil_codecs_to_mimetypes = {
-    'jpeg_encoder': ('image/jpeg', 'image/pjpeg',),
-    'zip_encoder': ('image/png',),
-    'gif_encoder': ('image/gif',),
-}
 image_mime_to_title = {'image/jpeg': _("JPEG"),
                        'image/png': _("PNG"),
                        'image/gif': _("GIF")}
 #FIXME: Add more codecs that work for web!
 
-def check_supported_thumbnail_mimetypes():
-    results = set()
-    pil_methods = dir(pilcore)
-    for (k, v) in _pil_codecs_to_mimetypes.items():
-        if k in pil_methods:
-            results.update(v)
-    return results
-
 
 def includeme(config):
-    config.registry.registerAdapter(Thumbnails)
     config.registry.registerAdapter(RegistrationTokens)
-    config.registry._content_factories = {}
-    config.registry._content_schemas = {}
-    config.registry._content_views = {}
-    config.registry._image_scales = image_scales
-    config.registry._addable_content = {}
-    config.registry._addable_content = {}
-    config.registry._mime_type_views = MIMETypeViews()
     config.add_directive('add_content_factory', add_content_factory)
     config.add_directive('add_addable_content', add_addable_content)
     config.add_directive('add_content_schema', add_content_schema)
     config.add_directive('add_content_view', add_content_view)
-    config.add_directive('add_mimetype_view', add_mimetype_view)
-    config.add_subscriber(invalidate_thumbs_in_context, [IThumbnailedContent, IObjectUpdatedEvent])
-    config.registry.settings['supported_thumbnail_mimetypes'] = check_supported_thumbnail_mimetypes()
+    config.add_directive('add_image_scale', add_image_scale)
+    config.add_request_method(thumb_url, name = 'thumb_url')
+    config.add_request_method(get_dt_handler, name = 'dt_handler', reify = True)
+    #Init default scales
+    for (name, scale) in image_scales.items():
+        config.add_image_scale(name, *scale)

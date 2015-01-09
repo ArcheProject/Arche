@@ -13,22 +13,17 @@ from repoze.catalog.indexes.text import CatalogTextIndex
 from zope.index.text.lexicon import CaseNormalizer
 from zope.index.text.lexicon import Lexicon
 from zope.index.text.lexicon import Splitter
+import six
 
 from arche.interfaces import ICataloger
 from arche.interfaces import IIndexedContent
 from arche.interfaces import IObjectAddedEvent
 from arche.interfaces import IObjectUpdatedEvent
 from arche.interfaces import IObjectWillBeRemovedEvent
-from arche.interfaces import IUser
 from arche.interfaces import IWorkflowAfterTransition
 from arche.workflow import get_context_wf
 from arche.workflow import WorkflowException
 
-
-_default_searchable_text_indexes = (
-    'title',
-    'description',
-)
 
 @implementer(ICataloger)
 @adapter(IIndexedContent)
@@ -181,8 +176,17 @@ def unindex_object_subscriber(context, event):
 def get_searchable_text_indexes(registry = None):
     if registry is None:
         registry = get_current_registry()
-    return registry._searchable_text_indexes
+    return getattr(registry, '_searchable_text_indexes', ())
 
+def add_searchable_text_index(config, name):
+    assert isinstance(name, six.string_types), "%r is not a string" % name
+    indexes = config.registry._searchable_text_indexes
+    indexes.add(name)
+
+_default_searchable_text_indexes = (
+    'title',
+    'description',
+)
 
 def includeme(config):
     config.registry.registerAdapter(Cataloger)
@@ -191,3 +195,4 @@ def includeme(config):
     config.add_subscriber(index_object_subscriber, [IIndexedContent, IWorkflowAfterTransition])
     config.add_subscriber(unindex_object_subscriber, [IIndexedContent, IObjectWillBeRemovedEvent])
     config.registry._searchable_text_indexes = set(_default_searchable_text_indexes)
+    config.add_directive('add_searchable_text_index', add_searchable_text_index)
