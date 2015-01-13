@@ -223,6 +223,7 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
     add_permission = "Add %s" % type_name
     search_visible = False
     is_permanent = True
+    footer = ""
 
     def __init__(self, data=None, **kwargs):
         self.catalog = Catalog()

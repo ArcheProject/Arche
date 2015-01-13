@@ -314,7 +314,9 @@ class RecoverPasswordSchema(colander.Schema):
 
 
 class RootSchema(BaseSchema, DCMetadataSchema):
-    pass
+    footer = colander.SchemaNode(colander.String(),
+                                 title = _("Footer"),
+                                 widget = deform.widget.RichTextWidget(delayed_load = True))
 
 @colander.deferred
 def default_blob_key(node, kw):
@@ -324,7 +326,7 @@ def default_blob_key(node, kw):
 
 class AddFileSchema(BaseSchema, DCMetadataSchema):
     title = colander.SchemaNode(colander.String(),
-                                title = _("Titile"),
+                                title = _("Title"),
                                 description = _("Filename will be used if you leave this blank"),
                                 missing = u"")
     file_data = colander.SchemaNode(deform.FileData(),

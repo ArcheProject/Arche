@@ -3,12 +3,5 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
-<div class="container footer">
-    <div class="row">
-        <div class="col-sm-3">
-        </div>
-        <div class="col-sm-9">
-        </div>
-    </div>
-</div>
+<div class="container footer" tal:content="structure view.root.footer|''"></div>
 </tal:main>
