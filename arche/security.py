@@ -20,7 +20,6 @@ from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
 from zope.component import adapter
 from zope.interface import implementer
-import bcrypt
 
 from arche import _
 from arche.interfaces import IContent
@@ -309,6 +308,9 @@ def sha512_hash_method(value, hashed = None):
     return sha512(value).hexdigest()
 
 def bcrypt_hash_method(value, hashed = None):
+    #Package seems broken right now.
+    import bcrypt
+
     if hashed is None:
         hashed = bcrypt.gensalt()
     try:
