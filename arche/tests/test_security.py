@@ -22,6 +22,7 @@ class ContextPermIntegrationTests(TestCase):
         from arche.security import get_local_roles
         self.config.include('arche.utils')
         self.config.include('arche.security')
+        self.config.include('arche.models.roles')
         self.config.include('arche.resources')
         self.config.include('arche.workflow')
         root = root_populator(userid = 'admin')

@@ -1,10 +1,8 @@
 from UserDict import IterableUserDict
-from UserString import UserString
 from contextlib import contextmanager
 from hashlib import sha512
+from logging import getLogger
 
-from BTrees.OOBTree import OOBTree
-from BTrees.OOBTree import OOSet
 from pyramid.security import (NO_PERMISSION_REQUIRED,
                               Everyone,
                               Authenticated,
@@ -18,14 +16,16 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import find_root
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
-from zope.component import adapter
 from zope.interface import implementer
 import bcrypt
 
 from arche import _
-from arche.interfaces import IContent
 from arche.interfaces import IRole
 from arche.interfaces import IRoles
+from arche.interfaces import IACLRegistry
+from arche.models.roles import Role
+
+_logger = getLogger(__name__)
 
 
 PERM_VIEW = 'perm:View'
@@ -35,6 +35,41 @@ PERM_DELETE = 'perm:Delete'
 PERM_MANAGE_SYSTEM = 'perm:Manage system'
 PERM_MANAGE_USERS = 'perm:Manage users'
 PERM_REVIEW_CONTENT = 'perm:Review content'
+
+
+
+ROLE_ADMIN = Role('role:Administrator',
+                  title = _(u"Administrator"),
+                  description = _(u"Default 'superuser' role."),
+                  inheritable = True,
+                  assignable = True,)
+ROLE_EDITOR = Role('role:Editor',
+                  title = _(u"Editor"),
+                  description = _(u"Someone who has normal edit permissions."),
+                  inheritable = True,
+                  assignable = True,)
+ROLE_VIEWER = Role('role:Viewer',
+                  title = _(u"Viewer"),
+                  description = _(u"Someone who's allowed to view."),
+                  inheritable = True,
+                  assignable = True,)
+ROLE_OWNER = Role('role:Owner',
+                  title = _(u"Owner"),
+                  description = _(u"Special role for the initial creator."),
+                  inheritable = False,
+                  assignable = False,)
+ROLE_REVIEWER = Role('role:Reviewer',
+                  title = _(u"Reviewer"),
+                  description = _(u"Review and publish content. Usable when combined with a workflow that implements review before publish."),
+                  inheritable = True,
+                  assignable = True,)
+ROLE_EVERYONE = Role(Everyone,
+                  title = _("Everyone"),
+                  description = _("Including anonymous"),
+                  assignable = False)
+ROLE_AUTHENTICATED = Role(Authenticated,
+                  title = _("Authenticated users"),
+                  assignable = False)
 
 
 class ACLException(Exception):
@@ -85,7 +120,7 @@ def groupfinder(name, request):
         'authz_context', getattr(request, 'context', None))
     if not context:
         return ()
-    inherited_roles = get_roles_registry(request.registry).inheritable()
+    inherited_roles = request.registry.acl.get_roles(inheritable = True)
     if not name.startswith('group:'):
         root = find_root(context)
         groups = root['groups'].get_users_group_principals(name)
@@ -110,7 +145,7 @@ def get_acl_registry(registry = None):
     if registry is None:
         registry = get_current_registry()
     try:
-        return registry._acl
+        return registry.acl
     except AttributeError:
         raise ACLException("ACL not initialized, include arche.security")
 
@@ -119,11 +154,16 @@ class ACLEntry(IterableUserDict):
     """ Contains ACL information.
         Behaves like a callable dict.
     """
-    def __init__(self):
+    title = ""
+
+    def __init__(self, title = ""):
         self.data = {}
+        self.title = title
 
     def add(self, role, perms):
-        #Check what kind of role?
+        if not IRole.providedBy(role):
+            _logger.info("Creating a role object from %r")
+            role = Role(role)
         if isinstance(perms, basestring):
             perms = (perms,)
         if isinstance(perms, AllPermissionsList):
@@ -157,12 +197,13 @@ class _InheritACL(ACLEntry):
     def __call__(self): raise AttributeError()
 
 
+@implementer(IACLRegistry)
 class ACLRegistry(IterableUserDict):
     """ Manages available ACL. """
     def __init__(self):
         self.data = {}
-        self.default = ACLEntry()
-        self.data['inherit'] = _InheritACL()
+        self.default = ACLEntry(_("Default ACL"))
+        self.data['inherit'] = _InheritACL( _("Inherit"))
 
     def __setitem__(self, key, aclentry):
         assert isinstance(aclentry, ACLEntry)
@@ -174,135 +215,31 @@ class ACLRegistry(IterableUserDict):
         except KeyError:
             return self.default()
 
+    def get_roles(self, inheritable = None, assignable = None):
+        results = set([x for x in self.default.keys() if IRole.providedBy(x)])
+        for acl in self.values():
+            results.update([x for x in acl.keys() if IRole.providedBy(x)])
+        if inheritable is not None:
+            for role in tuple(results):
+                if role.inheritable != inheritable:
+                    results.remove(role)
+        if assignable is not None:
+            for role in tuple(results):
+                if role.assignable != assignable:
+                    results.remove(role)
+        return results
 
-def get_roles_registry(registry = None):
-    """ Get roles registry"""
-    if registry is None:
-        registry = get_current_registry()
-    return registry._roles
-
-
-@implementer(IRole)
-class Role(UserString):
-    """ Base class for global / local roles. """
-    title = u""
-    description = u""
-    inheritable = False
-    assign_local = False
-    assign_global = False
-
-    @property
-    def principal(self):
-        return self.data
-
-    def __init__(self, principal, **kwargs):
-        if not principal.startswith('role:'):
-            raise ValueError("Roles must always start with ':role'")
-        super(Role, self).__init__(principal)
-        for (key, value) in kwargs.items():
-            if not hasattr(self, key):
-                raise AttributeError("This class doesn't have any '%s' attribute." % key)
-            setattr(self, key, value)
-
-
-ROLE_ADMIN = Role('role:Administrator',
-                  title = _(u"Administrator"),
-                  description = _(u"Default 'superuser' role."),
-                  inheritable = True,
-                  assign_local = True,
-                  assign_global = True,)
-ROLE_EDITOR = Role('role:Editor',
-                  title = _(u"Editor"),
-                  description = _(u"Someone who has normal edit permissions."),
-                  inheritable = True,
-                  assign_local = True,
-                  assign_global = True,)
-ROLE_VIEWER = Role('role:Viewer',
-                  title = _(u"Viewer"),
-                  description = _(u"Someone who's allowed to view."),
-                  inheritable = True,
-                  assign_local = True,
-                  assign_global = True,)
-ROLE_OWNER = Role('role:Owner',
-                  title = _(u"Owner"),
-                  description = _(u"Special role for the initial creator."),
-                  inheritable = False,
-                  assign_local = False,
-                  assign_global = False,)
-ROLE_REVIEWER = Role('role:Reviewer',
-                  title = _(u"Reviewer"),
-                  description = _(u"Review and publish content. Usable when combined with a workflow that implements review before publish."),
-                  inheritable = True,
-                  assign_local = True,
-                  assign_global = False,)
-
-
-class RolesRegistry(object):
-    """ Manages available roles. """
-    
-    def __init__(self):
-        self.data = set()
-
-    def add(self, role):
-        assert IRole.providedBy(role)
-        self.data.add(role)
-
-    #set-isch API
-    def remove(self, role): self.data.remove(role)
-    def __contains__(self, item): return item in self.data
-    def __len__(self): return len(self.data)
-    def __iter__(self): return iter(self.data)
-
-    def inheritable(self):
-        return [x for x in self if x.inheritable == True]
-
-    def assign_local(self):
-        return [x for x in self if x.assign_local == True]
-
-    def assign_global(self):
-        return [x for x in self if x.assign_global == True]
-
-
-@adapter(IContent)
-@implementer(IRoles)
-class Roles(IterableUserDict):
-
-    def __init__(self, context):
-        self.context = context
-        #FIXME: Don't write OOBTrees unless they're needed!
-        #Change it on setitem instead
-        try:
-            self.data = self.context.__local_roles__
-        except AttributeError:
-            self.context.__local_roles__ = OOBTree()
-            self.data = self.context.__local_roles__
-
-    def __setitem__(self, key, value):
-        if value:
-            #Make sure it exist
-            roles_principals = get_roles_registry()
-            if IRole.providedBy(value):
-                value = [value]
-            for role in value:
-                assert role in roles_principals, "'%s' isn't a registered role. Context: %r" % (role, self.context)
-            self.data[key] = OOSet(value)
-        elif key in self.data:
-            del self.data[key]
-
-    def set_from_appstruct(self, value):
-        marker = object()
-        removed_principals = set()
-        [removed_principals.add(x) for x in self if x not in value]
-        [self.pop(x) for x in removed_principals if x in self]
-        for (k, v) in value.items():
-            if self.get(k, marker) != v:
-                self[k] = v
 
 def get_local_roles(context, registry = None):
     if registry is None:
         registry = get_current_registry()
     return registry.queryAdapter(context, IRoles)
 
+def get_roles_registry(registry = None):
+    #Deprecated wrapper
+    if registry is None:
+        registry = get_current_registry()
+    return registry.acl.get_roles()
 
 def sha512_hash_method(value, hashed = None):
     return sha512(value).hexdigest()
@@ -316,26 +253,10 @@ def bcrypt_hash_method(value, hashed = None):
         return bcrypt.hashpw(value.encode('utf-8'), bcrypt.gensalt())
 
 def includeme(config):
-    from arche.utils import get_content_factories
-
-    config.registry._roles = rr = RolesRegistry()
-    rr.add(ROLE_ADMIN)
-    rr.add(ROLE_EDITOR)
-    rr.add(ROLE_VIEWER)
-    rr.add(ROLE_OWNER)
-    rr.add(ROLE_REVIEWER)
-    config.registry.registerAdapter(Roles)
-    config.registry._acl = aclreg =  ACLRegistry()
+    config.registry.acl = aclreg =  ACLRegistry()
+    config.registry.registerUtility(aclreg)
     aclreg.default.add(ROLE_ADMIN, ALL_PERMISSIONS)
     aclreg.default.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     aclreg.default.add(ROLE_OWNER, [PERM_VIEW, PERM_EDIT])
     aclreg.default.add(ROLE_VIEWER, [PERM_VIEW])
     aclreg.default.add(ROLE_REVIEWER, [PERM_VIEW, PERM_REVIEW_CONTENT])
-    #Default add perms - perhaps configurable somewhere else?
-    #Anyway, factories need to be included first otherwise this won't work!
-    factories = get_content_factories(config.registry)
-    add_perms = []
-    for factory in factories.values():
-        if hasattr(factory, 'add_permission'):
-            add_perms.append(factory.add_permission)
-    aclreg.default.add(ROLE_ADMIN, add_perms)

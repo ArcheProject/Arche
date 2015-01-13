@@ -156,6 +156,13 @@ class IJSONData(Interface):
 #/Adapters
 
 
+#Utils or settings
+
+class IACLRegistry(Interface):
+    pass
+
+#/Utils
+
 class IPortlet(Interface):
     pass
 

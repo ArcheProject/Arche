@@ -128,7 +128,7 @@
             <thead>
               <tr>
                 <th i18n:translate="">UserID or Group</th>
-                <tal:roles repeat="role [x for x in roles if x.assign_local]">
+                <tal:roles repeat="role [x for x in roles if x.assignable]">
                   <th>
                     <a href="#" data-toggle="popover" data-placement="top" data-content="${role.description}">
                       ${role.title}
@@ -147,11 +147,11 @@
                   </div>
                 </td>
                 <input type="hidden" name="__start__" value="roles:sequence" />
-                <tal:roles repeat="role [x for x in roles if x.assign_local]">
+                <tal:roles repeat="role [x for x in roles if x.assignable]">
                   <td>
                     <span class="role">
                       <input type="checkbox" name="checkbox" value="${role}"
-                        tal:attributes="disabled not role.assign_local and 'true' or None" />
+                        tal:attributes="disabled not role.assignable and 'true' or None" />
                     </span>
                   </td>
                 </tal:roles>
