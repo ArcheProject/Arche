@@ -17,7 +17,6 @@ from pyramid.traversal import find_root
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
 from zope.interface import implementer
-import bcrypt
 
 from arche import _
 from arche.interfaces import IRole
@@ -245,6 +244,9 @@ def sha512_hash_method(value, hashed = None):
     return sha512(value).hexdigest()
 
 def bcrypt_hash_method(value, hashed = None):
+    #Package seems broken right now.
+    import bcrypt
+
     if hashed is None:
         hashed = bcrypt.gensalt()
     try:
