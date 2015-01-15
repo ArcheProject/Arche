@@ -19,7 +19,7 @@ def _wf_fixture(config):
 
     config.include('arche.utils')
     config.include('arche.security')
-    config.include('arche.workflow')
+    config.include('arche.models.workflow')
     config.set_content_workflow('Dummy', 'simple_workflow')
     return Dummy()
 
@@ -116,7 +116,7 @@ class CatalogIntegrationTests(TestCase):
         self.assertEqual(res[0], 1)
 
     def test_workflow_subscriber(self):
-        from arche.workflow import get_context_wf
+        from arche.models.workflow import get_context_wf
 
         root = self._fixture()
         root['a'] = context = _wf_fixture(self.config)

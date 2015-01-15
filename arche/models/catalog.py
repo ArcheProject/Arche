@@ -21,8 +21,8 @@ from arche.interfaces import IObjectAddedEvent
 from arche.interfaces import IObjectUpdatedEvent
 from arche.interfaces import IObjectWillBeRemovedEvent
 from arche.interfaces import IWorkflowAfterTransition
-from arche.workflow import get_context_wf
-from arche.workflow import WorkflowException
+from arche.models.workflow import get_context_wf
+from arche.models.workflow import WorkflowException
 
 
 @implementer(ICataloger)

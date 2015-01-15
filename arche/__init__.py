@@ -34,7 +34,6 @@ def includeme(config):
     config.include('arche.views')
     config.include('arche.portlets')
     config.include('arche.populators')
-    config.include('arche.workflow')
     #Portlets
     config.include('arche.portlets.byline')
     config.include('arche.portlets.login')
@@ -65,6 +64,9 @@ def includeme(config):
     #Include other arche plugins
     for package in config.registry.settings.get('arche.includes', '').strip().splitlines():
         config.include(package)
+
+    #setup workflows
+    config.include('arche.models.workflow.read_paster_wf_config')
 
 
 def root_factory(request):

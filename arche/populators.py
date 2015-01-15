@@ -10,8 +10,8 @@ from arche.interfaces import IRoot
 from arche.security import ROLE_ADMIN
 from arche.security import get_local_roles
 from arche.utils import get_content_factories
-from arche.workflow import WorkflowException
-from arche.workflow import get_context_wf
+from arche.models.workflow import WorkflowException
+from arche.models.workflow import get_context_wf
 
 
 def root_populator(title = "", userid = "", email = "", password = "", populator_name = ""):

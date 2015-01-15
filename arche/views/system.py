@@ -14,7 +14,6 @@ from arche.utils import (get_content_factories,
 from arche.views.base import BaseView
 from arche import security
 from arche import _
-from arche.workflow import get_workflows
 
 common_titles = {False: _(u"No"),
                  True: _(u"Yes"),
@@ -46,7 +45,7 @@ def content_types_panel(context, request, va, **kw):
         'addable_content': get_addable_content(request.registry),
         'content_views': get_content_views(request.registry),
         'content_schemas': get_content_schemas(request.registry),
-        'workflows': get_workflows(request.registry),
+        'workflows': request.registry.workflows,
         'acl_iface': IContextACL,
         'local_roles_iface': ILocalRoles,
         }

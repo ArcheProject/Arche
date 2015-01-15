@@ -161,7 +161,7 @@ class ACLEntry(IterableUserDict):
 
     def add(self, role, perms):
         if not IRole.providedBy(role):
-            _logger.info("Creating a role object from %r")
+            _logger.info("Creating a role object from %r" % role)
             role = Role(role)
         if isinstance(perms, basestring):
             perms = (perms,)

@@ -11,7 +11,7 @@ from arche.interfaces import ILocalRoles
 from arche.portlets import get_portlet_slots
 from arche.utils import get_content_views
 from arche.views.cut_copy_paste import can_paste
-from arche.workflow import get_context_wf
+from arche.models.workflow import get_context_wf
 
 
 @view_action('actionbar_main', 'wf',

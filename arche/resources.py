@@ -43,7 +43,7 @@ from arche.security import (ROLE_OWNER,
                             get_local_roles)
 from arche.utils import (hash_method,
                          utcnow)
-from arche.workflow import get_context_wf
+from arche.models.workflow import get_context_wf
 
 
 class DCMetadataMixin(object):

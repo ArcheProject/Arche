@@ -3,7 +3,7 @@ from pyramid.httpexceptions import HTTPFound
 from arche import security
 from arche.interfaces import IContextACL
 from arche.views.base import BaseView
-from arche.workflow import get_context_wf
+from arche.models.workflow import get_context_wf
 
 
 class WorkflowTransitionView(BaseView):

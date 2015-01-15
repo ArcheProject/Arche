@@ -9,3 +9,4 @@ def includeme(config):
     config.include('.mimetype_views')
     config.include('.roles')
     config.include('.thumbnails')
+    config.include('.workflow')

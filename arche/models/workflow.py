@@ -15,6 +15,9 @@ from arche.events import WorkflowAfterTransition
 from arche.events import WorkflowBeforeTransition
 from arche.interfaces import IContextACL
 from arche.interfaces import IWorkflow
+import six
+
+_logger = getLogger(__name__)
 
 
 class WorkflowException(Exception):
@@ -49,7 +52,7 @@ class Workflow(object):
 
     @classmethod
     def init_acl(cls, registry):
-        pass
+        pass #pragma : no coverage
 
     def get_transitions(self, request = None):
         if request is None:
@@ -230,8 +233,15 @@ class WorkflowRegistry(IterableUserDict):
         self.content_type_mapping = {}
 
     def set_wf(self, type_name, wf_name):
-        """ Set workflow for a specific content type. """
-        self.content_type_mapping[type_name] = wf_name
+        """ Set workflow for a specific content type.
+            Unset by assigning None."""
+        if wf_name is None:
+            _logger.debug("Removing workflow for %r" % type_name)
+            self.content_type_mapping.pop(type_name, None)
+        else:
+            assert isinstance(wf_name, six.string_types), "wf_name must be a string, got: %r" % wf_name
+            _logger.debug("Workflow for %r set to %r" % (type_name, wf_name))
+            self.content_type_mapping[type_name] = wf_name
 
     def get_wf(self, type_name):
         """ Return mapped workflow name for a content type. """
@@ -250,10 +260,10 @@ def get_context_wf(context, registry = None):
 
 def get_workflows(registry = None):
     """ Returns the workflow registry. """
-    if registry is None:
+    if registry is None: #pragma : no coverage
         registry = get_current_registry()
     try:
-        return registry._workflows
+        return registry.workflows
     except AttributeError:
         raise WorkflowException("Workflows not configured")
 
@@ -262,7 +272,7 @@ def add_workflow(config, workflow):
     """
     assert IWorkflow.implementedBy(workflow), "Workflows must always implement IWorkflow"
     config.registry.registerAdapter(workflow, name = workflow.name)
-    wfs = config.registry._workflows
+    wfs = config.registry.workflows
     wfs[workflow.name] = workflow
     workflow.init_acl(config.registry)
 
@@ -284,20 +294,19 @@ def read_paster_wf_config(config):
     for row in wf_conf.splitlines():
         if not row:
             continue
-        try:
-            type_name, wf_name = row.split()
-        except ValueError:
-            logger = getLogger(__name__)
-            msg = "Workflow configuration error - can't understand this line: '%s'" % row
-            logger.warn(msg)
-        config.set_content_workflow(type_name, wf_name)
+        items = row.split()
+        if len(items) == 1:
+            config.set_content_workflow(items[0], None)
+        elif len(items) == 2:
+            config.set_content_workflow(items[0], items[1])
+        else: #pragma : no coverage
+            _logger.warn("This row in the workflow configuration wasn't understood: %r" % row)
 
 def includeme(config):
-    config.registry._workflows = WorkflowRegistry()
+    config.registry.workflows = WorkflowRegistry()
     config.add_directive('add_workflow', add_workflow)
     config.add_workflow(SimpleWorkflow)
     config.add_workflow(ReviewWorkflow)
     config.add_workflow(InheritWorkflow)
     config.add_directive('set_content_workflow', set_content_workflow)
     config.set_content_workflow('Root', 'simple_workflow')
-    read_paster_wf_config(config)
