@@ -1,15 +1,12 @@
-from logging import getLogger
-
-from pyramid.httpexceptions import HTTPFound
-
 import sys
 import traceback
+
+from pyramid.httpexceptions import HTTPFound
 
 from arche.security import NO_PERMISSION_REQUIRED
 from arche.views.base import BaseView
 from arche import _
-
-_log = getLogger(__name__)
+from arche import logger
 
 
 class ExceptionView(BaseView):
@@ -32,7 +29,7 @@ class ExceptionView(BaseView):
             exception_str += "".join(exception_list)
             response['exception_str'] = exception_str
         else:
-            _log.critical(self.exc)
+            logger.critical(self.exc)
         return response
 
 

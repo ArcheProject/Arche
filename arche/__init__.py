@@ -1,3 +1,5 @@
+from logging import getLogger
+
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -5,6 +7,7 @@ from pyramid.i18n import TranslationStringFactory
 from pyramid_zodbconn import get_connection
 
 _ = TranslationStringFactory('Arche')
+logger = getLogger(__name__)
 
 
 default_settings = {

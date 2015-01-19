@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 from UserDict import IterableUserDict
-from logging import getLogger
 from uuid import uuid4
 
 from BTrees.OOBTree import OOBTree
@@ -15,13 +14,12 @@ from zope.interface import implementer
 from zope.interface.verify import verifyClass
 
 from arche import _
+from arche import logger
 from arche.interfaces import IContent
 from arche.interfaces import IPortlet
 from arche.interfaces import IPortletManager
 from arche.interfaces import IPortletType
 from arche.utils import get_content_factories
-
-_logger = getLogger(__name__)
 
 
 @adapter(IPortlet)
@@ -94,7 +92,7 @@ class Portlet(Persistent):
         try:
             return self.portlet_adapter.render(context, request, view, **kw)
         except ComponentLookupError:
-            _logger.error("portlet %r not found for context %r" % (self.portlet_type, context))
+            logger.error("portlet %r not found for context %r" % (self.portlet_type, context))
         return ""
         
 

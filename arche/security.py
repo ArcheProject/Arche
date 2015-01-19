@@ -1,7 +1,5 @@
-from UserDict import IterableUserDict
 from contextlib import contextmanager
 from hashlib import sha512
-from logging import getLogger
 
 from pyramid.security import (NO_PERMISSION_REQUIRED,
                               Everyone,
@@ -16,15 +14,10 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import find_root
 from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
-from zope.interface import implementer
 
 from arche import _
-from arche.interfaces import IRole
 from arche.interfaces import IRoles
-from arche.interfaces import IACLRegistry
 from arche.models.roles import Role
-
-_logger = getLogger(__name__)
 
 
 PERM_VIEW = 'perm:View'
@@ -84,7 +77,6 @@ def authz_context(context, request):
         del request.environ['authz_context']
         if before is not None:
             request.environ['authz_context'] = before
-
 
 def has_permission(request, permission, context=None):
     """ The default has_permission does care about the context,
@@ -148,87 +140,6 @@ def get_acl_registry(registry = None):
     except AttributeError:
         raise ACLException("ACL not initialized, include arche.security")
 
-
-class ACLEntry(IterableUserDict):
-    """ Contains ACL information.
-        Behaves like a callable dict.
-    """
-    title = ""
-
-    def __init__(self, title = ""):
-        self.data = {}
-        self.title = title
-
-    def add(self, role, perms):
-        if not IRole.providedBy(role):
-            _logger.info("Creating a role object from %r" % role)
-            role = Role(role)
-        if isinstance(perms, basestring):
-            perms = (perms,)
-        if isinstance(perms, AllPermissionsList):
-            self[role] = perms
-        else:
-            current = self.setdefault(role, set())
-            if not isinstance(current, AllPermissionsList):
-                current.update(perms)
-
-    def remove(self, role, perms):
-        if isinstance(perms, basestring):
-            perms = (perms,)
-        if isinstance(perms, AllPermissionsList):
-            del self[role]
-            return
-        current = self.get(role, set())
-        if isinstance(current, AllPermissionsList):
-            raise ValueError("Permission list for '%s' currently set to Pyramids all permissions object. "
-                             "It doesn't support clearing some permissions. ")
-        [current.remove(x) for x in perms if x in current]
-
-    def __call__(self):
-        items = [(Allow, role, perms) for (role, perms) in self.items()]
-        items.append(DENY_ALL)
-        return items
-
-
-class _InheritACL(ACLEntry):
-    def add(self, role, perms): pass
-    def remove(self, role, perms): pass
-    def __call__(self): raise AttributeError()
-
-
-@implementer(IACLRegistry)
-class ACLRegistry(IterableUserDict):
-    """ Manages available ACL. """
-    def __init__(self):
-        self.data = {}
-        self.default = ACLEntry(_("Default ACL"))
-        self.data['inherit'] = _InheritACL( _("Inherit"))
-
-    def __setitem__(self, key, aclentry):
-        assert isinstance(aclentry, ACLEntry)
-        self.data[key] = aclentry
-
-    def get_acl(self, acl_name):
-        try:
-            return self[acl_name]()
-        except KeyError:
-            return self.default()
-
-    def get_roles(self, inheritable = None, assignable = None):
-        results = set([x for x in self.default.keys() if IRole.providedBy(x)])
-        for acl in self.values():
-            results.update([x for x in acl.keys() if IRole.providedBy(x)])
-        if inheritable is not None:
-            for role in tuple(results):
-                if role.inheritable != inheritable:
-                    results.remove(role)
-        if assignable is not None:
-            for role in tuple(results):
-                if role.assignable != assignable:
-                    results.remove(role)
-        return results
-
-
 def get_local_roles(context, registry = None):
     if registry is None:
         registry = get_current_registry()
@@ -255,10 +166,37 @@ def bcrypt_hash_method(value, hashed = None):
         return bcrypt.hashpw(value.encode('utf-8'), bcrypt.gensalt())
 
 def includeme(config):
-    config.registry.acl = aclreg =  ACLRegistry()
-    config.registry.registerUtility(aclreg)
-    aclreg.default.add(ROLE_ADMIN, ALL_PERMISSIONS)
-    aclreg.default.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
-    aclreg.default.add(ROLE_OWNER, [PERM_VIEW, PERM_EDIT])
-    aclreg.default.add(ROLE_VIEWER, [PERM_VIEW])
-    aclreg.default.add(ROLE_REVIEWER, [PERM_VIEW, PERM_REVIEW_CONTENT])
+    """ Initialize ACL and populate with default acl lists.
+    """
+    #ACL registry must be created first
+    config.include('arche.models.acl')
+    aclreg = config.registry.acl
+    from arche.models.acl import ACLEntry
+
+    class _InheritACL(ACLEntry):
+        def add(self, role, perms): pass
+        def remove(self, role, perms): pass
+        def __call__(self): raise AttributeError()
+
+    aclreg['inherit'] = _InheritACL(title = _("Inherit"),
+                                    description = _("Fetch the ACL from the parent object"))        
+    aclreg['default'] = 'inherit'
+    aclreg['private'] = private = ACLEntry(_("Private"))
+    private.add(ROLE_ADMIN, ALL_PERMISSIONS)
+    private.add(ROLE_OWNER, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
+    private.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
+    private.add(ROLE_VIEWER, [PERM_VIEW])
+    private.add(ROLE_REVIEWER, [PERM_REVIEW_CONTENT]) #May not be able to view
+    
+    aclreg['public'] = public = ACLEntry(_("Public"))
+    public.add(ROLE_ADMIN, ALL_PERMISSIONS)
+    public.add(Everyone, [PERM_VIEW])
+    public.add(ROLE_REVIEWER, [PERM_REVIEW_CONTENT])
+    
+    aclreg['review'] = review = ACLEntry(_("Review"))
+    review.add(ROLE_ADMIN, ALL_PERMISSIONS)
+    review.add(ROLE_OWNER, [PERM_VIEW])
+    review.add(ROLE_EDITOR, [PERM_VIEW])
+    review.add(ROLE_VIEWER, [PERM_VIEW])
+    review.add(ROLE_REVIEWER, [PERM_VIEW, PERM_REVIEW_CONTENT])
+    

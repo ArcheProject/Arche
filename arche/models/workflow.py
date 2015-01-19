@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 from UserDict import IterableUserDict
-from logging import getLogger
 
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.threadlocal import get_current_registry
@@ -8,16 +7,17 @@ from pyramid.threadlocal import get_current_request
 from zope.component import adapter
 from zope.component.event import objectEventNotify
 from zope.interface.declarations import implementer
+import six
 
 from arche import _
+from arche import logger
 from arche import security
 from arche.events import WorkflowAfterTransition
 from arche.events import WorkflowBeforeTransition
 from arche.interfaces import IContextACL
 from arche.interfaces import IWorkflow
-import six
+from arche.models.acl import ACLEntry
 
-_logger = getLogger(__name__)
 
 
 class WorkflowException(Exception):
@@ -126,18 +126,9 @@ class SimpleWorkflow(Workflow):
     def init_acl(cls, registry):
         acl_reg = security.get_acl_registry(registry)
         priv_name = "%s:private" % cls.name
-        acl_reg[priv_name] = security.ACLEntry()
-        acl_reg[priv_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
-        acl_reg[priv_name].add(security.ROLE_OWNER, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
-        acl_reg[priv_name].add(security.ROLE_EDITOR, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
-        acl_reg[priv_name].add(security.ROLE_VIEWER, [security.PERM_VIEW])
+        acl_reg[priv_name] = 'private'
         pub_name = "%s:public" % cls.name
-        acl_reg[pub_name] = security.ACLEntry()
-        acl_reg[pub_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
-        acl_reg[pub_name].add(security.ROLE_OWNER, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
-        acl_reg[pub_name].add(security.ROLE_EDITOR, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
-        acl_reg[pub_name].add(security.ROLE_VIEWER, [security.PERM_VIEW])
-        acl_reg[pub_name].add(security.Everyone, [security.PERM_VIEW])
+        acl_reg[pub_name] = 'public'
 
 
 _rev_public_to_private = Transition(from_state = 'public',
@@ -191,24 +182,11 @@ class ReviewWorkflow(Workflow):
     def init_acl(cls, registry):
         acl_reg = security.get_acl_registry(registry)
         priv_name = "%s:private" % cls.name
-        acl_reg[priv_name] = security.ACLEntry()
-        acl_reg[priv_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
-        acl_reg[priv_name].add(security.ROLE_OWNER, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
-        acl_reg[priv_name].add(security.ROLE_EDITOR, [security.PERM_VIEW, security.PERM_EDIT, security.PERM_DELETE])
-        acl_reg[priv_name].add(security.ROLE_VIEWER, [security.PERM_VIEW])
-        acl_reg[priv_name].add(security.ROLE_REVIEWER, [security.PERM_REVIEW_CONTENT]) #May not be able to view
+        acl_reg[priv_name] = 'private'
         rev_name = "%s:review" % cls.name
-        acl_reg[rev_name] = security.ACLEntry()
-        acl_reg[rev_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
-        acl_reg[rev_name].add(security.ROLE_OWNER, [security.PERM_VIEW])
-        acl_reg[rev_name].add(security.ROLE_EDITOR, [security.PERM_VIEW])
-        acl_reg[rev_name].add(security.ROLE_VIEWER, [security.PERM_VIEW])
-        acl_reg[rev_name].add(security.ROLE_REVIEWER, [security.PERM_VIEW, security.PERM_REVIEW_CONTENT])
+        acl_reg[rev_name] = 'review'
         pub_name = "%s:public" % cls.name
-        acl_reg[pub_name] = security.ACLEntry()
-        acl_reg[pub_name].add(security.ROLE_ADMIN, security.ALL_PERMISSIONS)
-        acl_reg[pub_name].add(security.Everyone, [security.PERM_VIEW])
-        acl_reg[pub_name].add(security.ROLE_REVIEWER, [security.PERM_REVIEW_CONTENT])
+        acl_reg[pub_name] = 'public'
 
 
 class InheritWorkflow(Workflow):
@@ -222,7 +200,7 @@ class InheritWorkflow(Workflow):
     @classmethod
     def init_acl(cls, registry):
         acl_reg = security.get_acl_registry(registry)
-        acl_reg['%s:inherit' % cls.name] = acl_reg['inherit']
+        acl_reg['%s:inherit' % cls.name] = 'inherit'
 
 
 class WorkflowRegistry(IterableUserDict):
@@ -236,11 +214,11 @@ class WorkflowRegistry(IterableUserDict):
         """ Set workflow for a specific content type.
             Unset by assigning None."""
         if wf_name is None:
-            _logger.debug("Removing workflow for %r" % type_name)
+            logger.debug("Removing workflow for %r" % type_name)
             self.content_type_mapping.pop(type_name, None)
         else:
             assert isinstance(wf_name, six.string_types), "wf_name must be a string, got: %r" % wf_name
-            _logger.debug("Workflow for %r set to %r" % (type_name, wf_name))
+            logger.debug("Workflow for %r set to %r" % (type_name, wf_name))
             self.content_type_mapping[type_name] = wf_name
 
     def get_wf(self, type_name):
@@ -300,7 +278,7 @@ def read_paster_wf_config(config):
         elif len(items) == 2:
             config.set_content_workflow(items[0], items[1])
         else: #pragma : no coverage
-            _logger.warn("This row in the workflow configuration wasn't understood: %r" % row)
+            logger.warn("This row in the workflow configuration wasn't understood: %r" % row)
 
 def includeme(config):
     config.registry.workflows = WorkflowRegistry()

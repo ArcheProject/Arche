@@ -1,7 +1,6 @@
 from unittest import TestCase
 
 from pyramid import testing
-from pyramid.request import Request
 
 from arche.testing import setup_security
 from arche import security
@@ -56,43 +55,3 @@ class ContextPermIntegrationTests(TestCase):
         self.failUnless(security.has_permission(request, security.PERM_EDIT, root['a']))
         self.failIf(security.has_permission(request, security.PERM_EDIT, root))
         self.failIf(security.has_permission(request, security.PERM_EDIT, root['b']))
-
-
-class ACLEntryTests(TestCase):
-    
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
-
-    @property
-    def _cut(self):
-        from arche.security import ACLEntry
-        return ACLEntry
-
-    def test_add_string(self):
-        obj = self._cut()
-        obj.add('role:Admin', 'Hello perm')
-        self.assertEqual(obj()[0], ('Allow', 'role:Admin', set(['Hello perm'])))
-
-    def test_add_tuple(self):
-        obj = self._cut()
-        obj.add('role:Admin', ('perm:Show', 'View'))
-        self.assertEqual(obj()[0], ('Allow', 'role:Admin', set(['perm:Show', 'View'])))
-
-    def test_add_combined(self):
-        obj = self._cut()
-        obj.add('role:Admin', ('One', 'Three'))
-        obj.add('role:Admin', 'Two')
-        obj.add('role:Other', 'One')
-        self.assertEqual(obj()[:-1], [('Allow', 'role:Admin', set(['Two', 'Three', 'One'])), ('Allow', 'role:Other', set(['One']))])
-
-    def test_remove(self):
-        obj = self._cut()
-        obj.add('role:Admin', ('One', 'Three'))
-        obj.add('role:Admin', 'Two')
-        obj.add('role:Other', 'One')
-        obj.remove('role:Admin', 'Two')
-        obj.remove('role:Other', 'One')
-        self.assertEqual(obj()[:-1], [('Allow', 'role:Admin', set(['Three', 'One'])), ('Allow', 'role:Other', set([]))])
