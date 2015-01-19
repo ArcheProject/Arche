@@ -7,6 +7,5 @@ def includeme(config):
     config.include('.flash_messages')
     config.include('.jsondata')
     config.include('.mimetype_views')
-    config.include('.roles')
     config.include('.thumbnails')
     config.include('.workflow')

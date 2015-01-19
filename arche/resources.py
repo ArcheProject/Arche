@@ -34,13 +34,13 @@ from arche.interfaces import (IBase,
                               ILocalRoles,
                               IObjectAddedEvent,
                               IRoot,
+                              IRoles,
                               IThumbnailedContent,
                               IToken,
                               IUser,
-                              IUsers,)
+                              IUsers)
 from arche.security import (ROLE_OWNER,
-                            get_acl_registry,
-                            get_local_roles)
+                            get_acl_registry)
 from arche.utils import (hash_method,
                          utcnow)
 from arche.models.workflow import get_context_wf
@@ -148,12 +148,12 @@ class Base(Persistent):
 class LocalRolesMixin(object):
 
     @property
-    def local_roles(self): return get_local_roles(self)
+    def local_roles(self): return IRoles(self)
 
     @local_roles.setter
     def local_roles(self, value):
         #Note that you can also set roles via the property, like self.local_roles['admin'] = ['role:Admin']
-        local_roles = get_local_roles(self)
+        local_roles = IRoles(self)
         local_roles.set_from_appstruct(value)
 
 

@@ -7,9 +7,11 @@ from BTrees.OOBTree import OOSet
 from pyramid.threadlocal import get_current_registry
 from zope.component import adapter
 from zope.interface import implementer
+from six import string_types
 
 from arche import _
-from arche.interfaces import IContent
+from arche import logger
+from arche.interfaces import ILocalRoles
 from arche.interfaces import IRole
 from arche.interfaces import IRoles
 
@@ -34,33 +36,9 @@ class Role(UserString):
         self.description = description
         self.inheritable = inheritable
         self.assignable = assignable
-        
 
 
-# class RolesRegistry(object):
-#     """ Manages available roles. """
-#     
-#     def __init__(self):
-#         self.data = set()
-# 
-#     def add(self, role):
-#         assert IRole.providedBy(role)
-#         self.data.add(role)
-# 
-#     #set-isch API
-#     def remove(self, role): self.data.remove(role)
-#     def __contains__(self, item): return item in self.data
-#     def __len__(self): return len(self.data)
-#     def __iter__(self): return iter(self.data)
-# 
-#     def inheritable(self):
-#         return [x for x in self if x.inheritable == True]
-# 
-#     def assignable(self):
-#         return [x for x in self if x.assignable == True]
-
-
-@adapter(IContent)
+@adapter(ILocalRoles)
 @implementer(IRoles)
 class Roles(IterableUserDict):
 
@@ -80,11 +58,17 @@ class Roles(IterableUserDict):
             roles_principals = get_current_registry().acl.get_roles()
             if IRole.providedBy(value):
                 value = [value]
+            if isinstance(value, string_types):
+                value = [value]
             for role in value:
-                assert role in roles_principals, "'%s' isn't a registered role. Context: %r" % (role, self.context)
+                if role not in roles_principals:
+                    logger.warn("The role %r doesn't exist. Permissions assigned at %r might not work" % (role, self.context))
             self.data[key] = OOSet(value)
         elif key in self.data:
             del self.data[key]
+
+    def __getitem__(self, key):
+        return frozenset(self.data[key])
 
     def set_from_appstruct(self, value):
         marker = object()
@@ -94,6 +78,12 @@ class Roles(IterableUserDict):
         for (k, v) in value.items():
             if self.get(k, marker) != v:
                 self[k] = v
+
+    def __repr__(self): #pragma: no coverage
+        klass = self.__class__
+        classname = '%s.%s' % (klass.__module__, klass.__name__)
+        return '<%s object at %#x>' % (classname, id(self))
+
 
 def includeme(config):
     config.registry.registerAdapter(Roles)

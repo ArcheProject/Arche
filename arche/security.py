@@ -143,7 +143,7 @@ def get_acl_registry(registry = None):
 def get_local_roles(context, registry = None):
     if registry is None:
         registry = get_current_registry()
-    return registry.queryAdapter(context, IRoles)
+    return registry.getAdapter(context, IRoles)
 
 def get_roles_registry(registry = None):
     #Deprecated wrapper
@@ -170,6 +170,7 @@ def includeme(config):
     """
     #ACL registry must be created first
     config.include('arche.models.acl')
+    config.include('arche.models.roles')
     aclreg = config.registry.acl
     from arche.models.acl import ACLEntry
 
