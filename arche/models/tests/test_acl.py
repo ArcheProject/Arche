@@ -2,7 +2,6 @@ from unittest import TestCase
 
 from pyramid import testing
 from pyramid.security import ALL_PERMISSIONS, DENY_ALL
-from pyramid.tests.pkgs.rendererscanapp import one
 
 
 class ACLEntryTests(TestCase):    
