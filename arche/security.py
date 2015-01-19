@@ -181,19 +181,19 @@ def includeme(config):
     aclreg['inherit'] = _InheritACL(title = _("Inherit"),
                                     description = _("Fetch the ACL from the parent object"))        
     aclreg['default'] = 'inherit'
-    aclreg['private'] = private = ACLEntry(_("Private"))
+    private = aclreg.new_acl('private', title = _("Private"))
     private.add(ROLE_ADMIN, ALL_PERMISSIONS)
     private.add(ROLE_OWNER, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     private.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     private.add(ROLE_VIEWER, [PERM_VIEW])
     private.add(ROLE_REVIEWER, [PERM_REVIEW_CONTENT]) #May not be able to view
     
-    aclreg['public'] = public = ACLEntry(_("Public"))
+    public = aclreg.new_acl('public', title = _("Public"))
     public.add(ROLE_ADMIN, ALL_PERMISSIONS)
     public.add(Everyone, [PERM_VIEW])
     public.add(ROLE_REVIEWER, [PERM_REVIEW_CONTENT])
     
-    aclreg['review'] = review = ACLEntry(_("Review"))
+    review = aclreg.new_acl('review', title = _("Review"))
     review.add(ROLE_ADMIN, ALL_PERMISSIONS)
     review.add(ROLE_OWNER, [PERM_VIEW])
     review.add(ROLE_EDITOR, [PERM_VIEW])

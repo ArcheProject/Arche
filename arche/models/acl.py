@@ -30,7 +30,7 @@ class ACLEntry(IterableUserDict):
         if not IRole.providedBy(role):
             logger.info("Creating a role object from %r" % role)
             role = Role(role)
-        if isinstance(perms, basestring):
+        if isinstance(perms, six.string_types):
             perms = (perms,)
         if isinstance(perms, AllPermissionsList):
             self[role] = perms
@@ -40,7 +40,7 @@ class ACLEntry(IterableUserDict):
                 current.update(perms)
 
     def remove(self, role, perms):
-        if isinstance(perms, basestring):
+        if isinstance(perms, six.string_types):
             perms = (perms,)
         if isinstance(perms, AllPermissionsList):
             del self[role]
@@ -118,6 +118,11 @@ class ACLRegistry(IterableUserDict):
         klass = self.__class__
         classname = '%s.%s' % (klass.__module__, klass.__name__)
         return '<%s object at %#x>' % (classname, id(self))
+
+    def new_acl(self, key, title = "", description = ""):
+        assert key not in self, "%r already exists as an ACL Entry" % key
+        self[key] = ACLEntry(title = title, description = description)
+        return self[key]
 
 
 def includeme(config):
