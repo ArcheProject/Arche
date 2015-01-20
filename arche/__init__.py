@@ -87,11 +87,6 @@ def base_config(**settings):
                         authentication_policy = authn_policy,
                         authorization_policy = authz_policy,)
 
-def override_perm_methods(config):
-    """ Important override, see has_permission. """
-    from arche.security import has_permission
-    config.add_request_method(has_permission, name = 'has_permission')
-
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
@@ -99,7 +94,6 @@ def main(global_config, **settings):
     cache_max_age = int(settings.get('arche.cache_max_age', 60*60*24))
     config.add_static_view('static', 'arche:static', cache_max_age = cache_max_age)
     config.include('arche') #Must be included first to adjust settings for other packages!
-    config.include(override_perm_methods)
     config.include('pyramid_beaker')
     config.include('pyramid_zodbconn')
     config.include('pyramid_tm')

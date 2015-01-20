@@ -166,8 +166,12 @@ def bcrypt_hash_method(value, hashed = None):
         return bcrypt.hashpw(value.encode('utf-8'), bcrypt.gensalt())
 
 def includeme(config):
-    """ Initialize ACL and populate with default acl lists.
+    """ Enable security subsystem.
+        Initialize ACL and populate with default acl lists.
     """
+    #Our version takes care of context as well
+    config.add_request_method(has_permission, name = 'has_permission')
+
     #ACL registry must be created first
     config.include('arche.models.acl')
     config.include('arche.models.roles')

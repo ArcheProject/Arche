@@ -12,7 +12,7 @@ def setup_security(config, userid = None, debug = True):
     ap.unauthenticated_userid = lambda request: userid
     ap.callback = groupfinder
     config.set_authentication_policy(ap)
-    config.include('arche.override_perm_methods')
+    config.include('arche.security')
 
 
 def printing_mailer(config):
@@ -43,3 +43,8 @@ class PrintingMailer(object):
         print "---"
 
     send_to_queue = send_immediately = send
+
+def includeme(config):
+    """ Setup minimal basics for running tests. """
+    config.include('arche.security')
+    config.include('arche.utils')
