@@ -161,6 +161,13 @@ class IMetadata(IContextAdapter):
     def __call__(default = None):
         """ Return value to be stored, or default. """
 
+
+class IPopulator(Interface):
+    """ An adapter that populates the database with content or initial setup.
+        Should accept root as context.
+    """
+    def populate(self, **kw):
+        """ Populate context with the following arguments. """
 #/Adapters
 
 
@@ -168,6 +175,17 @@ class IMetadata(IContextAdapter):
 
 class IACLRegistry(Interface):
     pass
+
+
+class ICatalogIndexes(Interface):
+    """ Works as a registry to keep track of all of this or other packages catalog indexes.
+    """
+
+    def __call__():
+        """ Return a dict where index names are keys and values are the catalog
+            index objects that should be stored in the catalog.
+        """
+
 
 #/Utils
 
@@ -185,10 +203,3 @@ class IFileUploadTempStore(Interface):
 
 class IRegistrationTokens(Interface):
     pass
-
-class IPopulator(Interface):
-    """ An adapter that populates the database with content or initial setup.
-        Should accept root as context.
-    """
-    def populate(self, **kw):
-        """ Populate context with the following arguments. """

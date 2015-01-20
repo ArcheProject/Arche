@@ -9,15 +9,13 @@ from BTrees.OOBTree import (OOBTree,
 from persistent import Persistent
 from persistent.list import PersistentList
 from pyramid.threadlocal import get_current_request
-from repoze.catalog.catalog import Catalog
-from repoze.catalog.document import DocumentMap
 from repoze.folder import Folder
 from zope.component.event import objectEventNotify
 from zope.interface import implementer
 from colander import null
 
 from arche import _
-from arche.models.catalog import populate_catalog
+from arche.models.catalog import create_catalog
 from arche.events import ObjectUpdatedEvent
 from arche.interfaces import (IBase,
                               IBlobs,
@@ -233,9 +231,7 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
     footer = ""
 
     def __init__(self, data=None, **kwargs):
-        self.catalog = Catalog()
-        self.document_map = DocumentMap()
-        populate_catalog(self.catalog)
+        create_catalog(self)
         self.__site_settings__ = OOBTree()
         super(Root, self).__init__(data=data, **kwargs)
 

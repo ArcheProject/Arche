@@ -1,30 +1,39 @@
+from __future__ import unicode_literals
+from UserDict import IterableUserDict
 from calendar import timegm
+from copy import copy
 from datetime import datetime
 
+from pyramid.interfaces import IApplicationCreated
+from pyramid.threadlocal import get_current_registry
 from pyramid.traversal import find_root
 from pyramid.traversal import resource_path
-from pyramid.threadlocal import get_current_registry
-from zope.interface import implementer
-from zope.component import adapter
+from repoze.catalog.catalog import Catalog
+from repoze.catalog.document import DocumentMap
 from repoze.catalog.indexes.field import CatalogFieldIndex
 from repoze.catalog.indexes.keyword import CatalogKeywordIndex
 from repoze.catalog.indexes.path import CatalogPathIndex
 from repoze.catalog.indexes.text import CatalogTextIndex
+from six import string_types
+from zope.component import adapter
 from zope.index.text.lexicon import CaseNormalizer
 from zope.index.text.lexicon import Lexicon
 from zope.index.text.lexicon import Splitter
-from six import string_types
+from zope.interface import implementer
 
+from arche import logger
+from arche.exceptions import CatalogError
+from arche.interfaces import ICatalogIndexes
 from arche.interfaces import ICataloger
 from arche.interfaces import IIndexedContent
 from arche.interfaces import IMetadata
 from arche.interfaces import IObjectAddedEvent
 from arche.interfaces import IObjectUpdatedEvent
 from arche.interfaces import IObjectWillBeRemovedEvent
+from arche.interfaces import IRoot
 from arche.interfaces import IWorkflowAfterTransition
 from arche.models.workflow import WorkflowException
 from arche.models.workflow import get_context_wf
-from arche import logger
 
 
 @implementer(ICataloger)
@@ -79,6 +88,22 @@ class Cataloger(object):
         return results
 
 
+@implementer(ICatalogIndexes)
+class CatalogIndexes(IterableUserDict):
+    name = None
+    
+    def __init__(self, name = None, indexes = None):
+        assert isinstance(name, string_types)
+        assert isinstance(indexes, dict)
+        self.name = name
+        self.data = indexes
+
+
+def add_catalog_indexes(config, package_name, indexes):
+    util = CatalogIndexes(package_name, indexes)
+    config.registry.registerUtility(util, name = package_name)
+
+
 @implementer(IMetadata)
 class Metadata(object):
     """ Use this to create metadata fields stored in the catalog.
@@ -125,12 +150,7 @@ def _get_unix_time(dt, default):
         return timegm(dt.timetuple())
     return default
 
-def get_title(context, default): return getattr(context, 'title', default)
-def get_description(context, default): return getattr(context, 'description', default)
-def get_type_name(context, default): return getattr(context, 'type_name', default)
 def get_path(context, default): return resource_path(context)
-def get_uid(context, default): return getattr(context, 'uid', default)
-def get_search_visible(context, default): return getattr(context, 'search_visible', default)
 
 def get_date(context, default):
     res = getattr(context, 'date', default)
@@ -159,10 +179,14 @@ def get_searchable_text(context, default):
     catalog = root.catalog
     found_text = []
     for index in get_searchable_text_indexes():
-        if index not in catalog:
-            #Log?
+        if index not in catalog: #pragma: no coverage
+            #FIXME: Take care of this during startup
             continue
-        res = catalog[index].discriminator(context, default)
+        disc = catalog[index].discriminator
+        if isinstance(disc, string_types):
+            res = getattr(context, disc, default)
+        else:
+            res = catalog[index].discriminator(context, default)
         if res is default:
             continue
         if not isinstance(res, string_types):
@@ -170,7 +194,7 @@ def get_searchable_text(context, default):
         res = res.strip()
         if res:
             found_text.append(res)
-    text = u" ".join(found_text)
+    text = " ".join(found_text)
     return text and text or default
 
 def get_wf_state(context, default):
@@ -190,40 +214,15 @@ def get_workflow(context, default):
 def get_creator(context, default):
     creator = getattr(context, 'creator', None)
     return creator and tuple(creator) or default
-    
 
-def _default_indexes():
-    return  {
-        'title': CatalogFieldIndex(get_title),
-        'description': CatalogFieldIndex(get_description),
-        'type_name': CatalogFieldIndex(get_type_name),
-        'sortable_title': CatalogFieldIndex(get_sortable_title),
-        'path': CatalogPathIndex(get_path),
-        'searchable_text': CatalogTextIndex(get_searchable_text, lexicon = Lexicon(Splitter(), CaseNormalizer())),
-        'uid': CatalogFieldIndex(get_uid),
-        'tags': CatalogKeywordIndex(get_tags),
-        'search_visible': CatalogFieldIndex(get_search_visible),
-        'date': CatalogFieldIndex(get_date),
-        'modified': CatalogFieldIndex(get_modified),
-        'created': CatalogFieldIndex(get_created),
-        'wf_state': CatalogFieldIndex(get_wf_state),
-        'workflow': CatalogFieldIndex(get_workflow),
-        'creator': CatalogFieldIndex(get_creator),
-    }.items()
-
-def populate_catalog(catalog, indexes = _default_indexes):
-    added = set()
-    changed = set()
-    for (key, index) in indexes():
-        if key not in catalog:
-            catalog[key] = index
-            added.add(key)
-            continue
-        if not isinstance(catalog[key], index.__class__):
-            del catalog[key]
-            catalog[key] = index
-            changed.add(key)
-    return added, changed
+def create_catalog(root):
+    root.catalog = Catalog()
+    root.document_map = DocumentMap()
+    reg = get_current_registry()
+    for util in reg.getAllUtilitiesRegisteredFor(ICatalogIndexes):
+        for (key, index) in util.items():
+            root.catalog[key] = copy(index)
+    _unregister_index_utils(reg)
 
 # Subscribers
 def index_object_subscriber(context, event):
@@ -252,13 +251,79 @@ _default_searchable_text_indexes = (
     'description',
 )
 
+def check_catalog_on_startup(event = None, env = None):
+    """ Check that the catalog has all required indexes and that they're up to date.
+        Ment to be run by the IApplicationCreated event.
+    """
+    #Split this into other functions?
+    from sys import argv
+    if argv[0] == 'bin/arche': #Is this really a safe assumption? It seems kind of stupid
+        return
+    if env is None:
+        from pyramid.scripting import prepare
+        env = prepare()
+    root = env['root']
+    if not IRoot.providedBy(root):
+        logger.info("Root object is %r, so check_catalog_on_startup won't run" % root)
+        return
+    catalog = root.catalog
+    reg = env['registry']
+    registered_keys = {}
+    for util in reg.getAllUtilitiesRegisteredFor(ICatalogIndexes):
+        for (key, index) in util.items():
+            if key in registered_keys:
+                raise CatalogError("Both %r and %r tried to add the same key %r" % (util.name, registered_keys[key], key))
+            registered_keys[key] = util.name
+            if key not in catalog:
+                raise CatalogError("%r requires %r to exist in the catalog." % (util.name, key))
+            if catalog[key].discriminator != index.discriminator:
+                raise CatalogError("Index stored at %r has a missmatching discriminator. \n"
+                                   "Current: %r \n"
+                                   "Required: %r \n"
+                                   "Required by: %r" % (key, catalog[key].discriminator, index.discriminator, util.name))
+    for key in catalog:
+        if key not in registered_keys:
+            raise CatalogError("Index %r is no longer required and should be removed from the catalog." % key)
+    _unregister_index_utils(reg)
+    env['closer']()
+
+def _unregister_index_utils(registry):
+    for util in registry.getAllUtilitiesRegisteredFor(ICatalogIndexes):
+        registry.unregisterUtility(util)
 
 def includeme(config):
+    """ Initialise catalog systems.
+    """
     config.registry.registerAdapter(Cataloger)
+
     config.add_subscriber(index_object_subscriber, [IIndexedContent, IObjectAddedEvent])
     config.add_subscriber(index_object_subscriber, [IIndexedContent, IObjectUpdatedEvent])
     config.add_subscriber(index_object_subscriber, [IIndexedContent, IWorkflowAfterTransition])
     config.add_subscriber(unindex_object_subscriber, [IIndexedContent, IObjectWillBeRemovedEvent])
+    config.add_subscriber(check_catalog_on_startup, IApplicationCreated)
+
     config.registry._searchable_text_indexes = set(_default_searchable_text_indexes)
+
+    config.add_directive('add_catalog_indexes', add_catalog_indexes)
     config.add_directive('add_searchable_text_index', add_searchable_text_index)
     config.add_directive('add_metadata_field', add_metadata_field)
+
+    default_indexes = {
+            'title': CatalogFieldIndex('title'),
+            'description': CatalogFieldIndex('description'),
+            'type_name': CatalogFieldIndex('type_name'),
+            'sortable_title': CatalogFieldIndex(get_sortable_title),
+            'path': CatalogPathIndex(get_path),
+            'searchable_text': CatalogTextIndex(get_searchable_text, lexicon = Lexicon(Splitter(), CaseNormalizer())),
+            'uid': CatalogFieldIndex('uid'),
+            'tags': CatalogKeywordIndex(get_tags),
+            'search_visible': CatalogFieldIndex('search_visible'),
+            'date': CatalogFieldIndex(get_date),
+            'modified': CatalogFieldIndex(get_modified),
+            'created': CatalogFieldIndex(get_created),
+            'wf_state': CatalogFieldIndex(get_wf_state),
+            'workflow': CatalogFieldIndex(get_workflow),
+            'creator': CatalogFieldIndex(get_creator),
+        }
+
+    config.add_catalog_indexes(__name__, default_indexes)

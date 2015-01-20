@@ -4,10 +4,12 @@ from pyramid import testing
 from zope.interface import implementer
 from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
+from zope.component import adapter
+from repoze.catalog.indexes.field import CatalogFieldIndex
 
 from arche.interfaces import ICataloger, IMetadata
 from arche.interfaces import IIndexedContent
-from zope.component._declaration import adapter
+from arche.exceptions import CatalogError
 
 
 def _dummy_func(*args):
@@ -51,6 +53,7 @@ class CatalogIntegrationTests(TestCase):
         class _DummyIndexedContent(Base):
             title = u"hello"
             description = u"world"
+            type_name = 'Dummy'
         return _DummyIndexedContent()
 
     def test_init_on_adapt(self):
@@ -100,6 +103,18 @@ class CatalogIntegrationTests(TestCase):
         res = obj.catalog.query("searchable_text == 'hel*'")
         self.assertEqual(res[0], 1)
         res = obj.catalog.query("searchable_text == 'world'")
+        self.assertEqual(res[0], 1)
+
+    def test_searchable_text_add_field(self):
+        root = self._fixture()
+        root['a'] = context = self._mk_context()
+        obj = self._cut(context)
+        obj.index_object()
+        res = obj.catalog.query("searchable_text == 'Dummy'")
+        self.assertEqual(res[0], 0)
+        self.config.add_searchable_text_index('type_name')
+        obj.index_object()
+        res = obj.catalog.query("searchable_text == 'Dummy'")
         self.assertEqual(res[0], 1)
 
     def test_wf_state_index(self):
@@ -223,3 +238,51 @@ class MetadataTests(TestCase):
         for v in root.document_map.docid_to_metadata.values():
             result = dict(v)
         self.assertEqual(result, {'dummy': 'Hello'})
+
+
+class CheckCatalogOnStartupTests(TestCase):
+     
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('arche.models.catalog')
+ 
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _fut(self):
+        from arche.models.catalog import check_catalog_on_startup
+        return check_catalog_on_startup
+
+    def _fixture(self):
+        from arche.api import Root
+        return {'closer': object, 'root': Root(), 'registry': self.config.registry}
+
+    def test_check_catalog_on_startup(self):
+        env = self._fixture()
+        self._fut(env = env)
+
+    def test_check_detects_missing(self):
+        env = self._fixture()
+        del env['root'].catalog['title']
+        self.assertRaises(CatalogError, self._fut, env = env)
+
+    def test_check_detects_too_many(self):
+        env = self._fixture()
+        env['root'].catalog['dummy'] = CatalogFieldIndex('hello!')
+        self.assertRaises(CatalogError, self._fut, env = env)
+
+    def test_check_detects_duplicate_key(self):
+        env = self._fixture()
+        self.config.add_catalog_indexes(__name__, {'title': CatalogFieldIndex('other')})
+        self.assertRaises(CatalogError, self._fut, env = env)
+
+    def test_check_detects_other_discriminator(self):
+        env = self._fixture()
+        env['root'].catalog['title'].discriminator = 'hello!'
+        self.assertRaises(CatalogError, self._fut, env = env)
+
+    def test_other_than_root_aborts(self):
+        env = self._fixture()
+        env['root'] = testing.DummyResource()
+        self._fut(env = env)

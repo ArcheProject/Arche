@@ -1,20 +1,18 @@
 from __future__ import unicode_literals
 import argparse
-#import sys
-#import textwrap
 
 from pyramid.paster import bootstrap
 import transaction
 
 from arche.utils import find_all_db_objects
-from arche.models.catalog import populate_catalog
+from arche.models.catalog import create_catalog
 from arche.interfaces import ICataloger
 
 
 def arche_console_script(*args):
     #Move this to some configurable place...
     available_commands = {'reindex_catalog': reindex_catalog,
-                          'populate_catalog': populate_catalog_script}
+                          'create_catalog': create_catalog_script}
     #description = """Blabla"""
     #usage = """Usage instructions"""
     #Format and make this cuter
@@ -65,12 +63,6 @@ def reindex_catalog(args, root, registry, **kw):
             print total
     print "-- Process complete. Reindexed %s objects" % total
 
-def populate_catalog_script(args, root, **kw):
-    added, changed = populate_catalog(root.catalog)
-    print "-- Results: %s added and %s changed" % (len(added), len(changed))
-    if added:
-        "-- Added indexes: '%s'" % "', '".join(added)
-    if changed:
-        "-- Changed indexes: '%s'" % "', '".join(changed)
-    if added or changed:
-        print "-- NOTE: You need to run reindex_catalog too since indexes have changed."
+def create_catalog_script(args, root, **kw):
+    create_catalog(root)
+    print "-- Process complete. Run reindex_catalog now."
