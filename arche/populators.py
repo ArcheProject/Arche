@@ -40,7 +40,8 @@ def root_populator(title = "", userid = "", email = "", password = "", populator
     #Publish root
     try:
         wf = get_context_wf(root)
-        wf.do_transition('private:public', force = True)
+        if wf:
+            wf.do_transition('private:public', force = True)
     except WorkflowException:
         pass
     return root
