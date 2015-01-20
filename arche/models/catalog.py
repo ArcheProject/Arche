@@ -13,22 +13,23 @@ from repoze.catalog.indexes.text import CatalogTextIndex
 from zope.index.text.lexicon import CaseNormalizer
 from zope.index.text.lexicon import Lexicon
 from zope.index.text.lexicon import Splitter
-import six
+from six import string_types
 
 from arche.interfaces import ICataloger
 from arche.interfaces import IIndexedContent
+from arche.interfaces import IMetadata
 from arche.interfaces import IObjectAddedEvent
 from arche.interfaces import IObjectUpdatedEvent
 from arche.interfaces import IObjectWillBeRemovedEvent
 from arche.interfaces import IWorkflowAfterTransition
-from arche.models.workflow import get_context_wf
 from arche.models.workflow import WorkflowException
+from arche.models.workflow import get_context_wf
+from arche import logger
 
 
 @implementer(ICataloger)
 @adapter(IIndexedContent)
 class Cataloger(object):
-    ###FIXME Find all objects in database and reindex them
 
     def __init__(self, context):
         self.context = context
@@ -44,12 +45,75 @@ class Cataloger(object):
             self.catalog.index_doc(docid, self.context)
         else:
             self.catalog.reindex_doc(docid, self.context)
+        self.update_metadata(docid)
 
     def unindex_object(self):
         docid = self.document_map.docid_for_address(self.path)
         if docid is not None:
             self.catalog.unindex_doc(docid)
-            self.document_map.remove_address(self.path)
+            #Metadata will be removed by running remove_docid
+            #self.document_map.remove_metadata(docid)
+            self.document_map.remove_docid(docid)
+
+    def update_metadata(self, docid):
+        """ Clean up or add metadata to the document map. """
+        metadata = self.get_metadata()
+        if metadata:
+            self.document_map.add_metadata(docid, metadata)
+        else:
+            try:
+                self.document_map.remove_metadata(docid)
+            except KeyError:
+                pass #No metadata existed
+
+    def get_metadata(self):
+        """ Return metadata for current context, if any. """
+        results = {}
+        marker = object()
+        registry = get_current_registry()
+        for (name, metadata) in registry.getAdapters([self.context], IMetadata):
+            #Catch exceptions? Probably
+            res = metadata(marker)
+            if res is not marker:
+                results[name] = res
+        return results
+
+
+@implementer(IMetadata)
+class Metadata(object):
+    """ Use this to create metadata fields stored in the catalog.
+        Subclass, pick a name and return something that is usable as metadata
+        when called.
+        You need to make it adapt something first. Only objects stored in the catalog are valid.
+        
+        See repoze.catalog on metadata.
+        
+        Example:
+        
+        @adapter(IIndexedContent)
+        class MyUppercaseTitle(Metadata):
+            name = 'uppercase_title'
+            
+            def __call__(self, default = None):
+                return self.context.title.upper()
+        
+        config.add_metadata_field(MyUppercaseTitle)
+    """
+    name = ''
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, default = None):
+        raise NotImplementedError() #pragma : no coverage
+
+
+def add_metadata_field(config, metadata_cls):
+    assert IMetadata.implementedBy(metadata_cls), "%r must be a class that implements %r" % (metadata_cls, IMetadata)
+    for ar in config.registry.registeredAdapters():
+        if ar.provided == IMetadata and ar.name == metadata_cls.name: #pragma : no coverage
+            logger.warn("Metadata adapter %r already registered with name %r. Registering %r might override it." % (ar.factory, ar.name, metadata_cls))
+    config.registry.registerAdapter(metadata_cls, name = metadata_cls.name)
 
 def _get_unix_time(dt, default):
     """ The created time is stored in the catalog as unixtime.
@@ -101,7 +165,7 @@ def get_searchable_text(context, default):
         res = catalog[index].discriminator(context, default)
         if res is default:
             continue
-        if not isinstance(res, basestring):
+        if not isinstance(res, string_types):
             res = str(res)
         res = res.strip()
         if res:
@@ -179,7 +243,7 @@ def get_searchable_text_indexes(registry = None):
     return getattr(registry, '_searchable_text_indexes', ())
 
 def add_searchable_text_index(config, name):
-    assert isinstance(name, six.string_types), "%r is not a string" % name
+    assert isinstance(name, string_types), "%r is not a string" % name
     indexes = config.registry._searchable_text_indexes
     indexes.add(name)
 
@@ -187,6 +251,7 @@ _default_searchable_text_indexes = (
     'title',
     'description',
 )
+
 
 def includeme(config):
     config.registry.registerAdapter(Cataloger)
@@ -196,3 +261,4 @@ def includeme(config):
     config.add_subscriber(unindex_object_subscriber, [IIndexedContent, IObjectWillBeRemovedEvent])
     config.registry._searchable_text_indexes = set(_default_searchable_text_indexes)
     config.add_directive('add_searchable_text_index', add_searchable_text_index)
+    config.add_directive('add_metadata_field', add_metadata_field)

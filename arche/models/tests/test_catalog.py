@@ -2,9 +2,12 @@ from unittest import TestCase
 
 from pyramid import testing
 from zope.interface import implementer
+from zope.interface.verify import verifyClass
+from zope.interface.verify import verifyObject
 
-from arche.interfaces import ICataloger
+from arche.interfaces import ICataloger, IMetadata
 from arche.interfaces import IIndexedContent
+from zope.component._declaration import adapter
 
 
 def _dummy_func(*args):
@@ -155,3 +158,68 @@ class CatalogIntegrationTests(TestCase):
         self.assertEqual(res[0], 0)
         res = obj.catalog.query("title == 'something'")
         self.assertEqual(res[0], 1)
+
+
+class MetadataTests(TestCase):
+     
+    def setUp(self):
+        self.config = testing.setUp()
+ 
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.models.catalog import Metadata
+        return Metadata
+# 
+    def _mk_context(self):
+        from arche.resources import Base
+        @implementer(IIndexedContent)
+        class _DummyIndexedContent(Base):
+            title = u"hello"
+            description = u"world"
+        return _DummyIndexedContent()
+
+    @property
+    def _dummy_metadata(self):
+        @adapter(IIndexedContent)
+        class _DummyMetadata(self._cut):
+            name = 'dummy'
+            def __call__(self, default = None):
+                return "Hello"
+        return _DummyMetadata
+
+    def test_verify_class(self):
+        self.failUnless(verifyClass(IMetadata, self._cut))
+
+    def test_verify_object(self):
+        obj = self._cut(testing.DummyResource())
+        self.failUnless(verifyObject(IMetadata, obj))
+
+    def test_integration_add(self):
+        self.config.include('arche.models.catalog')
+        self.config.add_metadata_field(self._dummy_metadata)
+        context = self._mk_context()
+        self.failUnless(self.config.registry.queryAdapter(context, IMetadata, name = 'dummy'))
+
+    def test_integration_get_metadata(self):
+        self.config.include('arche.models.catalog')
+        self.config.add_metadata_field(self._dummy_metadata)
+        from arche.api import Root
+        root = Root()
+        root['c'] = context = self._mk_context()
+        cataloger = ICataloger(context)
+        self.assertEqual(cataloger.get_metadata(), {'dummy': 'Hello'})
+
+    def test_metadata_added_on_index(self):
+        self.config.include('arche.models.catalog')
+        self.config.add_metadata_field(self._dummy_metadata)
+        from arche.api import Root
+        root = Root()
+        cataloger = ICataloger(root)
+        cataloger.index_object()
+        self.assertEqual(len(root.document_map.docid_to_metadata), 1)
+        for v in root.document_map.docid_to_metadata.values():
+            result = dict(v)
+        self.assertEqual(result, {'dummy': 'Hello'})

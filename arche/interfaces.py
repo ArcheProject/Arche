@@ -6,18 +6,6 @@ from repoze.folder.interfaces import (IObjectAddedEvent,
                                       IFolder) #API
 
 
-class IContextAdapter(Interface):
-    """ An adapter that wraps a context within the site.
-    """
-    context = Attribute("The context object that was adapted")
-
-    def __init__(context):
-        """ Initialize adapter. """
-
-#/Basic interfaces
-
-
-
 #ObjectEvents
 class IObjectUpdatedEvent(IObjectEvent):
     pass
@@ -129,29 +117,49 @@ class IContentView(Interface):
 
 
 #Adapters
+class IContextAdapter(Interface):
+    """ An adapter that wraps a context within the site.
+    """
+    context = Attribute("The context object that was adapted")
+
+    def __init__(context):
+        """ Initialize adapter. """
 
 
-class IRoles(Interface):
+class IRoles(IContextAdapter):
     """ Adapter for IBase content that stores and fetches assigned roles. """
 
-class ICataloger(Interface):
+
+class ICataloger(IContextAdapter):
     """ Content catalog adapter. """
 
-class IBlobs(Interface):
+
+class IBlobs(IContextAdapter):
     """ Adapter that handles blob storage for a content type.
     """
 
-class IThumbnails(Interface):
+
+class IThumbnails(IContextAdapter):
     pass
 
 
-class IDateTimeHandler(Interface):
+class IDateTimeHandler(IContextAdapter):
     """ Date time conversion adapter for requests.
     """
 
-class IJSONData(Interface):
+
+class IJSONData(IContextAdapter):
     """ Adapter that pulls json data out of a context object.
     """
+
+
+class IMetadata(IContextAdapter):
+    """ Named adapter that can be registered for objects that should have catalog metadata.
+    """
+    name = Attribute("Adapter name. Data will be stored with this as key.")
+
+    def __call__(default = None):
+        """ Return value to be stored, or default. """
 
 #/Adapters
 
