@@ -97,7 +97,7 @@ class DCMetadataMixin(object):
 
 
 @implementer(IBase)
-class Base(Persistent):
+class BaseMixin(object):
     type_name = ""
     type_title = ""
     type_description = ""
@@ -142,6 +142,10 @@ class Base(Persistent):
             event_obj = ObjectUpdatedEvent(self, changed = changed_attributes)
             objectEventNotify(event_obj)
         return changed_attributes
+
+
+class Base(Persistent, BaseMixin):
+    pass
 
 
 @implementer(ILocalRoles)

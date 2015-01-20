@@ -1,4 +1,5 @@
 from arche.resources import Base
+from arche.resources import BaseMixin
 from arche.resources import Content
 from arche.resources import ContextACLMixin
 from arche.resources import DCMetadataMixin
