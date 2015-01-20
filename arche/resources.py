@@ -145,7 +145,10 @@ class BaseMixin(object):
 
 
 class Base(Persistent, BaseMixin):
-    pass
+
+    def __init__(self, **kw):
+        BaseMixin.__init__(self, **kw)
+    
 
 
 @implementer(ILocalRoles)
