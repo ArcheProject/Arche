@@ -4,14 +4,10 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:define-macro="main"
       i18n:domain="Arche">
-    <head>
-        <meta charset="utf-8" />
-        <title metal:define-slot="page-title">${context.title|''}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Description" />
-        <link rel="shortcut icon" href="${request.static_url('arche:static/favicon.ico')}" />
-        <metal:head define-slot="head"></metal:head>
-    </head>
+  <head>
+    <tal:head replace="structure view.render_template('arche:templates/head.pt')" />
+    <metal:head define-slot="head"></metal:head>
+  </head>
 
   <body class="view-${request.view_name or 'default'}">
 
