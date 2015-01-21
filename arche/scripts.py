@@ -37,15 +37,16 @@ def arche_console_script(*args):
         available_commands[args.command](args, **env)
         print "-- Committing to database" #FIXME: Optional dry run
         transaction.commit()
+    except Exception as exc:
+        #FIXME: Do this property with logging instead
+        print "-- EXCEPTION raised"
+        print exc
     finally:
         env['closer']()
-        #Lockfile?
+        #Lockfile? zc.lockfile works and is needed by zope
 
 def reindex_catalog(args, root, registry, **kw):
-    root.catalog.clear()
-    root.document_map.docid_to_address.clear()
-    root.document_map.address_to_docid.clear()
-    root.document_map.docid_to_metadata.clear()
+    print "-- Reindexing catalog without clearing it."
     i = 0
     limit = 500
     total = 0
@@ -64,5 +65,6 @@ def reindex_catalog(args, root, registry, **kw):
     print "-- Process complete. Reindexed %s objects" % total
 
 def create_catalog_script(args, root, **kw):
+    print "-- Clearing/Creating catalog"
     create_catalog(root)
     print "-- Process complete. Run reindex_catalog now."
