@@ -34,6 +34,7 @@ from arche.interfaces import IRoot
 from arche.interfaces import IWorkflowAfterTransition
 from arche.models.workflow import WorkflowException
 from arche.models.workflow import get_context_wf
+from zope.interface.verify import verifyClass
 
 
 @implementer(ICataloger)
@@ -134,11 +135,31 @@ class Metadata(object):
 
 
 def add_metadata_field(config, metadata_cls):
-    assert IMetadata.implementedBy(metadata_cls), "%r must be a class that implements %r" % (metadata_cls, IMetadata)
+    verifyClass(IMetadata, metadata_cls)
+    #assert IMetadata.implementedBy(metadata_cls), "%r must be a class that implements %r" % (metadata_cls, IMetadata)
     for ar in config.registry.registeredAdapters():
         if ar.provided == IMetadata and ar.name == metadata_cls.name: #pragma : no coverage
             logger.warn("Metadata adapter %r already registered with name %r. Registering %r might override it." % (ar.factory, ar.name, metadata_cls))
     config.registry.registerAdapter(metadata_cls, name = metadata_cls.name)
+
+def create_metadata_field(config, _callable, name, adapts = IIndexedContent):
+    """ Helper method to dynamically create metadata adapters.
+        Callables must be methods that can replace the __call__ attribute of the
+        Metadata class.
+    
+        Example to add 'uid' to metadata:
+        
+        def get_uid(self, default = None):
+            return getattr(self.context, 'uid', default)
+        
+        config.create_metadata_field(get_uid, 'uid')
+    """
+    @adapter(adapts)
+    class _DynMetadata(Metadata):
+        pass
+    _DynMetadata.__call__ = _callable
+    _DynMetadata.name = name
+    config.add_metadata_field(_DynMetadata)
 
 def _get_unix_time(dt, default):
     """ The created time is stored in the catalog as unixtime.
@@ -307,6 +328,7 @@ def includeme(config):
     config.add_directive('add_catalog_indexes', add_catalog_indexes)
     config.add_directive('add_searchable_text_index', add_searchable_text_index)
     config.add_directive('add_metadata_field', add_metadata_field)
+    config.add_directive('create_metadata_field', create_metadata_field)
 
     default_indexes = {
             'title': CatalogFieldIndex('title'),

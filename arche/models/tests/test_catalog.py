@@ -10,6 +10,7 @@ from repoze.catalog.indexes.field import CatalogFieldIndex
 from arche.interfaces import ICataloger, IMetadata
 from arche.interfaces import IIndexedContent
 from arche.exceptions import CatalogError
+from zope.interface.exceptions import BrokenMethodImplementation
 
 
 def _dummy_func(*args):
@@ -238,6 +239,26 @@ class MetadataTests(TestCase):
         for v in root.document_map.docid_to_metadata.values():
             result = dict(v)
         self.assertEqual(result, {'dummy': 'Hello'})
+
+    def test_integration_create_metadata_field(self):
+        self.config.include('arche.models.catalog')
+        def _callable(self, default = None):
+            return 'Hello world'
+        self.config.create_metadata_field(_callable, 'dummy')
+        from arche.api import Root
+        root = Root()
+        cataloger = ICataloger(root)
+        cataloger.index_object()
+        self.assertEqual(len(root.document_map.docid_to_metadata), 1)
+        for v in root.document_map.docid_to_metadata.values():
+            result = dict(v)
+        self.assertEqual(result, {'dummy': 'Hello world'})
+
+    def test_integration_create_metadata_field_bad_callable(self):
+        self.config.include('arche.models.catalog')
+        def _callable():
+            return 'Hello world'
+        self.assertRaises(BrokenMethodImplementation, self.config.create_metadata_field, _callable, 'dummy')
 
 
 class CheckCatalogOnStartupTests(TestCase):
