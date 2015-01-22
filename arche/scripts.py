@@ -9,6 +9,12 @@ from arche.models.catalog import create_catalog
 from arche.interfaces import ICataloger
 
 
+#NOTE / FIXME:
+#This whole section will be refactored - we need to turn scripts into proper
+#tasks that can be run either from console or from the web.
+#Don't depend on this!
+
+
 def arche_console_script(*args):
     #Move this to some configurable place...
     available_commands = {'reindex_catalog': reindex_catalog,
@@ -37,12 +43,10 @@ def arche_console_script(*args):
         available_commands[args.command](args, **env)
         print "-- Committing to database" #FIXME: Optional dry run
         transaction.commit()
-    except Exception as exc:
-        #FIXME: Do this property with logging instead
-        print "-- EXCEPTION raised"
-        print exc
-    finally:
+    except Exception:
+        #FIXME: Do this properly with logging instead
         env['closer']()
+        raise
         #Lockfile? zc.lockfile works and is needed by zope
 
 def reindex_catalog(args, root, registry, **kw):
