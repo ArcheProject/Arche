@@ -1,4 +1,5 @@
 from UserDict import IterableUserDict
+from collections import deque
 from datetime import datetime
 import inspect
 
@@ -12,13 +13,13 @@ from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
+from six import string_types
 from slugify import UniqueSlugify
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import providedBy
 from zope.interface.interfaces import ComponentLookupError
 import pytz
-import six
 
 from arche import _
 from arche.interfaces import (IFlashMessages,
@@ -48,7 +49,7 @@ def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
     if addable_to:
         config.add_addable_content(ctype.type_name, addable_to)
     if addable_in:
-        if isinstance(addable_in, six.string_types):
+        if isinstance(addable_in, string_types):
             addable_in = (addable_in,)
         for ctype_name in addable_in:
             config.add_addable_content(ctype_name, ctype.type_name)
@@ -64,7 +65,7 @@ def add_addable_content(config, ctype, addable_to):
     except AttributeError:
         addable_content = config.registry._addable_content = {}
     addable = addable_content.setdefault(ctype, set())
-    if isinstance(addable_to, six.string_types):
+    if isinstance(addable_to, string_types):
         addable.add(addable_to)
     else:
         addable.update(addable_to)
@@ -211,17 +212,18 @@ def thumb_url(request, context, scale, key = 'image'):
         if IThumbnailedContent.providedBy(context):
             return request.resource_url(context, 'thumbnail', key, scale)
 
-def find_all_db_objects(context):
+def find_all_db_objects(root):
     """ Return all objects stored in context.values(), and all subobjects.
         Great for reindexing the catalog or other database migrations.
     """
-    #FIXME: This should be a generator instead. With a large database, it will require a lot of memory and time otherwise
-    result = set()
-    result.add(context)
-    if hasattr(context, 'values'):
-        for obj in context.values():
-            result.update(find_all_db_objects(obj))
-    return result
+    stack = deque([root])
+    while stack:
+        obj = stack.popleft()
+        try:
+            stack.extend(obj for obj in obj.values())
+        except AttributeError:
+            pass
+        yield obj
 
 def get_dt_handler(request):
     return IDateTimeHandler(request)
@@ -243,7 +245,7 @@ def send_email(subject, recipients, html, sender = "noreply@localhost.com", plai
         request = get_current_request()
     if isinstance(subject, TranslationString):
         subject = request.localizer.translate(subject)
-    if isinstance(recipients, basestring):
+    if isinstance(recipients, string_types):
         recipients = (recipients,)
     if plaintext is None:
         html2text = HTML2Text()
