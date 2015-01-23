@@ -22,6 +22,7 @@ from zope.interface.interfaces import ComponentLookupError
 import pytz
 
 from arche import _
+from arche import logger
 from arche.interfaces import (IFlashMessages,
                               IThumbnailedContent,
                               IRoot,
@@ -173,7 +174,13 @@ def get_flash_messages(request):
 def hash_method(value, registry = None, hashed = None):
     if registry is None:
         registry = get_current_registry()
-    return registry.settings['arche.hash_method'](value, hashed = hashed)
+    try:
+        hasher = registry.settings['arche.hash_method']
+    except KeyError:
+        logger.warn("No hash method found, importing default. Set arche.hash_method in your paster.ini config.")
+        from arche.security import sha512_hash_method
+        hasher = sha512_hash_method
+    return hasher(value, hashed = hashed)
 
 
 #Default image scales - mapped to twitter bootstrap columns
