@@ -65,18 +65,13 @@
            multiple: true,
            formatResult: function (object, container, query) {
                if (${show_thumbs} == true) {
-                   console.log(${show_thumbs});
                    var out = $('#${field.oid}-struct').clone();
                    out.removeAttr('id');
                    out.find('.img-container').html(object['img_tag']);
                    out.find('.heading-text').html( object['text'] );
                    out.find('.heading-type').html( object['type_title'] );
                    out.show();
-                   console.log(out);
-                   //debugger;
                    container.html(out);
-                   //container.html( object['img_tag'] + object['text'] + ' (' + object['type_title'] + ')');
-
                } else {
                    container.html( object['text'] + ' (' + object['type_title'] + ')');
                }
