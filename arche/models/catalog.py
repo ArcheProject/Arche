@@ -31,6 +31,7 @@ from arche.interfaces import IObjectAddedEvent
 from arche.interfaces import IObjectUpdatedEvent
 from arche.interfaces import IObjectWillBeRemovedEvent
 from arche.interfaces import IRoot
+from arche.interfaces import IUser
 from arche.interfaces import IWorkflowAfterTransition
 from arche.models.workflow import WorkflowException
 from arche.models.workflow import get_context_wf
@@ -245,6 +246,11 @@ def get_creator(context, default):
     creator = getattr(context, 'creator', None)
     return creator and tuple(creator) or default
 
+def get_userid(context, default):
+    if IUser.providedBy(context):
+        return context.userid
+    return default
+
 def create_catalog(root):
     root.catalog = Catalog()
     root.document_map = DocumentMap()
@@ -279,6 +285,7 @@ def add_searchable_text_index(config, name):
 _default_searchable_text_indexes = (
     'title',
     'description',
+    'userid',
 )
 
 def check_catalog_on_startup(event = None, env = None):
@@ -355,6 +362,7 @@ def includeme(config):
             'wf_state': CatalogFieldIndex(get_wf_state),
             'workflow': CatalogFieldIndex(get_workflow),
             'creator': CatalogFieldIndex(get_creator),
+            'userid': CatalogFieldIndex(get_userid),
         }
 
     config.add_catalog_indexes(__name__, default_indexes)
