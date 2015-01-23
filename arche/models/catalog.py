@@ -48,13 +48,22 @@ class Cataloger(object):
         self.document_map = root.document_map
         self.path = resource_path(self.context)
 
-    def index_object(self):
+    def index_object(self, indexes = None):
+        """ Specifying just some indexes will only update
+            those indexes. None means all though.
+        """
         docid = self.document_map.docid_for_address(self.path)
+        if indexes is None:
+            indexes = self.catalog.keys()
         if docid is None:
             docid = self.document_map.add(self.path)
-            self.catalog.index_doc(docid, self.context)
+            for index in indexes:
+                if index in self.catalog:
+                    self.catalog[index].index_doc(docid, self.context)
         else:
-            self.catalog.reindex_doc(docid, self.context)
+            for index in indexes:
+                if index in self.catalog:
+                    self.catalog[index].reindex_doc(docid, self.context)
         self.update_metadata(docid)
 
     def unindex_object(self):
@@ -250,7 +259,7 @@ def index_object_subscriber(context, event):
     reg = get_current_registry()
     cataloger = reg.queryAdapter(context, ICataloger)
     #FIXME: plug point for reindexing just some indexes
-    cataloger.index_object()
+    cataloger.index_object(indexes = getattr(event, 'changed', None))
 
 def unindex_object_subscriber(context, event):
     reg = get_current_registry()

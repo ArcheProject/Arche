@@ -12,13 +12,19 @@ from arche.interfaces import (IObjectUpdatedEvent,
 @implementer(IObjectUpdatedEvent)
 class ObjectUpdatedEvent(object):
     """ When an object has been updated in some way.
+        Specifying changed or metadata as a list of strings might give a signal about
+        catalog updates. None otherwise means that the catalog must update everything.
     """
     object = None
-    changed = frozenset()
-    
-    def __init__(self, _object, changed = ()):
+    changed = None
+    metadata = None
+
+    def __init__(self, _object, changed = None, metadata = None):
         self.object = _object
-        self.changed = set(changed)
+        if changed is not None:
+            self.changed = frozenset(changed)
+        if metadata is not None:
+            self.metadata = frozenset(metadata)
 
 
 @implementer(IViewInitializedEvent)
