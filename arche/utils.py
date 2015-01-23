@@ -76,7 +76,7 @@ def get_addable_content(registry = None):
         registry = get_current_registry()
     return getattr(registry, '_addable_content', {})
 
-def add_content_schema(config, type_name, schema, name):
+def add_content_schema(config, type_name, schema, names):
     assert inspect.isclass(schema)
     if inspect.isclass(type_name):
         type_name = type_name.__name__
@@ -85,7 +85,10 @@ def add_content_schema(config, type_name, schema, name):
     except AttributeError:
         schemas = config.registry._content_schemas = {}
     ctype_schemas = schemas.setdefault(type_name, {})
-    ctype_schemas[name] = schema
+    if isinstance(names, string_types):
+        names = (names,)
+    for name in names:
+        ctype_schemas[name] = schema
 
 def get_content_schemas(registry = None):
     if registry is None:
