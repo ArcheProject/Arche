@@ -364,11 +364,8 @@ class SiteSettingsSchema(colander.Schema):
 
 
 def includeme(config):
-    config.add_content_schema('Document', DocumentSchema, 'view')
-    config.add_content_schema('Document', DocumentSchema, 'edit')
-    config.add_content_schema('Document', DocumentSchema, 'add')
-    config.add_content_schema('User', UserSchema, 'view')
-    config.add_content_schema('User', UserSchema, 'edit')
+    config.add_content_schema('Document', DocumentSchema, ('view', 'edit', 'add'))
+    config.add_content_schema('User', UserSchema, ('view', 'edit'))
     config.add_content_schema('User', AddUserSchema, 'add')
     config.add_content_schema('User', ChangePasswordSchema, 'change_password')
     config.add_content_schema('InitialSetup', InitialSetup, 'setup')
@@ -376,9 +373,7 @@ def includeme(config):
     config.add_content_schema('Auth', RegistrationSchema, 'register')
     config.add_content_schema('Auth', FinishRegistrationSchema, 'register_finish')
     config.add_content_schema('Auth', RecoverPasswordSchema, 'recover_password')
-    config.add_content_schema('Group', GroupSchema, 'add')
-    config.add_content_schema('Group', GroupSchema, 'view')
-    config.add_content_schema('Group', GroupSchema, 'edit')
+    config.add_content_schema('Group', GroupSchema, ('add', 'view', 'edit'))
     config.add_content_schema('File', AddFileSchema, 'add')
     config.add_content_schema('File', EditFileSchema, 'edit')
     config.add_content_schema('Image', AddFileSchema, 'add') #Specific schema?
