@@ -246,11 +246,6 @@ def get_creator(context, default):
     creator = getattr(context, 'creator', None)
     return creator and tuple(creator) or default
 
-def get_userid(context, default):
-    if IUser.providedBy(context):
-        return context.userid
-    return default
-
 def create_catalog(root):
     root.catalog = Catalog()
     root.document_map = DocumentMap()
@@ -286,6 +281,8 @@ _default_searchable_text_indexes = (
     'title',
     'description',
     'userid',
+    'first_name',
+    'last_name',
 )
 
 def check_catalog_on_startup(event = None, env = None):
@@ -362,7 +359,10 @@ def includeme(config):
             'wf_state': CatalogFieldIndex(get_wf_state),
             'workflow': CatalogFieldIndex(get_workflow),
             'creator': CatalogFieldIndex(get_creator),
-            'userid': CatalogFieldIndex(get_userid),
+            'userid': CatalogFieldIndex('userid'),
+            'email': CatalogFieldIndex('email'),
+            'first_name': CatalogFieldIndex('first_name'),
+            'last_name': CatalogFieldIndex('last_name'),
         }
 
     config.add_catalog_indexes(__name__, default_indexes)
