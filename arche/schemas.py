@@ -72,12 +72,9 @@ def current_userid(node, kw):
     return userid and userid or colander.null
 
 @colander.deferred
-def current_users_uid(node, kw):
+def current_userid_as_tuple(node, kw):
     userid = kw['request'].authenticated_userid
-    if userid:
-        user = kw['view'].root['users'].get(userid)
-        if user:
-            return (user.uid,)
+    return userid and (userid,) or colander.null
 
 @colander.deferred
 def userid_hinder_widget(node, kw):
@@ -102,6 +99,13 @@ def tagging_widget(node, kw):
     return TaggingWidget(tags = tags)
 
 @colander.deferred
+def tagging_userids_widget(node, kw):
+    view = kw['view']
+    userids = tuple(view.root['users'].keys())
+    return TaggingWidget(tags = userids, placeholder = _("Type to search for UserIDs"))
+    
+
+@colander.deferred
 def default_now(node, kw):
     request = kw['request']
     return request.dt_handler.utcnow()
@@ -123,11 +127,11 @@ class DCMetadataSchema(colander.Schema):
                                widget = tagging_widget)
     creator = colander.SchemaNode(colander.List(),
                                   tab = 'metadata',
-                                  widget = ReferenceWidget(query_params = {'type_name': 'User'}),
+                                  widget = tagging_userids_widget,
                                   missing = (),
-                                  default = current_users_uid)
+                                  default = current_userid_as_tuple)
     contributor = colander.SchemaNode(colander.List(),
-                                      widget = ReferenceWidget(query_params = {'type_name': 'User'}),
+                                      widget = tagging_userids_widget,
                                       tab = 'metadata',
                                       missing = ())
     created = colander.SchemaNode(DateTime(),
