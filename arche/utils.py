@@ -11,6 +11,7 @@ from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
 from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
+from pyramid.traversal import find_root
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 from six import string_types
@@ -316,6 +317,9 @@ image_mime_to_title = {'image/jpeg': _("JPEG"),
 #FIXME: Add more codecs that work for web!
 
 
+def _root(request):
+    return find_root(request.context)
+
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)
     config.add_directive('add_content_factory', add_content_factory)
@@ -325,6 +329,8 @@ def includeme(config):
     config.add_directive('add_image_scale', add_image_scale)
     config.add_request_method(thumb_url, name = 'thumb_url')
     config.add_request_method(get_dt_handler, name = 'dt_handler', reify = True)
+    config.add_request_method(_root, name = 'root', reify = True)
+    
     #Init default scales
     for (name, scale) in image_scales.items():
         config.add_image_scale(name, *scale)

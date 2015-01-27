@@ -58,9 +58,9 @@ class BaseView(object):
         view_event = ViewInitializedEvent(self)
         objectEventNotify(view_event)
 
-    @reify
+    @property
     def root(self):
-        return find_root(self.context)
+        return self.request.root
 
     @reify
     def flash_messages(self):
