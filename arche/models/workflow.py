@@ -16,12 +16,7 @@ from arche.events import WorkflowAfterTransition
 from arche.events import WorkflowBeforeTransition
 from arche.interfaces import IContextACL
 from arche.interfaces import IWorkflow
-from arche.models.acl import ACLEntry
-
-
-
-class WorkflowException(Exception):
-    pass
+from arche.exceptions import WorkflowException
 
 
 @implementer(IWorkflow)

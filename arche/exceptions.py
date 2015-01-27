@@ -1,5 +1,10 @@
 
 
+class WorkflowException(Exception):
+    """ Workflow errors.
+    """
+
+
 class CatalogError(Exception):
     """ Something went wrong when registering catalog indexes.
         Usually solved with updating the catalog from the script that should be in bin.
