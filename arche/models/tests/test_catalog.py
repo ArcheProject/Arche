@@ -260,6 +260,18 @@ class MetadataTests(TestCase):
             return 'Hello world'
         self.assertRaises(BrokenMethodImplementation, self.config.create_metadata_field, _callable, 'dummy')
 
+    def test_integration_create_metadata_field_attribute(self):
+        self.config.include('arche.models.catalog')
+        self.config.create_metadata_field('title', 'dummy')
+        from arche.api import Root
+        root = Root(title = 'Hello world')
+        cataloger = ICataloger(root)
+        cataloger.index_object()
+        self.assertEqual(len(root.document_map.docid_to_metadata), 1)
+        for v in root.document_map.docid_to_metadata.values():
+            result = dict(v)
+        self.assertEqual(result, {'dummy': 'Hello world'})
+
 
 class CheckCatalogOnStartupTests(TestCase):
      

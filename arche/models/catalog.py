@@ -72,7 +72,6 @@ class Cataloger(object):
         if docid is not None:
             self.catalog.unindex_doc(docid)
             #Metadata will be removed by running remove_docid
-            #self.document_map.remove_metadata(docid)
             self.document_map.remove_docid(docid)
 
     def update_metadata(self, docid):
@@ -136,12 +135,13 @@ class Metadata(object):
         config.add_metadata_field(MyUppercaseTitle)
     """
     name = ''
+    attr = ''
 
     def __init__(self, context):
         self.context = context
 
     def __call__(self, default = None):
-        raise NotImplementedError() #pragma : no coverage
+        return getattr(self.context, self.attr, default)
 
 
 def add_metadata_field(config, metadata_cls):
@@ -152,22 +152,30 @@ def add_metadata_field(config, metadata_cls):
             logger.warn("Metadata adapter %r already registered with name %r. Registering %r might override it." % (ar.factory, ar.name, metadata_cls))
     config.registry.registerAdapter(metadata_cls, name = metadata_cls.name)
 
-def create_metadata_field(config, _callable, name, adapts = IIndexedContent):
+def create_metadata_field(config, callable_or_attr, name, adapts = IIndexedContent):
     """ Helper method to dynamically create metadata adapters.
         Callables must be methods that can replace the __call__ attribute of the
-        Metadata class.
+        Metadata class, or state an attribute to fetch.
     
-        Example to add 'uid' to metadata:
+        Example to add 'uid' to metadata with callable:
         
         def get_uid(self, default = None):
             return getattr(self.context, 'uid', default)
         
         config.create_metadata_field(get_uid, 'uid')
+        
+        Example with an attribute:
+        
+        config.create_metadata_field('uid', 'uid')
     """
     @adapter(adapts)
     class _DynMetadata(Metadata):
         pass
-    _DynMetadata.__call__ = _callable
+
+    if isinstance(callable_or_attr, string_types):
+        _DynMetadata.attr = callable_or_attr
+    else:
+        _DynMetadata.__call__ = callable_or_attr
     _DynMetadata.name = name
     config.add_metadata_field(_DynMetadata)
 
