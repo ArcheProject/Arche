@@ -27,7 +27,7 @@
             </tal:iterate>
         </ol>
 
-        <tal:actionbar replace="structure view.render_actionbar(context)|''" />
+        <tal:actionbar replace="structure view.render_actionbar(context)" />
 
         <div tal:replace="structure view.flash_messages.render()">Flash messages, if any</div>
 

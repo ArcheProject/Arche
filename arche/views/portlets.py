@@ -33,12 +33,18 @@ class ManagePortlets(BaseView):
         schema = AddPortlet()
         add_url = self.request.resource_url(self.context, 'add_portlet', query = {'slot': name})
         return deform.Form(schema, buttons = (button_add,), action = add_url)
-    
-    def __call__(self):
+
+    @property
+    def forms(self):
         forms = {}
         for (name, slotinfo) in self.slots.items():
             forms[name] = self.get_form(name, slotinfo)
-        return {'slots': self.slots, 'forms': forms,
+        return forms
+
+    def __call__(self):
+        custom_slots = set(self.slots.keys()) - set(['right', 'left', 'top', 'bottom'])
+        return {'slots': self.slots,
+                'custom_slots': custom_slots,
                 'portlet_manager': get_portlet_manager(self.context, self.request.registry)}
 
 

@@ -160,7 +160,7 @@ class PortletManager(IterableUserDict):
 def get_portlet_slots(registry = None):
     if registry is None:
         registry = get_current_registry()
-    return registry._portlet_slots
+    return registry.portlet_slots
 
 def get_portlet_manager(context, registry = None):
     if registry is None:
@@ -176,16 +176,18 @@ def add_portlet(config, portlet):
     verifyClass(IPortletType, portlet)
     config.registry.registerAdapter(portlet, name = portlet.name)
 
+def add_portlet_slot(config, name, title = "", layout = ""):
+    config.registry.portlet_slots[name] = PortletSlotInfo(name, title = title, layout = layout)
+
 def includeme(config):
     config.add_content_factory(Portlet)
     config.add_content_factory(PortletFolder)
     config.add_directive('add_portlet', add_portlet)
+    config.add_directive('add_portlet_slot', add_portlet_slot)
+    config.registry.portlet_slots = {}
     config.registry.registerAdapter(PortletManager)
-    left_slot = PortletSlotInfo('left', title = _(u"Left"), layout = 'vertical')
-    right_slot = PortletSlotInfo('right', title = _(u"Right"), layout = 'vertical')
-    top_slot = PortletSlotInfo('top', title = _(u"Top"), layout = 'horizontal')
-    bottom_slot = PortletSlotInfo('bottom', title = _(u"Bottom"), layout = 'horizontal')
-    config.registry._portlet_slots = {'left': left_slot,
-                                      'right': right_slot,
-                                      'top': top_slot,
-                                      'bottom': bottom_slot}
+    config.add_portlet_slot('left', title = _("Left"), layout = 'vertical')
+    config.add_portlet_slot('right', title = _("Right"), layout = 'vertical')
+    config.add_portlet_slot('top', title = _("Top"), layout = 'horizontal')
+    config.add_portlet_slot('bottom', title = _("Bottom"), layout = 'horizontal')
+    
