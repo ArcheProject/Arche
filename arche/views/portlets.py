@@ -72,7 +72,7 @@ class EditPortlet(BaseForm):
         if factory:
             self.schema = self.portlet.schema_factory()
             return super(EditPortlet, self).__call__()
-        #XXXX: NOthing to edit message?
+        self.flash_messages.add(_("There are no settings for this portlet type"), type = 'warning')
         return HTTPFound(location = self.request.resource_url(self.context, 'manage_portlets'))
 
     def appstruct(self):
@@ -91,11 +91,16 @@ class EditPortlet(BaseForm):
 
     @property
     def title(self):
-        return _(u"Edit portlet")
+        return _(u"Edit ${portlet_title}",
+                 mapping = {'portlet_title': self.request.localizer.translate(self.portlet.title)})
 
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
         self.portlet.settings = appstruct
+        return HTTPFound(location = self.request.resource_url(self.context, 'manage_portlets'))
+
+    def cancel_success(self, *args):
+        super(EditPortlet, self).cancel()
         return HTTPFound(location = self.request.resource_url(self.context, 'manage_portlets'))
 
 

@@ -11,7 +11,7 @@
 
     <ul class="list-group">
         <li class="list-group-item" tal:repeat="portlet portlets.values()">
-            <a href="${request.resource_url(context, 'edit_portlet', query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
+            <a tal:omit-tag="portlet.schema_factory is None" href="${request.resource_url(context, 'edit_portlet', query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
                 ${portlet.title}
             </a>
             <span class="label label-default">${portlet.portlet_type}</span>
