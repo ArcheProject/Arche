@@ -3,6 +3,7 @@ from pyramid.view import view_defaults
 from repoze.catalog.query import Any
 from repoze.catalog.query import Contains
 from repoze.catalog.query import Eq
+from six import string_types
 from zope.index.text.parsetree import ParseError
 
 from arche import _
@@ -15,16 +16,22 @@ class SearchView(BaseView):
 
     def _mk_query(self):
         self.docids = ()
+        query_obj = Eq('search_visible', True)
         query = self.request.GET.get('query', None)
-        if not query:
-            return
-        if self.request.GET.get('glob', False):
-            if '*' not in query:
-                query = "%s*" % query
-        query_obj = Contains('searchable_text', query) & Eq('search_visible', True)
-        type_name = self.request.GET.getall('type_name')
-        if type_name:
-            query_obj &= Any('type_name', type_name)
+        if query:
+            if self.request.GET.get('glob', False):
+                if '*' not in query:
+                    query = "%s*" % query
+            query_obj &= Contains('searchable_text', query)
+
+        #Check other get-values:
+        #FIXME: This should be smarter, and should perhaps be able to handle glob, other types of queries etc.
+        for (k, v) in self.request.GET.mixed().items():
+            if v and k in self.root.catalog:
+                if isinstance(v, string_types):
+                    query_obj &= Eq(k, v)
+                else:
+                    query_obj &= Any(k, v)
         try:
             self.docids = self.root.catalog.query(query_obj)[1]
         except ParseError:
