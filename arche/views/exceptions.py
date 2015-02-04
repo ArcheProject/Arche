@@ -13,6 +13,8 @@ class ExceptionView(BaseView):
 
     def __init__(self, context, request):
         """ Exception - context is the exception here. """
+        if request.is_xhr:
+            raise context
         super(ExceptionView, self).__init__(context, request)
         self.exc = context
         self.context = getattr(request, 'context', None)
