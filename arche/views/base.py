@@ -214,6 +214,7 @@ class BaseForm(BaseView, FormView):
     schema_name = ""
     type_name = ""
     title = None
+    formid = 'deform'
 
     button_delete = deform.Button('delete', title = _("Delete"), css_class = 'btn btn-danger')
     button_cancel = deform.Button('cancel', title = _("Cancel"), css_class = 'btn btn-default')
@@ -262,7 +263,8 @@ class BaseForm(BaseView, FormView):
         return {'action': self.request.url,
                 'heading': self.get_schema_heading(),
                 'tab_fields': self._tab_fields,
-                'tab_titles': self.tab_titles}
+                'tab_titles': self.tab_titles,
+                'formid': self.formid}
 
     def get_schema_heading(self):
         if getattr(self, 'title', None) is not None:
