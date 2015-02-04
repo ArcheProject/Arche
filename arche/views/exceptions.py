@@ -16,6 +16,8 @@ class ExceptionView(BaseView):
         super(ExceptionView, self).__init__(context, request)
         self.exc = context
         self.context = getattr(request, 'context', None)
+        #Make sure the response status code is some form of exception
+        self.request.response.status = getattr(self.exc, 'code', 500)
 
     def __call__(self):
         response = {}
