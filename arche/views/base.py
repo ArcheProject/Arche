@@ -91,8 +91,8 @@ class BaseView(object):
             results = self.resolve_docids(results, perm = perm)
         return results
 
-    def catalog_query(self, query, resolve = False, perm = security.PERM_VIEW):
-        results = self.root.catalog.query(query)[1]
+    def catalog_query(self, query, resolve = False, perm = security.PERM_VIEW, **kwargs):
+        results = self.root.catalog.query(query, **kwargs)[1]
         if resolve:
             results = self.resolve_docids(results, perm = perm)
         return results
