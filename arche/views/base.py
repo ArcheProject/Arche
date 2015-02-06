@@ -318,7 +318,8 @@ class DefaultAddForm(BaseForm):
         self.flash_messages.add(self.default_success, type="success")
         factory = self.get_content_factory(self.type_name)
         obj = factory(**appstruct)
-        name = generate_slug(self.context, appstruct['title'])
+        naming_attr = getattr(obj, 'naming_attr', 'title')
+        name = generate_slug(self.context, getattr(obj, naming_attr, ''))
         self.context[name] = obj
         return HTTPFound(location = self.request.resource_url(obj))
 
@@ -456,7 +457,7 @@ def includeme(config):
                     permission = security.PERM_EDIT,
                     renderer = 'arche:templates/form.pt')
     config.add_view(DynamicView,
-                    context = 'arche.interfaces.IBare', #So at least something exist...
+                    context = 'arche.interfaces.IBase', #So at least something exist...
                     permission = security.PERM_VIEW,
                     renderer = 'arche:templates/form.pt')
     config.add_view(delegate_content_view,

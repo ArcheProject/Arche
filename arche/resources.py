@@ -105,6 +105,7 @@ class BaseMixin(object):
     listing_visible = True
     search_visible = False
     show_byline = False
+    naming_attr = 'title'
 
     def __init__(self, **kwargs):
         #IContent should be the same iface registered by the roles adapter
