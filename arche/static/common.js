@@ -2,7 +2,7 @@
 arche = {};
 
 function do_request(url, options) {
-    var settings = {url: url, async: false};
+    var settings = {url: url, async: true};
     if (typeof(options) !== 'undefined') $.extend(settings, options);
     var request = $.ajax(settings);
     request.fail(function(jqXHR) {
