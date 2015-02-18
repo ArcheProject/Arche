@@ -91,7 +91,7 @@ class ACLRegistry(IterableUserDict):
         try:
             return acl()
         except TypeError: #pragma: no coverage
-            #Only when something is badly configured. Should only happen during testig
+            #Only when something is badly configured. Should only happen during testing
             return (DENY_ALL,)
 
     def get_roles(self, inheritable = None, assignable = None):

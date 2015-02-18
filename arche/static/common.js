@@ -36,3 +36,24 @@ function handle_form_errors(response) {
 }
 arche.handle_form_errors = handle_form_errors;
 
+/* Handle modal content
+ * - data-modal-target must be set on selector_id
+ * */
+
+function create_modal(selector_id) {
+  $('.modal').remove();
+  var btn = $(selector_id);
+  var url = btn.data('modal-target');
+  console.log(url);
+  var request = arche.do_request(url);
+  request.done(function(response) {
+    console.log('Got response');
+    $('body').prepend(response);
+    $(selector_id + '-modal').modal();
+    //Is this valid on all occations?
+    deform.processCallbacks();
+    deform.focusFirstInput();
+  });
+}
+
+arche.create_modal = create_modal;

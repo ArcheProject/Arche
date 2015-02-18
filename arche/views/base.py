@@ -10,8 +10,8 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
+from pyramid.response import Response
 from pyramid.traversal import find_resource
-from pyramid.traversal import find_root
 from pyramid.traversal import lineage
 from pyramid.view import render_view_to_response
 from pyramid_deform import FormView
@@ -264,7 +264,8 @@ class BaseForm(BaseView, FormView):
                 'heading': self.get_schema_heading(),
                 'tab_fields': self._tab_fields,
                 'tab_titles': self.tab_titles,
-                'formid': self.formid}
+                'formid': self.formid,
+                'request': self.request}
 
     def get_schema_heading(self):
         if getattr(self, 'title', None) is not None:
@@ -285,8 +286,11 @@ class BaseForm(BaseView, FormView):
         return appstruct
 
     def cancel(self, *args):
-        self.flash_messages.add(self.default_cancel)
-        return HTTPFound(location = self.request.resource_url(self.context))
+        if self.request.is_xhr:
+            return Response(render("arche:templates/deform/destroy_modal.pt", {}, request = self.request))
+        else:
+            self.flash_messages.add(self.default_cancel)
+            return HTTPFound(location = self.request.resource_url(self.context))
     cancel_success = cancel_failure = cancel
 
 
