@@ -26,12 +26,28 @@ class ISchemaCreatedEvent(IObjectEvent):
 
 #Persistent objects
 class IBase(Interface):
-    pass
+    type_name = Attribute("String: Internal content type name. Usually same as class.")
+    type_title = Attribute("Strig: Readable type name, displayed to users.")
+    type_description = Attribute("String: Readable description of this content type.")
+    uid = Attribute("String: Globally unique id.")
+    created = Attribute("DateTime: When the object was created. Always saved in UTC timezone.")
+    nav_visible = Attribute("Bool: Should it be visible in navigation-like structures?")
+    listing_visible = Attribute("Bool: Should it be visible in lising-like structures?")
+    search_visible = Attribute("Bool: Included in search results?")
+    show_byline = Attribute("Bool: Display a byline for this content type, if applicable.")
+    naming_attr = Attribute("String: Attribute used to figure out a name (for the URL) for this content. "
+                            "'title' is a good choice for public things and 'uid' for internal "
+                            "things that shouldn't be accessible directly.")
+
+    def update(event = True, **kwargs):
+        """ Update values
+            will also make sure that any keys exist as attributes on this object.
+            If event is true an IObjectUpdatedEvent will be sent.
+            It's a good idea not to send this if the object hasn't been attached to the
+            resource tree yet.
+        """
 
 class ILocalRoles(Interface):
-    pass
-
-class IBare(Interface):
     pass
 
 class IContent(Interface):
