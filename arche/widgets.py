@@ -29,8 +29,8 @@ class TaggingWidget(Select2Widget):
         tags
             Predefined tags that will show up as suggestions
     """
-    template = 'widgets/select2_tags'
-    readonly_template = 'widgets/select2_tags' #XXX
+    template = 'select2_tags'
+    readonly_template = 'select2_tags' #XXX
     null_value = ''
     placeholder = _("Tags")
     minimumInputLength = 2
@@ -65,8 +65,8 @@ class ReferenceWidget(Select2Widget):
             glob: 1 is always a good idea, since it enables search with glob
             type_name: Limit to these content types only. Either a list or a single name as a string.
     """
-    template = 'widgets/select2_reference'
-    readonly_template = 'widgets/select2_reference' #XXX
+    template = 'select2_reference'
+    readonly_template = 'select2_reference' #XXX
     null_value = ''
     placeholder = _("Type something to search.")
     minimumInputLength = 2
@@ -166,8 +166,8 @@ class FileAttachmentWidget(Widget):
     """ Show if a file is uploaded, give the option to delete or replace it.
     """
     acceptedMimetypes = None
-    template = 'widgets/file_upload'
-    readonly_template = 'widgets/file_upload'
+    template = 'file_upload'
+    readonly_template = 'readonly/file_upload'
 
     @property
     def tmpstore(self):

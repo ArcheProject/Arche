@@ -89,7 +89,7 @@ def populators_choice(node, kw):
         description = _("Don't install or change anything")
     values = [('', _NoThanks())]
     values.extend([(x.name, x.factory) for x in request.registry.registeredAdapters() if x.provided == IPopulator])
-    return deform.widget.RadioChoiceWidget(values = values, template = "widgets/object_radio_choice")
+    return deform.widget.RadioChoiceWidget(values = values, template = "object_radio_choice")
 
 @colander.deferred
 def tagging_widget(node, kw):
