@@ -4,9 +4,10 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
 <script type="text/javascript">
-$('.modal').hide();
-$('body').removeClass('modal-open');
-$('.modal-backdrop').remove();
-$('.modal').remove();
+  $('.modal').hide();
+  $('body').removeClass('modal-open');
+  $('.modal-backdrop').remove();
+  $('.modal').remove();
+  arche.load_flash_messages(); //If any from modal interaction
 </script>
 </tal:main>

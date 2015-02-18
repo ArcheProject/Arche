@@ -44,6 +44,9 @@
         event.preventDefault();
         var request = arche.do_request("${request.resource_url(context, 'permissions.json')}", {data: $(this).serialize(), method: 'post'});
         request.done(update_table_from_response);
+        request.done(function() {
+          arche.create_flash_message('<tal:ts i18n:translate="">Saved</tal:ts>');
+        });
       });
 
       $('#permissions-add').on('submit', function(event) {
@@ -54,7 +57,7 @@
         request.done(function(response) {
           if (!('errors' in response)) {
             event.target.reset();
-            //FIXME: Add some sort of response to the user
+            arche.create_flash_message('<tal:ts i18n:translate="">Added</tal:ts>');
           }
         });
       });

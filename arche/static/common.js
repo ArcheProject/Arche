@@ -55,5 +55,30 @@ function create_modal(selector_id) {
     deform.focusFirstInput();
   });
 }
-
 arche.create_modal = create_modal;
+
+
+/* Create and pop flash message
+ * parmas are the same as the flash_messages view
+ */
+
+function create_flash_message(message, params) {
+  if (typeof(params) === 'undefined') var params = {};
+  params['message'] = message;
+  var request = arche.do_request('/__flash_messages__', {type: "POST", data: params})
+  request.done(arche.load_flash_messages);
+};
+arche.create_flash_message = create_flash_message;
+
+function load_flash_messages(response) {
+  if (typeof(response) === 'undefined') {
+    var request = arche.do_request('/__flash_messages__')
+    request.done(load_flash_messages);
+  } else {
+    console.log(response);
+    var target = $('#messages');
+    if (!target.length > 0) target = $('body > .container:first'); //Fallback
+    target.prepend(response);
+  };
+};
+arche.load_flash_messages = load_flash_messages;
