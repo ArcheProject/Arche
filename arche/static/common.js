@@ -44,10 +44,8 @@ function create_modal(selector_id) {
   $('.modal').remove();
   var btn = $(selector_id);
   var url = btn.data('modal-target');
-  console.log(url);
   var request = arche.do_request(url);
   request.done(function(response) {
-    console.log('Got response');
     $('body').prepend(response);
     $(selector_id + '-modal').modal();
     //Is this valid on all occations?
@@ -75,7 +73,6 @@ function load_flash_messages(response) {
     var request = arche.do_request('/__flash_messages__')
     request.done(load_flash_messages);
   } else {
-    console.log(response);
     var target = $('#messages');
     if (!target.length > 0) target = $('body > .container:first'); //Fallback
     target.prepend(response);
