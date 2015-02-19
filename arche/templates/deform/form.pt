@@ -36,6 +36,9 @@
 
       <div class="panel panel-primary" tal:omit-tag="modal">
         <div class="${modal and 'modal-header' or 'panel-heading'}" tal:condition="field.heading|None">
+          <button tal:condition="modal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
           <h3 class="${modal and 'modal-title' or 'panel-title'}">${field.heading}</h3>
         </div>
         <!-- Nav tabs -->
