@@ -55,6 +55,13 @@ function create_modal(selector_id) {
 }
 arche.create_modal = create_modal;
 
+function destroy_modal() {
+  $('body').removeClass('modal-open');
+  $('.modal-backdrop').remove();
+  $('.modal').remove();
+}
+arche.destroy_modal = destroy_modal;
+
 
 /* Create and pop flash message
  * parmas are the same as the flash_messages view
