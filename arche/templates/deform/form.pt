@@ -42,8 +42,8 @@
           <h3 class="${modal and 'modal-title' or 'panel-title'}">${field.heading}</h3>
         </div>
         <!-- Nav tabs -->
-        <div class="${modal and 'modal-footer' or 'panel-footer'}">
-            <ul class="nav nav-pills" tal:condition="len(tabbed_fields) > 1">
+        <div tal:condition="len(tabbed_fields) > 1" class="${modal and 'modal-footer' or 'panel-footer'}">
+            <ul class="nav nav-pills">
                 <tal:iterate repeat="name tabbed_fields">
                 <li class="${repeat['name'].start and 'active' or None}">
                     <a href="#${name}_tab" data-toggle="tab">${tab_titles.get(name, name.title())}</a>
