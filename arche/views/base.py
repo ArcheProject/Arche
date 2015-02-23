@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import warnings
+from inspect import isclass
 
 from BTrees.OOBTree import OOBTree
 from betahaus.viewcomponent import render_view_group
@@ -223,22 +224,35 @@ class BaseForm(BaseView, FormView):
 
     buttons = (button_save, button_cancel,)
 
-    def __call__(self):
-        #Only change schema if nothing exist already.
-        #Subclasses may have a custom schema constructed
-        if not getattr(self, 'schema', False):
+    def __init__(self, context, request):
+        super(BaseForm, self).__init__(context, request)
+        schema = self.get_schema()
+        if not schema:
             schema_factory = self.get_schema_factory(self.type_name, self.schema_name)
             if not schema_factory:
                 err = "Schema type '%s' not registered for content type '%s'." %\
                       (self.schema_name, self.type_name)
                 raise HTTPForbidden(err)
-            self.schema = schema_factory()
-            event = SchemaCreatedEvent(self.schema)
-            objectEventNotify(event)
-        result = super(BaseForm, self).__call__()
-        return result
+            schema = schema_factory()
+        if not schema:
+            err = "No schema found for this form view. %r" % self
+            raise HTTPForbidden(err)
+        if isclass(schema):
+            schema = schema()
+        self.schema = schema
+        event = SchemaCreatedEvent(self.schema)
+        objectEventNotify(event)
+
+    def get_schema(self):
+        """ Return either an instantiated schema or a schema class.
+            Use either this method or get_schema_factory.
+        """
+        pass
 
     def get_schema_factory(self, type_name, schema_name):
+        """ Return a schema registered with the add_content_schema configuratior.
+            Use either this or get_schema to create a form.
+        """
         try:
             return get_content_schemas(self.request.registry)[type_name][schema_name]
         except KeyError:

@@ -1,12 +1,12 @@
-from pyramid.httpexceptions import HTTPFound
-from pyramid.decorator import reify
 from BTrees.OOBTree import OOBTree
 from colander import null
+from pyramid.decorator import reify
+from pyramid.httpexceptions import HTTPForbidden
+from pyramid.httpexceptions import HTTPFound
 
 from arche.utils import get_content_views
 from arche.views.base import BaseForm
 from arche import security
-from arche import _
 
 
 class ViewSettingsView(BaseForm):
@@ -23,12 +23,11 @@ class ViewSettingsView(BaseForm):
     def appstruct(self):
         return dict(getattr(self.context, '__view_settings__', {}))
 
-    def __call__(self):
+    def get_schema(self):
         if self.view.settings_schema is not None:
-            self.schema = self.view.settings_schema()
-            return super(BaseForm, self).__call__()
-        self.flash_messages.add(_("This view has no settings"), type = 'danger')
-        return HTTPFound(location = self.request.resource_url(self.context))
+            return self.view.settings_schema()
+        msg = "This view has no settings"
+        raise HTTPForbidden(msg)
 
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
