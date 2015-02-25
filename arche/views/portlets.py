@@ -1,16 +1,18 @@
-import deform
-import colander
-from pyramid.httpexceptions import HTTPFound
 from pyramid.decorator import reify
+from pyramid.httpexceptions import HTTPForbidden
+from pyramid.httpexceptions import HTTPFound
+import colander
+import deform
 
-from arche.views.base import BaseForm, BaseView
-from arche.interfaces import IContent
-from arche.portlets import (get_portlet_slots,
-                            get_portlet_manager,
-                            get_available_portlets)
-
-from arche import security
 from arche import _
+from arche import security
+from arche.interfaces import IContent
+from arche.interfaces import IFlashMessages
+from arche.portlets import get_available_portlets
+from arche.portlets import get_portlet_manager
+from arche.portlets import get_portlet_slots
+from arche.views.base import BaseForm
+from arche.views.base import BaseView
 
 
 button_add = deform.Button('add', title = _(u"Add"), css_class = 'btn btn-primary')
@@ -53,7 +55,13 @@ def add_portlet(context, request):
     portlet_type = request.POST['portlet_type']
     manager = get_portlet_manager(context)
     portlet = manager.add(slot, portlet_type)
-    url = request.resource_url(context, 'edit_portlet', query = {'slot': slot, 'portlet': portlet.uid})
+    settings_schema = getattr(portlet, 'schema_factory', None)
+    if settings_schema:
+        url = request.resource_url(context, 'edit_portlet', query = {'slot': slot, 'portlet': portlet.uid})
+    else:
+        fm = IFlashMessages(request)
+        fm.add(_("Added"))
+        url = request.resource_url(context, 'manage_portlets')
     return HTTPFound(location = url)
     
 def delete_portlet(context, request):
@@ -66,17 +74,6 @@ def delete_portlet(context, request):
 
 
 class EditPortlet(BaseForm):
-
-    def __call__(self):
-        factory = getattr(self.portlet, 'schema_factory', None)
-        if factory:
-            self.schema = self.portlet.schema_factory()
-            return super(EditPortlet, self).__call__()
-        self.flash_messages.add(_("There are no settings for this portlet type"), type = 'warning')
-        return HTTPFound(location = self.request.resource_url(self.context, 'manage_portlets'))
-
-    def appstruct(self):
-        return dict(self.portlet.settings)
 
     @property
     def portlet(self):
@@ -93,6 +90,17 @@ class EditPortlet(BaseForm):
     def title(self):
         return _(u"Edit ${portlet_title}",
                  mapping = {'portlet_title': self.request.localizer.translate(self.portlet.title)})
+
+    def get_schema(self):
+        factory = getattr(self.portlet, 'schema_factory', None)
+        if factory:
+            return self.portlet.schema_factory
+        else:
+            raise HTTPForbidden(_("Nothing to edit for this portlet"))
+
+    def appstruct(self):
+        return dict(self.portlet.settings)
+
 
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")

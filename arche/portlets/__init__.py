@@ -106,6 +106,7 @@ class PortletFolder(Folder):
 
     def __init__(self, slot):
         self.slot = slot
+        self.order = () #Initializing order makes the folder keep track of it.
         super(PortletFolder, self).__init__()
 
 
