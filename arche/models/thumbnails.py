@@ -96,7 +96,39 @@ def _check_supported_thumbnail_mimetypes():
             results.update(v)
     return results
 
+
+def thumb_url(request, context, scale, key = 'image'):
+    scales = get_image_scales(request.registry)
+    if scale in scales:
+        if IThumbnailedContent.providedBy(context):
+            return request.resource_url(context, 'thumbnail', key, scale)
+
+def thumb_tag(request, context, scale_name, default = u"", extra_cls = '', direction = "thumb", key = "image", **kw):
+    #FIXME: Default?
+    url = request.thumb_url(context, scale_name, key = key)
+    if not url:
+        return default
+    thumbnails = request.registry.queryAdapter(context, IThumbnails)
+    if thumbnails is None:
+        return default
+    thumb = thumbnails.get_thumb(scale_name, direction = direction, key = key)
+    if thumb:
+        data = {'src': url,
+                'width': thumb.width,
+                'height': thumb.height,
+                'class': 'thumb-%s img-responsive' % scale_name,
+                'alt': context.title,
+                }
+        if extra_cls:
+            data['class'] += " %s" % extra_cls
+        data.update(kw)
+        return u"<img %s />" % " ".join(['%s="%s"' % (k, v) for (k, v) in data.items()])
+    return default
+
+
 def includeme(config):
     config.add_subscriber(invalidate_thumbs_in_context, [IThumbnailedContent, IObjectUpdatedEvent])
     config.registry.registerAdapter(Thumbnails)
     config.registry.settings['supported_thumbnail_mimetypes'] = _check_supported_thumbnail_mimetypes()
+    config.add_request_method(thumb_url, name = 'thumb_url')
+    config.add_request_method(thumb_tag, name = 'thumb_tag')

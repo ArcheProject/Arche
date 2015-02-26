@@ -221,11 +221,6 @@ def get_image_scales(registry = None):
         registry = get_current_registry()
     return getattr(registry, '_image_scales', {})
 
-def thumb_url(request, context, scale, key = 'image'):
-    scales = get_image_scales(request.registry)
-    if scale in scales:
-        if IThumbnailedContent.providedBy(context):
-            return request.resource_url(context, 'thumbnail', key, scale)
 
 def find_all_db_objects(root):
     """ Return all objects stored in context.values(), and all subobjects.
@@ -331,7 +326,6 @@ def includeme(config):
     config.add_directive('add_content_schema', add_content_schema)
     config.add_directive('add_content_view', add_content_view)
     config.add_directive('add_image_scale', add_image_scale)
-    config.add_request_method(thumb_url, name = 'thumb_url')
     config.add_request_method(get_dt_handler, name = 'dt_handler', reify = True)
     config.add_request_method(_root, name = 'root', reify = True)
     

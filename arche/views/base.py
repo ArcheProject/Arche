@@ -169,27 +169,9 @@ class BaseView(object):
             num /= 1024.0
         return (u"%3.1f" % num, 'Tb')
 
-    def thumb_tag(self, context, scale_name, default = u"", extra_cls = '', direction = "thumb", key = "image", **kw):
-        #FIXME: Default?
-        url = self.request.thumb_url(context, scale_name, key = key)
-        if not url:
-            return default
-        thumbnails = self.request.registry.queryAdapter(context, IThumbnails)
-        if thumbnails is None:
-            return default
-        thumb = thumbnails.get_thumb(scale_name, direction = direction, key = key)
-        if thumb:
-            data = {'src': url,
-                    'width': thumb.width,
-                    'height': thumb.height,
-                    'class': 'thumb-%s img-responsive' % scale_name,
-                    'alt': context.title,
-                    }
-            if extra_cls:
-                data['class'] += " %s" % extra_cls
-            data.update(kw)
-            return u"<img %s />" % " ".join(['%s="%s"' % (k, v) for (k, v) in data.items()])
-        return default
+    def thumb_tag(self, context, scale_name, **kw):
+        #b/c
+        return self.request.thumb_tag(context, scale_name, **kw)
 
 
 @implementer(IContentView)
