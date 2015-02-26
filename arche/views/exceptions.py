@@ -24,16 +24,16 @@ class ExceptionView(BaseView):
     def __call__(self):
         response = {}
         response['debug'] = debug = self.request.registry.settings.get('arche.debug', False)
+        exception_list = traceback.format_stack()
+        exception_list = exception_list[:-2]
+        exception_list.extend(traceback.format_tb(sys.exc_info()[2]))
+        exception_list.extend(traceback.format_exception_only(sys.exc_info()[0], sys.exc_info()[1]))
+        exception_str = "Traceback (most recent call last):\n"
+        exception_str += "".join(exception_list)
         if debug:
-            exception_list = traceback.format_stack()
-            exception_list = exception_list[:-2]
-            exception_list.extend(traceback.format_tb(sys.exc_info()[2]))
-            exception_list.extend(traceback.format_exception_only(sys.exc_info()[0], sys.exc_info()[1]))
-            exception_str = "Traceback (most recent call last):\n"
-            exception_str += "".join(exception_list)
             response['exception_str'] = exception_str
         else:
-            logger.critical(self.exc)
+            logger.critical(exception_str)
         return response
 
 
