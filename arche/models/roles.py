@@ -23,12 +23,13 @@ class Role(UserString):
     description = ""
     inheritable = False
     assignable = False
+    includes = ()
 
     @property
     def principal(self):
         return self.data
 
-    def __init__(self, principal, title = None, description = "", inheritable = False, assignable = False):
+    def __init__(self, principal, title = None, description = "", inheritable = False, assignable = False, includes = ()):
         super(Role, self).__init__(principal)
         if title is None:
             title = principal
@@ -36,6 +37,10 @@ class Role(UserString):
         self.description = description
         self.inheritable = inheritable
         self.assignable = assignable
+        if includes:
+            if isinstance(includes, string_types):
+                includes = (includes,)
+            self.includes = includes
 
 
 @adapter(ILocalRoles)
@@ -68,7 +73,11 @@ class Roles(IterableUserDict):
             del self.data[key]
 
     def __getitem__(self, key):
-        return frozenset(self.data[key])
+        roles = set(self.data[key])
+        for role in self.data[key]:
+            if IRole.providedBy(role):
+                roles.update(role.includes)
+        return frozenset(roles)
 
     def set_from_appstruct(self, value):
         marker = object()
