@@ -3,9 +3,9 @@
   xmlns:metal="http://xml.zope.org/namespaces/metal"
   xmlns:tal="http://xml.zope.org/namespaces/tal"
   xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-  metal:use-macro="view.macro('arche:templates/base_view.pt')"
+  metal:use-macro="view.macro('arche:templates/master.pt')"
   i18n:domain="Arche">
-<div metal:fill-slot="main-content">
+<div metal:fill-slot="content">
   <script type="text/javascript">
     var tpl;
 
