@@ -73,11 +73,7 @@ class Roles(IterableUserDict):
             del self.data[key]
 
     def __getitem__(self, key):
-        roles = set(self.data[key])
-        for role in self.data[key]:
-            if IRole.providedBy(role):
-                roles.update(role.includes)
-        return frozenset(roles)
+        return frozenset(self.data[key])
 
     def set_from_appstruct(self, value):
         marker = object()

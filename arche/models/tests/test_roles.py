@@ -77,10 +77,3 @@ class RolesTests(TestCase):
         obj2['hello'] = 'three'
         obj.update(obj2)
         self.assertEqual(obj['hello'], frozenset(['three']))
-
-    def test_includes(self):
-        role_one = self._role('role:one')
-        role_two = self._role('role:two', includes = 'role:one')
-        obj = self._cut(_DummyContent())
-        obj['jane'] = role_two
-        self.assertEqual(obj['jane'], frozenset(['role:one', 'role:two']))
