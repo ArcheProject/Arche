@@ -23,13 +23,12 @@ class Role(UserString):
     description = ""
     inheritable = False
     assignable = False
-    includes = ()
 
     @property
     def principal(self):
         return self.data
 
-    def __init__(self, principal, title = None, description = "", inheritable = False, assignable = False, includes = ()):
+    def __init__(self, principal, title = None, description = "", inheritable = False, assignable = False):
         super(Role, self).__init__(principal)
         if title is None:
             title = principal
@@ -37,10 +36,6 @@ class Role(UserString):
         self.description = description
         self.inheritable = inheritable
         self.assignable = assignable
-        if includes:
-            if isinstance(includes, string_types):
-                includes = (includes,)
-            self.includes = includes
 
 
 @adapter(ILocalRoles)
