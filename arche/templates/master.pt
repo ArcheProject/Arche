@@ -4,8 +4,8 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:define-macro="main"
+      lang="${request.localizer.locale_name}"
       i18n:domain="Arche">
-<!-- FIXME: Set lang attr from pyramid locale -->
   <head>
     <tal:head replace="structure view.render_template('arche:templates/head.pt')" />
     <metal:head define-slot="head"></metal:head>
@@ -21,17 +21,34 @@
     <nav tal:replace="structure view.render_template('arche:templates/navigation.pt')" />
 
     <div class="container">
-        <ol class="breadcrumb">
-            <tal:iterate repeat="obj view.breadcrumbs()">
-                <li><a href="${request.resource_url(obj)}">${obj.title and obj.title or obj.__name__}</a></li>
-            </tal:iterate>
-        </ol>
+      <div class="row">
+        <div class="col-sm-6 col-md-8">
+          <ol class="breadcrumb">
+              <tal:iterate repeat="obj view.breadcrumbs()">
+                  <li><a href="${request.resource_url(obj)}">${obj.title and obj.title or obj.__name__}</a></li>
+              </tal:iterate>
+          </ol>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <form action="${request.resource_url(view.root,'search')}" id="search" role="search" method="get">
+            <div class="input-group">
+              <input name="query" type="text" class="form-control" placeholder="Search"
+                  i18n:attributes="placeholder" value="${request.GET.get('query', '')}"/>
+              <span class="input-group-btn">
+                <button type="submit" class="btn btn-default">
+                <span class="glyphicon glyphicon-search"></span>&nbsp;
+                </button>
+              </span>
+            </div>
+          </form>
+        </div>
+      </div>
 
-        <tal:actionbar replace="structure view.render_actionbar(context)" />
+      <tal:actionbar replace="structure view.render_actionbar(context)" />
 
-        <div id="messages" tal:content="structure view.flash_messages.render()">Flash messages, if any. This block should always exist.</div>
+      <div id="messages" tal:content="structure view.flash_messages.render()">Flash messages, if any. This block should always exist.</div>
 
-        <metal:content define-slot="content"></metal:content>
+      <metal:content define-slot="content"></metal:content>
 
     </div><!-- container -->
     <footer tal:replace="structure view.render_template('arche:templates/footer.pt')" />

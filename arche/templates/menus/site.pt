@@ -3,13 +3,14 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
-    <li class="dropdown site-menu">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <span i18n:translate="">Site</span>
-            <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-            <tal:actionbar_items replace="structure view.render_view_group('site_menu')" />
-        </ul>
-    </li>
+  <li class="dropdown site-menu">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+      <span class="glyphicon glyphicon-cog"></span>
+      <span class="hidden-sm" i18n:translate="">Site</span>
+      <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <tal:actionbar_items replace="structure view.render_view_group('site_menu')" />
+    </ul>
+  </li>
 </tal:main>

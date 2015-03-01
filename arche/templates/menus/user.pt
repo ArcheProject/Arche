@@ -7,7 +7,7 @@
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <tal:img replace="structure view.thumb_tag(view.root['users'][request.authenticated_userid], 'icon', extra_cls = 'pull-left')" />
             &nbsp;
-            <span>${request.authenticated_userid}</span>
+            <span class="hidden-sm">${request.authenticated_userid}</span>
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">

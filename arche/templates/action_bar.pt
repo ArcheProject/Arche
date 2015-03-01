@@ -3,7 +3,9 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
-<nav id="actionbar" class="navbar navbar-default navbar-static-top" role="navigation">
+<br/>
+<nav id="actionbar" class="navbar navbar-default">
+  <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#actionbar-collapsible">
         <span class="sr-only" i18n:translate="">Toggle navigation</span>
@@ -16,10 +18,7 @@
       <ul class="nav navbar-nav">
         <tal:actionbar_items replace="structure view.render_view_group('actionbar_main')" />
       </ul>
-
-    <ul class="nav navbar-nav navbar-right">
-        <tal:actionbar_items replace="structure view.render_view_group('actionbar_right')" />
-    </ul>
-    </div>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
 </nav>
 </tal:main>

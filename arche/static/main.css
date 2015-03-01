@@ -1,23 +1,9 @@
-form#search { width: 250px; }
-
 .dashed-border { border: #ccc 1px dashed; }
 
-.navbar-brand {
+
+.navbar-brand.arche-logo {
     padding-top: 5px;
     padding-bottom: 5px;
-}
-
-.glyphicon-font {
-  padding: 1px;
-  display: inline;
-  border: 1px solid black;
-  margin-right:0px;
-
-}
-
-.badge .glyphicon-font, .label .glyphicon-font {
-  border-color: white;
-  padding:0px;
 }
 
 .rotate-me {
@@ -31,17 +17,14 @@ form#search { width: 250px; }
   from {-webkit-transform: rotate(0deg);}
   to {-webkit-transform: rotate(359deg);}
 }
-
 @-moz-keyframes rotation {
   from {-moz-transform: rotate(0deg);}
   to {-moz-transform: rotate(359deg);}
 }
-
 @-o-keyframes rotation {
   from {-o-transform: rotate(0deg);}
   to {-o-transform: rotate(359deg);}
 }
-
 @keyframes rotation {
   from {transform: rotate(0deg);}
   to {transform: rotate(359deg);}

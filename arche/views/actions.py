@@ -86,7 +86,7 @@ def action_menu(context, request, va, **kw):
         if actions_output:
             return view.render_template('arche:templates/menus/actions.pt', actions_output = actions_output)
 
-@view_action('actionbar_right', 'user',
+@view_action('nav_right', 'user',
              title = _("User menu"),
              priority = 10)
 def user_menu(context, request, va, **kw):
@@ -94,13 +94,32 @@ def user_menu(context, request, va, **kw):
         view = kw['view']
         return view.render_template('arche:templates/menus/user.pt')
 
-@view_action('actionbar_right', 'site',
+@view_action('nav_right', 'site',
              title = _("Site menu"),
              permission = security.PERM_MANAGE_SYSTEM,#XXX: ?
              priority = 20)
 def site_menu(context, request, va, **kw):
     view = kw['view']
     return view.render_template('arche:templates/menus/site.pt')
+
+@view_action('nav_right', 'login',
+             title = _("Login"),
+             priority = 10)
+def login_link(context, request, va, **kw):
+    if request.authenticated_userid is None:
+        return """<li><a href="%s">%s</a></li>""" %\
+            (request.resource_url(request.root, 'login'),
+             request.localizer.translate(va.title))
+
+@view_action('nav_right', 'register',
+             title = _("Register"),
+             priority = 20)
+def register_link(context, request, va, **kw):
+    #FIXME: Check registration form.
+    if request.authenticated_userid is None:
+        return """<li><a href="%s">%s</a></li>""" %\
+            (request.resource_url(request.root, 'register'),
+             request.localizer.translate(va.title))
 
 
 #FIXME: Silly to have section headers with permissions. That's going to end badly :)
