@@ -28,4 +28,4 @@ def includeme(config):
     config.add_route('flash_messages', '/__flash_messages__')
     config.add_view(FlashMessagesView,
                     route_name = 'flash_messages',
-                    permission = security.Authenticated)
+                    permission = security.NO_PERMISSION_REQUIRED)

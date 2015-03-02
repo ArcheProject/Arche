@@ -3,16 +3,9 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:define-macro="main"
-      i18n:domain="Arche"
-      tal:define="modal request.params.get('modal', None)">
+      i18n:domain="Arche">
 <tal:comment condition="None"> Don't treat this as API-stable!</tal:comment>
-  <div tal:omit-tag="not modal" class="modal fade" id="${'%s-modal' % modal}" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
-    <div tal:omit-tag="not modal" class="modal-dialog">
-      <div tal:omit-tag="not modal" class="modal-content">
-        <tal:content metal:define-slot="content">
-          <tal:main-column metal:define-slot="main-content"></tal:main-column>
-        </tal:content>
-      </div>
-    </div>
-  </div>
+  <tal:content metal:define-slot="content">
+    <tal:main-column metal:define-slot="main-content"></tal:main-column>
+  </tal:content>
 </tal:main>

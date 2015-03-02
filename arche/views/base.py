@@ -206,6 +206,20 @@ class BaseForm(BaseView, FormView):
 
     buttons = (button_save, button_cancel,)
 
+    ajax_options = """
+        {success:
+          function (rText, sText, xhr, form) {
+            var loc = xhr.getResponseHeader('X-Relocate');
+            if (loc) {
+              document.location = loc;
+            };
+           }
+        }
+    """
+    @property
+    def use_ajax(self):
+        return self.request.is_xhr
+
     def __init__(self, context, request):
         super(BaseForm, self).__init__(context, request)
         schema = self.get_schema()
@@ -280,6 +294,15 @@ class BaseForm(BaseView, FormView):
                     val = colander.null
                 appstruct[field.name] = val
         return appstruct
+
+    def relocate_response(self, url, **kw):
+        if not url:
+            url = self.request.application_url
+        if self.request.is_xhr:
+            headers = list(kw.pop('headers', ()))
+            headers.append((str('X-Relocate'), str(url)))
+            return Response(headers = headers, **kw)
+        return HTTPFound(location = url, headers = headers)
 
     def cancel(self, *args):
         if self.request.is_xhr:

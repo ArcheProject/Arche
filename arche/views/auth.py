@@ -10,21 +10,30 @@ from arche.interfaces import IRegistrationTokens
 from arche.interfaces import IRoot
 from arche.utils import send_email
 from arche.views.base import BaseForm
+from pyramid.response import Response
 
 
 class LoginForm(BaseForm):
     type_name = u'Auth'
     schema_name = 'login'
     title = _(u"Login")
+    use_ajax = True
+    formid = 'login-form'
 
     @property
     def buttons(self):
         return (deform.Button('login', title = _(u"Login"), css_class = 'btn btn-primary'),
-                deform.Button('recover', title = _(u"Recover password"), css_class = 'btn btn-primary'),
+                deform.Button('recover', title = _(u"Recover password"), css_class = 'btn btn'),
                 self.button_cancel,)
 
     def recover_success(self, appstruct):
-        return HTTPFound(location = self.request.resource_url(self.root, 'recover_password'))
+        if self.request.is_xhr:
+            url = self.request.resource_url(self.root, 'recover_password', query = {'modal': 'recover_password'})
+            return Response("""<script type="text/javascript">
+                arche.create_modal('recover_password', '%s');
+                </script>""" % url)
+        url = self.request.resource_url(self.root, 'recover_password')
+        return HTTPFound(location = url)
     recover_failure = recover_success
 
     def login_success(self, appstruct):
@@ -37,8 +46,8 @@ class LoginForm(BaseForm):
         if user is None:
             raise HTTPForbidden("Something went wrong during login. No user profile found.")
         headers = remember(self.request, user.userid)
-        #FIXME We should probably implement came from here
-        return HTTPFound(location = self.request.application_url, headers = headers)
+        url  = appstruct.pop('came_from', None)
+        return self.relocate_response(url, headers = headers)
 
 
 class RegisterForm(BaseForm):
@@ -147,7 +156,8 @@ class RecoverPasswordForm(BaseForm):
                    [user.email],
                    html,
                    request = self.request)
-        return HTTPFound(location = self.request.resource_url(self.root))
+        return self.relocate_response(self.request.resource_url(self.root))
+
 
 def logout(context, request):
     headers = forget(request)

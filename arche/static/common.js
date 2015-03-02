@@ -37,20 +37,26 @@ function handle_form_errors(response) {
 arche.handle_form_errors = handle_form_errors;
 
 /* Handle modal content
- * - data-modal-target must be set on selector_id
+ * - data-modal-target must be set on selector_id, or simply specify an URL.
  * */
 
-function create_modal(selector_id) {
+function create_modal(selector_id, url) {
   $('.modal').remove();
-  var btn = $(selector_id);
-  var url = btn.data('modal-target');
+  var out = '<div class="modal fade" id="' + selector_id + '-modal" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">';
+  out += '<div class="modal-dialog"><div class="modal-content"></div></div></div>';
+  $('body').prepend(out);
+  var btn = $('#' + selector_id);
+  if (typeof(url) === 'undefined') {
+    var url = btn.data('modal-target');
+  }
   var request = arche.do_request(url);
   request.done(function(response) {
-    $('body').prepend(response);
-    $(selector_id + '-modal').modal();
-    //Is this valid on all occations?
-    deform.processCallbacks();
-    deform.focusFirstInput();
+    $('.modal-content').html(response);
+    var modal_area = $('#' + selector_id + '-modal');
+    if (modal_area.length != 1) {
+      throw "There's no modal area with the selector: #" + selector_id + '-modal';
+    }
+    modal_area.modal();
   });
 }
 arche.create_modal = create_modal;

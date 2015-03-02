@@ -3,6 +3,7 @@
 
 from betahaus.viewcomponent import view_action
 from repoze.folder.interfaces import IFolder
+from deform_autoneed import need_lib
 
 from arche import _
 from arche import security
@@ -107,8 +108,14 @@ def site_menu(context, request, va, **kw):
              priority = 10)
 def login_link(context, request, va, **kw):
     if request.authenticated_userid is None:
-        return """<li><a href="%s">%s</a></li>""" %\
-            (request.resource_url(request.root, 'login'),
+        need_lib('deform')
+        data = {'href': "javascript:arche.create_modal('login-modal')",
+                'id': 'login-modal',
+                'data-modal-target': request.resource_url(request.root, 'login',
+                                                          query = {'modal': 'login-modal',
+                                                                   'came_from': request.GET.get('came_from', '')})}
+        return """<li><a %s>%s</a></li>""" %\
+            (' '.join(['%s="%s"' % (k, v) for (k, v) in data.items()]),
              request.localizer.translate(va.title))
 
 @view_action('nav_right', 'register',

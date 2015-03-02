@@ -1,3 +1,4 @@
+from urllib import unquote
 import datetime
 
 from pyramid.threadlocal import get_current_request
@@ -284,6 +285,12 @@ class InitialSetup(colander.Schema):
                                          widget = populators_choice)
 
 
+@colander.deferred
+def deferred_referer(node, kw):
+    request = kw['request']
+    return unquote(request.GET.get('came_from', '/'))
+
+
 class LoginSchema(colander.Schema):
     validator = login_password_validator
     email_or_userid = colander.SchemaNode(colander.String(),
@@ -292,6 +299,10 @@ class LoginSchema(colander.Schema):
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
                                    widget = deform.widget.PasswordWidget())
+    came_from = colander.SchemaNode(colander.String(),
+                               missing = "",
+                               widget = deform.widget.HiddenWidget(),
+                               default = deferred_referer)
 
 
 class RegistrationSchema(colander.Schema):
