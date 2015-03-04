@@ -36,6 +36,17 @@ class PortletType(object):
         return u""
 
 
+class BrokenPortletType(PortletType):
+
+    @property
+    def title(self):
+        return "<Broken Portlet: '%s'>" % self.name
+
+    def __init__(self, portlet, name):
+        self.portlet = portlet
+        self.name = name
+
+
 @implementer(IPortlet)
 class Portlet(Persistent):
     __name__ = None
@@ -79,7 +90,10 @@ class Portlet(Persistent):
     @property
     def portlet_adapter(self):
         reg = get_current_registry()
-        return reg.getAdapter(self, IPortletType, name = self.portlet_type)
+        try:
+            return reg.getAdapter(self, IPortletType, name = self.portlet_type)
+        except ComponentLookupError:
+            return BrokenPortletType(self, self.portlet_type)
 
     @property
     def slot(self):
