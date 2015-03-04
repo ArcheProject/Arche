@@ -366,7 +366,7 @@ def includeme(config):
             'created': CatalogFieldIndex(get_created),
             'wf_state': CatalogFieldIndex(get_wf_state),
             'workflow': CatalogFieldIndex(get_workflow),
-            'creator': CatalogFieldIndex(get_creator),
+            'creator': CatalogKeywordIndex(get_creator),
             'userid': CatalogFieldIndex('userid'),
             'email': CatalogFieldIndex('email'),
             'first_name': CatalogFieldIndex('first_name'),
