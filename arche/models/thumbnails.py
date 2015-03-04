@@ -97,15 +97,15 @@ def _check_supported_thumbnail_mimetypes():
     return results
 
 
-def thumb_url(request, context, scale, key = 'image'):
+def thumb_url(request, context, scale, key = 'image', direction = 'thumb'):
     scales = get_image_scales(request.registry)
     if scale in scales:
         if IThumbnailedContent.providedBy(context):
-            return request.resource_url(context, 'thumbnail', key, scale)
+            return request.resource_url(context, 'thumbnail', key, scale, query = {'direction': direction})
 
 def thumb_tag(request, context, scale_name, default = u"", extra_cls = '', direction = "thumb", key = "image", **kw):
     #FIXME: Default?
-    url = request.thumb_url(context, scale_name, key = key)
+    url = request.thumb_url(context, scale_name, key = key, direction = direction)
     if not url:
         return default
     thumbnails = request.registry.queryAdapter(context, IThumbnails)

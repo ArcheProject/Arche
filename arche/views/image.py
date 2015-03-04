@@ -30,7 +30,8 @@ def thumb_view(context, request, subpath = None):
     if not thumbnails:
         #Log?
         raise HTTPNotFound()
-    thumb = thumbnails.get_thumb(scale_name, key = key)
+    direction = request.GET.get('direction', 'thumb')
+    thumb = thumbnails.get_thumb(scale_name, key = key, direction = direction)
     if thumb:
         return Response(
             body = thumb.image,
