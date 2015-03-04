@@ -3,9 +3,11 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="view.macro('arche:templates/base_view.pt', 'arche:templates/inline.pt')"
+      tal:define="contents contents|None"
       i18n:domain="Arche">
 <body>
 <div metal:fill-slot="main-content">
+  <tal:default_contents condition="not contents">
     <img tal:replace="structure view.thumb_tag(context, 'col-2', extra_cls = 'pull-right')" />
 	
     <h1>${context.title}</h1>
@@ -19,7 +21,8 @@
          tal:condition="body"
          tal:content="structure body">Body text</div>
     <div class="clearfix"><!-- --></div>
-
+  </tal:default_contents>
+  <tal:other condition="contents" replace="structure contents" />
 </div>
 </body>
 </html>
