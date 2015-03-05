@@ -44,9 +44,9 @@
         </div>
       </div>
 
-      <tal:actionbar replace="structure view.render_actionbar(context)" />
+      <tal:actionbar metal:define-slot="actionbar" replace="structure view.render_actionbar(context)" />
 
-      <div id="messages" tal:content="structure view.flash_messages.render()">Flash messages, if any. This block should always exist.</div>
+      <div metal:define-slot="flash_messages" id="messages" tal:content="structure view.flash_messages.render()">Flash messages, if any. This block should always exist.</div>
 
       <metal:content define-slot="content"></metal:content>
 

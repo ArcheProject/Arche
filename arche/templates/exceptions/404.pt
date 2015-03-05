@@ -5,12 +5,11 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="view.macro('arche:templates/master.pt')"
       i18n:domain="Arche">
-<!-- FIXME: Set lang attr from pyramid locale -->
 <tal:blank metal:fill-slot="heading"></tal:blank>
+<tal:blank metal:fill-slot="actionbar"></tal:blank>
 <div metal:fill-slot="content">
   <div class="row">
     <div class="col-sm-12">
-      <div tal:replace="structure view.flash_messages.render()">Flash messages, if any</div>
       <h1 i18n:translate="">Not found</h1>
       <p class="lead" i18n:translate="">There's nothing here with that name.</p>
     </div>
