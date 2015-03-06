@@ -18,7 +18,8 @@
               action action|field.action or None;
               method method|field.method;
               tabbed_fields field.tab_fields(field)|();
-              tab_titles field.tab_titles|{};"
+              tab_titles field.tab_titles|{};
+              modal field.request.params.get('modal', None)|None;"
   tal:attributes="autocomplete autocomplete;
                   style style;
                   class css_class;
@@ -33,12 +34,15 @@
     <input type="hidden" name="_charset_" />
     <input type="hidden" name="__formid__" value="${formid}"/>
 
-      <div class="panel panel-primary">
-        <div class="panel-heading" tal:condition="field.heading|None">
-          <h3 class="panel-title">${field.heading}</h3>
+      <div class="panel panel-primary" tal:omit-tag="modal">
+        <div class="${modal and 'modal-header' or 'panel-heading'}" tal:condition="field.heading|None">
+          <button tal:condition="modal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h3 class="${modal and 'modal-title' or 'panel-title'}">${field.heading}</h3>
         </div>
         <!-- Nav tabs -->
-        <div tal:condition="len(tabbed_fields) > 1" class="panel-footer">
+        <div tal:condition="len(tabbed_fields) > 1" class="${modal and 'modal-footer' or 'panel-footer'}">
             <ul class="nav nav-pills">
                 <tal:iterate repeat="name tabbed_fields">
                 <li class="${repeat['name'].start and 'active' or None}">
@@ -48,7 +52,7 @@
             </ul>
         </div>
 
-        <div class="panel-body">
+        <div class="${modal and 'modal-body' or 'panel-body'}">
             <div class="alert alert-danger" tal:condition="field.error">
               <div class="errorMsgLbl" i18n:translate=""
                 >There was a problem with your submission</div>
@@ -75,7 +79,7 @@
             </tal:fields>
 
         </div><!-- body -->
-        <div class="panel-footer">
+        <div class="${modal and 'modal-footer' or 'panel-footer'}">
             <div class="form-group">
               <tal:loop tal:repeat="button buttons">
                 <button

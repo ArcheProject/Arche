@@ -109,11 +109,7 @@ def site_menu(context, request, va, **kw):
 def login_link(context, request, va, **kw):
     if request.authenticated_userid is None:
         need_lib('deform')
-        data = {'href': "javascript:arche.create_modal('login-modal')",
-                'id': 'login-modal',
-                'data-modal-target': request.resource_url(request.root, 'login',
-                                                          query = {'modal': 'login-modal',
-                                                                   'came_from': request.GET.get('came_from', '')})}
+        data = {'href': request.resource_url(request.root, 'login')}
         return """<li><a %s>%s</a></li>""" %\
             (' '.join(['%s="%s"' % (k, v) for (k, v) in data.items()]),
              request.localizer.translate(va.title))

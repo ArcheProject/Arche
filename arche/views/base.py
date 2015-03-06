@@ -198,6 +198,7 @@ class BaseForm(BaseView, FormView):
     type_name = ""
     title = None
     formid = 'deform'
+    use_ajax = False
 
     button_delete = deform.Button('delete', title = _("Delete"), css_class = 'btn btn-danger')
     button_cancel = deform.Button('cancel', title = _("Cancel"), css_class = 'btn btn-default')
@@ -216,10 +217,6 @@ class BaseForm(BaseView, FormView):
            }
         }
     """
-    @property
-    def use_ajax(self):
-        return self.request.is_xhr
-
     def __init__(self, context, request):
         super(BaseForm, self).__init__(context, request)
         schema = self.get_schema()
@@ -295,21 +292,19 @@ class BaseForm(BaseView, FormView):
                 appstruct[field.name] = val
         return appstruct
 
-    def relocate_response(self, url, **kw):
+    def relocate_response(self, url, msg = '', **kw):
         if not url:
             url = self.request.application_url
+        if msg:
+            self.flash_messages.add(msg)
         if self.request.is_xhr:
             headers = list(kw.pop('headers', ()))
             headers.append((str('X-Relocate'), str(url)))
             return Response(headers = headers, **kw)
-        return HTTPFound(location = url, headers = headers)
+        return HTTPFound(location = url, **kw)
 
     def cancel(self, *args):
-        if self.request.is_xhr:
-            return Response(render("arche:templates/deform/destroy_modal.pt", {}, request = self.request))
-        else:
-            self.flash_messages.add(self.default_cancel)
-            return HTTPFound(location = self.request.resource_url(self.context))
+        return self.relocate_response(self.request.resource_url(self.context, msg = self.default_cancel))
     cancel_success = cancel_failure = cancel
 
 

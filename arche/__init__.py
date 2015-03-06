@@ -39,7 +39,6 @@ def includeme(config):
     config.include('arche.populators')
     #Portlets
     config.include('arche.portlets.byline')
-    config.include('arche.portlets.login')
     config.include('arche.portlets.navigation')
 
     #Resolve strings

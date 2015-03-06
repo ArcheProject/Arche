@@ -10,7 +10,6 @@ from arche.interfaces import IRegistrationTokens
 from arche.interfaces import IRoot
 from arche.utils import send_email
 from arche.views.base import BaseForm
-from pyramid.response import Response
 
 
 class LoginForm(BaseForm):
@@ -27,13 +26,8 @@ class LoginForm(BaseForm):
                 self.button_cancel,)
 
     def recover_success(self, appstruct):
-        if self.request.is_xhr:
-            url = self.request.resource_url(self.root, 'recover_password', query = {'modal': 'recover_password'})
-            return Response("""<script type="text/javascript">
-                arche.create_modal('recover_password', '%s');
-                </script>""" % url)
-        url = self.request.resource_url(self.root, 'recover_password')
-        return HTTPFound(location = url)
+        return self.relocate_response(self.request.resource_url(self.root, 'recover_password'))
+        
     recover_failure = recover_success
 
     def login_success(self, appstruct):
