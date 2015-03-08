@@ -37,26 +37,16 @@ function handle_form_errors(response) {
 arche.handle_form_errors = handle_form_errors;
 
 /* Handle modal content
- * - data-modal-target must be set on selector_id, or simply specify an URL.
- * */
-
-function create_modal(selector_id, url) {
-  $('.modal').remove();
-  var out = '<div class="modal fade" id="' + selector_id + '-modal" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">';
+ */
+function create_modal(url) {
+  arche.destroy_modal();
+  var out = '<div class="modal fade" id="modal-area" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">';
   out += '<div class="modal-dialog"><div class="modal-content"></div></div></div>';
   $('body').prepend(out);
-  var btn = $('#' + selector_id);
-  if (typeof(url) === 'undefined') {
-    var url = btn.data('modal-target');
-  }
   var request = arche.do_request(url);
   request.done(function(response) {
     $('.modal-content').html(response);
-    var modal_area = $('#' + selector_id + '-modal');
-    if (modal_area.length != 1) {
-      throw "There's no modal area with the selector: #" + selector_id + '-modal';
-    }
-    modal_area.modal();
+    $('#modal-area').modal();
   });
 }
 arche.create_modal = create_modal;
@@ -67,6 +57,17 @@ function destroy_modal() {
   $('.modal').remove();
 }
 arche.destroy_modal = destroy_modal;
+
+function modal_from_event(event) {
+  event.preventDefault();
+  var elem = $(event.currentTarget);
+  var url = elem.attr('href');
+  if (typeof(url) == 'undefined') {
+    throw "couldn't find any href attribute to load a modal window from on " + elem;
+  }
+  arche.create_modal(url);
+}
+arche.modal_from_event = modal_from_event;
 
 
 /* Create and pop flash message
@@ -81,6 +82,9 @@ function create_flash_message(message, params) {
 };
 arche.create_flash_message = create_flash_message;
 
+/* Inject or load flash messages. If response isn't provided,
+ * this function will simply load them.
+ */
 function load_flash_messages(response) {
   if (typeof(response) === 'undefined') {
     var request = arche.do_request('/__flash_messages__')
@@ -92,3 +96,10 @@ function load_flash_messages(response) {
   };
 };
 arche.load_flash_messages = load_flash_messages;
+
+$(document).ready(function() {
+  // Modal window listener for links with href defined
+  $('body').on('click', "[data-open-modal]", function(event) {
+    arche.modal_from_event(event);
+  });
+});
