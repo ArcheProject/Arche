@@ -62,7 +62,7 @@ def reindex_catalog(args, root, registry, **kw):
         cataloger.index_object()
         i += 1
         total += 1
-        if i>limit:
+        if i>=limit:
             i = 0
             transaction.savepoint()
             print total
