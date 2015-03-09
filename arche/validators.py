@@ -2,6 +2,7 @@ from pyramid.traversal import find_root
 import colander
 
 from arche import _
+from arche.interfaces import IUser
 from arche.interfaces import IUsers
 from arche.utils import check_unique_name
 from arche.utils import generate_slug
@@ -12,7 +13,6 @@ from pyramid.threadlocal import get_current_request
 @colander.deferred
 def unique_context_name_validator(node, kw):
     return UniqueContextNameValidator(kw['context'], kw['request'])
-
 
 @colander.deferred
 def unique_userid_validator(node, kw):
@@ -138,3 +138,22 @@ class FileUploadValidator(object):
                 msg = _("Not a valid file type, try any of the following: ${suggested}",
                         mapping = {'suggested': ", ".join(request.localizer.translate(x) for x in self.mimetypes)})
             raise colander.Invalid(node, msg)
+
+
+@colander.deferred
+def deferred_current_password_validator(node, kw):
+    context = kw['context']
+    return CurrentPasswordValidator(context)
+
+
+class CurrentPasswordValidator(object):
+    """ Check that current password matches. Used for sensitive operations
+        when logged in to make sure that no one else changes the password for instance.
+    """
+    def __init__(self, context):
+        assert IUser.providedBy(context) # pragma : no cover
+        self.context = context
+    
+    def __call__(self, node, value):
+        if not hash_method(value, hashed = self.context.password) == self.context.password:
+            raise colander.Invalid(node, _("Wrong password. Remember that passwords are case sensitive."))

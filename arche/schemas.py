@@ -8,11 +8,12 @@ import deform
 from arche import _
 from arche.interfaces import IPopulator
 from arche.utils import get_content_factories
+from arche.validators import deferred_current_password_validator
 from arche.validators import existing_userid_or_email
 from arche.validators import login_password_validator
+from arche.validators import supported_thumbnail_mimetype
 from arche.validators import unique_email_validator
 from arche.validators import unique_userid_validator
-from arche.validators import supported_thumbnail_mimetype
 from arche.widgets import DropzoneWidget
 from arche.widgets import FileAttachmentWidget
 from arche.widgets import ReferenceWidget
@@ -260,7 +261,10 @@ class GroupSchema(colander.Schema):
 
 
 class ChangePasswordSchema(colander.Schema):
-    #FIXME: Validate old password
+    current_password = colander.SchemaNode(colander.String(),
+                                   title = _('Current password'),
+                                   widget = deform.widget.PasswordWidget(size=20),
+                                   validator = deferred_current_password_validator)
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
                                    widget = deform.widget.CheckedPasswordWidget())
