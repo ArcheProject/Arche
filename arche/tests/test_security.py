@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from pyramid import testing
 
-from arche.testing import setup_security
+from arche.testing import setup_auth
 from arche import security
 
 
@@ -29,7 +29,7 @@ class ContextPermIntegrationTests(TestCase):
         a_roles = get_local_roles(root['a'])
         a_roles['tester'] = ['role:Administrator']
         root['b'] = Document()
-        setup_security(self.config, userid = 'tester', debug = False)
+        setup_auth(self.config, userid = 'tester', debug = False)
         return root
 
     def test_effective_principals(self):

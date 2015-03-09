@@ -4,7 +4,7 @@ from pyramid_mailer.interfaces import IMailer
 from zope.interface import implementer
 
 
-def setup_security(config, userid = None, debug = True):
+def setup_auth(config, userid = None, debug = True):
     from arche.security import groupfinder
     config.set_authorization_policy(ACLAuthorizationPolicy())
     ap = CallbackAuthenticationPolicy()
@@ -12,7 +12,6 @@ def setup_security(config, userid = None, debug = True):
     ap.unauthenticated_userid = lambda request: userid
     ap.callback = groupfinder
     config.set_authentication_policy(ap)
-    config.include('arche.security')
 
 
 def printing_mailer(config):
