@@ -321,8 +321,15 @@ class FinishRegistrationSchema(colander.Schema):
                                  title = _(u"UserID"),
                                  preparer = to_lowercase,
                                  validator = unique_userid_validator)
+    first_name = colander.SchemaNode(colander.String(),
+                                     title = _(u"First name"),
+                                     missing = u"")
+    last_name = colander.SchemaNode(colander.String(),
+                                    title = _(u"Last name"),
+                                    missing = u"")
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
+                                   validator = colander.Length(min = 6, max = 200),
                                    widget = deform.widget.CheckedPasswordWidget(redisplay = True))
 
 
