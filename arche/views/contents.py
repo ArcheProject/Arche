@@ -1,5 +1,3 @@
-from peppercorn import parse
-
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.decorator import reify
