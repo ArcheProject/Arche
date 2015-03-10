@@ -3,6 +3,7 @@ from peppercorn import parse
 from arche import _
 from arche.fanstatic_lib import pure_js
 from arche.security import PERM_MANAGE_USERS
+from arche.security import get_roles
 from arche.views.base import BaseView
 
 
@@ -10,7 +11,7 @@ class PermissionsForm(BaseView):
 
     def __call__(self):
         pure_js.need()
-        return {'roles': self.request.registry.acl.get_roles()}
+        return {'roles': get_roles(registry = self.request.registry, assignable = True).values()}
 
 
 class PermissionsJSON(BaseView):
@@ -19,12 +20,13 @@ class PermissionsJSON(BaseView):
         return {'principals': self.get_principals()}
 
     def get_principals(self):
-        roles = self.request.registry.acl.get_roles()
+        roles = get_roles(registry = self.request.registry)
         principals = []
         for (k, v) in self.context.local_roles.items():
             row = {'name': k}
             for role in roles:
-                row[str(role)] = role in v
+                if roles[role].assignable:
+                    row[str(role)] = role in v
             principals.append(row)
         return principals
 

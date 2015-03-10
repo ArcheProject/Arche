@@ -16,6 +16,7 @@ from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.interfaces import IAuthorizationPolicy
 
 from arche import _
+from arche import logger
 from arche.interfaces import IRoles
 from arche.models.roles import Role
 
@@ -49,7 +50,7 @@ ROLE_OWNER = Role('role:Owner',
                   title = _(u"Owner"),
                   description = _(u"Special role for the initial creator."),
                   inheritable = False,
-                  assignable = False,)
+                  assignable = True,)
 ROLE_REVIEWER = Role('role:Reviewer',
                   title = _(u"Reviewer"),
                   description = _(u"Review and publish content. Usable when combined with a workflow that implements review before publish."),
@@ -111,7 +112,7 @@ def groupfinder(name, request):
         'authz_context', getattr(request, 'context', None))
     if not context:
         return ()
-    inherited_roles = request.registry.acl.get_roles(inheritable = True)
+    inherited_roles = get_roles(registry = request.registry, inheritable = True)
     if not name.startswith('group:'):
         root = find_root(context)
         groups = ()
@@ -148,11 +149,23 @@ def get_local_roles(context, registry = None):
         registry = get_current_registry()
     return registry.getAdapter(context, IRoles)
 
-def get_roles_registry(registry = None):
-    #Deprecated wrapper
+def get_roles(registry = None, **filterkw):
     if registry is None:
         registry = get_current_registry()
-    return registry.acl.get_roles()
+    results = {}
+    roles = getattr(registry, 'roles', None)
+    if roles == None:
+        logger.warning("No roles registered")
+        roles = {}
+    for role in registry.roles.values():
+        filtered = False
+        for (k, v) in filterkw.items():
+            if getattr(role, k) != v:
+                filtered = True
+                break
+        if filtered == False:
+            results[role.principal] = role
+    return results
 
 def sha512_hash_method(value, hashed = None):
     return sha512(value).hexdigest()
@@ -178,16 +191,15 @@ def includeme(config):
     #ACL registry must be created first
     config.include('arche.models.acl')
     config.include('arche.models.roles')
+    config.register_roles(ROLE_ADMIN,
+                          ROLE_EDITOR,
+                          ROLE_VIEWER,
+                          ROLE_OWNER,
+                          ROLE_REVIEWER,
+                          ROLE_EVERYONE,
+                          ROLE_AUTHENTICATED)
+
     aclreg = config.registry.acl
-    from arche.models.acl import ACLEntry
-
-    class _InheritACL(ACLEntry):
-        def add(self, role, perms): pass
-        def remove(self, role, perms): pass
-        def __call__(self): raise AttributeError()
-
-    aclreg['inherit'] = _InheritACL(title = _("Inherit"),
-                                    description = _("Fetch the ACL from the parent object"))        
     aclreg['default'] = 'inherit'
     private = aclreg.new_acl('private', title = _("Private"))
     private.add(ROLE_ADMIN, ALL_PERMISSIONS)

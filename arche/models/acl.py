@@ -4,6 +4,7 @@ from UserDict import IterableUserDict
 from pyramid.security import AllPermissionsList
 from pyramid.security import Allow
 from pyramid.security import DENY_ALL
+from pyramid.threadlocal import get_current_registry
 from zope.interface import implementer
 import six
 
@@ -28,8 +29,13 @@ class ACLEntry(IterableUserDict):
 
     def add(self, role, perms):
         if not IRole.providedBy(role):
-            logger.info("Creating a role object from %r" % role)
-            role = Role(role)
+            reg = get_current_registry()
+            roles = getattr(reg, 'roles', {})
+            try:
+                role = roles[role]
+            except KeyError:
+                logger.info("Creating a role object from %r" % role)
+                role = Role(role)
         if isinstance(perms, six.string_types):
             perms = (perms,)
         if isinstance(perms, AllPermissionsList):
@@ -94,23 +100,6 @@ class ACLRegistry(IterableUserDict):
             #Only when something is badly configured. Should only happen during testing
             return (DENY_ALL,)
 
-    def get_roles(self, inheritable = None, assignable = None):
-        results = set()
-        for acl in self.values():
-            if isinstance(acl, six.string_types):
-                continue
-            results.update([x for x in acl.keys() if IRole.providedBy(x)])
-        
-        if inheritable is not None:
-            for role in tuple(results):
-                if role.inheritable != inheritable:
-                    results.remove(role)
-        if assignable is not None:
-            for role in tuple(results):
-                if role.assignable != assignable:
-                    results.remove(role)
-        return results
-
     def is_linked(self, acl_name):
         return isinstance(self.get(acl_name, None), six.string_types)
 
@@ -125,6 +114,14 @@ class ACLRegistry(IterableUserDict):
         return self[key]
 
 
+class _InheritACL(ACLEntry):
+    def add(self, role, perms): pass
+    def remove(self, role, perms): pass
+    def __call__(self): raise AttributeError()
+
+
 def includeme(config):
     if not hasattr(config.registry, 'acl'):
         config.registry.acl = ACLRegistry()
+    config.registry.acl['inherit'] = _InheritACL(title = _("Inherit"),
+                                                 description = _("Fetch the ACL from the parent object"))

@@ -55,7 +55,8 @@ class Roles(IterableUserDict):
     def __setitem__(self, key, value):
         if value:
             #Make sure it exist
-            roles_principals = get_current_registry().acl.get_roles()
+            reg = get_current_registry()
+            roles_principals = reg.roles.keys()
             if IRole.providedBy(value):
                 value = [value]
             if isinstance(value, string_types):
@@ -85,5 +86,16 @@ class Roles(IterableUserDict):
         return '<%s object at %#x>' % (classname, id(self))
 
 
+def register_roles(config, *roles):
+    reg = config.registry
+    if not hasattr(reg, 'roles'):
+        reg.roles = {}
+    for role in roles:
+        assert IRole.providedBy(role), "Must be a role object"
+        if role in reg.roles:
+            logger.warning("Overriding role %r" % role)
+        reg.roles[role.principal] = role
+
 def includeme(config):
     config.registry.registerAdapter(Roles)
+    config.add_directive('register_roles', register_roles)

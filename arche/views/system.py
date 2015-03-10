@@ -55,11 +55,11 @@ def content_types_panel(context, request, va, **kw):
              title = _(u"Roles"),
              permission = security.PERM_MANAGE_SYSTEM)
 def roles_pane(context, request, va, **kw):
-    roles_registry = request.registry.acl.get_roles()
+    roles = security.get_roles(registry = request.registry).values()
     response = {
-        'roles_registry': roles_registry,
+        'roles': roles,
         'common_titles': common_titles,
-        'role_titles': dict([(x, x.title) for x in roles_registry]),
+        'role_titles': dict([(x, x.title) for x in roles]),
         }
     return render('arche:templates/sysinfo/roles.pt', response, request = request)
 
@@ -67,10 +67,10 @@ def roles_pane(context, request, va, **kw):
              title = _(u"ACL"),
              permission = security.PERM_MANAGE_SYSTEM)
 def acl_panel(context, request, va, **kw):
-    roles_registry = request.registry.acl.get_roles()
+    roles = security.get_roles(registry = request.registry).values()
     response = {
         'acl_registry': request.registry.acl,
-        'role_titles': dict([(x, x.title) for x in roles_registry]),
+        'role_titles': dict([(x, x.title) for x in roles]),
         }
     return render('arche:templates/sysinfo/acl.pt', response, request = request)
 

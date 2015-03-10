@@ -105,39 +105,3 @@ class ACLRegistryTests(TestCase):
         one.add('role:Hello', 'world')
         obj['one'] = one
         self.assertEqual(obj.get_acl('one'), [('Allow', 'role:Hello', set(['world'])), DENY_ALL,])
-
-    def test_get_roles(self):
-        obj = self._cut()
-        one = self._acl()
-        one.add('role:Hello', 'world')
-        obj['one'] = one
-        two = self._acl()
-        two.add('role:Something', 'else')
-        obj['two'] = two
-        self.assertEqual(obj.get_roles(), set(['role:Hello', 'role:Something']))
-
-    def test_get_roles_assignable(self):
-        obj = self._cut()
-        one = self._acl()
-        _r_assignable = self._role('role:Hello', assignable = True)
-        one.add(_r_assignable, 'world')
-        obj['one'] = one
-        two = self._acl()
-        two.add('role:Something', 'else')
-        obj['two'] = two
-        self.assertEqual(obj.get_roles(assignable = True), set(['role:Hello']))
-        self.assertEqual(obj.get_roles(assignable = False), set(['role:Something']))
-        self.assertEqual(obj.get_roles(), set(['role:Hello', 'role:Something']))
-
-    def test_get_roles_inheritable(self):
-        obj = self._cut()
-        one = self._acl()
-        _r_inheritable = self._role('role:Hello', inheritable = True)
-        one.add(_r_inheritable, 'world')
-        obj['one'] = one
-        two = self._acl()
-        two.add('role:Something', 'else')
-        obj['two'] = two
-        self.assertEqual(obj.get_roles(inheritable = True), set(['role:Hello']))
-        self.assertEqual(obj.get_roles(inheritable = False), set(['role:Something']))
-        self.assertEqual(obj.get_roles(), set(['role:Hello', 'role:Something']))

@@ -19,11 +19,11 @@ class ContextPermIntegrationTests(TestCase):
         from arche.populators import root_populator
         from arche.resources import Document
         from arche.security import get_local_roles
-        self.config.include('arche.utils')
-        self.config.include('arche.security')
+        self.config.include('arche.testing')
         self.config.include('arche.models.roles')
         self.config.include('arche.resources')
         self.config.include('arche.models.workflow')
+        self.config.include('arche.models.acl')
         root = root_populator(userid = 'admin')
         root['a'] = Document()
         a_roles = get_local_roles(root['a'])
@@ -55,3 +55,73 @@ class ContextPermIntegrationTests(TestCase):
         self.failUnless(security.has_permission(request, security.PERM_EDIT, root['a']))
         self.failIf(security.has_permission(request, security.PERM_EDIT, root))
         self.failIf(security.has_permission(request, security.PERM_EDIT, root['b']))
+
+
+class GetRolesTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('arche.models.acl')
+        self.config.include('arche.models.roles')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _fut(self):
+        from arche.security import get_roles
+        return get_roles
+
+    def _fixture(self):
+        from arche.models.roles import Role
+        #acl = self.config.registry.acl
+        nothing = Role('role:nothing_set')
+        inherit = Role('role:Inherit', inheritable = True)
+        assignable = Role('role:Assignable', assignable = True)
+        both = Role('role:Both', assignable = True, inheritable = True)
+        self.config.register_roles(nothing, inherit, assignable, both)
+
+    def test_get_roles(self):
+        self._fixture()
+        self.assertEqual(self._fut().keys(), ['role:nothing_set', 'role:Inherit', 'role:Assignable', 'role:Both'])
+
+    def test_get_roles_assignable(self):
+        self._fixture()
+        self.assertEqual(self._fut(assignable = True).keys(), ['role:Assignable', 'role:Both'])
+        self.assertEqual(self._fut(assignable = False).keys(), ['role:nothing_set', 'role:Inherit'])
+
+    def test_get_roles_inheritable(self):
+        self._fixture()
+        self.assertEqual(self._fut(inheritable = True).keys(), ['role:Inherit', 'role:Both'])
+        self.assertEqual(self._fut(inheritable = False).keys(), ['role:nothing_set', 'role:Assignable'])
+
+    def test_get_roles_both(self):
+        self._fixture()
+        self.assertEqual(self._fut(assignable = True, inheritable = True).keys(), ['role:Both'])
+        self.assertEqual(self._fut(assignable = False, inheritable = False).keys(), ['role:nothing_set'])
+
+#     def test_get_roles_assignable(self):
+#         obj = self._cut()
+#         one = self._acl()
+#         _r_assignable = self._role('role:Hello', assignable = True)
+#         one.add(_r_assignable, 'world')
+#         obj['one'] = one
+#         two = self._acl()
+#         two.add('role:Something', 'else')
+#         obj['two'] = two
+#         self.assertEqual(obj.get_roles(assignable = True), set(['role:Hello']))
+#         self.assertEqual(obj.get_roles(assignable = False), set(['role:Something']))
+#         self.assertEqual(obj.get_roles(), set(['role:Hello', 'role:Something']))
+# 
+#     def test_get_roles_inheritable(self):
+#         obj = self._cut()
+#         one = self._acl()
+#         _r_inheritable = self._role('role:Hello', inheritable = True)
+#         one.add(_r_inheritable, 'world')
+#         obj['one'] = one
+#         two = self._acl()
+#         two.add('role:Something', 'else')
+#         obj['two'] = two
+#         self.assertEqual(obj.get_roles(inheritable = True), set(['role:Hello']))
+#         self.assertEqual(obj.get_roles(inheritable = False), set(['role:Something']))
+#         self.assertEqual(obj.get_roles(), set(['role:Hello', 'role:Something']))
