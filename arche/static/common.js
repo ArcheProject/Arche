@@ -48,6 +48,10 @@ function create_modal(url) {
     $('.modal-content').html(response);
     $('#modal-area').modal();
   });
+  request.fail(function(jqXHR) {
+    arche.flash_error(jqXHR);
+    arche.destroy_modal();
+  })
 }
 arche.create_modal = create_modal;
 
@@ -96,6 +100,12 @@ function load_flash_messages(response) {
   };
 };
 arche.load_flash_messages = load_flash_messages;
+
+//Attach this to .fail on deferred objects
+function flash_error(jqXHR) {
+  arche.create_flash_message(jqXHR.status + ' ' + jqXHR.statusText, {type: 'danger'});
+}
+arche.flash_error = flash_error;
 
 $(document).ready(function() {
   // Modal window listener for links with href defined
