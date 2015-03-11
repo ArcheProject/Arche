@@ -397,6 +397,9 @@ class SiteSettingsSchema(colander.Schema):
     allow_self_registration = colander.SchemaNode(colander.Bool(),
                                                   title = _(u"Allow users to register themselves to this site."),
                                                   default = False)
+    show_login_link = colander.SchemaNode(colander.Bool(),
+                                          title = _("Show login link."),
+                                          default = True)
 
 
 def includeme(config):

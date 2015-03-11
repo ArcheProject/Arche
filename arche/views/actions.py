@@ -107,7 +107,7 @@ def site_menu(context, request, va, **kw):
              title = _("Login"),
              priority = 10)
 def login_link(context, request, va, **kw):
-    if request.authenticated_userid is None:
+    if request.authenticated_userid is None and request.root.site_settings.get('show_login_link', True):
         need_lib('deform')
         data = {'href': request.resource_url(request.root, 'login')}
         return """<li><a %s>%s</a></li>""" %\
