@@ -44,12 +44,33 @@ function update_table_from_response(response) {
 	$('.tmp-msg').remove();
 }
 
-  $(document).ready(function() {
-  	tpl = $('#sortable').html();
-  
-    var request = arche.do_request('./contents.json');
-    request.done(update_table_from_response);
+function toggle_sorting(event) {
+  event.preventDefault();
+  var sort_elem = $("#sortable");
+  var btn = $(event.currentTarget);  
+  if (sort_elem.data('ordering-enabled') == true) {
+    btn.removeClass('active');
     
+    //save data
+    var url = sort_elem.data('target-url');
+    var request = arche.do_request(url, {data: $( "#contents-form" ).serialize(), method: 'POST'})
+    request.done(function() {
+      sort_elem.data('ordering-enabled', false);
+      sort_elem.sortable('destroy');
+    });
+  } else {
+    btn.addClass('active');
+    sort_elem.sortable();
+    sort_elem.data('ordering-enabled', true);
+  }
+}
+
+$(document).ready(function() {
+	tpl = $('#sortable').html();
+  var request = arche.do_request('./contents.json');
+  request.done(update_table_from_response);
+  $("[data-ordering]").on('click', toggle_sorting);
+  
 	$('#contents-form').on('submit', function(event) {
 		event.preventDefault();
 		data = $(this).serialize();
@@ -57,7 +78,7 @@ function update_table_from_response(response) {
 		var request = arche.do_request("${request.resource_url(context, 'contents.json')}", {data: data, method: 'post'});
 		request.done(update_table_from_response);
 	});
-  });
+});
   
 	function toggleSelect(chkbox)
 	{
@@ -93,29 +114,6 @@ function update_table_from_response(response) {
 		}
 	}
 </script>
-<script tal:condition="len(context)|False">
-  $(function() {
-    $( "#sortable" ).sortable({ disabled: true });
-  });
-  
-  function toggleSorting()
-  {
-    if($("#sortable").sortable( "option", "disabled" ))
-    {
-      $( "#sortable" ).sortable( "enable" );
-      $( "#sortable" ).disableSelection();
-    }
-    else
-    {
-      $( "#sortable" ).sortable( "disable" );
-      $( "#sortable" ).enableSelection();
-      $.post("${request.resource_url(context, 'sorted')}", $( "#contents-form" ).serialize());
-    }
-    $("#sort-toggle-btn").toggleClass("active");
-    $("#sort-toggle-btn").toggleClass("btn-default");
-    $("#sort-toggle-btn").toggleClass("btn-primary");
-  }
-</script>
 
   <div class="row">
     <div class="col-md-12">
@@ -131,12 +129,6 @@ function update_table_from_response(response) {
             <span class="glyphicon glyphicon-arrow-up"></span>
             <span i18n:translate="">Parent directory</span>
           </a>
-          <p>
-            <button tal:condition="is_folderish and len(context)" id="sort-toggle-btn" type="button"
-              class="btn btn-default pull-right" onclick="toggleSorting()"
-              i18n:translate="">Change order</button>
-            <div class="clearfix"></div>
-          </p>
           <p class="lead" tal:condition="not is_folderish"
             i18n:translate="">Not a folder, so it can't have content</p>
 
@@ -153,7 +145,7 @@ function update_table_from_response(response) {
                   <th i18n:translate="">Info</th>
                 </tr>
               </thead>
-              <tbody id="sortable">
+              <tbody id="sortable" data-ordering-enabled="false" data-target-url="${request.resource_url(context, 'sorted')}">
                 <tr>
                 	<td><input type="checkbox" class="select-content" name="select" value="" onChange="updateMultiselect(this)"></input></td>
                   <td>
@@ -176,9 +168,13 @@ function update_table_from_response(response) {
                 </tr>
               </tbody>
             </table>
-            
-            
-            <input type="submit" name="delete" value="Delete"></input>
+
+            <input type="submit" class="btn btn-danger" name="delete" value="Delete"></input>
+            <a tal:condition="is_folderish and len(context)"
+                class="btn btn-primary"
+                href="javascript:"
+                data-ordering
+                i18n:translate="">Change order</a>
           </form>
         </div>
       </div>
