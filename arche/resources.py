@@ -186,6 +186,7 @@ class Content(Base, Folder):
     default_view = u"view"
     delegate_view = None
     nav_visible = True
+    nav_title = None
     listing_visible = True
     search_visible = True
     show_byline = False
@@ -193,6 +194,10 @@ class Content(Base, Folder):
     def __init__(self, **kw):
         Folder.__init__(self)
         super(Content, self).__init__(**kw)
+
+    def get_nav_title(self):
+        nav_title = getattr(self, 'nav_title', None)
+        return nav_title and nav_title or self.title
 
     @property
     def tags(self): return getattr(self, '__tags__', ())
@@ -233,6 +238,7 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
     search_visible = False
     is_permanent = True
     footer = ""
+    head_title = _("Arche")
 
     def __init__(self, data=None, **kwargs):
         create_catalog(self)

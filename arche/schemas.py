@@ -183,20 +183,25 @@ class BaseSchema(colander.Schema):
                                       title = _(u"Show in navigations"),
                                       missing = colander.null,
                                       default = default_factory_attr,
-                                      tab = tabs['visibility'])
+                                      tab = 'visibility')
     listing_visible = colander.SchemaNode(colander.Bool(),
                                           title = _(u"Show in listing or table views"),
                                           description = _(u"The content view will always show this regardless of what you set."),
                                           missing = colander.null,
                                           default = default_factory_attr,
-                                          tab = tabs['visibility'])
+                                          tab = 'visibility')
     search_visible = colander.SchemaNode(colander.Bool(),
                                          title = _(u"Include in search results"),
                                          description = _(u"Note that this is not a permission setting - it's just a matter of practicality for users. "
                                                          u"They may even disable this setting."),
                                          missing = colander.null,
                                          default = default_factory_attr,
-                                         tab = tabs['visibility'])
+                                         tab = 'visibility')
+    nav_title = colander.SchemaNode(colander.String(),
+         title = _(u"Navigation bar title"),
+         description = _("If you wish to use another name for when it's shown in menus."),
+         missing = "",
+         tab = 'metadata')
 
 
 class DocumentSchema(BaseSchema, DCMetadataSchema):
@@ -211,7 +216,7 @@ class DocumentSchema(BaseSchema, DCMetadataSchema):
                                          widget = FileAttachmentWidget())
     show_byline = colander.SchemaNode(colander.Bool(),
                                       default = True,
-                                      tab = tabs['visibility'],
+                                      tab = 'visibility',
                                       title = _(u"Show byline"),
                                       description = u"If anything exist that will render a byline, like the Byline portlet.",)
 
@@ -340,10 +345,14 @@ class RecoverPasswordSchema(colander.Schema):
 
 
 class RootSchema(BaseSchema, DCMetadataSchema):
+    head_title = colander.SchemaNode(colander.String(),
+        title = _("Page head title"),
+        description = _("Usually shown in the browser window"),)
     footer = colander.SchemaNode(colander.String(),
-                                 title = _("Footer"),
-                                 missing = "",
-                                 widget = deform.widget.RichTextWidget(delayed_load = True))
+        title = _("Footer"),
+        missing = "",
+        widget = deform.widget.RichTextWidget(delayed_load = True))
+
 
 @colander.deferred
 def default_blob_key(node, kw):

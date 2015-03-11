@@ -25,7 +25,7 @@
         <div class="col-sm-6 col-md-8">
           <ol class="breadcrumb">
               <tal:iterate repeat="obj view.breadcrumbs()">
-                  <li><a href="${request.resource_url(obj)}">${obj.title and obj.title or obj.__name__}</a></li>
+                  <li><a href="${request.resource_url(obj)}">${obj.get_nav_title()|obj.title|obj.__name__}</a></li>
               </tal:iterate>
           </ol>
         </div>

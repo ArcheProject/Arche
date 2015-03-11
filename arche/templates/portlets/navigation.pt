@@ -12,7 +12,7 @@
     <ul class="list-group">
         <li class="list-group-item" tal:repeat="obj contents">
             <a href="${request.resource_url(obj)}">
-                ${obj.title}
+                ${obj.get_nav_title()|obj.title}
             </a>
         </li>
     </ul>
