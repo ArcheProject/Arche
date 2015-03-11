@@ -120,7 +120,7 @@ def to_lowercase(value):
 class DCMetadataSchema(colander.Schema):
     title = colander.SchemaNode(colander.String())
     description = colander.SchemaNode(colander.String(),
-                                      widget = deform.widget.TextAreaWidget(rows = 5),
+                                      widget = deform.widget.TextAreaWidget(rows = 3),
                                       missing = u"")
     tags = colander.SchemaNode(colander.List(),
                                title = _("Tags or subjects"),
@@ -206,7 +206,7 @@ class BaseSchema(colander.Schema):
 
 class DocumentSchema(BaseSchema, DCMetadataSchema):
     body = colander.SchemaNode(colander.String(),
-                               widget = deform.widget.RichTextWidget(),
+                               widget = deform.widget.RichTextWidget(height = 300),
                                missing = u"")
     image_data = colander.SchemaNode(deform.FileData(),
                                          missing = None,
@@ -252,7 +252,7 @@ class GroupSchema(colander.Schema):
                                 title = _(u"Title"))
     description = colander.SchemaNode(colander.String(),
                                       title = _(u"Description"),
-                                      widget = deform.widget.TextAreaWidget(rows = 5),
+                                      widget = deform.widget.TextAreaWidget(rows = 3),
                                       missing = u"")
     members = colander.SchemaNode(
                   colander.Sequence(),
@@ -351,7 +351,7 @@ class RootSchema(BaseSchema, DCMetadataSchema):
     footer = colander.SchemaNode(colander.String(),
         title = _("Footer"),
         missing = "",
-        widget = deform.widget.RichTextWidget(delayed_load = True))
+        widget = deform.widget.RichTextWidget(delayed_load = True, height = 200))
 
 
 @colander.deferred
