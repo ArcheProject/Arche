@@ -119,7 +119,7 @@ def login_link(context, request, va, **kw):
              priority = 20)
 def register_link(context, request, va, **kw):
     #FIXME: Check registration form.
-    if request.authenticated_userid is None:
+    if request.authenticated_userid is None and request.has_permission(security.PERM_REGISTER, request.root):
         return """<li><a href="%s">%s</a></li>""" %\
             (request.resource_url(request.root, 'register'),
              request.localizer.translate(va.title))
@@ -133,6 +133,11 @@ def register_link(context, request, va, **kw):
              permission = security.PERM_MANAGE_SYSTEM,
              section_header = _("System"),
              view_name = 'sysinfo',)
+@view_action('site_menu', 'site_settings',
+             title = _("Site settings"),
+             priority = 15,
+             permission = security.PERM_MANAGE_SYSTEM,
+             view_name = 'site_settings')
 @view_action('site_menu', 'users',
              title = _("Users"),
              permission = security.PERM_MANAGE_USERS,

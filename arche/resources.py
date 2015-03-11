@@ -39,6 +39,8 @@ from arche.interfaces import (IBase,
                               IUsers)
 from arche.security import (ROLE_OWNER,
                             get_acl_registry)
+from arche import security
+
 from arche.utils import (hash_method,
                          utcnow)
 from arche.models.workflow import get_context_wf
@@ -236,6 +238,25 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
         create_catalog(self)
         self.__site_settings__ = OOBTree()
         super(Root, self).__init__(data=data, **kwargs)
+
+    @property
+    def allow_self_registration(self):
+        """ This might change to an actual setting later. """
+        return self.site_settings.get('allow_self_registration', False)
+
+    @property
+    def __acl__(self):
+        acl_reg = get_acl_registry()
+        wf = get_context_wf(self)
+        acl_entries = []
+        if self.allow_self_registration:
+            acl_entries.append((security.Allow, security.Everyone, security.PERM_REGISTER))
+        if wf:
+            state = wf.state in wf.states and wf.state or wf.initial_state
+            acl_entries.extend(acl_reg.get_acl("%s:%s" % (wf.name, state)))
+        else:
+            acl_entries.extend(acl_reg.get_acl('default'))
+        return acl_entries
 
     @property
     def site_settings(self): return getattr(self, '__site_settings__', {})

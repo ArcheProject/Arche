@@ -55,10 +55,6 @@ class RegisterForm(BaseForm):
             msg = _("Already logged in.")
             self.flash_messages.add(msg, type = 'danger')
             raise HTTPFound(location = request.resource_url(context))
-        elif context.site_settings.get('allow_self_registration'):
-            return #Ie allowed
-        msg = _("This site doesn't allow you to register")
-        raise HTTPForbidden(msg)
 
     @property
     def buttons(self):
@@ -168,7 +164,7 @@ def includeme(config):
     config.add_view(RegisterForm,
                     context = IRoot,
                     name = 'register',
-                    permission = security.NO_PERMISSION_REQUIRED,
+                    permission = security.PERM_REGISTER,
                     renderer = 'arche:templates/form.pt')
     config.add_view(RegisterFinishForm,
                     context = IRoot,
