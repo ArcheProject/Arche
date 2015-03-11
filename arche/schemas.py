@@ -342,6 +342,7 @@ class RecoverPasswordSchema(colander.Schema):
 class RootSchema(BaseSchema, DCMetadataSchema):
     footer = colander.SchemaNode(colander.String(),
                                  title = _("Footer"),
+                                 missing = "",
                                  widget = deform.widget.RichTextWidget(delayed_load = True))
 
 @colander.deferred
