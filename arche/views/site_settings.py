@@ -8,6 +8,7 @@ from arche.views.base import DefaultEditForm
 class SiteSettingsForm(DefaultEditForm):
     type_name = u'Root'
     schema_name = 'site_settings'
+    title = _("Site settings")
 
     def appstruct(self):
         return dict(self.context.site_settings)
