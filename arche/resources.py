@@ -182,6 +182,7 @@ class Content(Base, Folder):
     title = ""
     description = ""
     default_view = u"view"
+    delegate_view = None
     nav_visible = True
     listing_visible = True
     search_visible = True

@@ -420,6 +420,10 @@ class DefaultView(BaseView):
     
 
 def delegate_content_view(context, request):
+    delegate_view = getattr(context, 'delegate_view', False)
+    if delegate_view:
+        if delegate_view in context:
+            return delegate_content_view(context[delegate_view], request)
     view_name = context.default_view and context.default_view or 'view'
     response = render_view_to_response(context, request, name=view_name)
     if response is None:  # pragma: no coverage
@@ -449,6 +453,22 @@ def set_view(context, request, name = None):
         delattr(context, '__view_settings__')
     return HTTPFound(location = request.resource_url(context))
 
+def set_delegate_view(context, request, name = None):
+    name = request.GET.get('name', name)
+    if name is None:
+        raise HTTPForbidden("Need to specify a request with the GET variable name or simply a name parameter.")
+    fm = get_flash_messages(request)
+    if name:
+        if name not in context:
+            raise HTTPNotFound("No content with that name")
+        context.delegate_view = name
+        title = getattr(context[name], 'title', context[name].__name__)
+        fm.add(_("View delegated to '${title}'",
+             mapping = {'title': title}))
+    else:
+        context.delegate_view = None
+        fm.add(_("Normal view restored"))
+    return HTTPFound(location = request.resource_url(context))
 
 def includeme(config):
     config.add_view(DefaultAddForm,
@@ -487,6 +507,11 @@ def includeme(config):
     config.add_view(set_view,
                     name = 'set_view',
                     context = 'arche.interfaces.IContent',
-                    permission = security.PERM_EDIT,
+                    permission = security.PERM_MANAGE_SYSTEM,
+                    )
+    config.add_view(set_delegate_view,
+                    name = 'set_delegate_view',
+                    context = 'arche.interfaces.IContent',
+                    permission = security.PERM_MANAGE_SYSTEM,
                     )
     config.add_content_view('Document', 'dynamic_view', DynamicView)

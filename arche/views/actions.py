@@ -239,6 +239,9 @@ def manage_portlets(context, request, va, **kw):
 def selectable_views(context, request, va, **kw):
     if not hasattr(context, 'default_view'):
         return
+    rcontext = getattr(request, 'context', None)
+    if getattr(rcontext, 'delegate_view', None):
+        return
     type_name = getattr(context,'type_name', None)
     selectable_views = {'view': _(u"Default")}
     views = get_content_views(request.registry)
@@ -254,6 +257,21 @@ def selectable_views(context, request, va, **kw):
                  'title': title,
                  'selected': selected}
     return out
+
+
+@view_action('actions_menu', 'delegate_view',
+             priority = 35,
+             permission = security.PERM_MANAGE_SYSTEM)
+def delegate_view(context, request, va, **kw):
+    rcontext = getattr(request, 'context', None)
+    if getattr(rcontext, 'delegate_view', None):
+        return """<li class="divider"></li><li><a href="%s">%s</a></li>""" %\
+            (request.resource_url(rcontext, 'set_delegate_view', query = {'name': ''}), _('Unset delegated view'))
+    #FIXME: Experimental feature, add later
+    #if hasattr(context, 'delegate_view'):
+    #    return """<li class="divider"></li><li><a href="%s">%s</a></li>""" %\
+    #        (request.resource_url(rcontext, 'pick_delegate_view'), _('Delegate view&#0133;'))
+
 
 @view_action('actions_menu', 'view_settings',
              priority = 31,
