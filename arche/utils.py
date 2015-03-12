@@ -245,14 +245,12 @@ def utcnow():
     datetime object, whereas this one includes the UTC tz info."""
     return pytz.utc.localize(datetime.utcnow())
 
-def send_email(subject, recipients, html, sender = "noreply@localhost.com", plaintext = None, request = None, send_immediately = False, **kw):
+def send_email(request, subject, recipients, html, sender = None, plaintext = None, send_immediately = False, **kw):
     """ Send an email to users. This also checks the required settings and translates
         the subject.
         
         returns the message object sent, or None
     """
-    if request is None:
-        request = get_current_request()
     if isinstance(subject, TranslationString):
         subject = request.localizer.translate(subject)
     if isinstance(recipients, string_types):
@@ -328,6 +326,7 @@ def includeme(config):
     config.add_directive('add_image_scale', add_image_scale)
     config.add_request_method(get_dt_handler, name = 'dt_handler', reify = True)
     config.add_request_method(_root, name = 'root', reify = True)
+    config.add_request_method(send_email)
     
     #Init default scales
     for (name, scale) in image_scales.items():

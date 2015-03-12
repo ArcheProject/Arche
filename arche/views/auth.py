@@ -8,7 +8,6 @@ from arche import _
 from arche import security
 from arche.interfaces import IRegistrationTokens
 from arche.interfaces import IRoot
-from arche.utils import send_email
 from arche.views.base import BaseForm
 
 
@@ -69,10 +68,9 @@ class RegisterForm(BaseForm):
         rtokens = IRegistrationTokens(self.context)
         rtokens[email] = token
         html = self.render_template("arche:templates/emails/register.pt", token = token, email = email)
-        send_email(_(u"Registration link"),
+        self.request.send_email(_(u"Registration link"),
                    [email],
                    html,
-                   request = self.request,
                    send_immediately = True)
         msg = _("reg_email_notification",
                 default = "An email with registration instructions "
@@ -142,10 +140,9 @@ class RecoverPasswordForm(BaseForm):
             raise HTTPForbidden("Something went wrong during login. No user profile found.")
         user.pw_token = factory()
         html = self.render_template("arche:templates/emails/recover_password.pt", user = user)
-        send_email(_(u"Password recovery request"),
+        self.request.send_email(_(u"Password recovery request"),
                    [user.email],
-                   html,
-                   request = self.request)
+                   html)
         return self.relocate_response(self.request.resource_url(self.root))
 
 
