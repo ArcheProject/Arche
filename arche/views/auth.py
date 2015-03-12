@@ -9,6 +9,7 @@ from arche import security
 from arche.interfaces import IRegistrationTokens
 from arche.interfaces import IRoot
 from arche.views.base import BaseForm
+from arche.views.base import DefaultEditForm
 
 
 class LoginForm(BaseForm):
@@ -146,6 +147,42 @@ class RecoverPasswordForm(BaseForm):
         return self.relocate_response(self.request.resource_url(self.root))
 
 
+class UserChangePasswordForm(DefaultEditForm):
+    type_name = 'User'
+    schema_name = 'change_password'
+    title = _("Change password")
+
+    def __init__(self, context, request):
+        if request.authenticated_userid is None:
+            token = getattr(context, 'pw_token', None)
+            rtoken = request.GET.get('t', object())
+            if token == rtoken and token.valid:
+                super(UserChangePasswordForm, self).__init__(context, request)
+                try:
+                    del self.schema['current_password']
+                except KeyError:
+                    pass
+                return
+        else:
+            if request.has_permission(security.PERM_EDIT):
+                super(UserChangePasswordForm, self).__init__(context, request)
+                return
+        raise HTTPForbidden(_("Not allowed"))
+
+    def save_success(self, appstruct):
+        if getattr(self.context, 'pw_token', None) is not None:
+            self.context.pw_token = None
+        #This is the only thing that should ever be changed here!
+        self.context.update(password = appstruct['password'])
+        if self.request.authenticated_userid:
+            self.flash_messages.add(_("Password changed"))
+            return HTTPFound(location = self.request.resource_url(self.context))
+        else:
+            self.flash_messages.add(_("You've logged in and changed your password"))
+            headers = remember(self.request, self.context.userid)
+            return self.relocate_response(self.request.resource_url(self.context), headers = headers)
+
+
 def logout(context, request):
     headers = forget(request)
     request.session.delete()
@@ -171,6 +208,11 @@ def includeme(config):
     config.add_view(RecoverPasswordForm,
                     context = IRoot,
                     name = 'recover_password',
+                    permission = security.NO_PERMISSION_REQUIRED,
+                    renderer = 'arche:templates/form.pt')
+    config.add_view(UserChangePasswordForm,
+                    context = 'arche.interfaces.IUser',
+                    name = 'change_password',
                     permission = security.NO_PERMISSION_REQUIRED,
                     renderer = 'arche:templates/form.pt')
     config.add_route('logout', '/logout')

@@ -266,6 +266,7 @@ class GroupSchema(colander.Schema):
 
 
 class ChangePasswordSchema(colander.Schema):
+    #Note: Current password field should be removed when token validation or similar is used.
     current_password = colander.SchemaNode(colander.String(),
                                    title = _('Current password'),
                                    widget = deform.widget.PasswordWidget(size=20),

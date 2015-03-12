@@ -26,35 +26,6 @@ class UserAddForm(DefaultAddForm):
         return HTTPFound(location = self.request.resource_url(obj))
 
 
-class UserChangePasswordForm(DefaultEditForm):
-    type_name = 'User'
-    schema_name = 'change_password'
-    title = _("Change password")
-
-    def __init__(self, context, request):
-        if request.authenticated_userid is None:
-            token = getattr(context, 'pw_token', None)
-            rtoken = request.GET.get('t', object())
-            if token == rtoken and token.valid:
-                super(UserChangePasswordForm, self).__init__(context, request)
-                return
-        else:
-            if request.has_permission(security.PERM_EDIT):
-                super(UserChangePasswordForm, self).__init__(context, request)
-                return
-        raise HTTPForbidden(_("Not allowed"))
-
-    def save_success(self, appstruct):
-        if getattr(self.context, 'pw_token', None) is not None:
-            self.context.pw_token = None
-        #This is the only thing that should ever be changed here!
-        self.context.update(password = appstruct['password'])
-        self.flash_messages.add(_("Password changed"))
-        if self.request.authenticated_userid:
-            return HTTPFound(location = self.request.resource_url(self.context))
-        return HTTPFound(location = self.request.resource_url(self.root, 'login'))
-
-
 class UsersView(BaseView):
     """ A table listing of all users.
     """
@@ -99,11 +70,6 @@ def includeme(config):
                     name = 'add',
                     request_param = "content_type=User",
                     permission = security.PERM_MANAGE_USERS, #FIXME: Not add user perm?
-                    renderer = 'arche:templates/form.pt')
-    config.add_view(UserChangePasswordForm,
-                    context = 'arche.interfaces.IUser',
-                    name = 'change_password',
-                    permission = security.NO_PERMISSION_REQUIRED,
                     renderer = 'arche:templates/form.pt')
     config.add_view(UsersView,
                     name = 'view',
