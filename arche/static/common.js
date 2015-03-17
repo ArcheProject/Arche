@@ -103,7 +103,8 @@ arche.load_flash_messages = load_flash_messages;
 
 //Attach this to .fail on deferred objects
 function flash_error(jqXHR) {
-  arche.create_flash_message(jqXHR.status + ' ' + jqXHR.statusText, {type: 'danger'});
+  arche.create_flash_message('<h4>' + jqXHR.status + ' ' + jqXHR.statusText + '</h4>' + jqXHR.responseText,
+      {type: 'danger', auto_destruct: false});
 }
 arche.flash_error = flash_error;
 
