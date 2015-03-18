@@ -314,7 +314,7 @@ image_mime_to_title = {'image/jpeg': _("JPEG"),
 #FIXME: Add more codecs that work for web!
 
 
-def _root(request):
+def get_root(request):
     return find_root(request.context)
 
 def includeme(config):
@@ -325,7 +325,7 @@ def includeme(config):
     config.add_directive('add_content_view', add_content_view)
     config.add_directive('add_image_scale', add_image_scale)
     config.add_request_method(get_dt_handler, name = 'dt_handler', reify = True)
-    config.add_request_method(_root, name = 'root', reify = True)
+    config.add_request_method(get_root, name = 'root', reify = True)
     config.add_request_method(send_email)
     
     #Init default scales

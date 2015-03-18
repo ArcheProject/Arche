@@ -79,6 +79,7 @@ arche.modal_from_event = modal_from_event;
  */
 
 function create_flash_message(message, params) {
+  //FIXME: This doesn't work with connection errors. Simply display the flash message instead!
   if (typeof(params) === 'undefined') var params = {};
   params['message'] = message;
   var request = arche.do_request('/__flash_messages__', {type: "POST", data: params})
