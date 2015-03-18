@@ -2,6 +2,7 @@ from urllib import unquote
 import datetime
 
 from pyramid.threadlocal import get_current_request
+from pytz import common_timezones
 import colander
 import deform
 
@@ -66,7 +67,8 @@ tabs = {'': _(u"Default"),
         'metadata': _(u"Metadata"),
         'related': _(u"Related"),
         'users': _(u"Users"),
-        'groups': _(u"Groups"),}
+        'groups': _(u"Groups"),
+        'advanced': _("Advanced")}
 
 
 @colander.deferred
@@ -228,6 +230,16 @@ def deferred_timezone_description(node, kw):
     return _("Current default timezone is: '${tzname}', leave this field blank if your're okay with that.",
              mapping = {'tzname': request.dt_handler.get_default_tzname()})
 
+@colander.deferred
+def deferred_timezone_validator(node, kw):
+    return colander.OneOf(common_timezones)
+
+@colander.deferred
+def deferred_timezone_widget(node, kw):
+    return deform.widget.AutocompleteInputWidget(size=60,
+                                                 values = list(common_timezones), #It's a lazy list
+                                                 min_length=1)
+
 
 class UserSchema(colander.Schema):
     first_name = colander.SchemaNode(colander.String(),
@@ -248,9 +260,11 @@ class UserSchema(colander.Schema):
     timezone = colander.SchemaNode(colander.String(),
                                    title = _("Set custom timezone"),
                                    description = deferred_timezone_description,
-                                   #FIXME: Validator tz with babel?
+                                   validator = deferred_timezone_validator,
+                                   widget = deferred_timezone_widget,
                                    missing = "",
-                                   default = "")
+                                   default = "",
+                                   tab = "advanced")
     
 
 class AddUserSchema(UserSchema):
