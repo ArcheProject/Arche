@@ -317,6 +317,10 @@ image_mime_to_title = {'image/jpeg': _("JPEG"),
 def get_root(request):
     return find_root(request.context)
 
+def get_profile(request):
+    if request.authenticated_userid:
+        return request.root['users'].get(request.authenticated_userid, None)
+
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)
     config.add_directive('add_content_factory', add_content_factory)
@@ -326,6 +330,7 @@ def includeme(config):
     config.add_directive('add_image_scale', add_image_scale)
     config.add_request_method(get_dt_handler, name = 'dt_handler', reify = True)
     config.add_request_method(get_root, name = 'root', reify = True)
+    config.add_request_method(get_profile, name = 'profile', reify = True)
     config.add_request_method(send_email)
     
     #Init default scales
