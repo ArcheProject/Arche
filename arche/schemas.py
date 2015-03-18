@@ -20,43 +20,44 @@ from arche.widgets import ReferenceWidget
 from arche.widgets import TaggingWidget
 
 
-class DateTime(colander.DateTime):
+colander_ts = colander._
+
+
+class LocalDateTime(colander.DateTime):
     """ Override datetime to be able to handle local timezones and DST.
-        Hopefully, this sillyness will change.
+        - Fetches timezone from dt_handler.timezone
+        - Converts deserialized value to widgets default_timezone (Which should always be UTC)
     """
+
+    def _get_tz(self):
+        request = get_current_request()
+        return request.dt_handler.timezone
+
     def serialize(self, node, appstruct):
         if not appstruct:
             return colander.null
-
         if type(appstruct) is datetime.date: # cant use isinstance; dt subs date
             appstruct = datetime.datetime.combine(appstruct, datetime.time())
-
         if not isinstance(appstruct, datetime.datetime):
             raise colander.Invalid(node,
-                          _('"${val}" is not a datetime object',
+                          colander_ts('"${val}" is not a datetime object',
                             mapping={'val':appstruct})
                           )
-
         if appstruct.tzinfo is None:
             appstruct = appstruct.replace(tzinfo=self.default_tzinfo)
-
-        request = get_current_request()
-        appstruct = request.dt_handler.normalize(appstruct)
+        appstruct = appstruct.astimezone(self._get_tz())
         return appstruct.isoformat()
 
     def deserialize(self, node, cstruct):
         if not cstruct:
             return colander.null
-
-        #Split time and figure out if minutes and seconds  are part of the structure
-        pattern = "%Y-%m-%dT"
-        time = cstruct.split('T')[1]
-        if time:
-            parts = ('%H', '%M', '%S')
-            pattern += ":".join(parts[:len(time.split(':'))])
-        request = get_current_request()
-        res = request.dt_handler.string_convert_dt(cstruct, pattern = pattern)
-        return request.dt_handler.tz_to_utc(res) #ALWAYS save UTC!
+        try:
+            result = colander.iso8601.parse_date(
+                cstruct, default_timezone = self._get_tz())
+        except colander.iso8601.ParseError as e:
+            raise colander.Invalid(node, colander_ts(self.err_template,
+                                                     mapping={'val':cstruct, 'err':e}))
+        return result.astimezone(self.default_tzinfo) #ALWAYS save UTC!
 
 
 #FIXME: This will change later
@@ -110,7 +111,7 @@ def tagging_userids_widget(node, kw):
 @colander.deferred
 def default_now(node, kw):
     request = kw['request']
-    return request.dt_handler.utcnow()
+    return request.dt_handler.localnow()
 
 def to_lowercase(value):
     if isinstance(value, basestring):
@@ -136,7 +137,7 @@ class DCMetadataSchema(colander.Schema):
                                       widget = tagging_userids_widget,
                                       tab = 'metadata',
                                       missing = ())
-    created = colander.SchemaNode(DateTime(),
+    created = colander.SchemaNode(LocalDateTime(),
                                   default = default_now,
                                   missing = colander.null,
                                   tab = 'metadata')
@@ -149,7 +150,7 @@ class DCMetadataSchema(colander.Schema):
     publisher = colander.SchemaNode(colander.String(),
                                     missing = "",
                                   tab = 'metadata')
-    date = colander.SchemaNode(DateTime(),
+    date = colander.SchemaNode(LocalDateTime(),
                                title = _(u"Date"),
                                description = _(u"Publish date, or used for sorting"),
                                default = default_now,
@@ -221,6 +222,13 @@ class DocumentSchema(BaseSchema, DCMetadataSchema):
                                       description = u"If anything exist that will render a byline, like the Byline portlet.",)
 
 
+@colander.deferred
+def deferred_timezone_description(node, kw):
+    request = kw['request']
+    return _("Current default timezone is: '${tzname}', leave this field blank if your're okay with that.",
+             mapping = {'tzname': request.dt_handler.get_default_tzname()})
+
+
 class UserSchema(colander.Schema):
     first_name = colander.SchemaNode(colander.String(),
                                      title = _(u"First name"),
@@ -237,6 +245,12 @@ class UserSchema(colander.Schema):
                                        title = _(u"Profile image"),
                                        validator = supported_thumbnail_mimetype,
                                        widget = FileAttachmentWidget())
+    timezone = colander.SchemaNode(colander.String(),
+                                   title = _("Set custom timezone"),
+                                   description = deferred_timezone_description,
+                                   #FIXME: Validator tz with babel?
+                                   missing = "",
+                                   default = "")
     
 
 class AddUserSchema(UserSchema):

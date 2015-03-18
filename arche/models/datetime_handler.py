@@ -23,25 +23,46 @@ class DateTimeHandler(object):
     timezone = None
 
     def __init__(self, request = None, tz_name = None, locale = None):
+        """ The keyword arguments are mostly ment for tests.
+            Normally this method is accessed as an attribute
+            of the request object it wraps.
+        """
         if request is None:
             request = get_current_request()
         self.request = request
-        if tz_name is None:
-            tz_name = request.registry.settings.get('arche.timezone', 'UTC')
-        try:
-            self.timezone = pytz.timezone(tz_name)
-        except pytz.UnknownTimeZoneError:
-            self.timezone = pytz.timezone('UTC')
+        self.timezone = self.get_timezone(tz_name = tz_name)
         if locale is None:
             locale = request.locale_name
         self.locale = locale
 
-    def normalize(self, value):
-        return self.timezone.normalize(value.astimezone(self.timezone))
+    def get_timezone(self, tz_name = None):
+        try:
+            return self.request.session['__timezone__']
+        except KeyError:
+            if tz_name is None:
+                tz_name = self.get_tzname()
+            self.request.session['__timezone__'] = tz = pytz.timezone(tz_name)
+            return tz
+
+    def get_tzname(self):
+        """ Fetch timezone from user profile, default settings or simply set utc. """
+        if self.request.authenticated_userid:
+            user = self.request.root['users']. get(self.request.authenticated_userid)
+            tz_name = getattr(user, 'timezone', None)
+            if tz_name != None:
+                return tz_name
+        return self.get_default_tzname()
+
+    def get_default_tzname(self):
+        return self.request.registry.settings.get('arche.timezone', 'UTC')
+
+    def reset_timezone(self):
+        self.request.session.pop('__timezone__', None)
+        self.timezone = self.get_timezone()
 
     def format_dt(self, value, format='short', parts = 'dt', localtime = True):
         if localtime:
-            dt = self.normalize(value)
+            dt = value.astimezone(self.timezone)
         else:
             dt = value
         if parts == 'd':
@@ -49,10 +70,6 @@ class DateTimeHandler(object):
         if parts == 't':
             return format_time(dt, format = format, locale = self.locale)
         return format_datetime(dt, format = format, locale = self.locale)
-
-    def string_convert_dt(self, value, pattern = "%Y-%m-%dT%H:%M:%S"):
-        """ Convert a string to a localized datetime. """
-        return self.timezone.localize(datetime.strptime(value, pattern))
 
     def utcnow(self):
         return utcnow()

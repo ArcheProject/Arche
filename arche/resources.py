@@ -13,6 +13,7 @@ from repoze.folder import Folder
 from zope.component.event import objectEventNotify
 from zope.interface import implementer
 from colander import null
+from six import string_types
 
 from arche import _
 from arche.models.catalog import create_catalog
@@ -377,6 +378,7 @@ class User(Content, LocalRolesMixin, ContextACLMixin):
     add_permission = "Add %s" % type_name
     pw_token = None
     icon = u"user"
+    __timezone__ = None
 
     @property
     def title(self):
@@ -399,6 +401,20 @@ class User(Content, LocalRolesMixin, ContextACLMixin):
     @image_data.setter
     def image_data(self, value):
         IBlobs(self).create_from_formdata('image', value)
+
+    @property
+    def timezone(self):
+        return getattr(self, '__timezone__', None)
+    @timezone.setter
+    def timezone(self, value):
+        if value:
+            assert isinstance(value, string_types), "Must be a string"
+            setattr(self, '__timezone__', value)
+        else:
+            setattr(self, '__timezone__', None)
+        #Invalidate tz cache
+        req = get_current_request()
+        req.dt_handler.reset_timezone()
 
 
 @implementer(IGroups)
