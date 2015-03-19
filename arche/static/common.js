@@ -52,6 +52,7 @@ function create_modal(url) {
     arche.flash_error(jqXHR);
     arche.destroy_modal();
   })
+  return request;
 }
 arche.create_modal = create_modal;
 
@@ -69,7 +70,11 @@ function modal_from_event(event) {
   if (typeof(url) == 'undefined') {
     throw "couldn't find any href attribute to load a modal window from on " + elem;
   }
-  arche.create_modal(url);
+  arche.actionmarker_feedback(elem, true);
+  var request = arche.create_modal(url);
+  request.always(function() {
+    arche.actionmarker_feedback(elem, false);
+  })
 }
 arche.modal_from_event = modal_from_event;
 
@@ -109,9 +114,24 @@ function flash_error(jqXHR) {
 }
 arche.flash_error = flash_error;
 
+/* Things performing ajax actions can have this function showing status for them.
+ * Add an element within the structure you pass to it. Example:
+ * <span data-actionmarker="glyphicon glyphicon-refresh rotate-me"></span>
+ * 
+ * The data-actionmarker values will be added as classes to the span
+ */
+function actionmarker_feedback(elem, active) {
+  $(elem).find('[data-actionmarker]').each(function() {
+    if (active == true) {
+      $(this).addClass($(this).data('actionmarker'));
+    } else {
+      $(this).removeClass($(this).data('actionmarker'));
+    }
+  })
+}
+arche.actionmarker_feedback = actionmarker_feedback;
+
 $(document).ready(function() {
   // Modal window listener for links with href defined
-  $('body').on('click', "[data-open-modal]", function(event) {
-    arche.modal_from_event(event);
-  });
+  $('body').on('click', "[data-open-modal]", arche.modal_from_event);
 });

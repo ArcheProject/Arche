@@ -1,18 +1,16 @@
 .dashed-border { border: #ccc 1px dashed; }
 
-
 .navbar-brand.arche-logo {
     padding-top: 5px;
     padding-bottom: 5px;
 }
 
 .rotate-me {
-  -webkit-animation: rotation .6s infinite linear;
-  -moz-animation: rotation .6s infinite linear;
-  -o-animation: rotation .6s infinite linear;
-  animation: rotation .6s infinite linear;
+  -webkit-animation: rotation 2s infinite linear;
+  -moz-animation: rotation 2s infinite linear;
+  -o-animation: rotation 2s infinite linear;
+  animation: rotation 2s infinite linear;
 }
-
 @-webkit-keyframes rotation {
   from {-webkit-transform: rotate(0deg);}
   to {-webkit-transform: rotate(359deg);}
