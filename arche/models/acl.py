@@ -87,7 +87,6 @@ class ACLRegistry(IterableUserDict):
             self.data[key] = aclentry
         else:
             raise TypeError("Can only have ACLEntries or strings (links to other ACL Entries as value, got %r)" % aclentry)
-        
 
     def get_acl(self, acl_name):
         acl = self.get(acl_name, None)
@@ -98,6 +97,7 @@ class ACLRegistry(IterableUserDict):
             return acl()
         except TypeError: #pragma: no coverage
             #Only when something is badly configured. Should only happen during testing
+            logger.info("ACLRegistry has no registered type %r" % acl_name)
             return (DENY_ALL,)
 
     def is_linked(self, acl_name):
