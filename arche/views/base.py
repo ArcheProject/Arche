@@ -33,7 +33,6 @@ from arche.fanstatic_lib import respond_js
 from arche.interfaces import IBaseView
 from arche.interfaces import IContentView
 from arche.interfaces import IFolder
-from arche.interfaces import IThumbnails
 from arche.portlets import get_portlet_manager
 from arche.utils import generate_slug
 from arche.utils import get_addable_content
@@ -221,7 +220,7 @@ class BaseForm(BaseView, FormView):
         if not schema:
             schema_factory = self.get_schema_factory(self.type_name, self.schema_name)
             if not schema_factory:
-                err = "Schema type '%s' not registered for content type '%s'." %\
+                err = "Schema type '%s' not registered for content type '%s'." % \
                       (self.schema_name, self.type_name)
                 raise HTTPForbidden(err)
             schema = schema_factory()
@@ -302,7 +301,7 @@ class BaseForm(BaseView, FormView):
         return HTTPFound(location = url, **kw)
 
     def cancel(self, *args):
-        return self.relocate_response(self.request.resource_url(self.context, msg = self.default_cancel))
+        return self.relocate_response(self.request.resource_url(self.context), msg = self.default_cancel)
     cancel_success = cancel_failure = cancel
 
 
@@ -360,7 +359,7 @@ class DefaultEditForm(BaseForm):
 
 
 class DefaultDeleteForm(BaseForm):
-    appstruct =lambda x: {}
+    appstruct = lambda x: {}
     schema_name = u'delete'
     
     @property
