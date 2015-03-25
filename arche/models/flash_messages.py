@@ -17,7 +17,7 @@ class FlashMessages(object):
     def __init__(self, request):
         self.request = request
 
-    def add(self, msg, type='info', dismissable = True, auto_destruct = True, require_commit = True):
+    def add(self, msg, type='info', auto_destruct = True, require_commit = True):
         """ Add a flash message to the session.
         
             msg
@@ -37,12 +37,7 @@ class FlashMessages(object):
                 This is usually a good idea, except for error messages that should be displayed
                 when something actually goes wrong.
         """
-        css_classes = ['alert']
-        css_classes.append('alert-%s' % type)
-        if dismissable:
-            css_classes.append('alert-dismissable')
-        css_classes = " ".join(css_classes)
-        flash = {'msg':msg, 'dismissable': dismissable, 'css_classes': css_classes, 'auto_destruct': auto_destruct}
+        flash = {'msg':msg, 'type': type, 'auto_destruct': auto_destruct}
         if require_commit:
             def hook(success):
                 if success:
@@ -57,6 +52,7 @@ class FlashMessages(object):
             yield message
 
     def render(self):
+        #DEPRECATED
         response = {'get_messages': self.get_messages}
         return render("arche:templates/flash_messages.pt", response, request = self.request)
 

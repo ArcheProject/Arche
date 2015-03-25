@@ -3,8 +3,9 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
-<div class="${msg['css_classes']}" tal:repeat="msg get_messages()" id="${msg['id']}">
-  <button type="button" class="close" data-dismiss="alert" aria-hidden="true" tal:condition="msg['dismissable']">&times;</button>
+<!-- Deprecated and will be removed -->
+<div class="alert-dismissable alert alert-${msg['type']}" tal:repeat="msg get_messages()" id="${msg['id']}">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
   <tal:msg replace="structure msg['msg']">Message here</tal:msg>
   <script type="text/javascript" tal:condition="msg['auto_destruct']">
     //Remove message after 3 seconds & cleanup
