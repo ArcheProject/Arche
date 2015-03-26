@@ -12,7 +12,6 @@ from pyramid.httpexceptions import HTTPNotFound
 from pyramid.renderers import get_renderer
 from pyramid.renderers import render
 from pyramid.response import Response
-from pyramid.traversal import find_resource
 from pyramid.traversal import lineage
 from pyramid.view import render_view_to_response
 from pyramid_deform import FormView
@@ -45,7 +44,7 @@ from arche.utils import get_view
 
 @implementer(IBaseView)
 class BaseView(object):
-    
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -90,15 +89,7 @@ class BaseView(object):
         return results
 
     def resolve_docids(self, docids, perm = security.PERM_VIEW):
-        if isinstance(docids, basestring):
-            docids = (docids,)
-        for docid in docids:
-            path = self.root.document_map.address_for_docid(docid)
-            obj = find_resource(self.root, path)
-            #FIXME: Have perm check here?
-            if perm and not self.request.has_permission(perm, obj):
-                continue
-            yield obj
+        return self.request.resolve_docids(docids, perm = perm)
 
     def resolve_uid(self, uid, perm = security.PERM_VIEW):
         for obj in self.catalog_search(resolve = True, uid = uid, perm = perm):
@@ -361,7 +352,7 @@ class DefaultEditForm(BaseForm):
 class DefaultDeleteForm(BaseForm):
     appstruct = lambda x: {}
     schema_name = u'delete'
-    
+
     @property
     def title(self):
         return _("Delete " + self.context.title + " ( " + self.context.type_name + " ) ?")
@@ -411,10 +402,10 @@ class DynamicView(BaseForm, ContentView):
 
 
 class DefaultView(BaseView):
-    
+
     def __call__(self):
         return {}
-    
+
 
 def delegate_content_view(context, request):
     delegate_view = getattr(context, 'delegate_view', False)
@@ -461,7 +452,7 @@ def set_delegate_view(context, request, name = None):
         context.delegate_view = name
         title = getattr(context[name], 'title', context[name].__name__)
         fm.add(_("View delegated to '${title}'",
-             mapping = {'title': title}))
+                 mapping = {'title': title}))
     else:
         context.delegate_view = None
         fm.add(_("Normal view restored"))
@@ -499,16 +490,13 @@ def includeme(config):
                     renderer = 'arche:templates/form.pt')
     config.add_view(delegate_content_view,
                     context = 'arche.interfaces.IContent',
-                    permission = security.NO_PERMISSION_REQUIRED,
-                    )
+                    permission = security.NO_PERMISSION_REQUIRED,)
     config.add_view(set_view,
                     name = 'set_view',
                     context = 'arche.interfaces.IContent',
-                    permission = security.PERM_MANAGE_SYSTEM,
-                    )
+                    permission = security.PERM_MANAGE_SYSTEM,)
     config.add_view(set_delegate_view,
                     name = 'set_delegate_view',
                     context = 'arche.interfaces.IContent',
-                    permission = security.PERM_MANAGE_SYSTEM,
-                    )
+                    permission = security.PERM_MANAGE_SYSTEM,)
     config.add_content_view('Document', 'dynamic_view', DynamicView)

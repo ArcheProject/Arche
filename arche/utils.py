@@ -11,6 +11,7 @@ from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
 from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
+from pyramid.traversal import find_resource
 from pyramid.traversal import find_root
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
@@ -32,13 +33,14 @@ from arche.interfaces import (IFlashMessages,
                               IContentView)
 from arche.models.blob import BlobFile #Keep untill db changed
 from arche.models.mimetype_views import get_mimetype_views #b/c
+from arche.security import PERM_VIEW
 
 
 def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
     """ Add a class as a content factory. It will be addable through the add menu
         for anyone with the correct add permission, in a context where it's marked
         as addable. You may set an addable context here as well.
-        
+
         Example:
             config.add_content_factory(MyClass, addable_to = ('Root', 'Document',), addable_in = 'Image')
     """
@@ -248,7 +250,7 @@ def utcnow():
 def send_email(request, subject, recipients, html, sender = None, plaintext = None, send_immediately = False, **kw):
     """ Send an email to users. This also checks the required settings and translates
         the subject.
-        
+
         returns the message object sent, or None
     """
     if isinstance(subject, TranslationString):
@@ -281,7 +283,7 @@ def send_email(request, subject, recipients, html, sender = None, plaintext = No
 
 class AttributeAnnotations(IterableUserDict):
     """ Handles a named storage for keys/values. It's always a named adapter
-        and the name attribute should be the same as the name it was registered with. 
+        and the name attribute should be the same as the name it was registered with.
     """
     attr_name = None
 
@@ -321,6 +323,17 @@ def get_profile(request):
     if request.authenticated_userid:
         return request.root['users'].get(request.authenticated_userid, None)
 
+def resolve_docids(request, docids, perm = PERM_VIEW):
+    if isinstance(docids, string_types):
+        docids = (docids,)
+    for docid in docids:
+        path = request.root.document_map.address_for_docid(docid)
+        obj = find_resource(request.root, path)
+        #FIXME: Have perm check here?
+        if perm and not request.has_permission(perm, obj):
+            continue
+        yield obj
+
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)
     config.add_directive('add_content_factory', add_content_factory)
@@ -332,7 +345,7 @@ def includeme(config):
     config.add_request_method(get_root, name = 'root', reify = True)
     config.add_request_method(get_profile, name = 'profile', reify = True)
     config.add_request_method(send_email)
-    
+    config.add_request_method(resolve_docids)
     #Init default scales
     for (name, scale) in image_scales.items():
         config.add_image_scale(name, *scale)
