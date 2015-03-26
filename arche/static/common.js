@@ -3,6 +3,11 @@ arche = {};
 arche.flash_slot_order = ['modal', 'main'];
 arche.default_flash_timer = 3000;
 
+// Disable cache functionality. To enable this we need proper cache headers on responses
+$.ajaxSetup ({
+  cache: false
+});
+
 function do_request(url, options) {
     var settings = {url: url, async: true};
     if (typeof(options) !== 'undefined') $.extend(settings, options);
