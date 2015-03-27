@@ -19,6 +19,8 @@ from zope.component.event import objectEventNotify
 from zope.interface import implementer
 import colander
 import deform
+from pyramid.traversal import find_root
+
 
 from arche import _
 from arche import security
@@ -57,7 +59,11 @@ class BaseView(object):
 
     @property
     def root(self):
-        return self.request.root
+        try:
+            return self.request.root
+        except AttributeError:
+            #To avoid all test fixtures...
+            return find_root(self.context)
 
     @reify
     def flash_messages(self):
