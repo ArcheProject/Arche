@@ -1,27 +1,34 @@
+import re
+
 from pyramid.traversal import find_root
 import colander
+from pyramid.threadlocal import get_current_request
 
 from arche import _
 from arche.interfaces import IUser
 from arche.interfaces import IUsers
 from arche.utils import check_unique_name
-from arche.utils import generate_slug
 from arche.utils import hash_method
 from arche.utils import image_mime_to_title
-from pyramid.threadlocal import get_current_request
+
+
+NEW_USERID_PATTERN = re.compile(r'^[a-z]{1}[a-z0-9\-\_]{2,29}$')
+
 
 @colander.deferred
 def unique_context_name_validator(node, kw):
     return UniqueContextNameValidator(kw['context'], kw['request'])
 
 @colander.deferred
-def unique_userid_validator(node, kw):
+def new_userid_validator(node, kw):
     root = find_root(kw['context'])
     request = kw['request']
-    return UniqueUserIDValidator(root['users'], request)
+    validator = request.registry.settings['arche.new_userid_validator']
+    return validator(root['users'], request)
 
 
 class _BaseValidator(object):
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -33,14 +40,19 @@ class UniqueContextNameValidator(_BaseValidator):
             raise colander.Invalid(node, msg = _(u"Already used within this context"))
 
 
-class UniqueUserIDValidator(_BaseValidator):
+class NewUserIDValidator(_BaseValidator):
     def __call__(self, node, value):
         assert IUsers.providedBy(self.context), "Can only be used on a Users object."
-        if value in self.context:
-            msg = _("Already taken")
+        if value != value.lower():
+            msg = _("Please use lowercase only.")
             raise colander.Invalid(node, msg = msg)
-        if generate_slug(self.context, value) != value:
-            raise colander.Invalid(node, msg = _("Use lowercase with only a-z or numbers."))
+        if not check_unique_name(self.context, self.request, value):
+            msg = _("Already taken or conflicts with a restricted name.")
+            raise colander.Invalid(node, msg = msg)
+        if not NEW_USERID_PATTERN.match(value):
+            msg = _('userid_char_error',
+                    default = "UserID must be 3-30 chars, start with lowercase a-z and only contain lowercase a-z, numbers, minus and underscore.")
+            raise colander.Invalid(node, msg = msg)
 
 
 @colander.deferred
@@ -52,10 +64,10 @@ def login_password_validator(form, kw):
 
 class LoginPasswordValidator(object):
     """ Validate a password during login. context must be site root."""
-    
+
     def __init__(self, context):
         self.context = context
-        
+
     def __call__(self, form, value):
         exc = colander.Invalid(form, u"Login invalid") #Raised if trouble
         password = value['password']
@@ -153,7 +165,7 @@ class CurrentPasswordValidator(object):
     def __init__(self, context):
         assert IUser.providedBy(context) # pragma : no cover
         self.context = context
-    
+
     def __call__(self, node, value):
         if not hash_method(value, hashed = self.context.password) == self.context.password:
             raise colander.Invalid(node, _("Wrong password. Remember that passwords are case sensitive."))

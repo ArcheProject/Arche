@@ -14,7 +14,7 @@ from arche.validators import existing_userid_or_email
 from arche.validators import login_password_validator
 from arche.validators import supported_thumbnail_mimetype
 from arche.validators import unique_email_validator
-from arche.validators import unique_userid_validator
+from arche.validators import new_userid_validator
 from arche.widgets import DropzoneWidget
 from arche.widgets import FileAttachmentWidget
 from arche.widgets import ReferenceWidget
@@ -253,11 +253,11 @@ class UserSchema(colander.Schema):
                                 preparer = to_lowercase,
                                 validator = colander.Email())
     image_data = colander.SchemaNode(deform.FileData(),
-                                       missing = colander.null,
-                                       blob_key = 'image',
-                                       title = _(u"Profile image"),
-                                       validator = supported_thumbnail_mimetype,
-                                       widget = FileAttachmentWidget())
+                                     missing = colander.null,
+                                     blob_key = 'image',
+                                     title = _(u"Profile image"),
+                                     validator = supported_thumbnail_mimetype,
+                                     widget = FileAttachmentWidget())
     timezone = colander.SchemaNode(colander.String(),
                                    title = _("Set custom timezone"),
                                    description = deferred_timezone_description,
@@ -270,7 +270,8 @@ class UserSchema(colander.Schema):
 
 class AddUserSchema(UserSchema):
     userid = colander.SchemaNode(colander.String(),
-                                 validator = unique_userid_validator)
+                                 title = _("UserID"),
+                                 validator = new_userid_validator)
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
                                    widget = deform.widget.CheckedPasswordWidget())
@@ -290,8 +291,7 @@ class GroupSchema(colander.Schema):
                           title = _(u"UserID"),
                           name = u"not_used",
                           widget = userid_hinder_widget,),
-                  title = _(u"Members"),
-                  )
+                  title = _(u"Members"),)
 
 
 class ChangePasswordSchema(colander.Schema):
@@ -311,6 +311,7 @@ class InitialSetup(colander.Schema):
                                 default = _(u"A site made with Arche"))
     userid = colander.SchemaNode(colander.String(),
                                  title = _(u"Admin userid"),
+                                 validator = new_userid_validator,
                                  default = u"admin")
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Admins email adress"),
@@ -355,8 +356,7 @@ class RegistrationSchema(colander.Schema):
 class FinishRegistrationSchema(colander.Schema):
     userid = colander.SchemaNode(colander.String(),
                                  title = _(u"UserID"),
-                                 preparer = to_lowercase,
-                                 validator = unique_userid_validator)
+                                 validator = new_userid_validator)
     first_name = colander.SchemaNode(colander.String(),
                                      title = _(u"First name"),
                                      missing = u"")

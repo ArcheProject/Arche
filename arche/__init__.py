@@ -13,10 +13,11 @@ logger = getLogger(__name__)
 default_settings = {
     'arche.hash_method': 'arche.security.sha512_hash_method',
     'arche.includes': '',
- #   'arche.favicon': 'arche:static/favicon.ico',
+#   'arche.favicon': 'arche:static/favicon.ico',
     'arche.debug': False,
     'arche.timezone': 'UTC', #Default timezone
     'arche.cache_max_age': 24*60*60, #seconds
+    'arche.new_userid_validator': 'arche.validators.NewUserIDValidator',
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
 }
@@ -44,6 +45,8 @@ def includeme(config):
     #Resolve strings
     if isinstance(settings['arche.hash_method'], str):
         settings['arche.hash_method'] = config.name_resolver.resolve(settings['arche.hash_method'])
+    if isinstance(settings['arche.new_userid_validator'], str):
+        settings['arche.new_userid_validator'] = config.name_resolver.resolve(settings['arche.new_userid_validator'])
         
     #WARNING! deform_autoneed will change, so this code will be removed later on.
     from deform_autoneed import resource_registry

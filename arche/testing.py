@@ -4,6 +4,13 @@ from pyramid_mailer.interfaces import IMailer
 from zope.interface import implementer
 
 
+def barebone_fixture(config):
+    from arche.api import Root
+    from arche.api import Users
+    root = Root()
+    root['users'] = Users()
+    return root
+
 def setup_auth(config, userid = None, debug = True):
     from arche.security import groupfinder
     config.set_authorization_policy(ACLAuthorizationPolicy())
@@ -13,13 +20,11 @@ def setup_auth(config, userid = None, debug = True):
     ap.callback = groupfinder
     config.set_authentication_policy(ap)
 
-
 def printing_mailer(config):
     """ Temporary: This is only while waiting for the release of pyramid_mailer's debug mode. """
     print "\nWARNING! Using printing mailer - no mail will be sent!\n"
     mailer = PrintingMailer()
     config.registry.registerUtility(mailer)
-
 
 @implementer(IMailer)
 class PrintingMailer(object):
@@ -42,6 +47,7 @@ class PrintingMailer(object):
         print "---"
 
     send_to_queue = send_immediately = send
+
 
 def includeme(config):
     """ Setup minimal basics for running tests. """
