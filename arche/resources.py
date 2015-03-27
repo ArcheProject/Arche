@@ -363,6 +363,7 @@ class Users(Content, LocalRolesMixin, ContextACLMixin):
 
     def get_user_by_email(self, email, default = None):
         #FIXME use catalog instead?
+        email = email.lower()
         for user in self.values():
             if email == user.email:
                 return user

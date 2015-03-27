@@ -250,6 +250,7 @@ class UserSchema(colander.Schema):
                                     missing = u"")
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Email adress"),
+                                preparer = to_lowercase,
                                 validator = colander.Email())
     image_data = colander.SchemaNode(deform.FileData(),
                                        missing = colander.null,
@@ -313,6 +314,7 @@ class InitialSetup(colander.Schema):
                                  default = u"admin")
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Admins email adress"),
+                                preparer = to_lowercase,
                                 validator = colander.Email())
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Admins password"),
@@ -369,6 +371,7 @@ class FinishRegistrationSchema(colander.Schema):
 
 class RecoverPasswordSchema(colander.Schema):
     email_or_userid = colander.SchemaNode(colander.String(),
+                                          preparer = to_lowercase,
                                           validator = existing_userid_or_email,
                                           title = _(u"Email or UserID"),)
 
