@@ -310,8 +310,7 @@ class InitialSetup(colander.Schema):
                                 title = _(u"Site title"),
                                 default = _(u"A site made with Arche"))
     userid = colander.SchemaNode(colander.String(),
-                                 title = _(u"Admin userid"),
-                                 validator = new_userid_validator,
+                                 title = _(u"Admin userid - use lowercase!"),
                                  default = u"admin")
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Admins email adress"),

@@ -15,6 +15,7 @@ default_settings = {
     'arche.includes': '',
 #   'arche.favicon': 'arche:static/favicon.ico',
     'arche.debug': False,
+    'arche.use_exception_views': True,
     'arche.timezone': 'UTC', #Default timezone
     'arche.cache_max_age': 24*60*60, #seconds
     'arche.new_userid_validator': 'arche.validators.NewUserIDValidator',

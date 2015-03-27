@@ -4,6 +4,7 @@ from pyramid.security import remember
 from arche.views.base import DefaultEditForm
 from arche import security
 from arche import _
+from arche.interfaces import IInitialSetup
 
 
 class InitialSetupForm(DefaultEditForm):
@@ -20,6 +21,6 @@ class InitialSetupForm(DefaultEditForm):
 
 def includeme(config):
     config.add_view(InitialSetupForm,
-                    context = 'arche.interfaces.IInitialSetup',
+                    context = IInitialSetup,
                     permission = security.NO_PERMISSION_REQUIRED,
                     renderer = 'arche:templates/initial_setup.pt')

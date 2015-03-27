@@ -18,7 +18,7 @@
                     portlets_bottom view.render_portlet_slot('bottom');
                     main_cols 12 - int(bool(portlets_left))*3 - int(bool(portlets_right))*3;">
 
-    <nav tal:replace="structure view.render_template('arche:templates/navigation.pt')" />
+    <nav metal:define-slot="navigation" tal:replace="structure view.render_template('arche:templates/navigation.pt')" />
 
     <div class="container">
       <div class="row">

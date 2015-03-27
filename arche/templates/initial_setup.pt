@@ -2,10 +2,8 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      metal:define-macro="main"
       i18n:domain="Arche">
   <head>
-    <tal:head replace="structure view.render_template('arche:templates/head.pt')" />
     <metal:head define-slot="head"></metal:head>
   </head>
 

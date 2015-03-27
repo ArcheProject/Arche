@@ -6,7 +6,6 @@ def includeme(config):
     config.include('arche.views.base')
     config.include('arche.views.contents')
     config.include('arche.views.cut_copy_paste')
-    config.include('arche.views.exceptions')
     config.include('arche.views.file')
     config.include('arche.views.flash_messages')
     config.include('arche.views.groups')
@@ -24,3 +23,5 @@ def includeme(config):
     config.include('arche.views.users')
     config.include('arche.views.view_settings')
     config.include('arche.views.workflow')
+    if config.registry.settings.get('use_exception_views', False):
+        config.include('arche.views.exceptions')
