@@ -27,8 +27,6 @@ from arche.events import ViewInitializedEvent
 from arche.fanstatic_lib import common_js
 from arche.fanstatic_lib import html5shiv_js
 from arche.fanstatic_lib import main_css
-from arche.fanstatic_lib import picturefill_js
-from arche.fanstatic_lib import respond_js
 from arche.interfaces import IBaseView
 from arche.interfaces import IContentView
 from arche.interfaces import IFolder
@@ -40,6 +38,8 @@ from arche.utils import get_content_schemas
 from arche.utils import get_content_views
 from arche.utils import get_flash_messages
 from arche.utils import get_view
+from arche.utils import resolve_docids
+
 
 
 @implementer(IBaseView)
@@ -51,9 +51,7 @@ class BaseView(object):
         need_lib('basic')
         main_css.need()
         common_js.need()
-        picturefill_js.need()
         html5shiv_js.need()
-        respond_js.need()
         view_event = ViewInitializedEvent(self)
         objectEventNotify(view_event)
 
@@ -89,7 +87,10 @@ class BaseView(object):
         return results
 
     def resolve_docids(self, docids, perm = security.PERM_VIEW):
-        return self.request.resolve_docids(docids, perm = perm)
+        """ Also available as a request method, like:
+            request.resolve_docids(docids, perm = perm)
+        """
+        return resolve_docids(self.request, docids, perm = perm)
 
     def resolve_uid(self, uid, perm = security.PERM_VIEW):
         for obj in self.catalog_search(resolve = True, uid = uid, perm = perm):
