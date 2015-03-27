@@ -242,7 +242,6 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
 
     def __init__(self, data=None, **kwargs):
         create_catalog(self)
-        self.__site_settings__ = OOBTree()
         super(Root, self).__init__(data=data, **kwargs)
 
     @property
@@ -268,8 +267,7 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
     def site_settings(self): return getattr(self, '__site_settings__', {})
     @site_settings.setter
     def site_settings(self, value):
-        self.__site_settings__.clear()
-        self.__site_settings__.update(value)
+        self.__site_settings__ = OOBTree(value)
 
 
 @implementer(IDocument, IThumbnailedContent)
