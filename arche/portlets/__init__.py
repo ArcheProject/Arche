@@ -171,6 +171,12 @@ class PortletManager(IterableUserDict):
                 results.append(output)
         return results
 
+    def __repr__(self):
+        return "<%s with %r>" % (self.__class__.__name__, self.keys())
+
+    def __nonzero__(self):
+        return True
+
 
 def get_portlet_slots(registry = None):
     if registry is None:
