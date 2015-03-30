@@ -27,3 +27,7 @@
   from {transform: rotate(0deg);}
   to {transform: rotate(359deg);}
 }
+
+/* Add a glyphicon-collapse-toggle inside the link of something collapsible to use this */
+.glyphicon-collapse-toggle:before { content: "\e160"; } /*collapse-up*/
+.collapsed > .glyphicon-collapse-toggle:before { content: "\e159"; } /*collapse-down*/
