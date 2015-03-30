@@ -52,23 +52,9 @@ def includeme(config):
     for name in resolvable_methods:
         if isinstance(settings[name], string_types):
             settings[name] = config.name_resolver.resolve(settings[name])
-    #WARNING! deform_autoneed will change, so this code will be removed later on.
-    from deform_autoneed import resource_registry
-    #Replace bootstrap css
-    from js.bootstrap import bootstrap_css
-    bootstrap_css_path = 'deform:static/css/bootstrap.min.css'
-    if resource_registry.find_resource(bootstrap_css_path):
-        resource_registry.replace_resource(bootstrap_css_path, bootstrap_css)
-    #Replace jquery
-    from js.jquery import jquery
-    jquery_path = 'deform:static/scripts/jquery-2.0.3.min.js'
-    if resource_registry.find_resource(jquery_path):
-        resource_registry.replace_resource(jquery_path, jquery)
-    #Replace bootstrap js
-    from js.bootstrap import bootstrap_js
-    bootstrap_js_path = 'deform:static/scripts/bootstrap.min.js'
-    if resource_registry.find_resource(bootstrap_js_path):
-        resource_registry.replace_resource(bootstrap_js_path, bootstrap_js)
+
+    #Inject dependencies in deform
+    config.include('.fanstatic_lib')
 
     #Include other arche plugins
     for package in config.registry.settings.get('arche.includes', '').strip().splitlines():

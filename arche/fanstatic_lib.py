@@ -1,8 +1,12 @@
+from deform_autoneed import resource_registry
 from fanstatic import Library
 from fanstatic import Resource
-from js.jquery import jquery
-from js.bootstrap import bootstrap_css
 from fanstatic.core import render_js
+from js.bootstrap import bootstrap_css
+from js.bootstrap import bootstrap_js
+from js.jquery import jquery
+
+#Note: A lot of the code here is under developent and review. Don't depend too much on this.
 
 library = Library('arche', 'static')
 
@@ -19,9 +23,24 @@ picturefill_js = Resource(library, "picturefill.js")
 
 pure_js = Resource(library, 'pure.js', minified = 'pure.min.js', depends = (jquery,))
 
-
 #IE8 fixes for Twitter Bootstrap
 def render_conditional_comment_js(url, condition = 'lt', version = '9'):
     return '<!--[if %s IE %s]>%s<![endif]-->' % (condition, version, render_js(url))
 html5shiv_js = Resource(library, "html5shiv.min.js", renderer = render_conditional_comment_js)
 respond_js = Resource(library, "respond.min.js", renderer = render_conditional_comment_js)
+
+def includeme(config):
+    #WARNING! deform_autoneed will change, so this code will be removed later on.
+
+    #Replace bootstrap css
+    bootstrap_css_path = 'deform:static/css/bootstrap.min.css'
+    if resource_registry.find_resource(bootstrap_css_path):
+        resource_registry.replace_resource(bootstrap_css_path, bootstrap_css)
+    #Replace jquery
+    jquery_path = 'deform:static/scripts/jquery-2.0.3.min.js'
+    if resource_registry.find_resource(jquery_path):
+        resource_registry.replace_resource(jquery_path, jquery)
+    #Replace bootstrap js
+    bootstrap_js_path = 'deform:static/scripts/bootstrap.min.js'
+    if resource_registry.find_resource(bootstrap_js_path):
+        resource_registry.replace_resource(bootstrap_js_path, bootstrap_js)
