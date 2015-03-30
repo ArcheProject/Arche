@@ -12,7 +12,7 @@
   Otherwise, click the link below while you're logged in to your account.
 </p>
 <p>
-  <a href="url">${url}</a>
+  <a href="${url}">${url}</a>
 </p>
 <tal:footer replace="structure view.render_template('arche:templates/emails/footer.pt')"></tal:footer>
 </tal:main>
