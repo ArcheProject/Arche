@@ -1,0 +1,15 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Arche">
+<hr/>
+
+<p i18n:translate="email_footer_text">
+  This email was sent from the site ${request.root.head_title} at
+  <a href="${request.application_url}" i18n:name="url">${request.application_url}</a>.
+  You're not subscribed to a list and shouldn't receive this email unless you've requested it.
+  If you think there has been an error, please contact someone at that site.
+</p>
+
+</tal:main>

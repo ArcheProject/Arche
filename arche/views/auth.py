@@ -79,7 +79,8 @@ class RegisterForm(BaseForm):
             token = factory()
             rtokens = IRegistrationTokens(self.context)
             rtokens[email] = token
-            html = self.render_template("arche:templates/emails/register.pt", token = token, email = email)
+            url = self.request.resource_url(self.context, 'register_finish', query = {'t': token, 'e': email})
+            html = self.render_template("arche:templates/emails/register.pt", token = token, email = email, url = url)
             self.request.send_email(_(u"Registration link"),
                                     [email],
                                     html,
@@ -161,7 +162,8 @@ class RecoverPasswordForm(BaseForm):
         if user is None:
             raise HTTPForbidden("Something went wrong during login. No user profile found.")
         user.pw_token = factory()
-        html = self.render_template("arche:templates/emails/recover_password.pt", user = user)
+        url = self.request.resource_url(user, 'change_password', query = {'t': user.pw_token})
+        html = self.render_template("arche:templates/emails/recover_password.pt", user = user, url = url)
         self.request.send_email(_(u"Password recovery request"),
                    [user.email],
                    html)

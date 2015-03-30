@@ -3,8 +3,16 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
-<p>Click to change your email:</p>
-<a href="url">
-    ${url}
-</a>
+<h3 i18n:translate="">Verify email</h3>
+<p i18n:translate="request_email_change_description">
+  We got a request to change email address for the UserID
+  <b tal:content="user.userid" i18n:name="userid"></b> to this address.
+  The current address is <b i18n:name="email" tal:content="user.email">email</b>.
+  If you don't wish to change address you can simply discard this email.
+  Otherwise, click the link below while you're logged in to your account.
+</p>
+<p>
+  <a href="url">${url}</a>
+</p>
+<tal:footer replace="view.render_template('arche:templates/emails/footer.pt')"></tal:footer>
 </tal:main>

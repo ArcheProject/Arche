@@ -3,8 +3,14 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
-<p>Click link to complete registration:</p>
-<a href="${request.resource_url(view.root, 'register_finish', query = {'t': token, 'e': email})}">
-    ${request.resource_url(view.root, 'register_finish', query = {'t': token, 'e': email})}
-</a>
+<h3 i18n:translate="">Complete registration at
+  <tal:ts replace="context.head_title" i18n:name="site"></tal:ts>
+</h3>
+<p i18n:translate="complete_registration_text">
+  To finish the registration process, simply follow the link below.
+</p>
+<p>
+  <a href="${url}">${url}</a>
+</p>
+<tal:footer replace="view.render_template('arche:templates/emails/footer.pt')"></tal:footer>
 </tal:main>
