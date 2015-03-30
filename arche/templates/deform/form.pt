@@ -33,67 +33,60 @@
     <input type="hidden" name="_charset_" />
     <input type="hidden" name="__formid__" value="${formid}"/>
 
-      <div class="panel panel-primary">
-        <div class="panel-heading" tal:condition="field.heading|None">
-          <h3 class="panel-title">${field.heading}</h3>
-        </div>
+        <h2 tal:condition="field.heading|None">${field.heading}</h2>
+
         <!-- Nav tabs -->
-        <div tal:condition="len(tabbed_fields) > 1" class="panel-footer">
-            <ul class="nav nav-pills">
-                <tal:iterate repeat="name tabbed_fields">
-                <li class="${repeat['name'].start and 'active' or None}">
-                    <a href="#${name}_tab" data-toggle="tab">${tab_titles.get(name, name.title())}</a>
-                </li>
-                </tal:iterate>
-            </ul>
+        <p tal:condition="len(tabbed_fields) > 1">
+          <ul class="nav nav-pills">
+            <tal:iterate repeat="name tabbed_fields">
+            <li class="${repeat['name'].start and 'active' or None}">
+              <a href="#${name}_tab" data-toggle="tab">${tab_titles.get(name, name.title())}</a>
+            </li>
+            </tal:iterate>
+          </ul>
+        </p>
+
+        <div class="alert alert-danger" tal:condition="field.error">
+          <div class="errorMsgLbl" i18n:translate=""
+            >There was a problem with your submission</div>
+          <p class="errorMsg">${field.errormsg}</p>
         </div>
 
-        <div class="panel-body">
-            <div class="alert alert-danger" tal:condition="field.error">
-              <div class="errorMsgLbl" i18n:translate=""
-                >There was a problem with your submission</div>
-              <p class="errorMsg">${field.errormsg}</p>
-            </div>
+        <div class="section first" tal:condition="description"
+          tal:content="structure description"></div>
 
-            <div class="section first" tal:condition="description"
-              tal:content="structure description"></div>
+        <!-- Tab panes -->
+        <div class="tab-content" tal:condition="tabbed_fields">
+            <tal:iterate repeat="name tabbed_fields">
+              <div class="tab-pane ${repeat['name'].start and 'active' or None}" id="${name}_tab">
+                  <tal:fields repeat="child tabbed_fields[name]">
+                      <tal:field replace="structure child.render_template(item_template)" />
+                  </tal:fields>
+              </div>
+            </tal:iterate>
+        </div>
 
-            <!-- Tab panes -->
-            <div class="tab-content" tal:condition="tabbed_fields">
-                <tal:iterate repeat="name tabbed_fields">
-                  <div class="tab-pane ${repeat['name'].start and 'active' or None}" id="${name}_tab">
-                      <tal:fields repeat="child tabbed_fields[name]">
-                          <tal:field replace="structure child.render_template(item_template)" />
-                      </tal:fields>
-                  </div>
-                </tal:iterate>
-            </div>
+        <!-- No tabbed -->
+        <tal:fields condition="not tabbed_fields" repeat="child field">
+          <tal:field replace="structure child.render_template(item_template)" />
+        </tal:fields>
 
-            <!-- No tabbed -->
-            <tal:fields condition="not tabbed_fields" repeat="child field">
-              <tal:field replace="structure child.render_template(item_template)" />
-            </tal:fields>
-
-        </div><!-- body -->
-        <div class="panel-footer">
-            <div class="form-group">
-              <tal:loop tal:repeat="button buttons">
-                <button
-                      tal:define="btn_disposition repeat.button.start and 'btn-primary' or 'btn-default';
-                      btn_icon button.icon|None"
-                      tal:attributes="disabled button.disabled if button.disabled else None"
-                      id="${formid+button.name}"
-                      name="${button.name}"
-                      type="${button.type}"
-                      class="btn ${btn_disposition} ${button.css_class}"
-                      value="${button.value}">
-                  <i tal:condition="btn_icon" class="${btn_icon}"> </i>
-                  ${button.title}
-                </button>
-              </tal:loop>
-            </div>
-        </div><!-- footer -->
-      </div><!-- panel -->
+        <div class="form-group well">
+          <tal:loop tal:repeat="button buttons">
+            <button
+                  tal:define="btn_disposition repeat.button.start and 'btn-primary' or 'btn-default';
+                  btn_icon button.icon|None"
+                  tal:attributes="disabled button.disabled if button.disabled else None"
+                  id="${formid+button.name}"
+                  name="${button.name}"
+                  type="${button.type}"
+                  class="btn ${btn_disposition} ${button.css_class}"
+                  value="${button.value}">
+              <i tal:condition="btn_icon" class="${btn_icon}"> </i>
+              ${button.title}
+            </button>
+          </tal:loop>
+        </div>
   </fieldset>
 
   <script type="text/javascript" tal:condition="use_ajax">
