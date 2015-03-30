@@ -24,5 +24,5 @@ def includeme(config):
     config.include('arche.views.users')
     config.include('arche.views.view_settings')
     config.include('arche.views.workflow')
-    if config.registry.settings.get('use_exception_views', False):
+    if config.registry.settings.get('arche.use_exception_views', False):
         config.include('arche.views.exceptions')
