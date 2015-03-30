@@ -14,5 +14,5 @@
 <p>
   <a href="url">${url}</a>
 </p>
-<tal:footer replace="view.render_template('arche:templates/emails/footer.pt')"></tal:footer>
+<tal:footer replace="structure view.render_template('arche:templates/emails/footer.pt')"></tal:footer>
 </tal:main>
