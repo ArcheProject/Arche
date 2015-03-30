@@ -61,3 +61,4 @@ class WorkflowBeforeTransition(_WorkflowTransition):
 @implementer(IWorkflowAfterTransition)
 class WorkflowAfterTransition(_WorkflowTransition):
     pass
+

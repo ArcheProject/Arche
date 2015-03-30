@@ -250,6 +250,10 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
         return self.site_settings.get('allow_self_registration', False)
 
     @property
+    def skip_email_validation(self):
+        return self.site_settings.get('skip_email_validation', False)
+
+    @property
     def __acl__(self):
         acl_reg = get_acl_registry()
         wf = get_context_wf(self)
@@ -377,6 +381,7 @@ class User(Content, LocalRolesMixin, ContextACLMixin):
     add_permission = "Add %s" % type_name
     pw_token = None
     icon = u"user"
+    email_validated = False
     __timezone__ = None
 
     @property
@@ -492,7 +497,7 @@ class Token(Persistent):
     def valid(self):
         if self.expires is None:
             return True
-        return self.expires and utcnow()
+        return self.expires > utcnow()
 
 
 def make_user_owner(user, event = None):

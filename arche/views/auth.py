@@ -53,8 +53,16 @@ class RegisterForm(BaseForm):
         super(RegisterForm, self).__init__(context, request)
         if request.authenticated_userid:
             msg = _("Already logged in.")
-            self.flash_messages.add(msg, type = 'danger')
+            self.flash_messages.add(msg, type = 'warning')
             raise HTTPFound(location = request.resource_url(context))
+
+
+    def get_schema(self):
+        """ Fetch a combined schema if email validation should be skipped.
+        """
+        if self.root.skip_email_validation:
+            return self.get_schema_factory(self.type_name, 'register_skip_validation')
+        return self.get_schema_factory(self.type_name, self.schema_name)
 
     @property
     def buttons(self):
@@ -63,23 +71,26 @@ class RegisterForm(BaseForm):
 
     def register_success(self, appstruct):
         #FIXME: Protect against spamming?
-        email = appstruct['email']
-        factory = self.get_content_factory(u'Token')
-        token = factory()
-        rtokens = IRegistrationTokens(self.context)
-        rtokens[email] = token
-        html = self.render_template("arche:templates/emails/register.pt", token = token, email = email)
-        self.request.send_email(_(u"Registration link"),
-                   [email],
-                   html,
-                   send_immediately = True)
-        msg = _("reg_email_notification",
-                default = "An email with registration instructions "
-                "have been sent to the address you specified.")
-        self.flash_messages.add(msg,
-                                auto_destruct = False,
-                                type="success")
-        return HTTPFound(location = self.request.resource_url(self.root))
+        if self.root.skip_email_validation:
+            return _finish_registration(self, appstruct)
+        else:
+            email = appstruct['email']
+            factory = self.get_content_factory('Token')
+            token = factory()
+            rtokens = IRegistrationTokens(self.context)
+            rtokens[email] = token
+            html = self.render_template("arche:templates/emails/register.pt", token = token, email = email)
+            self.request.send_email(_(u"Registration link"),
+                                    [email],
+                                    html,
+                                    send_immediately = True)
+            msg = _("reg_email_notification",
+                    default = "An email with registration instructions "
+                    "have been sent to the address you specified.")
+            self.flash_messages.add(msg,
+                                    auto_destruct = False,
+                                    type="success")
+            return HTTPFound(location = self.request.resource_url(self.root))
 
 
 class RegisterFinishForm(BaseForm):
@@ -108,15 +119,25 @@ class RegisterFinishForm(BaseForm):
                  self.button_cancel,)
 
     def register_success(self, appstruct):
-        self.flash_messages.add(_(u"Welcome, you're now registered!"), type="success")
-        factory = self.get_content_factory(u'User')
-        userid = appstruct.pop('userid')
-        email = self.reg_email
-        obj = factory(email = email, **appstruct)
-        self.context['users'][userid] = obj
-        del IRegistrationTokens(self.context)[email]
-        headers = remember(self.request, obj.userid)
-        return HTTPFound(location = self.request.resource_url(obj), headers = headers)
+        appstruct['email'] = self.reg_email
+        return _finish_registration(self, appstruct)
+
+
+def _finish_registration(view, appstruct):
+    view.flash_messages.add(_("Welcome, you're now registered!"), type="success")
+    factory = view.get_content_factory('User')
+    userid = appstruct.pop('userid')
+    if not view.root.skip_email_validation:
+        appstruct['email_validated'] = True
+    obj = factory(**appstruct)
+    view.context['users'][userid] = obj
+    try:
+        del IRegistrationTokens(view.context)[appstruct['email']]
+    except KeyError:
+        #Validation is handled by the view already
+        pass
+    headers = remember(view.request, obj.userid)
+    return HTTPFound(location = view.request.resource_url(obj), headers = headers)
 
 
 class RecoverPasswordForm(BaseForm):
@@ -157,6 +178,9 @@ class UserChangePasswordForm(DefaultEditForm):
             token = getattr(context, 'pw_token', None)
             rtoken = request.GET.get('t', object())
             if token == rtoken and token.valid:
+                #At this point the email address could be considered as validated too
+                if self.context.email_validated == False:
+                    self.context.email_validated = True
                 super(UserChangePasswordForm, self).__init__(context, request)
                 try:
                     del self.schema['current_password']

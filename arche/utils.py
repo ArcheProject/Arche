@@ -28,12 +28,14 @@ from arche import logger
 from arche.interfaces import (IFlashMessages,
                               IThumbnailedContent,
                               IRoot,
+                              IUser,
                               IRegistrationTokens,
                               IDateTimeHandler,
                               IContentView)
 from arche.models.blob import BlobFile #Keep untill db changed
 from arche.models.mimetype_views import get_mimetype_views #b/c
 from arche.security import PERM_VIEW
+from arche.interfaces import IEmailValidationTokens
 
 
 def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
@@ -310,6 +312,24 @@ class RegistrationTokens(AttributeAnnotations):
             del self[email]
 
 
+@implementer(IEmailValidationTokens)
+@adapter(IUser)
+class EmailValidationTokens(AttributeAnnotations):
+    attr_name = '__email_validation_tokens__'
+
+    def new(self, email):
+        factory = get_content_factories()['Token']
+        self[email] = factory(size = 15)
+        return self[email]
+
+    def cleanup(self):
+        expired = set()
+        for (email, token) in self.items():
+            if not token.valid:
+                expired.add(email)
+        for email in expired:
+            del self[email]
+
 image_mime_to_title = {'image/jpeg': _("JPEG"),
                        'image/png': _("PNG"),
                        'image/gif': _("GIF")}
@@ -334,8 +354,20 @@ def resolve_docids(request, docids, perm = PERM_VIEW):
             continue
         yield obj
 
+
+class _FailMarker(object):
+    def __contains__(self, other):
+        return False
+    def __eq__(self, other):
+        return False
+    def __cmp__(self, other):
+        return False
+
+fail_marker = _FailMarker()
+
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)
+    config.registry.registerAdapter(EmailValidationTokens)
     config.add_directive('add_content_factory', add_content_factory)
     config.add_directive('add_addable_content', add_addable_content)
     config.add_directive('add_content_schema', add_content_schema)

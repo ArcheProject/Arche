@@ -368,6 +368,10 @@ class FinishRegistrationSchema(colander.Schema):
                                    widget = deform.widget.CheckedPasswordWidget(redisplay = True))
 
 
+class CombinedRegistrationSchema(FinishRegistrationSchema, RegistrationSchema):
+    """ For when email isn't validated. """
+
+
 class RecoverPasswordSchema(colander.Schema):
     email_or_userid = colander.SchemaNode(colander.String(),
                                           preparer = to_lowercase,
@@ -431,6 +435,9 @@ class SiteSettingsSchema(colander.Schema):
     show_login_link = colander.SchemaNode(colander.Bool(),
                                           title = _("Show login link."),
                                           default = True)
+    skip_email_validation = colander.SchemaNode(colander.Bool(),
+                                                title = _("Skip email validation"),
+                                                description = _("This will allow users to register with a fake email address. Generally not recommended."))
 
 
 def includeme(config):
@@ -442,6 +449,7 @@ def includeme(config):
     config.add_content_schema('Auth', LoginSchema, 'login')
     config.add_content_schema('Auth', RegistrationSchema, 'register')
     config.add_content_schema('Auth', FinishRegistrationSchema, 'register_finish')
+    config.add_content_schema('Auth', CombinedRegistrationSchema, 'register_skip_validation')
     config.add_content_schema('Auth', RecoverPasswordSchema, 'recover_password')
     config.add_content_schema('Group', GroupSchema, ('add', 'view', 'edit'))
     config.add_content_schema('File', AddFileSchema, 'add')

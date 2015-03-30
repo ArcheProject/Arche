@@ -57,7 +57,15 @@ class IDocument(Interface):
     pass
 
 class IUser(IBase):
-    pass
+    first_name = Attribute("First name")
+    last_name = Attribute("Last name")
+    email =  Attribute("Email")
+    pw_token =  Attribute("Will access a password reset token if that process was initiated.")
+    email_validated = Attribute("Is the current email address validated?")
+    userid = Attribute("Same as __name__ for user objects. Contains UserID.")
+    password = Attribute("Getter and setter for password. Note that it will be hashed.")
+    timezone = Attribute("Getter an setter for timezone.")
+
 
 class IUsers(Interface):
     pass
@@ -202,8 +210,8 @@ class ICatalogIndexes(Interface):
             index objects that should be stored in the catalog.
         """
 
-
 #/Utils
+
 
 class IPortlet(Interface):
     pass
@@ -218,4 +226,7 @@ class IFileUploadTempStore(Interface):
     pass
 
 class IRegistrationTokens(Interface):
+    pass
+
+class IEmailValidationTokens(Interface):
     pass

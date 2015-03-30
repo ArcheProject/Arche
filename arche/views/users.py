@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
-from pyramid.httpexceptions import HTTPFound
-from pyramid.httpexceptions import HTTPForbidden
+
 from pyramid.decorator import reify
 
 from arche import _
@@ -10,20 +9,6 @@ from arche.fanstatic_lib import pure_js
 from arche.interfaces import IDateTimeHandler
 from arche.interfaces import IJSONData
 from arche.views.base import BaseView
-from arche.views.base import DefaultAddForm
-from arche.views.base import DefaultEditForm
-
-
-class UserAddForm(DefaultAddForm):
-    type_name = 'User'
-
-    def save_success(self, appstruct):
-        self.flash_messages.add(self.default_success, type="success")
-        factory = self.get_content_factory(self.type_name)
-        userid = appstruct.pop('userid')
-        obj = factory(**appstruct)
-        self.context[userid] = obj
-        return HTTPFound(location = self.request.resource_url(obj))
 
 
 class UsersView(BaseView):
@@ -65,12 +50,6 @@ class UserView(BaseView):
 
 
 def includeme(config):
-    config.add_view(UserAddForm,
-                    context = 'arche.interfaces.IUsers',
-                    name = 'add',
-                    request_param = "content_type=User",
-                    permission = security.PERM_MANAGE_USERS, #FIXME: Not add user perm?
-                    renderer = 'arche:templates/form.pt')
     config.add_view(UsersView,
                     name = 'view',
                     permission = security.PERM_MANAGE_USERS,
