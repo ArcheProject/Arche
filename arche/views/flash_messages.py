@@ -9,10 +9,9 @@ class FlashMessagesView(BaseView):
 
     def __call__(self):
         result = []
-        if self.request.authenticated_userid:
-            for flash in self.flash_messages.get_messages():
-                msg = self.request.localizer.translate(flash.pop('msg', ''))
-                result.append([msg, flash])
+        for flash in self.flash_messages.get_messages():
+            msg = self.request.localizer.translate(flash.pop('msg', ''))
+            result.append([msg, flash])
         return result
 
 
