@@ -15,6 +15,17 @@ from arche.views.cut_copy_paste import can_paste
 from arche.models.workflow import get_context_wf
 
 
+def render_actionbar(view, **kw):
+    """ Default actionbar - show for all authenticated users. """
+    if view.request.authenticated_userid:
+        return view.render_template('arche:templates/action_bar.pt')
+
+def render_actionbar_admins(view, **kw):
+    """ A version where the actionbar is only shown to admin users. """
+    if view.request.authenticated_userid and view.request.has_permission(security.PERM_MANAGE_SYSTEM, view.context):
+        return view.render_template('arche:templates/action_bar.pt')
+
+
 @view_action('actionbar_main', 'wf',
              title = _("Workflow"),
              priority = 5)

@@ -21,7 +21,6 @@ import colander
 import deform
 from pyramid.traversal import find_root
 
-
 from arche import _
 from arche import security
 from arche.events import SchemaCreatedEvent
@@ -41,7 +40,6 @@ from arche.utils import get_content_views
 from arche.utils import get_flash_messages
 from arche.utils import get_view
 from arche.utils import resolve_docids
-
 
 
 @implementer(IBaseView)
@@ -129,9 +127,8 @@ class BaseView(object):
         kwargs.setdefault('view', self)
         return render(renderer, kwargs, self.request)
 
-    def render_actionbar(self, context):
-        if self.request.authenticated_userid:
-            return self.render_template('arche:templates/action_bar.pt')
+    def render_actionbar(self, **kw):
+        return self.request.registry.settings['arche.actionbar'](self, **kw)
 
     def render_view_group(self, group, context = None, **kw):
         if context is None:

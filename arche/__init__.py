@@ -5,6 +5,7 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.i18n import TranslationStringFactory
 from pyramid_zodbconn import get_connection
+from six import string_types
 
 _ = TranslationStringFactory('Arche')
 logger = getLogger(__name__)
@@ -19,6 +20,7 @@ default_settings = {
     'arche.timezone': 'UTC', #Default timezone
     'arche.cache_max_age': 24*60*60, #seconds
     'arche.new_userid_validator': 'arche.validators.NewUserIDValidator',
+    'arche.actionbar': 'arche.views.actions.render_actionbar',
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
 }
@@ -44,11 +46,12 @@ def includeme(config):
     config.include('arche.portlets.navigation')
 
     #Resolve strings
-    if isinstance(settings['arche.hash_method'], str):
-        settings['arche.hash_method'] = config.name_resolver.resolve(settings['arche.hash_method'])
-    if isinstance(settings['arche.new_userid_validator'], str):
-        settings['arche.new_userid_validator'] = config.name_resolver.resolve(settings['arche.new_userid_validator'])
-        
+    resolvable_methods = ('arche.hash_method',
+                          'arche.new_userid_validator',
+                          'arche.actionbar',)
+    for name in resolvable_methods:
+        if isinstance(settings[name], string_types):
+            settings[name] = config.name_resolver.resolve(settings[name])
     #WARNING! deform_autoneed will change, so this code will be removed later on.
     from deform_autoneed import resource_registry
     #Replace bootstrap css

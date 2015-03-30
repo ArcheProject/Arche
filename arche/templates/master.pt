@@ -44,7 +44,7 @@
         </div>
       </div>
 
-      <tal:actionbar metal:define-slot="actionbar" replace="structure view.render_actionbar(context)" />
+      <tal:actionbar metal:define-slot="actionbar" replace="structure view.render_actionbar()" />
 
       <div data-flash-slot="main"></div>
 
