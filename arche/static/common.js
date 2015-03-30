@@ -118,14 +118,13 @@ arche.modal_from_event = modal_from_event;
  */
 
 function create_flash_message(message, params) {
-  if (typeof(params) === 'undefined') var params = {};
-  if (typeof(params['type']) == 'undefined') {
-    params['type'] = 'info';
+  params = typeof params !== 'undefined' ? params : {};
+  params['type'] = typeof params['type'] !== 'undefined' ? params['type'] : 'info';
+  params['id'] = typeof params['id'] !== 'undefined' ? params['id'] : "msg-" + Math.round(Math.random()* 10000000);
+  params['auto_destruct'] = typeof params['auto_destruct'] !== 'auto_destruct' ? params['auto_destruct'] : true;
+  if (params['type'] == 'danger') {
+    params['auto_destruct'] = false; //Override on critical errors
   }
-  if (typeof(params['id']) == 'undefined') {
-    params['id'] = "msg-" + Math.round(Math.random()* 10000000);
-  }
-  
   var target;
   $.each(arche.flash_slot_order, function( index, value ) {
     if ($('[data-flash-slot="' + value + '"]').length > 0) {
@@ -140,7 +139,7 @@ function create_flash_message(message, params) {
   out += message;
   out += '</div>';
 
-  if (typeof(params['auto_destruct'] !== 'undefined') && params['type'] != 'danger') {
+  if (params['auto_destruct'] === true) {
     //FIXME: Create smarter timeouts here. Pop one message at a time for instance.
     setTimeout( function() { $('#' + params['id']).slideUp(400, function() {this.remove()}); }, arche.default_flash_timer );
   }
