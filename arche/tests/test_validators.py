@@ -22,7 +22,6 @@ class NewUserIDValidatorTests(TestCase):
         return NewUserIDValidator
 
     def _fixture(self):
-        #Note. populators will probably change
         root = barebone_fixture(self.config)
         request = testing.DummyRequest()
         return root['users'], request
@@ -57,3 +56,48 @@ class NewUserIDValidatorTests(TestCase):
         self.assertEqual(obj(None, name), None)
         name += 'x'
         self.assertRaises(Invalid, obj, None, name)
+
+
+class UniqueEmailTests(TestCase):
+    
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('arche.testing')
+        self.config.include('arche.models.catalog')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.validators import UniqueEmail
+        return UniqueEmail
+
+    @property
+    def _User(self):
+        from arche.api import User
+        return User
+
+    def test_email_in_empty_site(self):
+        root = barebone_fixture(self.config)
+        obj = self._cut(root)
+        self.assertFalse(obj(None, 'some@email.com'))
+
+    def test_email_exists_root(self):
+        root = barebone_fixture(self.config)
+        root['users']['one'] = self._User(email = 'some@email.com')
+        obj = self._cut(root)
+        self.assertRaises(Invalid, obj, None, 'some@email.com')
+
+    def test_email_exists_user_context(self):
+        root = barebone_fixture(self.config)
+        root['users']['one'] = self._User(email = 'some@email.com')
+        root['users']['two'] = self._User(email = 'other@email.com')
+        obj = self._cut(root['users']['two'])
+        self.assertRaises(Invalid, obj, None, 'some@email.com')
+
+    def test_email_exists_but_is_own_profile(self):
+        root = barebone_fixture(self.config)
+        root['users']['one'] = self._User(email = 'some@email.com')
+        obj = self._cut(root['users']['one'])
+        self.assertFalse(obj(None, 'some@email.com'))

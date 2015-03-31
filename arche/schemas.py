@@ -251,7 +251,7 @@ class UserSchema(colander.Schema):
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Email adress"),
                                 preparer = to_lowercase,
-                                validator = colander.Email())
+                                validator = unique_email_validator)
     image_data = colander.SchemaNode(deform.FileData(),
                                      missing = colander.null,
                                      blob_key = 'image',

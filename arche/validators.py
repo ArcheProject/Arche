@@ -110,14 +110,26 @@ def unique_email_validator(node, kw):
 
 
 class UniqueEmail(object):
+    """ Make sure an email is unique. If it's used on an IUser object,
+        it won't fail if the user tries to keep their own address.
+    """
     def __init__(self, context):
-        self.context = find_root(context)
+        self.context = context
 
     def __call__(self, node, value):
         email_val = colander.Email()
         email_val(node, value)
-        if self.context['users'].get_user_by_email(value) is not None:
-            raise colander.Invalid(node, _("Already registered. You may recover your password if you've lost it."))
+        root = find_root(self.context)
+        user = root['users'].get_user_by_email(value)
+        if user:
+            #There's no usecase where this is okay
+            if not IUser.providedBy(self.context):
+                raise colander.Invalid(node, _("already_registered_email_error",
+                                               default = "Already registered. You may recover your password if you've lost it."))
+            #Could be users own profile showing up
+            if user.email != self.context.email:
+                raise colander.Invalid(node, _("already_used_email_error",
+                                               default = "This address is already used."))
 
 
 @colander.deferred
