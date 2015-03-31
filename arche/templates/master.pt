@@ -48,7 +48,9 @@
 
       <div data-flash-slot="main"></div>
 
-      <metal:content define-slot="content"></metal:content>
+      <div id="content">
+        <metal:content define-slot="content"></metal:content>
+      </div>
 
     </div><!-- container -->
     <footer tal:replace="structure view.render_template('arche:templates/footer.pt')" />

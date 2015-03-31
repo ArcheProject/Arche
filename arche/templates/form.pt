@@ -6,9 +6,9 @@
   metal:use-macro="view.macro('arche:templates/master.pt', 'arche:templates/inline.pt')"
   tal:define="modal request.params.get('modal', None)"
   i18n:domain="Arche">
-  <div tal:omit-tag="modal" metal:fill-slot="content" class="row">
-    <div tal:omit-tag="modal" class="col-md-12">
-      <form tal:replace="structure form" />
-    </div>
+<div metal:fill-slot="content" class="row">
+  <div class="col-md-12">
+    <form tal:replace="structure form" />
   </div>
+</div>
 </html>

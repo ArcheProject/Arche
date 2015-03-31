@@ -5,7 +5,7 @@
   xmlns:i18n="http://xml.zope.org/namespaces/i18n"
   metal:use-macro="view.macro('arche:templates/master.pt')"
   i18n:domain="Arche">
-<div metal:fill-slot="content">
+<tal:content metal:fill-slot="content">
   <script type="text/javascript">
     var tpl;
 
@@ -171,5 +171,5 @@
     </div>
   </div>
 
-</div>
+</tal:content>
 </html>
