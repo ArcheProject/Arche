@@ -4,16 +4,17 @@ from random import choice
 from uuid import uuid4
 import string
 
-from BTrees.OOBTree import (OOBTree,
-                            OOSet)
+from BTrees.OOBTree import OOBTree
+from BTrees.OOBTree import OOSet
+from colander import null
 from persistent import Persistent
 from persistent.list import PersistentList
 from pyramid.threadlocal import get_current_request
+from pyramid.traversal import find_resource
 from repoze.folder import Folder
+from six import string_types
 from zope.component.event import objectEventNotify
 from zope.interface import implementer
-from colander import null
-from six import string_types
 
 from arche import _
 from arche.models.catalog import create_catalog
@@ -364,11 +365,19 @@ class Users(Content, LocalRolesMixin, ContextACLMixin):
     is_permanent = True
 
     def get_user_by_email(self, email, default = None):
-        #FIXME use catalog instead?
+        """ Get a user object by email address regardless of permissions.
+            Used by validators, login etc.
+        """
+        root = self.__parent__
         email = email.lower()
-        for user in self.values():
-            if email == user.email:
-                return user
+        res, docids = root.catalog.query("type_name == 'User' and email == '%s'" % email)
+        if res.total > 1:
+            raise ValueError("Catalog query for %r returned more than one user with the same email address." % email)
+        if res.total == 0:
+            return default
+        docid = tuple(docids)[0]
+        path = root.document_map.address_for_docid(docid)
+        return find_resource(root, path)
 
 
 @implementer(IUser, IThumbnailedContent, IContent)

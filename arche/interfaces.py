@@ -68,7 +68,13 @@ class IUser(IBase):
 
 
 class IUsers(Interface):
-    pass
+    """ A folder containing all users. """
+
+    def get_user_by_email(email, default = None):
+        """ Get a user object by email address regardless of permissions.
+            Used by validators, login etc.
+        """
+
 
 class IFile(Interface):
     pass
