@@ -238,7 +238,7 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
     search_visible = False
     is_permanent = True
     footer = ""
-    head_title = _("Arche")
+    head_title = "Arche"
 
     def __init__(self, data=None, **kwargs):
         create_catalog(self)

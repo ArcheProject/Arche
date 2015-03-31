@@ -25,7 +25,8 @@ def root_populator(title = "", userid = "", email = "", password = "", populator
     #Add groups
     root['groups'] = groups = factories['Groups']()
     #Add administrators group
-    description = _(u"Group for all administrators. Add any administrators to this group.")
+    description = _("admin_group_desc",
+                    default = "Group for all administrators. Add any administrators to this group.")
     groups['administrators'] = adm_group = factories['Group'](title = _(u"Administrators"),
                                                               description = description,
                                                               members = [userid])

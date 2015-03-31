@@ -14,7 +14,11 @@
         <span class="glyphicon glyphicon-fire"></span>
         <span i18n:translate="">There's a problem...</span>
       </h1>
-      <p tal:condition="not debug" class="lead" i18n:translate="">Something isn't behaving the way it should. The error has been logged.</p>
+      <p tal:condition="not debug" class="lead"
+        i18n:translate="generic_exception_explanation">Something isn't behaving the way it should.
+        The error has been logged. You may wish to contact the person running this site about this error.
+        It's one of those things that should never happen.
+      </p>
       <tal:show_error condition="debug">
         <p class="lead" i18n:translate="">arche.debug is set to True, so this error will be printed instead of logged.</p>
         <pre tal:content="structure exception_str">

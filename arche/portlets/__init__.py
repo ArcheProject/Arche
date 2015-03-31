@@ -53,7 +53,7 @@ class Portlet(Persistent):
     __parent__ = None
     type_name = u"Portlet"
     type_title = _(u"Portlet")
-    type_description = _(u"A mini view rendered ")
+    type_description = _(u"A mini view within another view")
     portlet_type = u""
     add_permission = "Add %s" % type_name
 

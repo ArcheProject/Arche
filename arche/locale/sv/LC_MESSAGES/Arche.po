@@ -1,0 +1,1223 @@
+#
+# Swedish translations for PACKAGE package
+# This file is distributed under the same license as the PACKAGE package.
+# Robin Harms Oredsson <>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2015-03-31 09:26+0200\n"
+"PO-Revision-Date: 2015-03-31 09:47+0100\n"
+"Last-Translator: Robin Harms Oredsson <robin@betahaus.net>\n"
+"Language-Team: Swedish\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 3.9\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.9\n"
+
+#. Default: Group for all administrators. Add any administrators to this group.
+#: populators.py:28
+msgid "admin_group_desc"
+msgstr ""
+"Grupp för alla administratörer. Lägg till användare här om de ska ha den "
+"rättigheten."
+
+#: populators.py:30
+msgid "Administrators"
+msgstr "Administratörer"
+
+#: resources.py:218
+msgid "Link"
+msgstr "Länk"
+
+#: resources.py:219
+msgid "Content type that redirects to somewhere."
+msgstr "Innehåll som omdirigerar någonstans."
+
+#: resources.py:236
+msgid "Site root"
+msgstr "Siterot"
+
+#: resources.py:280
+msgid "Document"
+msgstr "Dokument"
+
+#: resources.py:298
+msgid "File"
+msgstr "Fil"
+
+#: resources.py:340 schemas.py:216
+msgid "Image"
+msgstr "Bild"
+
+#: resources.py:349
+msgid "Initial setup"
+msgstr "Initial konfiguration"
+
+#: resources.py:352
+msgid "Welcome to Arche!"
+msgstr "Välkommen till Arche!"
+
+#: resources.py:359 resources.py:363 schemas.py:69 views/actions.py:153
+msgid "Users"
+msgstr "Användare"
+
+#: resources.py:377
+msgid "User"
+msgstr "Användare"
+
+#: resources.py:427 resources.py:431 schemas.py:70 views/actions.py:159
+msgid "Groups"
+msgstr "Grupper"
+
+#: resources.py:450 templates/content/groups.pt:12
+msgid "Group"
+msgstr "Grupp"
+
+#: resources.py:484
+msgid "Token"
+msgstr "Token"
+
+#: schemas.py:65 views/actions.py:262
+msgid "Default"
+msgstr ""
+
+#: schemas.py:66
+msgid "Visibility"
+msgstr "Synlighet"
+
+#: schemas.py:67
+msgid "Metadata"
+msgstr "Metadata"
+
+#: schemas.py:68
+msgid "Related"
+msgstr "Relaterade"
+
+#: schemas.py:71
+msgid "Advanced"
+msgstr "Avancerat"
+
+#: schemas.py:230
+#, python-format
+msgid ""
+"Current default timezone is: '${tzname}', leave this field blank if your're "
+"okay with that."
+msgstr ""
+"Nuvarande standardtidszon är: '${tzname}', låt fältet vara blankt om du vill "
+"använda den."
+
+#: schemas.py:93
+msgid "No thanks"
+msgstr "Nej tack"
+
+#: schemas.py:94
+msgid "Don't install or change anything"
+msgstr "Ändra eller installera inget"
+
+#: schemas.py:110
+msgid "Type to search for UserIDs"
+msgstr "Skriv för att söka efter AnvändarIDn"
+
+#: schemas.py:129
+msgid "Tags or subjects"
+msgstr "Taggar eller ämnen"
+
+#: schemas.py:147
+msgid "Related content"
+msgstr "Relaterat innehåll"
+
+#: schemas.py:148
+msgid "Can be used to link to other content"
+msgstr "Kan användas för att länka till annat innehåll"
+
+#: schemas.py:156
+msgid "Date"
+msgstr "Datum"
+
+#: schemas.py:157
+msgid "Publish date, or used for sorting"
+msgstr "Publiceringsdatum, eller för sortering"
+
+#: schemas.py:162
+msgid "Licensing"
+msgstr "Licens"
+
+#: schemas.py:186
+msgid "Show in navigations"
+msgstr "Visa i navigation"
+
+#: schemas.py:191
+msgid "Show in listing or table views"
+msgstr "Visa i listor eller tabellvyer"
+
+#: schemas.py:192
+msgid "The content view will always show this regardless of what you set."
+msgstr "Innehållsvyn visar däremot alltid innehåll oavsett denna inställning."
+
+#: schemas.py:197
+msgid "Include in search results"
+msgstr "Inkludera i sökresultat"
+
+#: schemas.py:198
+msgid ""
+"Note that this is not a permission setting - it's just a matter of "
+"practicality for users. They may even disable this setting."
+msgstr ""
+"Notera att det här inte är en rättighetsinställning - bara en fråga om "
+"användbarhet. Användare kan gå runt denna inställning."
+
+#: schemas.py:204
+msgid "Navigation bar title"
+msgstr "Titel i navigationsfältet"
+
+#: schemas.py:205
+msgid "If you wish to use another name for when it's shown in menus."
+msgstr "Om du vill använda ett annat namn när det visas i menyer."
+
+#: schemas.py:223
+msgid "Show byline"
+msgstr "Visa byline"
+
+#: schemas.py:246 schemas.py:360 templates/content/users_table.pt:38
+msgid "First name"
+msgstr "Förnamn"
+
+#: schemas.py:249 schemas.py:363 templates/content/users_table.pt:39
+msgid "Last name"
+msgstr "Efternamn"
+
+#: schemas.py:252 schemas.py:316
+msgid "Email adress"
+msgstr "Epostadress"
+
+#: schemas.py:258
+msgid "Profile image"
+msgstr "Profilbild"
+
+#: schemas.py:262
+msgid "Set custom timezone"
+msgstr "Ställ in egen tidszon"
+
+#: schemas.py:273 schemas.py:357 schemas.py:291
+#: templates/content/users_table.pt:36
+msgid "UserID"
+msgstr "AnvändarID"
+
+#: schemas.py:276 schemas.py:304 schemas.py:320 schemas.py:340 schemas.py:366
+msgid "Password"
+msgstr "Lösenord"
+
+#: schemas.py:282 schemas.py:400 templates/contents.pt:140
+msgid "Title"
+msgstr "Titel"
+
+#: schemas.py:284 templates/content/groups.pt:13
+#: templates/sysinfo/content_types.pt:22
+msgid "Description"
+msgstr "Beskrivning"
+
+#: schemas.py:294 templates/content/groups.pt:14
+msgid "Members"
+msgstr "Medlemmar"
+
+#: schemas.py:300
+msgid "Current password"
+msgstr "Nuvarande lösenord"
+
+#: schemas.py:310
+msgid "Site title"
+msgstr "Sidans titel"
+
+#: schemas.py:311
+msgid "A site made with Arche"
+msgstr "En sida gjord med Arche"
+
+#: schemas.py:313
+msgid "Admin userid - use lowercase!"
+msgstr "Administratörens användarID - använd små bokstäver!"
+
+#: schemas.py:324
+msgid "Populate site"
+msgstr "Populera sidan"
+
+#: schemas.py:338 schemas.py:379
+msgid "Email or UserID"
+msgstr "Epost eller AnvändarID"
+
+#: schemas.py:350 templates/content/users_table.pt:37
+msgid "Email"
+msgstr "Epost"
+
+#: schemas.py:384
+msgid "Page head title"
+msgstr "Sidans huvudtitel"
+
+#: schemas.py:385
+msgid "Usually shown as a title of the browser tab."
+msgstr "Visas vanligtvis som titel på webbläsarfliken."
+
+#: schemas.py:387
+msgid "Footer"
+msgstr "Sidfot"
+
+#: schemas.py:401
+msgid "Filename will be used if you leave this blank"
+msgstr "Filnamnet används om du lämnar det här tomt"
+
+#: schemas.py:404
+msgid "Upload file"
+msgstr "Ladda upp fil"
+
+#: schemas.py:411
+msgid "Change file"
+msgstr "Ändra fil"
+
+#: schemas.py:433
+msgid "Allow users to register themselves to this site."
+msgstr "Tillåt att användare registrerar sig själva."
+
+#: schemas.py:436
+msgid "Show login link."
+msgstr "Visa inloggningslänk."
+
+#: schemas.py:439
+msgid "Skip email validation"
+msgstr "Skippa epostvalidering"
+
+#: schemas.py:440
+msgid ""
+"This will allow users to register with a fake email address. Generally not "
+"recommended."
+msgstr ""
+"Det gör att användare kan använda en fejkat epostadress. Rekommenderas "
+"generellt inte."
+
+#: security.py:35
+msgid "Administrator"
+msgstr "Administratör"
+
+#: security.py:36
+msgid "Default 'superuser' role."
+msgstr "Standardroll för 'superanvändare'."
+
+#: security.py:40
+msgid "Editor"
+msgstr "Redigerare"
+
+#: security.py:41
+msgid "Someone who has normal edit permissions."
+msgstr "Någon som har normala redigeringsrättigheter."
+
+#: security.py:45
+msgid "Viewer"
+msgstr "Läsare"
+
+#: security.py:46
+msgid "Someone who's allowed to view."
+msgstr "Någon som får läsa."
+
+#: security.py:50
+msgid "Owner"
+msgstr "Ägare"
+
+#: security.py:51
+msgid "Special role for the initial creator."
+msgstr "Speciell roll för den som först skapade något."
+
+#: security.py:55
+msgid "Reviewer"
+msgstr "Granskare"
+
+#: security.py:56
+msgid ""
+"Review and publish content. Usable when combined with a workflow that "
+"implements review before publish."
+msgstr ""
+"Granska och publicera innehåll. Användbart när det kombineras med ett "
+"arbetsflöde som kräver granskning innan publicering."
+
+#: security.py:60
+msgid "Everyone"
+msgstr "Alla"
+
+#: security.py:61
+msgid "Including anonymous"
+msgstr "Inkludera anonyma"
+
+#: security.py:64
+msgid "Authenticated users"
+msgstr "Inloggade användare"
+
+#: security.py:204 models/workflow.py:114 models/workflow.py:165
+msgid "Private"
+msgstr "Privat"
+
+#: security.py:211 models/workflow.py:115 models/workflow.py:166
+msgid "Public"
+msgstr "Publik"
+
+#: security.py:216 models/workflow.py:167
+msgid "Review"
+msgstr "Granska"
+
+#: validators.py:131
+#, python-format
+msgid ""
+"Not a valid image file! Any of these image types are supported: ${suggested}"
+msgstr "Inte en giltig bildfil! Dessa stöds: ${suggested}"
+
+#: validators.py:47
+msgid "Please use lowercase only."
+msgstr "Vänligen använd bara små bokstäver."
+
+#: validators.py:50
+msgid "Already taken or conflicts with a restricted name."
+msgstr "Redan taget eller i konflikt med ett skyddat namn."
+
+#. Default: UserID must be 3-30 chars, start with lowercase a-z and only
+#. contain lowercase a-z, numbers, minus and underscore.
+#: validators.py:53
+msgid "userid_char_error"
+msgstr ""
+"AnvändarID måste vara 3-30 bokstäver, börja med en bokstav mellan a-z och "
+"bara innehålla a-z, nummer, minus eller understreck."
+
+#: validators.py:80 validators.py:104
+msgid "Invalid email or UserID"
+msgstr "Ogiltig epost eller användarID"
+
+#: validators.py:84 validators.py:171
+msgid "Wrong password. Remember that passwords are case sensitive."
+msgstr "Fel lösenord. Kom ihåg att de är skriflägetskänsliga."
+
+#: validators.py:120
+msgid "Already registered. You may recover your password if you've lost it."
+msgstr ""
+"Redan registrerad. Du kan återställa ditt lösenord om du har tappat det."
+
+#: validators.py:150
+#, python-format
+msgid "Not a valid file type, try any of the following: ${suggested}"
+msgstr "Inte en giltig filtyp, prova någon av följande: ${suggested}"
+
+#: validators.py:40
+msgid "Already used within this context"
+msgstr "Används redan i denna kontext"
+
+#: widgets.py:35 templates/contents.pt:144
+msgid "Tags"
+msgstr "Taggar"
+
+#: widgets.py:71
+msgid "Type something to search."
+msgstr "Skriv något för att söka."
+
+#: models/acl.py:126 models/workflow.py:191
+msgid "Inherit"
+msgstr "Ärv"
+
+#: models/acl.py:127
+msgid "Fetch the ACL from the parent object"
+msgstr "Hämta ACL från föräldraobjektet"
+
+#: models/datetime_handler.py:107
+msgid "Just now"
+msgstr "Nyss"
+
+#: models/datetime_handler.py:109
+#, python-format
+msgid "${diff} seconds ago"
+msgstr "${diff} sekunder sedan"
+
+#: models/datetime_handler.py:111
+msgid "1 minute ago"
+msgstr "1 minut sedan"
+
+#: models/datetime_handler.py:113
+#, python-format
+msgid "${diff} minutes ago"
+msgstr "${diff} minuter sedan"
+
+#: models/datetime_handler.py:115
+msgid "1 hour ago"
+msgstr "1 timme sedan"
+
+#: models/datetime_handler.py:117
+#, python-format
+msgid "${diff} hours ago"
+msgstr "${diff} timmar sedan"
+
+#: models/workflow.py:113
+msgid "Simple"
+msgstr "Enkel"
+
+#: models/workflow.py:164
+msgid "Review workflow"
+msgstr "Granskningsarbetsflöde"
+
+#: models/workflow.py:190
+msgid "Inherit workflow"
+msgstr "Ärv"
+
+#: models/workflow.py:100 models/workflow.py:132 models/workflow.py:147
+msgid "Make private"
+msgstr "Gör privat"
+
+#: models/workflow.py:101 models/workflow.py:133 models/workflow.py:148
+msgid "Now private"
+msgstr "Nu privat"
+
+#: models/workflow.py:106 models/workflow.py:137 models/workflow.py:157
+msgid "Publish"
+msgstr "Publicera"
+
+#: models/workflow.py:107 models/workflow.py:138 models/workflow.py:158
+msgid "Published"
+msgstr "Publicerad"
+
+#: models/workflow.py:142
+msgid "Submit for review"
+msgstr "Skicka in för granskning"
+
+#: models/workflow.py:143
+msgid "Submitted for review"
+msgstr "Inskickad för granskning"
+
+#: models/workflow.py:152
+msgid "Retract and resubmit for review"
+msgstr "Dra tillbaka och skicka till granskning"
+
+#: models/workflow.py:153
+msgid "Retracted and resubmitted for review"
+msgstr "Tillbakadragen och skickad till granskning"
+
+#: models/workflow.py:46
+msgid "<Not found>"
+msgstr "<Hittades inte>"
+
+#: portlets/__init__.py:55
+msgid "Portlet"
+msgstr ""
+
+#: portlets/__init__.py:56
+msgid "A mini view within another view"
+msgstr "En minivy inuti en annan vy"
+
+#: portlets/__init__.py:118
+msgid "Portlet folder"
+msgstr ""
+
+#: portlets/__init__.py:119
+msgid "Container for portlets"
+msgstr ""
+
+#: portlets/__init__.py:210
+msgid "Left"
+msgstr "Vänster"
+
+#: portlets/__init__.py:211
+msgid "Right"
+msgstr "Höger"
+
+#: portlets/__init__.py:212
+msgid "Top"
+msgstr "Topp"
+
+#: portlets/__init__.py:213
+msgid "Bottom"
+msgstr "Botten"
+
+#: portlets/byline.py:11
+msgid "Byline"
+msgstr ""
+
+#: portlets/navigation.py:15
+msgid "Navigation"
+msgstr "Navigation"
+
+#: templates/action_bar.pt:11 templates/navigation.pt:10
+msgid "Toggle navigation"
+msgstr ""
+
+#: templates/contents.pt:123
+msgid "Contents of"
+msgstr "Innehållet i"
+
+#: templates/contents.pt:130
+msgid "Parent directory"
+msgstr "Föräldermapp"
+
+#: templates/contents.pt:133
+msgid "Not a folder, so it can't have content"
+msgstr "Ingen folder, den kan inte ha innehåll"
+
+#: templates/contents.pt:141 templates/content/file.pt:25
+#: templates/content/image.pt:30 templates/deform/file_upload.pt:20
+#: templates/deform/readonly/file_upload.pt:18 views/portlets.py:33
+msgid "Type"
+msgstr "Typ"
+
+#: templates/contents.pt:142 templates/content/users_table.pt:40
+msgid "Created"
+msgstr "Skapad"
+
+#: templates/contents.pt:143
+msgid "Modified"
+msgstr "Modifierad"
+
+#: templates/contents.pt:145 templates/sysinfo.pt:19
+msgid "Info"
+msgstr "Info"
+
+#: templates/contents.pt:152
+msgid "Loading..."
+msgstr "Laddar..."
+
+#: templates/contents.pt:177
+msgid "Change order"
+msgstr "Ändra ordning"
+
+#: templates/initial_setup.pt:25
+msgid ""
+"This is the setup page - there's no site here yet. What would you like to do?"
+msgstr ""
+
+#: templates/manage_portlets.pt:24 views/actions.py:243
+msgid "Manage portlets"
+msgstr "Hantera portlets"
+
+#. Default: Add or remove portlets. Note that the slots might not be positioned
+#. the way they'll be on the page later on.
+#: templates/manage_portlets.pt:25
+msgid "portlets-manager-help"
+msgstr ""
+"Lägg till eller ta bort portlets. Notera att de kanske inte visas på den "
+"plats de kommer visas på sidan senare."
+
+#: templates/master.pt:35
+msgid "Search"
+msgstr "Sök"
+
+#: templates/permissions.pt:48
+msgid "Saved"
+msgstr "Sparad"
+
+#: templates/permissions.pt:60 views/portlets.py:63
+msgid "Added"
+msgstr "Tillagd"
+
+#: templates/permissions.pt:81 templates/permissions.pt:133
+#: templates/permissions.pt:148
+msgid "UserID or group"
+msgstr "AnvändarID eller grupp"
+
+#: templates/search.pt:12
+msgid "Search result"
+msgstr "Sökresultat"
+
+#: templates/sysinfo.pt:14
+msgid "System overview"
+msgstr "Systemöversikt"
+
+#: templates/content/file.pt:16 templates/content/image.pt:21
+msgid "Download file"
+msgstr "Spara fil"
+
+#: templates/content/file.pt:20 templates/content/image.pt:25
+#: views/actions.py:43
+msgid "View"
+msgstr "Vy"
+
+#: templates/content/file.pt:24 templates/content/image.pt:29
+#: templates/deform/file_upload.pt:18
+#: templates/deform/readonly/file_upload.pt:16
+msgid "Size"
+msgstr "Storlek"
+
+#: templates/content/link.pt:15
+msgid "This is a link that will redirect users without edit permission to:"
+msgstr "Den här länken skickar användare utan redigeringsrättighet till:"
+
+#: templates/deform/_form_modal.pt:58 templates/deform/form.pt:51
+#: templates/deform/form_modal.pt:57 templates/deform/readonly/form.pt:51
+#: templates/deform/readonly/form_modal.pt:57
+msgid "There was a problem with your submission"
+msgstr "Det blev ett problem med ditt formulär"
+
+#: templates/deform/dropzone.pt:29 templates/deform/file_upload.pt:25
+#: views/actions.py:190 views/base.py:180
+msgid "Delete"
+msgstr "Radera"
+
+#: templates/deform/dropzone.pt:105
+msgid "Add files..."
+msgstr "Lägg till filer..."
+
+#: templates/deform/file_upload.pt:16
+#: templates/deform/readonly/file_upload.pt:14
+msgid "Filename"
+msgstr "Filnamn"
+
+#: templates/deform/file_upload.pt:31
+msgid "Replace current file:"
+msgstr "Ersätt nuvarande fil:"
+
+#: templates/deform/form_modal.pt:38
+#: templates/deform/readonly/form_modal.pt:38
+msgid "Close"
+msgstr "Stäng"
+
+#. Default: en
+#: templates/deform/richtext.pt:29
+msgid "tinymce-locale-file"
+msgstr "sv_SE"
+
+#: templates/emails/email_change.pt:6
+msgid "Verify email"
+msgstr "Verifiera epost"
+
+#. Default: We got a request to change email address for the UserID ${userid}
+#. to this address. The current address is ${email}. If you don't wish to
+#. change address you can simply discard this email. Otherwise, click the link
+#. below while you're logged in to your account.
+#: templates/emails/email_change.pt:7
+msgid "request_email_change_description"
+msgstr ""
+"Vi fick en förfrågan om att ändra epost för användarID ${userid} till denna "
+"adress. Den nuvarande adressen är ${email}. Om du inte vill ändra adressen "
+"kan du strunta i detta meddelande. Annars, klicka på linken nedan medan du "
+"är inloggad på ditt konto."
+
+#. Default: This email was sent from the site ${request.root.head_title} at
+#. ${url}. You're not subscribed to a list and shouldn't receive this email
+#. unless you've requested it. If you think there has been an error, please
+#. contact someone at that site.
+#: templates/emails/footer.pt:8
+msgid "email_footer_text"
+msgstr ""
+"Det här brevet skickades från sidan ${request.root.head_title} som finns på "
+"${url}. Du är inte med på någon utskickslista och borde inte ha fått detta "
+"brev om du inte har efterfrågat det. Om du tror att något har blivit fel, "
+"vänligen kontakta någon på den sidan."
+
+#: templates/emails/recover_password.pt:6
+msgid "Password reset request"
+msgstr "Förfrågan om lösenordsåterställning"
+
+#. Default: We got a request to reset the password for the UserID ${userid}. If
+#. you don't wish to change your password you don't have to do anything.
+#. Otherwise click the link below and set a new password.
+#: templates/emails/recover_password.pt:7
+msgid "request_password_reset"
+msgstr ""
+"Vi har tagit emot en förfrågan om att återställa lösenordet för användarID "
+"${userid}. Om du inte vill ändra ditt lösenord behöver du inte göra något. "
+"Annars, klicka på länken nedan för att ange ett nytt lösenord."
+
+#: templates/emails/register.pt:6
+msgid "Complete registration at ${site}"
+msgstr "Gör klart registreringen hos ${site}"
+
+#. Default: To finish the registration process, simply follow the link below.
+#: templates/emails/register.pt:9
+msgid "complete_registration_text"
+msgstr "För att göra klart registreringsprocessen, följ bara länken nedan."
+
+#: templates/exceptions/403.pt:13
+msgid "Forbidden"
+msgstr "Inte tillåtet"
+
+#: templates/exceptions/403.pt:14
+msgid "You don't have correct permission to do that."
+msgstr "Du har inte rättighet att göra det här."
+
+#: templates/exceptions/404.pt:13
+msgid "Not found"
+msgstr "Hittas inte"
+
+#: templates/exceptions/404.pt:14
+msgid "There's nothing here with that name."
+msgstr "Det finns inget här med det namnet."
+
+#: templates/exceptions/generic.pt:15
+msgid "There's a problem..."
+msgstr "Vi har problem..."
+
+#. Default: Something isn't behaving the way it should. The error has been
+#. logged. You may wish to contact the person running this site about this
+#. error. It's one of those things that should never happen.
+#: templates/exceptions/generic.pt:18
+msgid "generic_exception_explanation"
+msgstr ""
+"Något beter sig inte som det ska. Felet har loggats. Det kan vara en bra idé "
+"att kontakta de som driver sidan om detta. Det här är en sådan sak som "
+"aldrig ska hända."
+
+#: templates/exceptions/generic.pt:23
+msgid ""
+"arche.debug is set to True, so this error will be printed instead of logged."
+msgstr ""
+"arche.debug är satt till True, så felet kommer visas istället för att loggas."
+
+#: templates/menus/actions.pt:8 views/actions.py:92
+msgid "Actions"
+msgstr ""
+
+#: templates/menus/add_content.pt:8 views/actions.py:83 views/base.py:183
+#: views/portlets.py:18
+msgid "Add"
+msgstr "Lägg till"
+
+#: templates/menus/site.pt:9
+msgid "Site"
+msgstr "Site"
+
+#: templates/portlets/byline.pt:16
+msgid "(modified ${datetime})"
+msgstr "(modifierad ${datetime})"
+
+#: templates/portlets/manager_slot.pt:26
+msgid "Add to"
+msgstr "Lägg till i"
+
+#: templates/sysinfo/acl.pt:6
+msgid "ACL"
+msgstr "ACL"
+
+#: templates/sysinfo/acl.pt:7
+msgid "Access control lists"
+msgstr "Accesskontroll listor"
+
+#: templates/sysinfo/content_types.pt:6 views/system.py:40
+msgid "Content types"
+msgstr "Innehållstyper"
+
+#: templates/sysinfo/content_types.pt:7
+msgid "Click a type to open it's information panel"
+msgstr "Klicka på en typ för att visa dess informationspanel"
+
+#: templates/sysinfo/content_types.pt:25
+msgid "Addable to"
+msgstr "Kan läggas till i"
+
+#: templates/sysinfo/content_types.pt:32
+msgid "ACL and workflows"
+msgstr "ACL och arbetsflöden"
+
+#: templates/sysinfo/content_types.pt:37
+msgid "Can have ACL or Workflow. (arche.interfaces.IContextACL provided)"
+msgstr ""
+
+#: templates/sysinfo/content_types.pt:40
+msgid ""
+"Inherits permissions from its parent unless it defines an '__acl__'-property."
+msgstr ""
+
+#: templates/sysinfo/content_types.pt:43
+msgid "May have local roles assigned. (arche.interfaces.ILocalRoles provided)"
+msgstr ""
+
+#: templates/sysinfo/content_types.pt:47
+msgid "Workflow assigned: ${wf}"
+msgstr ""
+
+#: templates/sysinfo/content_types.pt:53
+msgid "Selectable views"
+msgstr "Valbara vyer"
+
+#: templates/sysinfo/content_types.pt:60
+msgid "Available contextual schemas"
+msgstr ""
+
+#: templates/sysinfo/images.pt:7 views/system.py:78
+msgid "Images"
+msgstr "Bilder"
+
+#: templates/sysinfo/images.pt:10
+msgid ""
+"Installed image library codecs. If you lack any important ones, you may wish "
+"to rebuild the package 'Pillow' with proper support."
+msgstr ""
+
+#: templates/sysinfo/images.pt:17
+msgid "OK"
+msgstr "OK"
+
+#: templates/sysinfo/images.pt:18
+msgid "Missing"
+msgstr "Saknar"
+
+#: templates/sysinfo/images.pt:24
+msgid "Auto-generated scales"
+msgstr "Autogenererade skalor"
+
+#: templates/sysinfo/images.pt:28
+msgid "Name"
+msgstr "Namn"
+
+#: templates/sysinfo/images.pt:29
+msgid "Width"
+msgstr "Bredd"
+
+#: templates/sysinfo/images.pt:30
+msgid "Height"
+msgstr "Höjd"
+
+#: templates/sysinfo/roles.pt:6 views/system.py:55
+msgid "Roles"
+msgstr "Roller"
+
+#: templates/sysinfo/roles.pt:7
+msgid "Roles and their associated information"
+msgstr ""
+
+#: templates/sysinfo/roles.pt:19
+msgid "Principal name"
+msgstr ""
+
+#: templates/sysinfo/roles.pt:21
+msgid "Inheritable"
+msgstr "Kan ärvas"
+
+#: templates/sysinfo/roles.pt:23
+msgid "Assignable"
+msgstr "Kan anges"
+
+#: views/actions.py:30
+msgid "Workflow"
+msgstr "Arbetsflöde"
+
+#: views/actions.py:57
+msgid "Edit"
+msgstr "Redigera"
+
+#: views/actions.py:62
+msgid "Contents"
+msgstr "Innehåll"
+
+#: views/actions.py:68
+msgid "Permissions"
+msgstr "Rättigheter"
+
+#: views/actions.py:102
+msgid "User menu"
+msgstr "Användarmeny"
+
+#: views/actions.py:110
+msgid "Site menu"
+msgstr "Sitemeny"
+
+#: views/actions.py:118 views/auth.py:18 views/auth.py:24
+msgid "Login"
+msgstr "Logga in"
+
+#: views/actions.py:129 views/auth.py:50 views/auth.py:69 views/auth.py:119
+msgid "Register"
+msgstr "Registrera"
+
+#: views/actions.py:141
+msgid "Overview"
+msgstr "Översikt"
+
+#: views/actions.py:142
+msgid "Technichal system information"
+msgstr ""
+
+#: views/actions.py:145
+msgid "System"
+msgstr ""
+
+#: views/actions.py:148 views/site_settings.py:11
+msgid "Site settings"
+msgstr "Siteinställningar"
+
+#: views/actions.py:155
+msgid "Users & Groups"
+msgstr "Användare och grupper"
+
+#: views/actions.py:164
+msgid "Logout"
+msgstr "Logga ut"
+
+#: views/actions.py:180
+msgid "Profile"
+msgstr "Profil"
+
+#: views/actions.py:200 views/cut_copy_paste.py:38
+msgid "Cut"
+msgstr "Klipp"
+
+#: views/actions.py:210 views/cut_copy_paste.py:48
+msgid "Copy"
+msgstr "Kopiera"
+
+#: views/actions.py:223
+msgid "Paste"
+msgstr "Klistra in"
+
+#: views/actions.py:233
+msgid "Rename"
+msgstr "Byt namn"
+
+#: views/actions.py:266
+msgid "View selection"
+msgstr ""
+
+#: views/actions.py:294
+msgid "View settings"
+msgstr ""
+
+#: views/actions.py:285
+msgid "Unset delegated view"
+msgstr ""
+
+#: views/auth.py:100
+msgid "Complete registration"
+msgstr "Slutför registrering"
+
+#: views/auth.py:147 views/auth.py:25
+msgid "Recover password"
+msgstr "Återställ lösenord"
+
+#: views/auth.py:176
+msgid "Change password"
+msgstr "Byt lösenord"
+
+#: views/auth.py:128
+msgid "Welcome, you're now registered!"
+msgstr "Välkommen, du är nu registrerad!"
+
+#: views/auth.py:34
+msgid "Welcome!"
+msgstr "Välkommen!"
+
+#: views/auth.py:55
+msgid "Already logged in."
+msgstr "Redan inloggad."
+
+#. Default: An email with registration instructions have been sent to the
+#. address you specified.
+#: views/auth.py:88
+msgid "reg_email_notification"
+msgstr ""
+
+#: views/auth.py:155
+msgid "Message sent"
+msgstr "Meddelande skickat"
+
+#: views/auth.py:167
+msgid "Password recovery request"
+msgstr "Lösenordsåterställning"
+
+#: views/auth.py:196
+msgid "Not allowed"
+msgstr "Tillåts inte"
+
+#: views/auth.py:84
+msgid "Registration link"
+msgstr "Registreringslänk"
+
+#: views/auth.py:105
+msgid "Already logged in"
+msgstr "Redan inloggad"
+
+#: views/auth.py:107
+msgid "Site doesn't allow self registration"
+msgstr ""
+
+#: views/auth.py:204
+msgid "Password changed"
+msgstr "Lösenord ändrat"
+
+#: views/auth.py:207
+msgid "You've logged in and changed your password"
+msgstr ""
+
+#: views/auth.py:151
+msgid "Send"
+msgstr "Skicka"
+
+#: views/base.py:187
+msgid "Done"
+msgstr "Klart"
+
+#: views/base.py:188
+msgid "Canceled"
+msgstr "Avbruten"
+
+#: views/base.py:395
+msgid "Dynamic view"
+msgstr "Dynamisk vy"
+
+#: views/base.py:181
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: views/base.py:182
+msgid "Save"
+msgstr "Spara"
+
+#: views/base.py:327
+#, python-format
+msgid "Add ${type_title}"
+msgstr "Lägg till ${type_title}"
+
+#: views/base.py:348
+#, python-format
+msgid "Edit ${type_title}"
+msgstr "Redigera ${type_title}"
+
+#: views/base.py:383
+#, python-format
+msgid "Deleted '${title}'"
+msgstr "Raderade '${title}'"
+
+#: views/base.py:439
+msgid "Default view"
+msgstr "Standardvy"
+
+#: views/base.py:441
+#, python-format
+msgid "View set to '${title}'"
+msgstr "Vy satt till '${title}'"
+
+#: views/base.py:458
+#, python-format
+msgid "View delegated to '${title}'"
+msgstr "Vy delegerad till '${title}'"
+
+#: views/base.py:462
+msgid "Normal view restored"
+msgstr "Normalvy återställd"
+
+#: views/cut_copy_paste.py:88
+#, python-format
+msgid "Rename '${name}'"
+msgstr "Byt namn på '${name}'"
+
+#: views/cut_copy_paste.py:57
+msgid "Can't paste to this context"
+msgstr ""
+
+#: views/cut_copy_paste.py:64
+msgid "Moved here"
+msgstr ""
+
+#: views/cut_copy_paste.py:68
+msgid "New copy added here"
+msgstr ""
+
+#: views/cut_copy_paste.py:79
+msgid "Name, this will be part of the url"
+msgstr ""
+
+#: views/exceptions.py:42
+msgid ""
+"This exception has been logged but you may wish to alert any person running "
+"this site about this."
+msgstr ""
+
+#: views/exceptions.py:64
+msgid "Not allowed, perhaps you need to log in?"
+msgstr ""
+
+#: views/initial_setup.py:12
+msgid "Initial Setup"
+msgstr ""
+
+#: views/listing.py:7
+msgid "Content listing"
+msgstr ""
+
+#: views/permissions.py:47
+msgid "That GroupID don't exist"
+msgstr ""
+
+#: views/permissions.py:52
+msgid "That UserID don't exist"
+msgstr ""
+
+#: views/portlets.py:91
+#, python-format
+msgid "Edit ${portlet_title}"
+msgstr ""
+
+#: views/portlets.py:28
+msgid "<Select>"
+msgstr "<Välj>"
+
+#: views/portlets.py:99
+msgid "Nothing to edit for this portlet"
+msgstr ""
+
+#: views/search.py:39
+msgid "Invalid search query - try something else!"
+msgstr ""
+
+#: views/selected_content.py:20
+msgid "Selected content"
+msgstr ""
+
+#: views/selected_content.py:11
+msgid "Select content to show"
+msgstr ""
+
+#: views/selected_content.py:15
+msgid "Show content body, if any"
+msgstr ""
+
+#: views/system.py:18
+msgid "No"
+msgstr "Nej"
+
+#: views/system.py:19
+msgid "Yes"
+msgstr "Ja"
+
+#: views/system.py:20
+msgid "Allow"
+msgstr "Tillåt"
+
+#: views/system.py:21
+msgid "Deny"
+msgstr "Neka"
+
+#. Default: Since you requested to change your email address we've sent you an
+#. email to verify your new address. As soon as you click the link in your
+#. email, your address will change. All other changes were saved.
+#: views/user.py:38
+msgid "require_email_verification_notice"
+msgstr ""
+
+#: views/user.py:71
+msgid "This link is invalid. Unable to change email."
+msgstr ""
+
+#: views/user.py:35
+msgid "Email change validation"
+msgstr ""
+
+#: views/user.py:64
+msgid "The email change request has expired."
+msgstr ""
+
+#: views/user.py:69
+msgid "Email changed"
+msgstr ""
+
+#: views/user.py:62
+msgid "No such token"
+msgstr "Ingen sådan token"
+
+#~ msgid "Admins email adress"
+#~ msgstr "Administratörens epostadress"
+
+#~ msgid "UserID or Group"
+#~ msgstr "AnvändarID eller grupp"
+
+#~ msgid ""
+#~ "Something isn't behaving the way it should. The error has been logged."
+#~ msgstr "Någonting funkar inte som det ska. Felet har loggats."

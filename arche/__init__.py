@@ -44,8 +44,9 @@ def includeme(config):
     #Portlets
     config.include('arche.portlets.byline')
     config.include('arche.portlets.navigation')
-
-    #Resolve strings
+    #Translations
+    config.add_translation_dirs('arche:locale/')
+    #Turn these strings into methods
     resolvable_methods = ('arche.hash_method',
                           'arche.new_userid_validator',
                           'arche.actionbar',)
@@ -92,7 +93,6 @@ def main(global_config, **settings):
     config.include('pyramid_deform')
     config.include('pyramid_chameleon')
     config.include('deform_autoneed')
-    #config.add_translation_dirs('arche:locale/')
     config.hook_zca()
     return config.make_wsgi_app()
 

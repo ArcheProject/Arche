@@ -1,0 +1,1195 @@
+# 
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2015-03-31 09:45+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 3.9\n"
+
+#. Default: Group for all administrators. Add any administrators to this group.
+#: ./.././populators.py:28
+msgid "admin_group_desc"
+msgstr ""
+
+#: ./.././populators.py:30
+msgid "Administrators"
+msgstr ""
+
+#: ./.././resources.py:218
+msgid "Link"
+msgstr ""
+
+#: ./.././resources.py:219
+msgid "Content type that redirects to somewhere."
+msgstr ""
+
+#: ./.././resources.py:236
+msgid "Site root"
+msgstr ""
+
+#: ./.././resources.py:280
+msgid "Document"
+msgstr ""
+
+#: ./.././resources.py:298
+msgid "File"
+msgstr ""
+
+#: ./.././resources.py:340 ./.././schemas.py:216
+msgid "Image"
+msgstr ""
+
+#: ./.././resources.py:349
+msgid "Initial setup"
+msgstr ""
+
+#: ./.././resources.py:352
+msgid "Welcome to Arche!"
+msgstr ""
+
+#: ./.././resources.py:359 ./.././resources.py:363 ./.././schemas.py:69
+#: ./.././views/actions.py:153
+msgid "Users"
+msgstr ""
+
+#: ./.././resources.py:377
+msgid "User"
+msgstr ""
+
+#: ./.././resources.py:427 ./.././resources.py:431 ./.././schemas.py:70
+#: ./.././views/actions.py:159
+msgid "Groups"
+msgstr ""
+
+#: ./.././resources.py:450 ./.././templates/content/groups.pt:12
+msgid "Group"
+msgstr ""
+
+#: ./.././resources.py:484
+msgid "Token"
+msgstr ""
+
+#: ./.././schemas.py:65 ./.././views/actions.py:262
+msgid "Default"
+msgstr ""
+
+#: ./.././schemas.py:66
+msgid "Visibility"
+msgstr ""
+
+#: ./.././schemas.py:67
+msgid "Metadata"
+msgstr ""
+
+#: ./.././schemas.py:68
+msgid "Related"
+msgstr ""
+
+#: ./.././schemas.py:71
+msgid "Advanced"
+msgstr ""
+
+#: ./.././schemas.py:230
+#, python-format
+msgid ""
+"Current default timezone is: '${tzname}', leave this field blank if your're "
+"okay with that."
+msgstr ""
+
+#: ./.././schemas.py:93
+msgid "No thanks"
+msgstr ""
+
+#: ./.././schemas.py:94
+msgid "Don't install or change anything"
+msgstr ""
+
+#: ./.././schemas.py:110
+msgid "Type to search for UserIDs"
+msgstr ""
+
+#: ./.././schemas.py:129
+msgid "Tags or subjects"
+msgstr ""
+
+#: ./.././schemas.py:147
+msgid "Related content"
+msgstr ""
+
+#: ./.././schemas.py:148
+msgid "Can be used to link to other content"
+msgstr ""
+
+#: ./.././schemas.py:156
+msgid "Date"
+msgstr ""
+
+#: ./.././schemas.py:157
+msgid "Publish date, or used for sorting"
+msgstr ""
+
+#: ./.././schemas.py:162
+msgid "Licensing"
+msgstr ""
+
+#: ./.././schemas.py:186
+msgid "Show in navigations"
+msgstr ""
+
+#: ./.././schemas.py:191
+msgid "Show in listing or table views"
+msgstr ""
+
+#: ./.././schemas.py:192
+msgid "The content view will always show this regardless of what you set."
+msgstr ""
+
+#: ./.././schemas.py:197
+msgid "Include in search results"
+msgstr ""
+
+#: ./.././schemas.py:198
+msgid ""
+"Note that this is not a permission setting - it's just a matter of "
+"practicality for users. They may even disable this setting."
+msgstr ""
+
+#: ./.././schemas.py:204
+msgid "Navigation bar title"
+msgstr ""
+
+#: ./.././schemas.py:205
+msgid "If you wish to use another name for when it's shown in menus."
+msgstr ""
+
+#: ./.././schemas.py:223
+msgid "Show byline"
+msgstr ""
+
+#: ./.././schemas.py:246 ./.././schemas.py:360
+#: ./.././templates/content/users_table.pt:38
+msgid "First name"
+msgstr ""
+
+#: ./.././schemas.py:249 ./.././schemas.py:363
+#: ./.././templates/content/users_table.pt:39
+msgid "Last name"
+msgstr ""
+
+#: ./.././schemas.py:252 ./.././schemas.py:316
+msgid "Email adress"
+msgstr ""
+
+#: ./.././schemas.py:258
+msgid "Profile image"
+msgstr ""
+
+#: ./.././schemas.py:262
+msgid "Set custom timezone"
+msgstr ""
+
+#: ./.././schemas.py:273 ./.././schemas.py:357 ./.././schemas.py:291
+#: ./.././templates/content/users_table.pt:36
+msgid "UserID"
+msgstr ""
+
+#: ./.././schemas.py:276 ./.././schemas.py:304 ./.././schemas.py:320
+#: ./.././schemas.py:340 ./.././schemas.py:366
+msgid "Password"
+msgstr ""
+
+#: ./.././schemas.py:282 ./.././schemas.py:400 ./.././templates/contents.pt:140
+msgid "Title"
+msgstr ""
+
+#: ./.././schemas.py:284 ./.././templates/content/groups.pt:13
+#: ./.././templates/sysinfo/content_types.pt:22
+msgid "Description"
+msgstr ""
+
+#: ./.././schemas.py:294 ./.././templates/content/groups.pt:14
+msgid "Members"
+msgstr ""
+
+#: ./.././schemas.py:300
+msgid "Current password"
+msgstr ""
+
+#: ./.././schemas.py:310
+msgid "Site title"
+msgstr ""
+
+#: ./.././schemas.py:311
+msgid "A site made with Arche"
+msgstr ""
+
+#: ./.././schemas.py:313
+msgid "Admin userid - use lowercase!"
+msgstr ""
+
+#: ./.././schemas.py:324
+msgid "Populate site"
+msgstr ""
+
+#: ./.././schemas.py:338 ./.././schemas.py:379
+msgid "Email or UserID"
+msgstr ""
+
+#: ./.././schemas.py:350 ./.././templates/content/users_table.pt:37
+msgid "Email"
+msgstr ""
+
+#: ./.././schemas.py:384
+msgid "Page head title"
+msgstr ""
+
+#: ./.././schemas.py:385
+msgid "Usually shown as a title of the browser tab."
+msgstr ""
+
+#: ./.././schemas.py:387
+msgid "Footer"
+msgstr ""
+
+#: ./.././schemas.py:401
+msgid "Filename will be used if you leave this blank"
+msgstr ""
+
+#: ./.././schemas.py:404
+msgid "Upload file"
+msgstr ""
+
+#: ./.././schemas.py:411
+msgid "Change file"
+msgstr ""
+
+#: ./.././schemas.py:433
+msgid "Allow users to register themselves to this site."
+msgstr ""
+
+#: ./.././schemas.py:436
+msgid "Show login link."
+msgstr ""
+
+#: ./.././schemas.py:439
+msgid "Skip email validation"
+msgstr ""
+
+#: ./.././schemas.py:440
+msgid ""
+"This will allow users to register with a fake email address. Generally not "
+"recommended."
+msgstr ""
+
+#: ./.././security.py:35
+msgid "Administrator"
+msgstr ""
+
+#: ./.././security.py:36
+msgid "Default 'superuser' role."
+msgstr ""
+
+#: ./.././security.py:40
+msgid "Editor"
+msgstr ""
+
+#: ./.././security.py:41
+msgid "Someone who has normal edit permissions."
+msgstr ""
+
+#: ./.././security.py:45
+msgid "Viewer"
+msgstr ""
+
+#: ./.././security.py:46
+msgid "Someone who's allowed to view."
+msgstr ""
+
+#: ./.././security.py:50
+msgid "Owner"
+msgstr ""
+
+#: ./.././security.py:51
+msgid "Special role for the initial creator."
+msgstr ""
+
+#: ./.././security.py:55
+msgid "Reviewer"
+msgstr ""
+
+#: ./.././security.py:56
+msgid ""
+"Review and publish content. Usable when combined with a workflow that "
+"implements review before publish."
+msgstr ""
+
+#: ./.././security.py:60
+msgid "Everyone"
+msgstr ""
+
+#: ./.././security.py:61
+msgid "Including anonymous"
+msgstr ""
+
+#: ./.././security.py:64
+msgid "Authenticated users"
+msgstr ""
+
+#: ./.././security.py:204 ./.././models/workflow.py:114
+#: ./.././models/workflow.py:165
+msgid "Private"
+msgstr ""
+
+#: ./.././security.py:211 ./.././models/workflow.py:115
+#: ./.././models/workflow.py:166
+msgid "Public"
+msgstr ""
+
+#: ./.././security.py:216 ./.././models/workflow.py:167
+msgid "Review"
+msgstr ""
+
+#: ./.././validators.py:131
+#, python-format
+msgid ""
+"Not a valid image file! Any of these image types are supported: ${suggested}"
+msgstr ""
+
+#: ./.././validators.py:47
+msgid "Please use lowercase only."
+msgstr ""
+
+#: ./.././validators.py:50
+msgid "Already taken or conflicts with a restricted name."
+msgstr ""
+
+#. Default: UserID must be 3-30 chars, start with lowercase a-z and only
+#. contain lowercase a-z, numbers, minus and underscore.
+#: ./.././validators.py:53
+msgid "userid_char_error"
+msgstr ""
+
+#: ./.././validators.py:80 ./.././validators.py:104
+msgid "Invalid email or UserID"
+msgstr ""
+
+#: ./.././validators.py:84 ./.././validators.py:171
+msgid "Wrong password. Remember that passwords are case sensitive."
+msgstr ""
+
+#: ./.././validators.py:120
+msgid "Already registered. You may recover your password if you've lost it."
+msgstr ""
+
+#: ./.././validators.py:150
+#, python-format
+msgid "Not a valid file type, try any of the following: ${suggested}"
+msgstr ""
+
+#: ./.././validators.py:40
+msgid "Already used within this context"
+msgstr ""
+
+#: ./.././widgets.py:35 ./.././templates/contents.pt:144
+msgid "Tags"
+msgstr ""
+
+#: ./.././widgets.py:71
+msgid "Type something to search."
+msgstr ""
+
+#: ./.././models/acl.py:126 ./.././models/workflow.py:191
+msgid "Inherit"
+msgstr ""
+
+#: ./.././models/acl.py:127
+msgid "Fetch the ACL from the parent object"
+msgstr ""
+
+#: ./.././models/datetime_handler.py:107
+msgid "Just now"
+msgstr ""
+
+#: ./.././models/datetime_handler.py:109
+#, python-format
+msgid "${diff} seconds ago"
+msgstr ""
+
+#: ./.././models/datetime_handler.py:111
+msgid "1 minute ago"
+msgstr ""
+
+#: ./.././models/datetime_handler.py:113
+#, python-format
+msgid "${diff} minutes ago"
+msgstr ""
+
+#: ./.././models/datetime_handler.py:115
+msgid "1 hour ago"
+msgstr ""
+
+#: ./.././models/datetime_handler.py:117
+#, python-format
+msgid "${diff} hours ago"
+msgstr ""
+
+#: ./.././models/workflow.py:113
+msgid "Simple"
+msgstr ""
+
+#: ./.././models/workflow.py:164
+msgid "Review workflow"
+msgstr ""
+
+#: ./.././models/workflow.py:190
+msgid "Inherit workflow"
+msgstr ""
+
+#: ./.././models/workflow.py:100 ./.././models/workflow.py:132
+#: ./.././models/workflow.py:147
+msgid "Make private"
+msgstr ""
+
+#: ./.././models/workflow.py:101 ./.././models/workflow.py:133
+#: ./.././models/workflow.py:148
+msgid "Now private"
+msgstr ""
+
+#: ./.././models/workflow.py:106 ./.././models/workflow.py:137
+#: ./.././models/workflow.py:157
+msgid "Publish"
+msgstr ""
+
+#: ./.././models/workflow.py:107 ./.././models/workflow.py:138
+#: ./.././models/workflow.py:158
+msgid "Published"
+msgstr ""
+
+#: ./.././models/workflow.py:142
+msgid "Submit for review"
+msgstr ""
+
+#: ./.././models/workflow.py:143
+msgid "Submitted for review"
+msgstr ""
+
+#: ./.././models/workflow.py:152
+msgid "Retract and resubmit for review"
+msgstr ""
+
+#: ./.././models/workflow.py:153
+msgid "Retracted and resubmitted for review"
+msgstr ""
+
+#: ./.././models/workflow.py:46
+msgid "<Not found>"
+msgstr ""
+
+#: ./.././portlets/__init__.py:55
+msgid "Portlet"
+msgstr ""
+
+#: ./.././portlets/__init__.py:56
+msgid "A mini view within another view"
+msgstr ""
+
+#: ./.././portlets/__init__.py:118
+msgid "Portlet folder"
+msgstr ""
+
+#: ./.././portlets/__init__.py:119
+msgid "Container for portlets"
+msgstr ""
+
+#: ./.././portlets/__init__.py:210
+msgid "Left"
+msgstr ""
+
+#: ./.././portlets/__init__.py:211
+msgid "Right"
+msgstr ""
+
+#: ./.././portlets/__init__.py:212
+msgid "Top"
+msgstr ""
+
+#: ./.././portlets/__init__.py:213
+msgid "Bottom"
+msgstr ""
+
+#: ./.././portlets/byline.py:11
+msgid "Byline"
+msgstr ""
+
+#: ./.././portlets/navigation.py:15
+msgid "Navigation"
+msgstr ""
+
+#: ./.././templates/action_bar.pt:11 ./.././templates/navigation.pt:10
+msgid "Toggle navigation"
+msgstr ""
+
+#: ./.././templates/contents.pt:123
+msgid "Contents of"
+msgstr ""
+
+#: ./.././templates/contents.pt:130
+msgid "Parent directory"
+msgstr ""
+
+#: ./.././templates/contents.pt:133
+msgid "Not a folder, so it can't have content"
+msgstr ""
+
+#: ./.././templates/contents.pt:141 ./.././templates/content/file.pt:25
+#: ./.././templates/content/image.pt:30
+#: ./.././templates/deform/file_upload.pt:20
+#: ./.././templates/deform/readonly/file_upload.pt:18
+#: ./.././views/portlets.py:33
+msgid "Type"
+msgstr ""
+
+#: ./.././templates/contents.pt:142 ./.././templates/content/users_table.pt:40
+msgid "Created"
+msgstr ""
+
+#: ./.././templates/contents.pt:143
+msgid "Modified"
+msgstr ""
+
+#: ./.././templates/contents.pt:145 ./.././templates/sysinfo.pt:19
+msgid "Info"
+msgstr ""
+
+#: ./.././templates/contents.pt:152
+msgid "Loading..."
+msgstr ""
+
+#: ./.././templates/contents.pt:177
+msgid "Change order"
+msgstr ""
+
+#: ./.././templates/initial_setup.pt:25
+msgid ""
+"This is the setup page - there's no site here yet. What would you like to do?"
+msgstr ""
+
+#: ./.././templates/manage_portlets.pt:24 ./.././views/actions.py:243
+msgid "Manage portlets"
+msgstr ""
+
+#. Default: Add or remove portlets. Note that the slots might not be positioned
+#. the way they'll be on the page later on.
+#: ./.././templates/manage_portlets.pt:25
+msgid "portlets-manager-help"
+msgstr ""
+
+#: ./.././templates/master.pt:35
+msgid "Search"
+msgstr ""
+
+#: ./.././templates/permissions.pt:48
+msgid "Saved"
+msgstr ""
+
+#: ./.././templates/permissions.pt:60 ./.././views/portlets.py:63
+msgid "Added"
+msgstr ""
+
+#: ./.././templates/permissions.pt:81 ./.././templates/permissions.pt:133
+#: ./.././templates/permissions.pt:148
+msgid "UserID or group"
+msgstr ""
+
+#: ./.././templates/search.pt:12
+msgid "Search result"
+msgstr ""
+
+#: ./.././templates/sysinfo.pt:14
+msgid "System overview"
+msgstr ""
+
+#: ./.././templates/content/file.pt:16 ./.././templates/content/image.pt:21
+msgid "Download file"
+msgstr ""
+
+#: ./.././templates/content/file.pt:20 ./.././templates/content/image.pt:25
+#: ./.././views/actions.py:43
+msgid "View"
+msgstr ""
+
+#: ./.././templates/content/file.pt:24 ./.././templates/content/image.pt:29
+#: ./.././templates/deform/file_upload.pt:18
+#: ./.././templates/deform/readonly/file_upload.pt:16
+msgid "Size"
+msgstr ""
+
+#: ./.././templates/content/link.pt:15
+msgid "This is a link that will redirect users without edit permission to:"
+msgstr ""
+
+#: ./.././templates/deform/_form_modal.pt:58 ./.././templates/deform/form.pt:51
+#: ./.././templates/deform/form_modal.pt:57
+#: ./.././templates/deform/readonly/form.pt:51
+#: ./.././templates/deform/readonly/form_modal.pt:57
+msgid "There was a problem with your submission"
+msgstr ""
+
+#: ./.././templates/deform/dropzone.pt:29
+#: ./.././templates/deform/file_upload.pt:25 ./.././views/actions.py:190
+#: ./.././views/base.py:180
+msgid "Delete"
+msgstr ""
+
+#: ./.././templates/deform/dropzone.pt:105
+msgid "Add files..."
+msgstr ""
+
+#: ./.././templates/deform/file_upload.pt:16
+#: ./.././templates/deform/readonly/file_upload.pt:14
+msgid "Filename"
+msgstr ""
+
+#: ./.././templates/deform/file_upload.pt:31
+msgid "Replace current file:"
+msgstr ""
+
+#: ./.././templates/deform/form_modal.pt:38
+#: ./.././templates/deform/readonly/form_modal.pt:38
+msgid "Close"
+msgstr ""
+
+#. Default: en
+#: ./.././templates/deform/richtext.pt:29
+msgid "tinymce-locale-file"
+msgstr ""
+
+#: ./.././templates/emails/email_change.pt:6
+msgid "Verify email"
+msgstr ""
+
+#. Default: We got a request to change email address for the UserID ${userid}
+#. to this address. The current address is ${email}. If you don't wish to
+#. change address you can simply discard this email. Otherwise, click the link
+#. below while you're logged in to your account.
+#: ./.././templates/emails/email_change.pt:7
+msgid "request_email_change_description"
+msgstr ""
+
+#. Default: This email was sent from the site ${request.root.head_title} at
+#. ${url}. You're not subscribed to a list and shouldn't receive this email
+#. unless you've requested it. If you think there has been an error, please
+#. contact someone at that site.
+#: ./.././templates/emails/footer.pt:8
+msgid "email_footer_text"
+msgstr ""
+
+#: ./.././templates/emails/recover_password.pt:6
+msgid "Password reset request"
+msgstr ""
+
+#. Default: We got a request to reset the password for the UserID ${userid}. If
+#. you don't wish to change your password you don't have to do anything.
+#. Otherwise click the link below and set a new password.
+#: ./.././templates/emails/recover_password.pt:7
+msgid "request_password_reset"
+msgstr ""
+
+#: ./.././templates/emails/register.pt:6
+msgid "Complete registration at ${site}"
+msgstr ""
+
+#. Default: To finish the registration process, simply follow the link below.
+#: ./.././templates/emails/register.pt:9
+msgid "complete_registration_text"
+msgstr ""
+
+#: ./.././templates/exceptions/403.pt:13
+msgid "Forbidden"
+msgstr ""
+
+#: ./.././templates/exceptions/403.pt:14
+msgid "You don't have correct permission to do that."
+msgstr ""
+
+#: ./.././templates/exceptions/404.pt:13
+msgid "Not found"
+msgstr ""
+
+#: ./.././templates/exceptions/404.pt:14
+msgid "There's nothing here with that name."
+msgstr ""
+
+#: ./.././templates/exceptions/generic.pt:15
+msgid "There's a problem..."
+msgstr ""
+
+#. Default: Something isn't behaving the way it should. The error has been
+#. logged. You may wish to contact the person running this site about this
+#. error. It's one of those things that should never happen.
+#: ./.././templates/exceptions/generic.pt:18
+msgid "generic_exception_explanation"
+msgstr ""
+
+#: ./.././templates/exceptions/generic.pt:23
+msgid ""
+"arche.debug is set to True, so this error will be printed instead of logged."
+msgstr ""
+
+#: ./.././templates/menus/actions.pt:8 ./.././views/actions.py:92
+msgid "Actions"
+msgstr ""
+
+#: ./.././templates/menus/add_content.pt:8 ./.././views/actions.py:83
+#: ./.././views/base.py:183 ./.././views/portlets.py:18
+msgid "Add"
+msgstr ""
+
+#: ./.././templates/menus/site.pt:9
+msgid "Site"
+msgstr ""
+
+#: ./.././templates/portlets/byline.pt:16
+msgid "(modified ${datetime})"
+msgstr ""
+
+#: ./.././templates/portlets/manager_slot.pt:26
+msgid "Add to"
+msgstr ""
+
+#: ./.././templates/sysinfo/acl.pt:6
+msgid "ACL"
+msgstr ""
+
+#: ./.././templates/sysinfo/acl.pt:7
+msgid "Access control lists"
+msgstr ""
+
+#: ./.././templates/sysinfo/content_types.pt:6 ./.././views/system.py:40
+msgid "Content types"
+msgstr ""
+
+#: ./.././templates/sysinfo/content_types.pt:7
+msgid "Click a type to open it's information panel"
+msgstr ""
+
+#: ./.././templates/sysinfo/content_types.pt:25
+msgid "Addable to"
+msgstr ""
+
+#: ./.././templates/sysinfo/content_types.pt:32
+msgid "ACL and workflows"
+msgstr ""
+
+#: ./.././templates/sysinfo/content_types.pt:37
+msgid "Can have ACL or Workflow. (arche.interfaces.IContextACL provided)"
+msgstr ""
+
+#: ./.././templates/sysinfo/content_types.pt:40
+msgid ""
+"Inherits permissions from its parent unless it defines an '__acl__'-property."
+msgstr ""
+
+#: ./.././templates/sysinfo/content_types.pt:43
+msgid "May have local roles assigned. (arche.interfaces.ILocalRoles provided)"
+msgstr ""
+
+#: ./.././templates/sysinfo/content_types.pt:47
+msgid "Workflow assigned: ${wf}"
+msgstr ""
+
+#: ./.././templates/sysinfo/content_types.pt:53
+msgid "Selectable views"
+msgstr ""
+
+#: ./.././templates/sysinfo/content_types.pt:60
+msgid "Available contextual schemas"
+msgstr ""
+
+#: ./.././templates/sysinfo/images.pt:7 ./.././views/system.py:78
+msgid "Images"
+msgstr ""
+
+#: ./.././templates/sysinfo/images.pt:10
+msgid ""
+"Installed image library codecs. If you lack any important ones, you may wish "
+"to rebuild the package 'Pillow' with proper support."
+msgstr ""
+
+#: ./.././templates/sysinfo/images.pt:17
+msgid "OK"
+msgstr ""
+
+#: ./.././templates/sysinfo/images.pt:18
+msgid "Missing"
+msgstr ""
+
+#: ./.././templates/sysinfo/images.pt:24
+msgid "Auto-generated scales"
+msgstr ""
+
+#: ./.././templates/sysinfo/images.pt:28
+msgid "Name"
+msgstr ""
+
+#: ./.././templates/sysinfo/images.pt:29
+msgid "Width"
+msgstr ""
+
+#: ./.././templates/sysinfo/images.pt:30
+msgid "Height"
+msgstr ""
+
+#: ./.././templates/sysinfo/roles.pt:6 ./.././views/system.py:55
+msgid "Roles"
+msgstr ""
+
+#: ./.././templates/sysinfo/roles.pt:7
+msgid "Roles and their associated information"
+msgstr ""
+
+#: ./.././templates/sysinfo/roles.pt:19
+msgid "Principal name"
+msgstr ""
+
+#: ./.././templates/sysinfo/roles.pt:21
+msgid "Inheritable"
+msgstr ""
+
+#: ./.././templates/sysinfo/roles.pt:23
+msgid "Assignable"
+msgstr ""
+
+#: ./.././views/actions.py:30
+msgid "Workflow"
+msgstr ""
+
+#: ./.././views/actions.py:57
+msgid "Edit"
+msgstr ""
+
+#: ./.././views/actions.py:62
+msgid "Contents"
+msgstr ""
+
+#: ./.././views/actions.py:68
+msgid "Permissions"
+msgstr ""
+
+#: ./.././views/actions.py:102
+msgid "User menu"
+msgstr ""
+
+#: ./.././views/actions.py:110
+msgid "Site menu"
+msgstr ""
+
+#: ./.././views/actions.py:118 ./.././views/auth.py:18 ./.././views/auth.py:24
+msgid "Login"
+msgstr ""
+
+#: ./.././views/actions.py:129 ./.././views/auth.py:50 ./.././views/auth.py:69
+#: ./.././views/auth.py:119
+msgid "Register"
+msgstr ""
+
+#: ./.././views/actions.py:141
+msgid "Overview"
+msgstr ""
+
+#: ./.././views/actions.py:142
+msgid "Technichal system information"
+msgstr ""
+
+#: ./.././views/actions.py:145
+msgid "System"
+msgstr ""
+
+#: ./.././views/actions.py:148 ./.././views/site_settings.py:11
+msgid "Site settings"
+msgstr ""
+
+#: ./.././views/actions.py:155
+msgid "Users & Groups"
+msgstr ""
+
+#: ./.././views/actions.py:164
+msgid "Logout"
+msgstr ""
+
+#: ./.././views/actions.py:180
+msgid "Profile"
+msgstr ""
+
+#: ./.././views/actions.py:200 ./.././views/cut_copy_paste.py:38
+msgid "Cut"
+msgstr ""
+
+#: ./.././views/actions.py:210 ./.././views/cut_copy_paste.py:48
+msgid "Copy"
+msgstr ""
+
+#: ./.././views/actions.py:223
+msgid "Paste"
+msgstr ""
+
+#: ./.././views/actions.py:233
+msgid "Rename"
+msgstr ""
+
+#: ./.././views/actions.py:266
+msgid "View selection"
+msgstr ""
+
+#: ./.././views/actions.py:294
+msgid "View settings"
+msgstr ""
+
+#: ./.././views/actions.py:285
+msgid "Unset delegated view"
+msgstr ""
+
+#: ./.././views/auth.py:100
+msgid "Complete registration"
+msgstr ""
+
+#: ./.././views/auth.py:147 ./.././views/auth.py:25
+msgid "Recover password"
+msgstr ""
+
+#: ./.././views/auth.py:176
+msgid "Change password"
+msgstr ""
+
+#: ./.././views/auth.py:128
+msgid "Welcome, you're now registered!"
+msgstr ""
+
+#: ./.././views/auth.py:34
+msgid "Welcome!"
+msgstr ""
+
+#: ./.././views/auth.py:55 ./.././views/auth.py:105
+msgid "Already logged in."
+msgstr ""
+
+#. Default: An email with registration instructions have been sent to the
+#. address you specified.
+#: ./.././views/auth.py:88
+msgid "reg_email_notification"
+msgstr ""
+
+#: ./.././views/auth.py:155
+msgid "Message sent"
+msgstr ""
+
+#: ./.././views/auth.py:167
+msgid "Password recovery request"
+msgstr ""
+
+#: ./.././views/auth.py:196
+msgid "Not allowed"
+msgstr ""
+
+#: ./.././views/auth.py:84
+msgid "Registration link"
+msgstr ""
+
+#: ./.././views/auth.py:107
+msgid "Site doesn't allow self registration"
+msgstr ""
+
+#: ./.././views/auth.py:204
+msgid "Password changed"
+msgstr ""
+
+#. Default: You've logged in and changed your password
+#: ./.././views/auth.py:207
+msgid "logged_in_changed_pw"
+msgstr ""
+
+#: ./.././views/auth.py:151
+msgid "Send"
+msgstr ""
+
+#: ./.././views/base.py:187
+msgid "Done"
+msgstr ""
+
+#: ./.././views/base.py:188
+msgid "Canceled"
+msgstr ""
+
+#: ./.././views/base.py:395
+msgid "Dynamic view"
+msgstr ""
+
+#: ./.././views/base.py:181
+msgid "Cancel"
+msgstr ""
+
+#: ./.././views/base.py:182
+msgid "Save"
+msgstr ""
+
+#: ./.././views/base.py:327
+#, python-format
+msgid "Add ${type_title}"
+msgstr ""
+
+#: ./.././views/base.py:348
+#, python-format
+msgid "Edit ${type_title}"
+msgstr ""
+
+#: ./.././views/base.py:383
+#, python-format
+msgid "Deleted '${title}'"
+msgstr ""
+
+#: ./.././views/base.py:439
+msgid "Default view"
+msgstr ""
+
+#: ./.././views/base.py:441
+#, python-format
+msgid "View set to '${title}'"
+msgstr ""
+
+#: ./.././views/base.py:458
+#, python-format
+msgid "View delegated to '${title}'"
+msgstr ""
+
+#: ./.././views/base.py:462
+msgid "Normal view restored"
+msgstr ""
+
+#: ./.././views/cut_copy_paste.py:88
+#, python-format
+msgid "Rename '${name}'"
+msgstr ""
+
+#: ./.././views/cut_copy_paste.py:57
+msgid "Can't paste to this context"
+msgstr ""
+
+#: ./.././views/cut_copy_paste.py:64
+msgid "Moved here"
+msgstr ""
+
+#: ./.././views/cut_copy_paste.py:68
+msgid "New copy added here"
+msgstr ""
+
+#: ./.././views/cut_copy_paste.py:79
+msgid "Name, this will be part of the url"
+msgstr ""
+
+#: ./.././views/exceptions.py:42
+msgid ""
+"This exception has been logged but you may wish to alert any person running "
+"this site about this."
+msgstr ""
+
+#: ./.././views/exceptions.py:64
+msgid "Not allowed, perhaps you need to log in?"
+msgstr ""
+
+#: ./.././views/initial_setup.py:12
+msgid "Initial Setup"
+msgstr ""
+
+#: ./.././views/listing.py:7
+msgid "Content listing"
+msgstr ""
+
+#: ./.././views/permissions.py:47
+msgid "That GroupID don't exist"
+msgstr ""
+
+#: ./.././views/permissions.py:52
+msgid "That UserID don't exist"
+msgstr ""
+
+#: ./.././views/portlets.py:91
+#, python-format
+msgid "Edit ${portlet_title}"
+msgstr ""
+
+#: ./.././views/portlets.py:28
+msgid "<Select>"
+msgstr ""
+
+#: ./.././views/portlets.py:99
+msgid "Nothing to edit for this portlet"
+msgstr ""
+
+#: ./.././views/search.py:39
+msgid "Invalid search query - try something else!"
+msgstr ""
+
+#: ./.././views/selected_content.py:20
+msgid "Selected content"
+msgstr ""
+
+#: ./.././views/selected_content.py:11
+msgid "Select content to show"
+msgstr ""
+
+#: ./.././views/selected_content.py:15
+msgid "Show content body, if any"
+msgstr ""
+
+#: ./.././views/system.py:18
+msgid "No"
+msgstr ""
+
+#: ./.././views/system.py:19
+msgid "Yes"
+msgstr ""
+
+#: ./.././views/system.py:20
+msgid "Allow"
+msgstr ""
+
+#: ./.././views/system.py:21
+msgid "Deny"
+msgstr ""
+
+#. Default: Since you requested to change your email address we've sent you an
+#. email to verify your new address. As soon as you click the link in your
+#. email, your address will change. All other changes were saved.
+#: ./.././views/user.py:38
+msgid "require_email_verification_notice"
+msgstr ""
+
+#: ./.././views/user.py:71
+msgid "This link is invalid. Unable to change email."
+msgstr ""
+
+#: ./.././views/user.py:35
+msgid "Email change validation"
+msgstr ""
+
+#: ./.././views/user.py:64
+msgid "The email change request has expired."
+msgstr ""
+
+#: ./.././views/user.py:69
+msgid "Email changed"
+msgstr ""
+
+#: ./.././views/user.py:62
+msgid "No such token"
+msgstr ""

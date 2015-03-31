@@ -102,7 +102,7 @@ class RegisterFinishForm(BaseForm):
     def __init__(self, context, request):
         super(RegisterFinishForm, self).__init__(context, request)
         if request.authenticated_userid != None:
-            raise HTTPForbidden(_(u"Already logged in"))
+            raise HTTPForbidden(_(u"Already logged in."))
         if not context.site_settings.get('allow_self_registration', False):
             raise HTTPForbidden(_(u"Site doesn't allow self registration"))
         rtokens = IRegistrationTokens(context)
@@ -204,7 +204,8 @@ class UserChangePasswordForm(DefaultEditForm):
             self.flash_messages.add(_("Password changed"))
             return HTTPFound(location = self.request.resource_url(self.context))
         else:
-            self.flash_messages.add(_("You've logged in and changed your password"))
+            self.flash_messages.add(_("logged_in_changed_pw",
+                                      default = "You've logged in and changed your password"))
             headers = remember(self.request, self.context.userid)
             return self.relocate_response(self.request.resource_url(self.context), headers = headers)
 

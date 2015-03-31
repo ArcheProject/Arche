@@ -64,7 +64,7 @@ def roles_pane(context, request, va, **kw):
     return render('arche:templates/sysinfo/roles.pt', response, request = request)
 
 @view_action('sysinfo', 'acl',
-             title = _(u"ACL"),
+             title = "ACL",
              permission = security.PERM_MANAGE_SYSTEM)
 def acl_panel(context, request, va, **kw):
     roles = security.get_roles(registry = request.registry).values()

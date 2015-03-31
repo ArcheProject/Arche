@@ -35,8 +35,8 @@
       <tr>
         <th i18n:translate="">UserID</th>
         <th i18n:translate="">Email</th>
-        <th i18n:translate="">Firstname</th>
-        <th i18n:translate="">Lastname</th>
+        <th i18n:translate="">First name</th>
+        <th i18n:translate="">Last name</th>
         <th i18n:translate="">Created</th>
       </tr>
     </thead>

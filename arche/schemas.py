@@ -313,11 +313,11 @@ class InitialSetup(colander.Schema):
                                  title = _(u"Admin userid - use lowercase!"),
                                  default = u"admin")
     email = colander.SchemaNode(colander.String(),
-                                title = _(u"Admins email adress"),
+                                title = _(u"Email adress"),
                                 preparer = to_lowercase,
                                 validator = colander.Email())
     password = colander.SchemaNode(colander.String(),
-                                   title = _(u"Admins password"),
+                                   title = _(u"Password"),
                                    widget = deform.widget.CheckedPasswordWidget())
     populator_name = colander.SchemaNode(colander.String(),
                                          missing = u'',
@@ -382,7 +382,7 @@ class RecoverPasswordSchema(colander.Schema):
 class RootSchema(BaseSchema, DCMetadataSchema):
     head_title = colander.SchemaNode(colander.String(),
         title = _("Page head title"),
-        description = _("Usually shown in the browser window"),)
+        description = _("Usually shown as a title of the browser tab."),)
     footer = colander.SchemaNode(colander.String(),
         title = _("Footer"),
         missing = "",

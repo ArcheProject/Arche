@@ -78,7 +78,7 @@
           <table class="table table-responsive table-bordered table-striped table-hover panel-body">
             <thead>
               <tr>
-                <th i18n:translate="">UserID or Group</th>
+                <th i18n:translate="">UserID or group</th>
                 <tal:roles repeat="role roles">
                   <th>
                     <a href="#" data-toggle="popover" data-placement="top" data-content="${role.description}">
@@ -130,7 +130,7 @@
           <table class="table table-responsive table-bordered table-striped table-hover panel-body">
             <thead>
               <tr>
-                <th i18n:translate="">UserID or Group</th>
+                <th i18n:translate="">UserID or group</th>
                 <tal:roles repeat="role roles">
                   <th>
                     <a href="#" data-toggle="popover" data-placement="top" data-content="${role.description}">

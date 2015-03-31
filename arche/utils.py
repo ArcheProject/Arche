@@ -330,9 +330,9 @@ class EmailValidationTokens(AttributeAnnotations):
         for email in expired:
             del self[email]
 
-image_mime_to_title = {'image/jpeg': _("JPEG"),
-                       'image/png': _("PNG"),
-                       'image/gif': _("GIF")}
+image_mime_to_title = {'image/jpeg': "JPEG",
+                       'image/png': "PNG",
+                       'image/gif': "GIF"}
 #FIXME: Add more codecs that work for web!
 
 
