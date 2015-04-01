@@ -63,6 +63,14 @@ class BaseView(object):
             #To avoid all test fixtures...
             return find_root(self.context)
 
+    @property
+    def profile(self):
+        try:
+            return self.request.profile
+        except AttributeError:
+            #To be nice to tests
+            self.root['users'].get(self.request.authenticated_userid)
+
     @reify
     def flash_messages(self):
         return get_flash_messages(self.request)
