@@ -11,6 +11,12 @@ from arche import _
 from arche import logger
 
 
+_generic_exc_msg = _("generic_exception_explanation",
+                     default = "Something isn't behaving the way it should. "
+                     "The error has been logged. You may wish to contact "
+                     "the person running this site about this error. "
+                     "It's one of those things that should never happen. ")
+
 class ExceptionView(BaseView):
 
     def __init__(self, context, request):
@@ -35,11 +41,12 @@ class ExceptionView(BaseView):
             logger.critical(exception_str)
         if self.request.is_xhr:
             return self.xhr_response()
+        response['generic_exc_msg'] = _generic_exc_msg
         return response
 
     def xhr_response(self):
         if self.request.response.status_code == 500:
-            msg = _("This exception has been logged but you may wish to alert any person running this site about this.")
+            msg = _generic_exc_msg
         else:
             msg = self.exc.message
         if isinstance(msg, TranslationString):
