@@ -278,10 +278,14 @@ def create_catalog(root):
 
 # Subscribers
 def index_object_subscriber(context, event):
+    #FIXME: There must be a possibility to link indexes to each other
     reg = get_current_registry()
+    changed = getattr(event, 'changed', None)
+    if changed is not None:
+        changed = set(changed)
+        changed.add('searchable_text')
     cataloger = reg.queryAdapter(context, ICataloger)
-    #FIXME: plug point for reindexing just some indexes
-    cataloger.index_object(indexes = getattr(event, 'changed', None))
+    cataloger.index_object(indexes = changed)
 
 def unindex_object_subscriber(context, event):
     reg = get_current_registry()
