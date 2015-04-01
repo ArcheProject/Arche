@@ -213,27 +213,40 @@ def get_sortable_title(context, default):
     title = getattr(context, 'title', default)
     return title and title.lower() or default
 
+class _AttrDiscriminator(object):
+    def __init__(self, attr):
+        self.attr = attr
+
+    def __call__(self, context, default):
+        return getattr(context, self.attr, default)
+
 def get_searchable_text(context, default):
     root = find_root(context)
     catalog = root.catalog
-    found_text = []
-    for index in get_searchable_text_indexes():
+    registry = get_current_registry()
+    discriminators = list(getattr(registry, 'searchable_text_discriminators', ()))
+    results = set()
+    for index in getattr(registry, 'searchable_text_indexes', ()):
         if index not in catalog: #pragma: no coverage
             #FIXME: Take care of this during startup
             continue
         disc = catalog[index].discriminator
         if isinstance(disc, string_types):
-            res = getattr(context, disc, default)
+            attr_discriminator = _AttrDiscriminator(disc)
+            discriminators.append(attr_discriminator)
         else:
-            res = catalog[index].discriminator(context, default)
+            discriminators.append(catalog[index].discriminator)
+    for discriminator in discriminators:
+        res = discriminator(context, default)
         if res is default:
             continue
         if not isinstance(res, string_types):
             res = str(res)
         res = res.strip()
         if res:
-            found_text.append(res)
-    text = " ".join(found_text)
+            results.add(res)
+    text = " ".join(results)
+    text = text.strip()
     return text and text or default
 
 def get_wf_state(context, default):
@@ -275,14 +288,29 @@ def unindex_object_subscriber(context, event):
     cataloger = reg.queryAdapter(context, ICataloger)
     cataloger.unindex_object()
 
-def get_searchable_text_indexes(registry = None):
-    if registry is None:
-        registry = get_current_registry()
-    return getattr(registry, '_searchable_text_indexes', ())
+
+def add_searchable_text_discriminator(config, discriminator):
+    """ A directive to add a discriminator to the index searchable_text.
+    
+        Discriminators are just a function accepting context and default as argument.
+        It should return text, or default.
+    """
+    assert callable(discriminator), "Not a callable"
+    try:
+        discriminators = config.registry.searchable_text_discriminators
+    except AttributeError:
+        discriminators = config.registry.searchable_text_discriminators = set()
+    discriminators.add(discriminator)
 
 def add_searchable_text_index(config, name):
+    """ Fetch the content of another index and add make it globally searchable.
+        (From the index searchable_text)
+    """
     assert isinstance(name, string_types), "%r is not a string" % name
-    indexes = config.registry._searchable_text_indexes
+    try:
+        indexes = config.registry.searchable_text_indexes
+    except AttributeError:
+        indexes = config.registry.searchable_text_indexes = set()
     indexes.add(name)
 
 _default_searchable_text_indexes = (
@@ -344,33 +372,35 @@ def includeme(config):
     config.add_subscriber(unindex_object_subscriber, [IIndexedContent, IObjectWillBeRemovedEvent])
     config.add_subscriber(check_catalog_on_startup, IApplicationCreated)
 
-    config.registry._searchable_text_indexes = set(_default_searchable_text_indexes)
-
     config.add_directive('add_catalog_indexes', add_catalog_indexes)
     config.add_directive('add_searchable_text_index', add_searchable_text_index)
+    config.add_directive('add_searchable_text_discriminator', add_searchable_text_discriminator)
     config.add_directive('add_metadata_field', add_metadata_field)
     config.add_directive('create_metadata_field', create_metadata_field)
 
+    for index in _default_searchable_text_indexes:
+        config.add_searchable_text_index(index)
+
     default_indexes = {
-            'title': CatalogFieldIndex('title'),
-            'description': CatalogFieldIndex('description'),
-            'type_name': CatalogFieldIndex('type_name'),
-            'sortable_title': CatalogFieldIndex(get_sortable_title),
-            'path': CatalogPathIndex(get_path),
-            'searchable_text': CatalogTextIndex(get_searchable_text, lexicon = Lexicon(Splitter(), CaseNormalizer())),
-            'uid': CatalogFieldIndex('uid'),
-            'tags': CatalogKeywordIndex(get_tags),
-            'search_visible': CatalogFieldIndex('search_visible'),
-            'date': CatalogFieldIndex(get_date),
-            'modified': CatalogFieldIndex(get_modified),
-            'created': CatalogFieldIndex(get_created),
-            'wf_state': CatalogFieldIndex(get_wf_state),
-            'workflow': CatalogFieldIndex(get_workflow),
-            'creator': CatalogKeywordIndex(get_creator),
-            'userid': CatalogFieldIndex('userid'),
-            'email': CatalogFieldIndex('email'),
-            'first_name': CatalogFieldIndex('first_name'),
-            'last_name': CatalogFieldIndex('last_name'),
+        'title': CatalogFieldIndex('title'),
+        'description': CatalogFieldIndex('description'),
+        'type_name': CatalogFieldIndex('type_name'),
+        'sortable_title': CatalogFieldIndex(get_sortable_title),
+        'path': CatalogPathIndex(get_path),
+        'searchable_text': CatalogTextIndex(get_searchable_text, lexicon = Lexicon(Splitter(), CaseNormalizer())),
+        'uid': CatalogFieldIndex('uid'),
+        'tags': CatalogKeywordIndex(get_tags),
+        'search_visible': CatalogFieldIndex('search_visible'),
+        'date': CatalogFieldIndex(get_date),
+        'modified': CatalogFieldIndex(get_modified),
+        'created': CatalogFieldIndex(get_created),
+        'wf_state': CatalogFieldIndex(get_wf_state),
+        'workflow': CatalogFieldIndex(get_workflow),
+        'creator': CatalogKeywordIndex(get_creator),
+        'userid': CatalogFieldIndex('userid'),
+        'email': CatalogFieldIndex('email'),
+        'first_name': CatalogFieldIndex('first_name'),
+        'last_name': CatalogFieldIndex('last_name'),
         }
 
     config.add_catalog_indexes(__name__, default_indexes)

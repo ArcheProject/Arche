@@ -118,6 +118,20 @@ class CatalogIntegrationTests(TestCase):
         res = obj.catalog.query("searchable_text == 'Dummy'")
         self.assertEqual(res[0], 1)
 
+    def test_searchable_text_add_discriminator(self):
+        root = self._fixture()
+        root['a'] = context = self._mk_context()
+        obj = self._cut(context)
+        obj.index_object()
+        res = obj.catalog.query("searchable_text == 'Dummy'")
+        self.assertEqual(res[0], 0)
+        def _dummy(context, default):
+            return 'Dummy'
+        self.config.add_searchable_text_discriminator(_dummy)
+        obj.index_object()
+        res = obj.catalog.query("searchable_text == 'Dummy'")
+        self.assertEqual(res[0], 1)
+
     def test_wf_state_index(self):
         root = self._fixture()
         root['a'] = context = _wf_fixture(self.config)
