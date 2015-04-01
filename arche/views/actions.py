@@ -137,22 +137,14 @@ def register_link(context, request, va, **kw):
 
 
 #FIXME: Silly to have section headers with permissions. That's going to end badly :)
-@view_action('site_menu', 'system_overview',
-             title = _("Overview"),
-             description = _("Technichal system information"),
-             priority = 10,
-             permission = security.PERM_MANAGE_SYSTEM,
-             section_header = _("System"),
-             view_name = 'sysinfo',)
 @view_action('site_menu', 'site_settings',
-             title = _("Site settings"),
-             priority = 15,
+             title = _("Settings"),
+             priority = 10,
              permission = security.PERM_MANAGE_SYSTEM,
              view_name = 'site_settings')
 @view_action('site_menu', 'users',
              title = _("Users"),
              permission = security.PERM_MANAGE_USERS,
-             section_header = _("Users & Groups"),
              priority = 20,
              view_name = 'users',)
 @view_action('site_menu', 'groups',
@@ -163,6 +155,7 @@ def register_link(context, request, va, **kw):
 @view_action('user_menu', 'logout',
              title = _("Logout"),
              priority = 20,
+             divider = True,
              view_name = 'logout',)
 def generic_submenu_items(context, request, va, **kw):
     view = kw['view']
@@ -170,6 +163,8 @@ def generic_submenu_items(context, request, va, **kw):
     section_header = va.kwargs.get('section_header', None)
     if section_header:
         out += """<li role="presentation" class="dropdown-header">%s</li>""" % section_header
+    if va.kwargs.get('divider', None):
+        out += """<li role="presentation" class="divider"></li>"""
     out += """<li><a href="%(url)s" title="%(desc)s">%(title)s</a></li>""" % \
         {'url': kw.get('url', request.resource_url(view.root, va.kwargs.get('view_name', ''))),
          'title': va.title,

@@ -6,15 +6,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
-requires = ('pyramid',
-            'pyramid_mailer',
-            'pyramid_tm',
-            'pyramid_deform',
-            'pyramid_beaker',
-            'pyramid_deform',
-            'pyramid_zodbconn',
-            'pyramid_chameleon',
-            'Babel',
+requires = ('Babel',
             'Pillow',
             'ZODB3',
             'awesome-slugify',
@@ -27,14 +19,20 @@ requires = ('pyramid',
             'js.bootstrap',
             'peppercorn',
             'plone.scale',
+            'pyramid',
+            'pyramid_beaker',
+            'pyramid_chameleon',
+            'pyramid_deform',
+            'pyramid_mailer',
+            'pyramid_tm',
+            'pyramid_zodbconn',
             'pytz',
             'repoze.catalog',
             'repoze.folder',
             'repoze.lru',
             'six',
             'zope.component',
-            'zope.interface',
-            )
+            'zope.interface',)
 
 
 setup(name='Arche',
