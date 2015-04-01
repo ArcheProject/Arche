@@ -51,7 +51,7 @@ def actionbar_view(context, request, va, **kw):
     return """<li class="%(active_cls)s"><a href="%(url)s">%(title)s</a></li>""" % \
         {'url': request.resource_url(context),
          'active_cls': active_cls,
-         'title': va.title,}
+         'title': request.localizer.translate(va.title),}
 
 @view_action('actionbar_main', 'edit',
              title = _("Edit"),
@@ -74,7 +74,7 @@ def actionbar_main_generic(context, request, va, **kw):
     active_cls = request.view_name == va.kwargs['view_name'] and 'active' or ''
     return """<li class="%(active_cls)s"><a href="%(url)s" title="%(desc)s">%(title)s</a></li>""" % \
         {'url': request.resource_url(context, va.kwargs['view_name']),
-         'title': va.title,
+         'title': request.localizer.translate(va.title),
          'active_cls': active_cls,
          'desc': va.kwargs.get('description', '')}
 
@@ -167,7 +167,7 @@ def generic_submenu_items(context, request, va, **kw):
         out += """<li role="presentation" class="divider"></li>"""
     out += """<li><a href="%(url)s" title="%(desc)s">%(title)s</a></li>""" % \
         {'url': kw.get('url', request.resource_url(view.root, va.kwargs.get('view_name', ''))),
-         'title': va.title,
+         'title': request.localizer.translate(va.title),
          'desc': va.kwargs.get('description', '')}
     return out
 
@@ -189,7 +189,7 @@ def delete_context(context, request, va, **kw):
     if context != kw['view'].root and not hasattr(context, 'is_permanent'):
         return """<li><a href="%(url)s">%(title)s</a></li>""" %\
             {'url': request.resource_url(context, 'delete'),
-             'title': va.title}
+             'title': request.localizer.translate(va.title)}
 
 @view_action('actions_menu', 'cut',
              title = _("Cut"),
@@ -199,7 +199,7 @@ def cut_context(context, request, va, **kw):
     if context != kw['view'].root and not hasattr(context, 'is_permanent'):
         return """<li><a href="%(url)s">%(title)s</a></li>""" %\
             {'url': request.resource_url(context, '__cut_context__'),
-             'title': va.title}
+             'title': request.localizer.translate(va.title)}
 
 @view_action('actions_menu', 'copy',
              title = _("Copy"),
@@ -212,7 +212,7 @@ def copy_context(context, request, va, **kw):
     if context != kw['view'].root:
         return """<li><a href="%(url)s">%(title)s</a></li>""" %\
             {'url': request.resource_url(context, '__copy_context__'),
-             'title': va.title}
+             'title': request.localizer.translate(va.title)}
 
 @view_action('actions_menu', 'paste',
              title = _("Paste"),
@@ -222,7 +222,7 @@ def paste_context(context, request, va, **kw):
     if can_paste(context, request, view):
         return """<li><a href="%(url)s">%(title)s</a></li>""" %\
             {'url': request.resource_url(context, '__paste_context__'),
-             'title': va.title}
+             'title': request.localizer.translate(va.title)}
 
 @view_action('actions_menu', 'rename',
              title = _("Rename"),
@@ -232,7 +232,7 @@ def rename_context(context, request, va, **kw):
     if context != kw['view'].root and not hasattr(context, 'is_permanent'):
         return """<li><a href="%(url)s">%(title)s</a></li>""" %\
             {'url': request.resource_url(context, '__rename_context__'),
-             'title': va.title}
+             'title': request.localizer.translate(va.title)}
 
 @view_action('actions_menu', 'manage_portlets',
              title = _("Manage portlets"),
@@ -242,22 +242,23 @@ def manage_portlets(context, request, va, **kw):
     if get_portlet_slots(request.registry):
         return """<li><a href="%(url)s">%(title)s</a></li>""" %\
                 {'url': request.resource_url(context, 'manage_portlets'),
-                 'title': va.title}
+                 'title': request.localizer.translate(va.title)}
 
 @view_action('actions_menu', 'selectable_views',
              priority = 30,
              permission = security.PERM_MANAGE_SYSTEM)
 def selectable_views(context, request, va, **kw):
+    #FIXME: Do a proper template. This is silly
     if not hasattr(context, 'default_view'):
         return
     rcontext = getattr(request, 'context', None)
     if getattr(rcontext, 'delegate_view', None):
         return
     type_name = getattr(context,'type_name', None)
-    selectable_views = {'view': _(u"Default")}
+    selectable_views = {'view': request.localizer.translate(_(u"Default"))}
     views = get_content_views(request.registry)
     for (name, view_cls)in views.get(type_name, {}).items():
-        selectable_views[name] = view_cls.title
+        selectable_views[name] = request.localizer.translate(view_cls.title)
     out = """<li role="presentation" class="dropdown-header">%s</li>\n""" % _("View selection")
     for (name, title) in selectable_views.items():
         selected = ""
@@ -265,7 +266,7 @@ def selectable_views(context, request, va, **kw):
             selected = """<span class="glyphicon glyphicon-ok pull-right"></span>"""
         out += """<li><a href="%(url)s">%(title)s %(selected)s</a></li>""" %\
                 {'url': request.resource_url(context, 'set_view', query = {'name': name}),
-                 'title': title,
+                 'title': request.localizer.translate(title),
                  'selected': selected}
     return out
 
@@ -277,7 +278,8 @@ def delegate_view(context, request, va, **kw):
     rcontext = getattr(request, 'context', None)
     if getattr(rcontext, 'delegate_view', None):
         return """<li class="divider"></li><li><a href="%s">%s</a></li>""" %\
-            (request.resource_url(rcontext, 'set_delegate_view', query = {'name': ''}), _('Unset delegated view'))
+            (request.resource_url(rcontext, 'set_delegate_view', query = {'name': ''}),
+             request.localizer.translate(_('Unset delegated view')))
     #FIXME: Experimental feature, add later
     #if hasattr(context, 'delegate_view'):
     #    return """<li class="divider"></li><li><a href="%s">%s</a></li>""" %\
@@ -296,7 +298,7 @@ def view_settings(context, request, va, **kw):
         return """<li role="presentation" class="divider"></li>
             <li><a href="%(url)s">%(title)s</a></li>""" %\
             {'url': request.resource_url(context, 'view_settings'),
-             'title': va.title}
+             'title': request.localizer.translate(va.title)}
 
 
 def includeme(config):
