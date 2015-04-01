@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-03-31 09:45+0200\n"
+"POT-Creation-Date: 2015-04-01 11:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,61 +25,61 @@ msgstr ""
 msgid "Administrators"
 msgstr ""
 
-#: ./.././resources.py:218
+#: ./.././resources.py:219
 msgid "Link"
 msgstr ""
 
-#: ./.././resources.py:219
+#: ./.././resources.py:220
 msgid "Content type that redirects to somewhere."
 msgstr ""
 
-#: ./.././resources.py:236
+#: ./.././resources.py:237
 msgid "Site root"
 msgstr ""
 
-#: ./.././resources.py:280
+#: ./.././resources.py:281
 msgid "Document"
 msgstr ""
 
-#: ./.././resources.py:298
+#: ./.././resources.py:299
 msgid "File"
 msgstr ""
 
-#: ./.././resources.py:340 ./.././schemas.py:216
+#: ./.././resources.py:341 ./.././schemas.py:216
 msgid "Image"
 msgstr ""
 
-#: ./.././resources.py:349
+#: ./.././resources.py:350
 msgid "Initial setup"
 msgstr ""
 
-#: ./.././resources.py:352
+#: ./.././resources.py:353
 msgid "Welcome to Arche!"
 msgstr ""
 
-#: ./.././resources.py:359 ./.././resources.py:363 ./.././schemas.py:69
-#: ./.././views/actions.py:153
+#: ./.././resources.py:360 ./.././resources.py:364 ./.././schemas.py:69
+#: ./.././views/actions.py:146
 msgid "Users"
 msgstr ""
 
-#: ./.././resources.py:377
+#: ./.././resources.py:386
 msgid "User"
 msgstr ""
 
-#: ./.././resources.py:427 ./.././resources.py:431 ./.././schemas.py:70
-#: ./.././views/actions.py:159
+#: ./.././resources.py:436 ./.././resources.py:440 ./.././schemas.py:70
+#: ./.././views/actions.py:151
 msgid "Groups"
 msgstr ""
 
-#: ./.././resources.py:450 ./.././templates/content/groups.pt:12
+#: ./.././resources.py:459 ./.././templates/content/groups.pt:12
 msgid "Group"
 msgstr ""
 
-#: ./.././resources.py:484
+#: ./.././resources.py:493
 msgid "Token"
 msgstr ""
 
-#: ./.././schemas.py:65 ./.././views/actions.py:262
+#: ./.././schemas.py:65 ./.././views/actions.py:257
 msgid "Default"
 msgstr ""
 
@@ -208,12 +208,11 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: ./.././schemas.py:282 ./.././schemas.py:400 ./.././templates/contents.pt:140
+#: ./.././schemas.py:282 ./.././schemas.py:400 ./.././templates/contents.pt:137
 msgid "Title"
 msgstr ""
 
 #: ./.././schemas.py:284 ./.././templates/content/groups.pt:13
-#: ./.././templates/sysinfo/content_types.pt:22
 msgid "Description"
 msgstr ""
 
@@ -359,7 +358,7 @@ msgstr ""
 msgid "Review"
 msgstr ""
 
-#: ./.././validators.py:131
+#: ./.././validators.py:143
 #, python-format
 msgid ""
 "Not a valid image file! Any of these image types are supported: ${suggested}"
@@ -383,15 +382,11 @@ msgstr ""
 msgid "Invalid email or UserID"
 msgstr ""
 
-#: ./.././validators.py:84 ./.././validators.py:171
+#: ./.././validators.py:84 ./.././validators.py:183
 msgid "Wrong password. Remember that passwords are case sensitive."
 msgstr ""
 
-#: ./.././validators.py:120
-msgid "Already registered. You may recover your password if you've lost it."
-msgstr ""
-
-#: ./.././validators.py:150
+#: ./.././validators.py:162
 #, python-format
 msgid "Not a valid file type, try any of the following: ${suggested}"
 msgstr ""
@@ -400,7 +395,18 @@ msgstr ""
 msgid "Already used within this context"
 msgstr ""
 
-#: ./.././widgets.py:35 ./.././templates/contents.pt:144
+#. Default: Already registered. You may recover your password if you've lost
+#. it.
+#: ./.././validators.py:127
+msgid "already_registered_email_error"
+msgstr ""
+
+#. Default: This address is already used.
+#: ./.././validators.py:131
+msgid "already_used_email_error"
+msgstr ""
+
+#: ./.././widgets.py:35 ./.././templates/contents.pt:141
 msgid "Tags"
 msgstr ""
 
@@ -539,19 +545,19 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
-#: ./.././templates/contents.pt:123
+#: ./.././templates/contents.pt:120
 msgid "Contents of"
 msgstr ""
 
-#: ./.././templates/contents.pt:130
+#: ./.././templates/contents.pt:127
 msgid "Parent directory"
 msgstr ""
 
-#: ./.././templates/contents.pt:133
+#: ./.././templates/contents.pt:130
 msgid "Not a folder, so it can't have content"
 msgstr ""
 
-#: ./.././templates/contents.pt:141 ./.././templates/content/file.pt:25
+#: ./.././templates/contents.pt:138 ./.././templates/content/file.pt:25
 #: ./.././templates/content/image.pt:30
 #: ./.././templates/deform/file_upload.pt:20
 #: ./.././templates/deform/readonly/file_upload.pt:18
@@ -559,23 +565,23 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: ./.././templates/contents.pt:142 ./.././templates/content/users_table.pt:40
+#: ./.././templates/contents.pt:139 ./.././templates/content/users_table.pt:40
 msgid "Created"
 msgstr ""
 
-#: ./.././templates/contents.pt:143
+#: ./.././templates/contents.pt:140
 msgid "Modified"
 msgstr ""
 
-#: ./.././templates/contents.pt:145 ./.././templates/sysinfo.pt:19
+#: ./.././templates/contents.pt:142
 msgid "Info"
 msgstr ""
 
-#: ./.././templates/contents.pt:152
+#: ./.././templates/contents.pt:149
 msgid "Loading..."
 msgstr ""
 
-#: ./.././templates/contents.pt:177
+#: ./.././templates/contents.pt:174
 msgid "Change order"
 msgstr ""
 
@@ -584,7 +590,7 @@ msgid ""
 "This is the setup page - there's no site here yet. What would you like to do?"
 msgstr ""
 
-#: ./.././templates/manage_portlets.pt:24 ./.././views/actions.py:243
+#: ./.././templates/manage_portlets.pt:24 ./.././views/actions.py:238
 msgid "Manage portlets"
 msgstr ""
 
@@ -615,10 +621,6 @@ msgstr ""
 msgid "Search result"
 msgstr ""
 
-#: ./.././templates/sysinfo.pt:14
-msgid "System overview"
-msgstr ""
-
 #: ./.././templates/content/file.pt:16 ./.././templates/content/image.pt:21
 msgid "Download file"
 msgstr ""
@@ -646,7 +648,7 @@ msgid "There was a problem with your submission"
 msgstr ""
 
 #: ./.././templates/deform/dropzone.pt:29
-#: ./.././templates/deform/file_upload.pt:25 ./.././views/actions.py:190
+#: ./.././templates/deform/file_upload.pt:25 ./.././views/actions.py:185
 #: ./.././views/base.py:180
 msgid "Delete"
 msgstr ""
@@ -734,14 +736,7 @@ msgstr ""
 msgid "There's a problem..."
 msgstr ""
 
-#. Default: Something isn't behaving the way it should. The error has been
-#. logged. You may wish to contact the person running this site about this
-#. error. It's one of those things that should never happen.
-#: ./.././templates/exceptions/generic.pt:18
-msgid "generic_exception_explanation"
-msgstr ""
-
-#: ./.././templates/exceptions/generic.pt:23
+#: ./.././templates/exceptions/generic.pt:19
 msgid ""
 "arche.debug is set to True, so this error will be printed instead of logged."
 msgstr ""
@@ -765,109 +760,6 @@ msgstr ""
 
 #: ./.././templates/portlets/manager_slot.pt:26
 msgid "Add to"
-msgstr ""
-
-#: ./.././templates/sysinfo/acl.pt:6
-msgid "ACL"
-msgstr ""
-
-#: ./.././templates/sysinfo/acl.pt:7
-msgid "Access control lists"
-msgstr ""
-
-#: ./.././templates/sysinfo/content_types.pt:6 ./.././views/system.py:40
-msgid "Content types"
-msgstr ""
-
-#: ./.././templates/sysinfo/content_types.pt:7
-msgid "Click a type to open it's information panel"
-msgstr ""
-
-#: ./.././templates/sysinfo/content_types.pt:25
-msgid "Addable to"
-msgstr ""
-
-#: ./.././templates/sysinfo/content_types.pt:32
-msgid "ACL and workflows"
-msgstr ""
-
-#: ./.././templates/sysinfo/content_types.pt:37
-msgid "Can have ACL or Workflow. (arche.interfaces.IContextACL provided)"
-msgstr ""
-
-#: ./.././templates/sysinfo/content_types.pt:40
-msgid ""
-"Inherits permissions from its parent unless it defines an '__acl__'-property."
-msgstr ""
-
-#: ./.././templates/sysinfo/content_types.pt:43
-msgid "May have local roles assigned. (arche.interfaces.ILocalRoles provided)"
-msgstr ""
-
-#: ./.././templates/sysinfo/content_types.pt:47
-msgid "Workflow assigned: ${wf}"
-msgstr ""
-
-#: ./.././templates/sysinfo/content_types.pt:53
-msgid "Selectable views"
-msgstr ""
-
-#: ./.././templates/sysinfo/content_types.pt:60
-msgid "Available contextual schemas"
-msgstr ""
-
-#: ./.././templates/sysinfo/images.pt:7 ./.././views/system.py:78
-msgid "Images"
-msgstr ""
-
-#: ./.././templates/sysinfo/images.pt:10
-msgid ""
-"Installed image library codecs. If you lack any important ones, you may wish "
-"to rebuild the package 'Pillow' with proper support."
-msgstr ""
-
-#: ./.././templates/sysinfo/images.pt:17
-msgid "OK"
-msgstr ""
-
-#: ./.././templates/sysinfo/images.pt:18
-msgid "Missing"
-msgstr ""
-
-#: ./.././templates/sysinfo/images.pt:24
-msgid "Auto-generated scales"
-msgstr ""
-
-#: ./.././templates/sysinfo/images.pt:28
-msgid "Name"
-msgstr ""
-
-#: ./.././templates/sysinfo/images.pt:29
-msgid "Width"
-msgstr ""
-
-#: ./.././templates/sysinfo/images.pt:30
-msgid "Height"
-msgstr ""
-
-#: ./.././templates/sysinfo/roles.pt:6 ./.././views/system.py:55
-msgid "Roles"
-msgstr ""
-
-#: ./.././templates/sysinfo/roles.pt:7
-msgid "Roles and their associated information"
-msgstr ""
-
-#: ./.././templates/sysinfo/roles.pt:19
-msgid "Principal name"
-msgstr ""
-
-#: ./.././templates/sysinfo/roles.pt:21
-msgid "Inheritable"
-msgstr ""
-
-#: ./.././templates/sysinfo/roles.pt:23
-msgid "Assignable"
 msgstr ""
 
 #: ./.././views/actions.py:30
@@ -904,58 +796,42 @@ msgid "Register"
 msgstr ""
 
 #: ./.././views/actions.py:141
-msgid "Overview"
+msgid "Settings"
 msgstr ""
 
-#: ./.././views/actions.py:142
-msgid "Technichal system information"
-msgstr ""
-
-#: ./.././views/actions.py:145
-msgid "System"
-msgstr ""
-
-#: ./.././views/actions.py:148 ./.././views/site_settings.py:11
-msgid "Site settings"
-msgstr ""
-
-#: ./.././views/actions.py:155
-msgid "Users & Groups"
-msgstr ""
-
-#: ./.././views/actions.py:164
+#: ./.././views/actions.py:156
 msgid "Logout"
 msgstr ""
 
-#: ./.././views/actions.py:180
+#: ./.././views/actions.py:175
 msgid "Profile"
 msgstr ""
 
-#: ./.././views/actions.py:200 ./.././views/cut_copy_paste.py:38
+#: ./.././views/actions.py:195 ./.././views/cut_copy_paste.py:38
 msgid "Cut"
 msgstr ""
 
-#: ./.././views/actions.py:210 ./.././views/cut_copy_paste.py:48
+#: ./.././views/actions.py:205 ./.././views/cut_copy_paste.py:48
 msgid "Copy"
 msgstr ""
 
-#: ./.././views/actions.py:223
+#: ./.././views/actions.py:218
 msgid "Paste"
 msgstr ""
 
-#: ./.././views/actions.py:233
+#: ./.././views/actions.py:228
 msgid "Rename"
 msgstr ""
 
-#: ./.././views/actions.py:266
+#: ./.././views/actions.py:261
 msgid "View selection"
 msgstr ""
 
-#: ./.././views/actions.py:294
+#: ./.././views/actions.py:289
 msgid "View settings"
 msgstr ""
 
-#: ./.././views/actions.py:285
+#: ./.././views/actions.py:280
 msgid "Unset delegated view"
 msgstr ""
 
@@ -1096,13 +972,14 @@ msgstr ""
 msgid "Name, this will be part of the url"
 msgstr ""
 
-#: ./.././views/exceptions.py:42
-msgid ""
-"This exception has been logged but you may wish to alert any person running "
-"this site about this."
+#. Default: Something isn't behaving the way it should. The error has been
+#. logged. You may wish to contact the person running this site about this
+#. error. It's one of those things that should never happen.
+#: ./.././views/exceptions.py:14
+msgid "generic_exception_explanation"
 msgstr ""
 
-#: ./.././views/exceptions.py:64
+#: ./.././views/exceptions.py:71
 msgid "Not allowed, perhaps you need to log in?"
 msgstr ""
 
@@ -1151,20 +1028,8 @@ msgstr ""
 msgid "Show content body, if any"
 msgstr ""
 
-#: ./.././views/system.py:18
-msgid "No"
-msgstr ""
-
-#: ./.././views/system.py:19
-msgid "Yes"
-msgstr ""
-
-#: ./.././views/system.py:20
-msgid "Allow"
-msgstr ""
-
-#: ./.././views/system.py:21
-msgid "Deny"
+#: ./.././views/site_settings.py:11
+msgid "Site settings"
 msgstr ""
 
 #. Default: Since you requested to change your email address we've sent you an
