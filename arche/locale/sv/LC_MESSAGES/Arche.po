@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
 "POT-Creation-Date: 2015-04-01 11:38+0200\n"
-"PO-Revision-Date: 2015-04-01 11:41+0100\n"
+"PO-Revision-Date: 2015-04-01 11:46+0100\n"
 "Last-Translator: Robin Harms Oredsson <robin@betahaus.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -317,7 +317,7 @@ msgstr "Någon som har normala redigeringsrättigheter."
 
 #: .././security.py:45
 msgid "Viewer"
-msgstr "Läsare"
+msgstr "Läsa"
 
 #: .././security.py:46
 msgid "Someone who's allowed to view."
