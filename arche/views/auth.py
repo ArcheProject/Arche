@@ -138,7 +138,7 @@ def _finish_registration(view, appstruct):
         #Validation is handled by the view already
         pass
     headers = remember(view.request, obj.userid)
-    return HTTPFound(location = view.request.resource_url(obj), headers = headers)
+    return HTTPFound(location = view.request.resource_url(view.root), headers = headers)
 
 
 class RecoverPasswordForm(BaseForm):
