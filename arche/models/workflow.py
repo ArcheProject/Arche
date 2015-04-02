@@ -224,12 +224,14 @@ class WorkflowRegistry(IterableUserDict):
 def get_context_wf(context, registry = None):
     """ Get workflow for a specific context. It must implement the
         arche.interfaces.IContextACL to be able to work, and a workflow must be set.
+        However, it won't fail if no workflow is configured or set.
     """
     if registry is None:
         registry = get_current_registry()
     wfs = get_workflows(registry)
-    wf_name = wfs.get_wf(getattr(context, 'type_name', None))
-    return registry.queryAdapter(context, IWorkflow, name = wf_name)
+    if wfs != None:
+        wf_name = wfs.get_wf(getattr(context, 'type_name', None))
+        return registry.queryAdapter(context, IWorkflow, name = wf_name)
 
 def get_workflows(registry = None):
     """ Returns the workflow registry. """
@@ -237,8 +239,8 @@ def get_workflows(registry = None):
         registry = get_current_registry()
     try:
         return registry.workflows
-    except AttributeError:
-        raise WorkflowException("Workflows not configured")
+    except AttributeError: #This could be by choice
+        logger.debug("Workflows not configured")
 
 def add_workflow(config, workflow):
     """ Add a workflow object so it will be usable by Arche or subcomponents.

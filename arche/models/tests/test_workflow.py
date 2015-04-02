@@ -177,3 +177,19 @@ class WorkflowIntegrationTests(TestCase):
         wfs = self.config.registry.workflows
         self.assertEqual(wfs.get_wf('Document'), 'simple_workflow')
         self.assertEqual(wfs.get_wf('Root'), None)
+
+
+class WfUtilsTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp(request = testing.DummyRequest())
+        self.config.include('arche.testing')
+ 
+    def tearDown(self):
+        testing.tearDown()
+
+    def test_get_context_wf_no_wfs(self):
+        from arche.models.workflow import get_context_wf
+        dummy = _mk_dummy()
+        self.assertEqual(get_context_wf(dummy), None)
+
