@@ -7,6 +7,7 @@ from zope.interface.verify import verifyObject
 from arche.interfaces import IBase
 from arche.interfaces import IUsers
 from arche.interfaces import IToken
+from arche.interfaces import IContextACL
 from arche.testing import barebone_fixture
 
 
@@ -78,6 +79,60 @@ class UsersTests(TestCase):
         obj = root['users']
         _marker = object()
         self.assertEqual(obj.get_user_by_email('JANE@archeproject.org', _marker), _marker)
+
+
+def _attach_dummy_acl(config, name = 'default', role = 'role:Dummy'):
+    aclreg = config.registry.acl
+    aclreg.pop(name, None)
+    new_acl = aclreg.new_acl(name)
+    new_acl.add(role, 'Do Stuff')
+    return new_acl
+
+
+class ContextACLTests(TestCase):
+     
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('arche.testing')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.api import ContextACLMixin
+        return ContextACLMixin
+
+    def _mk_dummy(self):
+        class _Dummy(testing.DummyResource, self._cut):
+            type_name = 'Dummy'
+        return _Dummy()
+
+    def test_verify_class(self):
+        self.failUnless(verifyClass(IContextACL, self._cut))
+
+    def test_verify_obj(self):
+        self.failUnless(verifyObject(IContextACL, self._cut()))
+
+    def test_default_if_nothing_else(self):
+        context = self._mk_dummy()
+        _attach_dummy_acl(self.config)
+        self.assertEqual(context.__acl__[0], ('Allow', 'role:Dummy', set(['Do Stuff'])))
+
+    def test_type_name_same_as_acl(self):
+        context = self._mk_dummy()
+        _attach_dummy_acl(self.config, name = 'Dummy', role = 'role:HiDummy')
+        #Since the name matches
+        self.assertEqual(context.__acl__[0], ('Allow', 'role:HiDummy', set(['Do Stuff'])))
+
+    def test_set_wf_precedence(self):
+        self.config.include('arche.models.workflow')
+        context = self._mk_dummy()
+        _attach_dummy_acl(self.config)
+        _attach_dummy_acl(self.config, name = 'Dummy')
+        self.config.set_content_workflow('Dummy', 'simple_workflow')
+        #A bit too specific but at least not the same as other set workflows
+        self.assertEqual(context.__acl__[0][0:2], ('Allow', 'role:Owner',))
 
 
 class TokenTests(TestCase):
