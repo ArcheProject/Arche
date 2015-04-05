@@ -176,13 +176,14 @@ class UserChangePasswordForm(DefaultEditForm):
     title = _("Change password")
 
     def __init__(self, context, request):
+        #FIXME: Review this structure. Is it really smart to call super in two separate places?
         if request.authenticated_userid is None:
             token = getattr(context, 'pw_token', None)
             rtoken = request.GET.get('t', object())
             if token == rtoken and token.valid:
                 #At this point the email address could be considered as validated too
-                if self.context.email_validated == False:
-                    self.context.email_validated = True
+                if context.email_validated == False:
+                    context.email_validated = True
                 super(UserChangePasswordForm, self).__init__(context, request)
                 try:
                     del self.schema['current_password']
