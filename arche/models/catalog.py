@@ -36,6 +36,7 @@ from arche.interfaces import IWorkflowAfterTransition
 from arche.models.workflow import WorkflowException
 from arche.models.workflow import get_context_wf
 from zope.interface.verify import verifyClass
+from arche.utils import prep_html_for_search_indexing
 
 
 @implementer(ICataloger)
@@ -325,6 +326,12 @@ _default_searchable_text_indexes = (
     'last_name',
 )
 
+def _searchable_html_body(context, default):
+    body = getattr(context, 'body', default)
+    if body != default and isinstance(body, string_types):
+        return prep_html_for_search_indexing(body)
+    return default
+
 def check_catalog_on_startup(event = None, env = None):
     """ Check that the catalog has all required indexes and that they're up to date.
         Ment to be run by the IApplicationCreated event.
@@ -384,6 +391,8 @@ def includeme(config):
 
     for index in _default_searchable_text_indexes:
         config.add_searchable_text_index(index)
+
+    config.add_searchable_text_discriminator(_searchable_html_body)
 
     default_indexes = {
         'title': CatalogFieldIndex('title'),

@@ -82,3 +82,37 @@ class GenerateSlugTests(TestCase):
         context = testing.DummyResource()
         context['hello'] = testing.DummyResource()
         self.assertEqual(self._fut(context, 'hello'), "hello-1")
+
+
+class PrepHTMLForSearchTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _fut(self):
+        from arche.utils import prep_html_for_search_indexing
+        return prep_html_for_search_indexing
+
+    def test_with_html_entities(self):
+        self.assertEqual(self._fut("&aring;"), "å")
+
+    def test_with_html(self):
+        html = """
+        <p>I read this <i>really</i> interesting article on
+        <a href="http://www.wikipedia.org">Wikipedia</a> the other day.
+        """
+        plaintext = """
+        I read this really interesting article on Wikipedia the other day.
+        """.strip()
+        self.assertEqual(self._fut(html), plaintext)
+
+    def test_with_script(self):
+        html = """
+        <p>I'm just a paragraph</p>
+        <script type="text/javascript"> And I'm a script //with a comment</script> """
+        plaintext = "I'm just a paragraph"
+        self.assertEqual(self._fut(html), plaintext)

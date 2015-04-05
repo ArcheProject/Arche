@@ -25,17 +25,17 @@ import pytz
 
 from arche import _
 from arche import logger
-from arche.interfaces import (IFlashMessages,
-                              IThumbnailedContent,
-                              IRoot,
-                              IUser,
-                              IRegistrationTokens,
-                              IDateTimeHandler,
-                              IContentView)
+from arche.interfaces import IContentView
+from arche.interfaces import IDateTimeHandler
+from arche.interfaces import IEmailValidationTokens
+from arche.interfaces import IFlashMessages
+from arche.interfaces import IRegistrationTokens
+from arche.interfaces import IRoot
+from arche.interfaces import IThumbnailedContent
+from arche.interfaces import IUser
 from arche.models.blob import BlobFile #Keep untill db changed
 from arche.models.mimetype_views import get_mimetype_views #b/c
 from arche.security import PERM_VIEW
-from arche.interfaces import IEmailValidationTokens
 
 
 def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
@@ -364,6 +364,15 @@ class _FailMarker(object):
         return False
 
 fail_marker = _FailMarker()
+
+def prep_html_for_search_indexing(html):
+    html2text = HTML2Text()
+    html2text.ignore_links = True
+    html2text.ignore_images = True
+    html2text.body_width = 0
+    html2text.unicode_snob = 1
+    html2text.ignore_emphasis = 1
+    return html2text.handle(html).strip()
 
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)

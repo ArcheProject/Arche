@@ -1,16 +1,20 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 from unittest import TestCase
 
 from pyramid import testing
+from repoze.catalog.indexes.field import CatalogFieldIndex
+from repoze.catalog.query import Contains
+from zope.component import adapter
 from zope.interface import implementer
+from zope.interface.exceptions import BrokenMethodImplementation
 from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
-from zope.component import adapter
-from repoze.catalog.indexes.field import CatalogFieldIndex
 
-from arche.interfaces import ICataloger, IMetadata
-from arche.interfaces import IIndexedContent
 from arche.exceptions import CatalogError
-from zope.interface.exceptions import BrokenMethodImplementation
+from arche.interfaces import ICataloger
+from arche.interfaces import IIndexedContent
+from arche.interfaces import IMetadata
 
 
 def _dummy_func(*args):
@@ -131,6 +135,24 @@ class CatalogIntegrationTests(TestCase):
         obj.index_object()
         res = obj.catalog.query("searchable_text == 'Dummy'")
         self.assertEqual(res[0], 1)
+
+    def test_searchable_html_body(self):
+        root = self._fixture()
+        context = self._mk_context()
+        context.body = """
+        <p>I'm a paragraph</p>
+        <b>Örebro is a swedish town</b>
+        <i>"您好"</i> is hello in chineese.
+        <script>Is bad stuff here</script>
+        """
+        root['a'] = context
+        obj = self._cut(context)
+        obj.index_object()
+        cq = obj.catalog.query
+        self.assertEqual(cq(Contains("searchable_text", 'paragraph'))[0], 1)
+        self.assertEqual(cq(Contains("searchable_text", 'Örebro'))[0], 1)
+        self.assertEqual(cq(Contains("searchable_text", '您好'))[0], 1)
+        self.assertEqual(cq(Contains("searchable_text", 'stuff'))[0], 0)
 
     def test_wf_state_index(self):
         root = self._fixture()
