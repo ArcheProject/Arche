@@ -345,9 +345,23 @@ class LoginSchema(colander.Schema):
                                default = deferred_referer)
 
 
+@colander.deferred
+def deferred_email_registration_description(node, kw):
+    root = kw['request'].root
+    if root.skip_email_validation:
+        return ""
+    else:
+        return _("reg_email_description",
+                 default = "A link will be sent to this address. "
+                 "You need to click the link to finish the registration. "
+                 "If no email arrives within 15 minutes, "
+                 "you might need to check your emails' spam folder.")
+
+
 class RegistrationSchema(colander.Schema):
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Email"),
+                                description = deferred_email_registration_description,
                                 preparer = to_lowercase,
                                 validator = unique_email_validator)
 
