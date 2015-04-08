@@ -156,8 +156,30 @@ class IContextAdapter(Interface):
         """ Initialize adapter. """
 
 
-class IRoles(IContextAdapter):
-    """ Adapter for IBase content that stores and fetches assigned roles. """
+class IRoles(IContextAdapter, IDict):
+    """ Adapter for IBase content that stores and fetches assigned roles.
+        Works like a dict where the key is the principal (userid, group etc)
+        you wish to assign roles to, and values are roles.
+        
+        It also has some extra methods described below.
+    """
+
+    def add(key, value):
+        """ Add role/roles to a principal(key). It will keep the previous roles.
+        """
+
+    def remove(key, value):
+        """ Remove role/roles from a principal. Any other roles not specified will be kept.
+            If all roles are removed by this action, the key will be removed too.
+            
+            It will not raise errors if the role you're trying to remove doesn't exist.
+        """
+
+    def set_from_appstruct(value):
+        """ Sets the local roles exactly as specified. value must be a dict here.
+            Note that any keys not present in the dict will be cleared
+            so be careful when using this.
+        """
 
 
 class ICataloger(IContextAdapter):

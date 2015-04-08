@@ -2,7 +2,6 @@ from unittest import TestCase
 
 from pyramid import testing
 from zope.interface import implementer
-#from pyramid.security import ALL_PERMISSIONS, DENY_ALL
 
 from arche.interfaces import IContent
 from arche.resources import LocalRolesMixin
@@ -77,3 +76,23 @@ class RolesTests(TestCase):
         obj2['hello'] = 'three'
         obj.update(obj2)
         self.assertEqual(obj['hello'], frozenset(['three']))
+
+    def test_add(self):
+        context = _DummyContent()
+        obj = self._cut(context)
+        obj['hello'] = ['one', 'two']
+        obj.add('hello', 'three')
+        self.assertEqual(obj['hello'], frozenset(['one', 'two', 'three']))
+        obj.add('hello', ['four'])
+        self.assertEqual(obj['hello'], frozenset(['one', 'two', 'three', 'four']))
+
+    def test_remove(self):
+        context = _DummyContent()
+        obj = self._cut(context)
+        obj['hello'] = ['one', 'two', 'three', 'four']
+        obj.remove('hello', 'four')
+        self.assertEqual(obj['hello'], frozenset(['one', 'two', 'three']))
+        obj.remove('hello', ['three', 'two'])
+        self.assertEqual(obj['hello'], frozenset(['one']))
+        obj.remove('hello', 'one')
+        self.assertNotIn('hello', obj)

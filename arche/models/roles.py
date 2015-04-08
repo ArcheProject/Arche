@@ -54,22 +54,50 @@ class Roles(IterableUserDict):
 
     def __setitem__(self, key, value):
         if value:
-            #Make sure it exist
-            reg = get_current_registry()
-            roles_principals = reg.roles.keys()
-            if IRole.providedBy(value):
-                value = [value]
-            if isinstance(value, string_types):
-                value = [value]
-            for role in value:
-                if role not in roles_principals:
-                    logger.warn("The role %r doesn't exist. Permissions assigned at %r might not work" % (role, self.context))
+            value = self._adjust_to_set(value)
+            self._check_roles(value)
             self.data[key] = OOSet(value)
         elif key in self.data:
             del self.data[key]
 
     def __getitem__(self, key):
         return frozenset(self.data[key])
+
+    def _adjust_to_set(self, value):
+        if IRole.providedBy(value):
+            value = set([value])
+        elif isinstance(value, string_types):
+            value = set([value])
+        else:
+            value = set(value)
+        return value
+
+    def _check_roles(self, roles):
+        #Warn if it doesn't exist
+        reg = get_current_registry()
+        roles_principals = reg.roles.keys()
+        for role in roles:
+            if role not in roles_principals:
+                logger.warn("The role %r doesn't exist. Permissions assigned at %r might not work" % (role, self.context))
+
+    def add(self, key, value):
+        value = self._adjust_to_set(value)
+        current = set()
+        if key in self:
+            current.update(self[key])
+        roles = value | current
+        self[key] = roles
+
+    def remove(self, key, value):
+        value = self._adjust_to_set(value)
+        current = set()
+        if key in self:
+            current.update(self[key])
+        roles = current - value
+        if roles:
+            self[key] = roles
+        elif key in self:
+            del self[key]
 
     def set_from_appstruct(self, value):
         marker = object()
@@ -92,7 +120,7 @@ def register_roles(config, *roles):
         reg.roles = {}
     for role in roles:
         assert IRole.providedBy(role), "Must be a role object"
-        if role in reg.roles:
+        if role in reg.roles: #pragma : no coverage
             logger.warning("Overriding role %r" % role)
         reg.roles[role.principal] = role
 
