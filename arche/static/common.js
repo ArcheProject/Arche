@@ -44,11 +44,16 @@ function handle_form_errors(response) {
 arche.handle_form_errors = handle_form_errors;
 
 /* Handle modal content
+ * 
+ * params
+ *   - modal-class: class(es) to use on the modal element. Defaults to 'fade'.
  */
-function create_modal(url) {
+function create_modal(url, params) {
+  if (typeof(params) == 'undefined') var params = {};
+  var modal_dialog_cls = typeof params['modal-dialog-class'] !== 'undefined' ? params['modal-dialog-class'] : 'fade'  
   arche.destroy_modal();
-  var out = '<div class="modal fade" id="modal-area" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">';
-  out += '<div class="modal-dialog"><div class="modal-content"></div></div></div>';
+  var out = '<div class="modal" id="modal-area" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">';
+  out += '<div class="modal-dialog ' + modal_dialog_cls + '"><div class="modal-content"></div></div></div>';
   var request = arche.do_request(url);
   request.done(function(response) {
     $('body').prepend(out);
@@ -82,21 +87,24 @@ arche.destroy_modal = destroy_modal;
  * ================================================
  * Example =
  *  <a href="<somewhere>" data-open-modal>I'm modal</a>
- *  
+ *  If data-modal-dialog-class is set, add those classes to the modal window.
+ *  Defaults to 'fade'. "modal' will always be included.
  *  Will open a modal window with the content of <somewhere>
  */
 function modal_from_event(event) {
   event.preventDefault();
   var elem = $(event.currentTarget);
   var url = elem.attr('href');
+  var params = {};
+  params['modal-dialog-class'] = elem.data('modal-dialog-class');
   if (typeof(url) == 'undefined') {
     throw "couldn't find any href attribute to load a modal window from on " + elem;
   }
   arche.actionmarker_feedback(elem, true);
-  var request = arche.create_modal(url);
+  var request = arche.create_modal(url, params);
   request.always(function() {
     arche.actionmarker_feedback(elem, false);
-  })
+  });
 }
 arche.modal_from_event = modal_from_event;
 
