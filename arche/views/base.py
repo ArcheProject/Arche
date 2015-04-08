@@ -353,7 +353,8 @@ class DefaultEditForm(BaseForm):
 
     @property
     def title(self):
-        return _("Edit ${type_title}", mapping = {'type_title': self.context.type_title})
+        return _("Edit ${type_title}",
+                 mapping = {'type_title': self.request.localizer.translate(self.context.type_title)})
 
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
