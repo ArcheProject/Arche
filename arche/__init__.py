@@ -46,13 +46,6 @@ def includeme(config):
     config.include('arche.portlets.navigation')
     #Translations
     config.add_translation_dirs('arche:locale/')
-    #Turn these strings into methods
-    resolvable_methods = ('arche.hash_method',
-                          'arche.new_userid_validator',
-                          'arche.actionbar',)
-    for name in resolvable_methods:
-        if isinstance(settings[name], string_types):
-            settings[name] = config.name_resolver.resolve(settings[name])
 
     #Inject dependencies in deform
     config.include('.fanstatic_lib')
@@ -60,6 +53,14 @@ def includeme(config):
     #Include other arche plugins
     for package in config.registry.settings.get('arche.includes', '').strip().splitlines():
         config.include(package)
+
+    #Turn these strings into methods
+    resolvable_methods = ('arche.hash_method',
+                          'arche.new_userid_validator',
+                          'arche.actionbar',)
+    for name in resolvable_methods:
+        if isinstance(settings[name], string_types):
+            settings[name] = config.name_resolver.resolve(settings[name])
 
     #setup workflows
     config.include('arche.models.workflow.read_paster_wf_config')
