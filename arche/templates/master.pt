@@ -12,6 +12,7 @@
   </head>
 
   <body class="view-${request.view_name or 'default'|'default'}"
+        metal:define-slot="fullpage"
         tal:define="portlets_left view.render_portlet_slot('left');
                     portlets_right view.render_portlet_slot('right');
                     portlets_top view.render_portlet_slot('top');
