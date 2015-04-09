@@ -167,6 +167,17 @@ class BaseView(object):
         #b/c
         return self.request.thumb_tag(context, scale_name, **kw)
 
+    def relocate_response(self, url, msg = '', **kw):
+        if not url:
+            url = self.request.application_url
+        if msg:
+            self.flash_messages.add(msg)
+        if self.request.is_xhr:
+            headers = list(kw.pop('headers', ()))
+            headers.append((str('X-Relocate'), str(url)))
+            return Response(headers = headers, **kw)
+        return HTTPFound(location = url, **kw)
+
 
 @implementer(IContentView)
 class ContentView(BaseView):
@@ -291,17 +302,6 @@ class BaseForm(BaseView, FormView):
                     val = colander.null
                 appstruct[field.name] = val
         return appstruct
-
-    def relocate_response(self, url, msg = '', **kw):
-        if not url:
-            url = self.request.application_url
-        if msg:
-            self.flash_messages.add(msg)
-        if self.request.is_xhr:
-            headers = list(kw.pop('headers', ()))
-            headers.append((str('X-Relocate'), str(url)))
-            return Response(headers = headers, **kw)
-        return HTTPFound(location = url, **kw)
 
     def cancel(self, *args):
         return self.relocate_response(self.request.resource_url(self.context), msg = self.default_cancel)
