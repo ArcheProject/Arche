@@ -53,9 +53,8 @@ class RegisterForm(BaseForm):
         super(RegisterForm, self).__init__(context, request)
         if request.authenticated_userid:
             msg = _("Already logged in.")
-            self.flash_messages.add(msg, type = 'warning')
+            self.flash_messages.add(msg, type = 'warning', require_commit = False)
             raise HTTPFound(location = request.resource_url(context))
-
 
     def get_schema(self):
         """ Fetch a combined schema if email validation should be skipped.
