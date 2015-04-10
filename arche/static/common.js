@@ -129,10 +129,10 @@ function create_flash_message(message, params) {
   params = typeof params !== 'undefined' ? params : {};
   params['type'] = typeof params['type'] !== 'undefined' ? params['type'] : 'info';
   params['id'] = typeof params['id'] !== 'undefined' ? params['id'] : "msg-" + Math.round(Math.random()* 10000000);
-  params['auto_destruct'] = typeof params['auto_destruct'] !== 'auto_destruct' ? params['auto_destruct'] : true;
-  if (params['type'] == 'danger') {
-    params['auto_destruct'] = false; //Override on critical errors
+  if (params['type'] == 'danger' && typeof params['auto_destruct'] == 'undefined') {
+    params['auto_destruct'] = false;
   }
+  params['auto_destruct'] = typeof params['auto_destruct'] !== 'undefined' ? params['auto_destruct'] : true;
   var target;
   $.each(arche.flash_slot_order, function( index, value ) {
     if ($('[data-flash-slot="' + value + '"]').length > 0) {

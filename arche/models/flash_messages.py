@@ -17,7 +17,7 @@ class FlashMessages(object):
     def __init__(self, request):
         self.request = request
 
-    def add(self, msg, type='info', auto_destruct = True, require_commit = True):
+    def add(self, msg, type='info', auto_destruct = None, require_commit = True):
         """ Add a flash message to the session.
         
             msg
@@ -37,7 +37,9 @@ class FlashMessages(object):
                 This is usually a good idea, except for error messages that should be displayed
                 when something actually goes wrong.
         """
-        flash = {'msg':msg, 'type': type, 'auto_destruct': auto_destruct}
+        flash = {'msg':msg, 'type': type}
+        if auto_destruct != None:
+            flash['auto_destruct'] = auto_destruct
         if require_commit:
             def hook(success):
                 if success:
