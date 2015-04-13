@@ -46,13 +46,14 @@ arche.handle_form_errors = handle_form_errors;
 /* Handle modal content
  * 
  * params
- *   - modal-class: class(es) to use on the modal element. Defaults to 'fade'.
+ *   - modal-class: class(es) to use on the modal-dialog element. Defaults to ''.
+ *     use this to set size.
  */
 function create_modal(url, params) {
   if (typeof(params) == 'undefined') var params = {};
-  var modal_dialog_cls = typeof params['modal-dialog-class'] !== 'undefined' ? params['modal-dialog-class'] : 'fade'  
+  var modal_dialog_cls = typeof params['modal-dialog-class'] !== 'undefined' ? params['modal-dialog-class'] : '';
   arche.destroy_modal();
-  var out = '<div class="modal" id="modal-area" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">';
+  var out = '<div class="modal fade" id="modal-area" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">';
   out += '<div class="modal-dialog ' + modal_dialog_cls + '"><div class="modal-content"></div></div></div>';
   var request = arche.do_request(url);
   request.done(function(response) {
