@@ -368,16 +368,18 @@ class RegistrationSchema(colander.Schema):
 
 class FinishRegistrationSchema(colander.Schema):
     userid = colander.SchemaNode(colander.String(),
-                                 title = _(u"UserID"),
+                                 title = _("UserID"),
+                                 description = _("userid_description",
+                                                 default = "Can contain lowercase a-z, '-', '_' or 0-9, but must always start with a letter."),
                                  validator = new_userid_validator)
     first_name = colander.SchemaNode(colander.String(),
-                                     title = _(u"First name"),
-                                     missing = u"")
+                                     title = _("First name"),
+                                     missing = "")
     last_name = colander.SchemaNode(colander.String(),
-                                    title = _(u"Last name"),
-                                    missing = u"")
+                                    title = _("Last name"),
+                                    missing = "")
     password = colander.SchemaNode(colander.String(),
-                                   title = _(u"Password"),
+                                   title = _("Password"),
                                    validator = colander.Length(min = 6, max = 200),
                                    widget = deform.widget.CheckedPasswordWidget(redisplay = True))
 
