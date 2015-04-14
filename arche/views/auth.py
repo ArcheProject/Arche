@@ -22,8 +22,7 @@ class LoginForm(BaseForm):
     @property
     def buttons(self):
         return (deform.Button('login', title = _(u"Login"), css_class = 'btn btn-primary'),
-                deform.Button('recover', title = _(u"Recover password"), css_class = 'btn btn'),
-                self.button_cancel,)
+                deform.Button('recover', title = _(u"Recover password"), css_class = 'btn btn'),)
 
     def recover_success(self, appstruct):
         return self.relocate_response(self.request.resource_url(self.root, 'recover_password'))
