@@ -177,8 +177,9 @@ arche.load_flash_messages = load_flash_messages;
 
 //Attach this to .fail on deferred objects
 function flash_error(jqXHR) {
+  //Connection problems will have a status == 0 and no text so this function should be updated.
   arche.create_flash_message('<h4>' + jqXHR.status + ' ' + jqXHR.statusText + '</h4>' + jqXHR.responseText,
-      {type: 'danger', auto_destruct: false});
+      {type: 'danger', auto_destruct: true});
 }
 arche.flash_error = flash_error;
 
