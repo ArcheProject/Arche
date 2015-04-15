@@ -10,6 +10,7 @@ from arche.interfaces import IUsers
 from arche.utils import check_unique_name
 from arche.utils import hash_method
 from arche.utils import image_mime_to_title
+from six import string_types
 
 
 NEW_USERID_PATTERN = re.compile(r'^[a-z]{1}[a-z0-9\-\_]{2,29}$')
@@ -103,6 +104,28 @@ class ExistingUserIDOrEmail(object):
         if not user:
             raise colander.Invalid(node, _("Invalid email or UserID"))
 
+
+@colander.deferred
+def existing_userids(node, kw):
+    return ExistingUserIDs(kw['context'])
+
+class ExistingUserIDs(object):
+
+    def __init__(self, context):
+        self.context = find_root(context)
+
+    def __call__(self, node, value):
+        if isinstance(value, string_types):
+            self._test(value, node)
+        else:
+            #expect some kind of iterable with userids
+            for userid in value:
+                self._test(userid, node)
+
+    def _test(self, userid, node):
+        if userid not in self.context['users']:
+            raise colander.Invalid(node, _("Can't find the UserID '${userid}'",
+                                           mapping = {'userid': userid}))
 
 @colander.deferred
 def unique_email_validator(node, kw):

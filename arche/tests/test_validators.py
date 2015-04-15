@@ -101,3 +101,39 @@ class UniqueEmailTests(TestCase):
         root['users']['one'] = self._User(email = 'some@email.com')
         obj = self._cut(root['users']['one'])
         self.assertFalse(obj(None, 'some@email.com'))
+
+
+class ExistingUserIDsTests(TestCase):
+    
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.validators import ExistingUserIDs
+        return ExistingUserIDs
+
+    def _fixture(self):
+        root = barebone_fixture(self.config)
+        return root['users']
+
+    def test_supposed_pass(self):
+        users = self._fixture()
+        users['userid'] =  testing.DummyResource()
+        obj = self._cut(users)
+        self.assertEqual(obj(None, 'userid'), None)
+
+    def test_supposed_fail(self):
+        users = self._fixture()
+        obj = self._cut(users)
+        self.assertRaises(Invalid, obj, None, 'userid')
+
+    def test_supposed_pass_list(self):
+        users = self._fixture()
+        users['arche'] =  testing.DummyResource()
+        users['jane'] =  testing.DummyResource()
+        obj = self._cut(users)
+        self.assertEqual(obj(None, ['jane', 'arche']), None)

@@ -11,15 +11,15 @@ from arche.interfaces import IPopulator
 from arche.utils import get_content_factories
 from arche.validators import deferred_current_password_validator
 from arche.validators import existing_userid_or_email
+from arche.validators import existing_userids
 from arche.validators import login_password_validator
+from arche.validators import new_userid_validator
 from arche.validators import supported_thumbnail_mimetype
 from arche.validators import unique_email_validator
-from arche.validators import new_userid_validator
 from arche.widgets import DropzoneWidget
 from arche.widgets import FileAttachmentWidget
 from arche.widgets import ReferenceWidget
 from arche.widgets import TaggingWidget
-
 
 colander_ts = colander._
 
@@ -133,10 +133,12 @@ class DCMetadataSchema(colander.Schema):
     creator = colander.SchemaNode(colander.List(),
                                   tab = 'metadata',
                                   widget = tagging_userids_widget,
+                                  validator = existing_userids,
                                   missing = (),
                                   default = current_userid_as_tuple)
     contributor = colander.SchemaNode(colander.List(),
                                       widget = tagging_userids_widget,
+                                      validator = existing_userids,
                                       tab = 'metadata',
                                       missing = ())
     created = colander.SchemaNode(LocalDateTime(),
@@ -286,12 +288,12 @@ class GroupSchema(colander.Schema):
                                       missing = u"")
     members = colander.SchemaNode(
                   colander.Sequence(),
-                  colander.SchemaNode(
-                          colander.String(),
-                          title = _(u"UserID"),
-                          name = u"not_used",
-                          widget = userid_hinder_widget,),
-                  title = _(u"Members"),)
+                  colander.SchemaNode(colander.String(),
+                                      title = _(u"UserID"),
+                                      name = u"not_used",
+                                      validator = existing_userids,
+                                      widget = userid_hinder_widget,),
+                                      title = _(u"Members"),)
 
 
 class ChangePasswordSchema(colander.Schema):
