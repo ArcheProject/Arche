@@ -30,7 +30,7 @@
               </tal:iterate>
           </ol>
         </div>
-        <div class="col-sm-6 col-md-4">
+        <div class="col-sm-6 col-md-4 hidden-print">
           <form action="${request.resource_url(view.root,'search')}" id="search" role="search" method="get">
             <div class="input-group">
               <input name="query" type="text" class="form-control" placeholder="Search"
