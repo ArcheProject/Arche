@@ -122,6 +122,7 @@ arche.modal_from_event = modal_from_event;
  * params:
  *  - type: which alert type this is. See twitter bootstrap alerts
  *  - id: in case you want to set it in advance to reference it in some way.
+ *  - slot: render in this slot, otherwise use the first available.
  *  - auto_destruct: If set and the message isn't of the type 'danger', remove message
  *    automatically after any number of miliseconds specified at arche.default_flash_timer
  */
@@ -134,14 +135,24 @@ function create_flash_message(message, params) {
     params['auto_destruct'] = false;
   }
   params['auto_destruct'] = typeof params['auto_destruct'] !== 'undefined' ? params['auto_destruct'] : true;
+
   var target;
-  $.each(arche.flash_slot_order, function( index, value ) {
-    if ($('[data-flash-slot="' + value + '"]').length > 0) {
-      target = $('[data-flash-slot="' + value + '"]');
-      return false;
+  // Specific slot specified?
+  if (typeof params['slot'] !== 'undefined') {
+    if ($('[data-flash-slot="' + params['slot'] + '"]').length > 0) {
+      target = $('[data-flash-slot="' + params['slot'] + '"]');
     }
-  });
-  if (typeof(target) == 'undefined') throw "No flash-slot found, tried: " + arche.flash_slot_order;
+    if (typeof(target) == 'undefined') throw "Flash slot doesn't exist: " + params['slot'];
+  // Use first available
+  } else {
+    $.each(arche.flash_slot_order, function( index, value ) {
+      if ($('[data-flash-slot="' + value + '"]').length > 0) {
+        target = $('[data-flash-slot="' + value + '"]');
+        return false;
+      }
+    });
+    if (typeof(target) == 'undefined') throw "No flash-slot found, tried: " + arche.flash_slot_order;
+  }
 
   var out = '<div role="alert" id="' + params['id'] + '" class="alert alert-dismissable alert-'+ params['type'] + '">';
   out += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
@@ -153,6 +164,7 @@ function create_flash_message(message, params) {
     setTimeout( function() { $('#' + params['id']).slideUp(400, function() {this.remove()}); }, arche.default_flash_timer );
   }
   target.append(out);
+  $('#' + params['id']).hide().slideDown();
 };
 arche.create_flash_message = create_flash_message;
 
