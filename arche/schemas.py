@@ -382,6 +382,10 @@ class FinishRegistrationSchema(colander.Schema):
                                     missing = "")
     password = colander.SchemaNode(colander.String(),
                                    title = _("Password"),
+                                   description = _("pw_description_help",
+                                                   default = "At least 6 characters. "
+                                                   "It's a good idea to use quite long passwords. "
+                                                   "If you forget your password you can reset it later."),
                                    validator = colander.Length(min = 6, max = 200),
                                    widget = deform.widget.CheckedPasswordWidget(redisplay = True))
 
