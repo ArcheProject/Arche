@@ -2,14 +2,16 @@ from json import dumps
 import string
 import random
 
-from colander import null
+from deform.widget import AutocompleteInputWidget
+from deform.widget import FileUploadWidget
 from deform.widget import Select2Widget
 from deform.widget import Widget
-from deform.widget import FileUploadWidget
 from deform.widget import filedict
 from pyramid.threadlocal import get_current_request 
 from pyramid.traversal import find_resource
+from pyramid.traversal import find_root
 from repoze.catalog.query import Any
+import colander
 
 from arche import _
 from arche.fanstatic_lib import dropzonebasiccss
@@ -37,7 +39,7 @@ class TaggingWidget(Select2Widget):
     tags = ()
 
     def serialize(self, field, cstruct, **kw):
-        if cstruct in (null, None):
+        if cstruct in (colander.null, None):
             cstruct = self.null_value
         readonly = kw.get('readonly', self.readonly)
         template = readonly and self.readonly_template or self.template
@@ -48,8 +50,8 @@ class TaggingWidget(Select2Widget):
         return field.renderer(template, available_tags = available_tags, current_data = current_data, **tmpl_values)
 
     def deserialize(self, field, pstruct):
-        if pstruct in (null, self.null_value):
-            return null
+        if pstruct in (colander.null, self.null_value):
+            return colander.null
         return tuple(pstruct.split(','))
 
 
@@ -92,7 +94,7 @@ class ReferenceWidget(Select2Widget):
     def serialize(self, field, cstruct, **kw):
         view = field.schema.bindings['view']
         preload_data = "[]"
-        if cstruct in (null, None):
+        if cstruct in (colander.null, None):
             cstruct = self.null_value
         else:
             preload_data = self._preload_data(field, cstruct)
@@ -110,8 +112,8 @@ class ReferenceWidget(Select2Widget):
 
     def deserialize(self, field, pstruct):
         #Make sure pstruct follows query params?
-        if pstruct in (null, self.null_value):
-            return null
+        if pstruct in (colander.null, self.null_value):
+            return colander.null
         return tuple(pstruct.split(','))
 
 
@@ -154,12 +156,12 @@ class DropzoneWidget(FileUploadWidget):
         return super(DropzoneWidget, self).serialize(field, cstruct=cstruct, readonly=readonly)
 
     def deserialize(self, field, pstruct=None):
-        if pstruct is null:
-            return null
+        if pstruct is colander.null:
+            return colander.null
         mimetype = self.tmpstore[pstruct]['mimetype']
         if mimetype in self.acceptedMimetypes or string.split(mimetype, '/')[0]+'/*' in self.acceptedMimetypes:
             return self.tmpstore[pstruct]
-        return null
+        return colander.null
 
 
 class FileAttachmentWidget(Widget):
@@ -179,7 +181,7 @@ class FileAttachmentWidget(Widget):
             [random.choice(string.letters) for i in range(10)])
 
     def serialize(self, field, cstruct, **kw):
-        if cstruct in (null, None):
+        if cstruct in (colander.null, None):
             cstruct = {}
         if cstruct:
             uid = cstruct.get('uid')
@@ -195,8 +197,8 @@ class FileAttachmentWidget(Widget):
         return field.renderer(template, **values)
 
     def deserialize(self, field, pstruct):
-        if pstruct is null:
-            return null
+        if pstruct is colander.null:
+            return colander.null
         upload = pstruct.get('upload')
         uid = pstruct.get('uid')
 
@@ -232,11 +234,21 @@ class FileAttachmentWidget(Widget):
             # the upload control had no file selected
             if uid is None:
                 # no previous file exists
-                return null
+                return colander.null
             else:
                 # a previous file should exist
                 data = self.tmpstore.get(uid)
                 # but if it doesn't, don't blow up
                 if data is None:
-                    return null
+                    return colander.null
         return data
+
+
+@colander.deferred
+def deferred_autocompleting_userid_widget(node, kw):
+    context = kw['context']
+    root = find_root(context)
+    choices = tuple(root.users.keys())
+    return AutocompleteInputWidget(size = 15,
+                                   values = choices,
+                                   min_length = 2)
