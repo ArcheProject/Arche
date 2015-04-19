@@ -4,6 +4,7 @@ from zope.interface import implementer
 from arche.interfaces import IBase
 from arche.interfaces import IFolder
 from arche.interfaces import IJSONData
+from pyramid.i18n import TranslationString
 
 
 @implementer(IJSONData)
@@ -25,7 +26,7 @@ class JSONData(object):
         dt_attrs.extend(dt_attrs)
         #wf_state and name?
         results = {}
-        results['icon'] = getattr(self.context, 'icon', 'file')
+        results['css_icon'] = getattr(self.context, 'css_icon', '')
         results['tags'] = tuple(getattr(self.context, 'tags', ()))
         results['is_folder'] = IFolder.providedBy(self.context)
         title = getattr(self.context, 'title', None)
@@ -34,6 +35,8 @@ class JSONData(object):
         results['title'] = title
         for attr in normal_attrs:
             results[attr] = getattr(self.context, attr, '')
+            if isinstance(results[attr], TranslationString):
+                results[attr] = request.localizer.translate(results[attr])
         for attr in dt_attrs:
             val = getattr(self.context, attr, '')
             if val and dt_formater:

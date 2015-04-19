@@ -222,7 +222,7 @@ class Link(Content):
     type_description = _(u"Content type that redirects to somewhere.")
     add_permission = "Add %s" % type_name
     target = u""
-    icon = u"link"
+    css_icon = "glyphicon glyphicon-link"
     nav_visible = False
     listing_visible = False
     search_visible = False
@@ -281,9 +281,9 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
 class Document(Content, DCMetadataMixin, LocalRolesMixin, ContextACLMixin):
     type_name = u"Document"
     type_title = _(u"Document")
-    body = u""
+    body = ""
     add_permission = "Add %s" % type_name
-    icon = u"font"
+    css_icon = "glyphicon glyphicon-font"
 
     @property
     def image_data(self):
@@ -303,7 +303,7 @@ class File(Content, DCMetadataMixin):
     blob_key = "file"
     filename = ""
     mimetype = ""
-    icon = "file"
+    css_icon = "glyphicon glyphicon-file"
 
     def __init__(self, file_data, **kwargs):
         self._title = u""
@@ -326,10 +326,13 @@ class File(Content, DCMetadataMixin):
         if blob_file:
             self.filename = blob_file.filename
             self.mimetype = blob_file.mimetype
-            styles = {'video': 'film',
-                      'image': 'picture'}
+            #Settable types?
+            styles = {'video': 'glyphicon glyphicon-film',
+                      'image': 'glyphicon glyphicon-picture'}
             main = self.mimetype.split('/')[0]
-            self.icon = styles.get(main, 'file')
+            new_icon_css = styles.get(main, None)
+            if new_icon_css:
+                self.css_icon = new_icon_css
 
     @property
     def size(self):
@@ -343,7 +346,7 @@ class Image(File, DCMetadataMixin):
     type_title = _("Image")
     add_permission = "Add %s" % type_name
     blob_key = "file"
-    icon = "picture"
+    css_icon = "glyphicon glyphicon-picture"
 
 
 @implementer(IInitialSetup)
@@ -354,6 +357,7 @@ class InitialSetup(Content):
     search_visible = False
     title = _("Welcome to Arche!")
     setup_data = {}
+    add_permission = None
 
 
 @implementer(IUsers)
@@ -365,6 +369,7 @@ class Users(Content, LocalRolesMixin, ContextACLMixin):
     search_visible = False
     title = _(u"Users")
     is_permanent = True
+    add_permission = None
 
     def get_user_by_email(self, email, default = None):
         """ Get a user object by email address regardless of permissions.
@@ -391,7 +396,7 @@ class User(Content, LocalRolesMixin, ContextACLMixin):
     email = u""
     add_permission = "Add %s" % type_name
     pw_token = None
-    icon = u"user"
+    css_icon = "glyphicon glyphicon-user"
     email_validated = False
     __timezone__ = None
 
@@ -441,6 +446,7 @@ class Groups(Content, LocalRolesMixin, ContextACLMixin):
     search_visible = False
     title = _(u"Groups")
     is_permanent = True
+    add_permission = "Add %s" % type_name
 
     def get_users_group_principals(self, userid):
         #Cache memberships? Needed on sites with many groups
@@ -462,7 +468,7 @@ class Group(Content, LocalRolesMixin, ContextACLMixin):
     add_permission = "Add %s" % type_name
     title = u""
     description = u""
-    icon = u"user" #FIXME no group icon!?
+    css_icon = "glyphicon glyphicon-user" #FIXME no group icon!?
 
     def __init__(self, **kwargs):
         #Things like created, creator etc...
@@ -493,6 +499,7 @@ class Token(Persistent):
     expires = None
     type_name = u"Token"
     type_tile = _(u"Token")
+    add_permission = "Add %s" % type_name
 
     def __init__(self, size = 40, hours = 3):
         self.token = ''.join([choice(string.letters + string.digits) for x in range(size)])

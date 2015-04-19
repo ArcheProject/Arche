@@ -25,15 +25,13 @@ function update_table_from_response(response) {
 				'.modified': 'obj.modified',
 				'.tags': 'obj.tags',
 				'.size': 'obj.size',
+				'[data-css-icon]@class': 'obj.css_icon',
 				'a@href': function(arg) {
 					var out = './' + arg.item['__name__']
 					if (arg.item['is_folder']) {
 						out += '/contents';
 					}
 					return out
-				},
-				'.glyphicon@class+': function(arg) {
-					return arg.item['icon'];
 				}
 			}
 		}
@@ -154,7 +152,7 @@ $(document).ready(function() {
                   </a>
                  </td>
                  <td>
-                  <span class="glyphicon glyphicon-"></span>
+                  <span data-css-icon></span>
                   <span class="type_title"></span>
                   <span class="mimetype"></span>
                  </td>

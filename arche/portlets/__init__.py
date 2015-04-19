@@ -117,6 +117,7 @@ class PortletFolder(Folder):
     type_name = u"PortletFolder"
     type_title = _(u"Portlet folder")
     type_description = _(u"Container for portlets")
+    add_permission = None
 
     def __init__(self, slot):
         self.slot = slot
