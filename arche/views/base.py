@@ -332,7 +332,7 @@ class DefaultAddForm(BaseForm):
             type_title = factory.type_title
         else:
             type_title = self.type_name
-        return _(u"Add ${type_title}", mapping = {'type_title': type_title})
+        return _(u"Add ${type_title}", mapping = {'type_title': self.request.localizer.translate(type_title)})
 
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
