@@ -6,6 +6,7 @@ import deform
 
 from arche import _
 from arche import security
+from arche.fanstatic_lib import manage_portlets_js
 from arche.interfaces import IContent
 from arche.interfaces import IFlashMessages
 from arche.portlets import get_available_portlets
@@ -44,10 +45,32 @@ class ManagePortlets(BaseView):
         return forms
 
     def __call__(self):
+        manage_portlets_js.need()
         custom_slots = set(self.slots.keys()) - set(['right', 'left', 'top', 'bottom'])
         return {'slots': self.slots,
                 'custom_slots': custom_slots,
                 'portlet_manager': get_portlet_manager(self.context, self.request.registry)}
+
+
+class SavePortletSlotOrder(BaseView):
+
+    @reify
+    def slots(self):
+        return get_portlet_slots(self.request.registry)
+
+    @reify
+    def manager(self):
+        return get_portlet_manager(self.context, self.request.registry)
+
+    def __call__(self):
+        slotname = self.request.subpath[0]
+        slot = self.manager[slotname]
+        new_order = self.request.POST.getall('uids[]')
+        if set(new_order) != set(slot.keys()):
+            raise HTTPForbidden("Sorting contained wrong length of items. You may need to reload this page.")
+        slot.order = new_order
+        return {}
+
 
 
 def add_portlet(context, request):
@@ -118,6 +141,11 @@ def includeme(config):
                     name = 'manage_portlets',
                     permission = security.PERM_MANAGE_SYSTEM,
                     renderer = 'arche:templates/manage_portlets.pt')
+    config.add_view(SavePortletSlotOrder,
+                    context = IContent,
+                    name = '__save_portlet_slot_order__',
+                    permission = security.PERM_MANAGE_SYSTEM,
+                    renderer = 'json')
     config.add_view(add_portlet,
                     context = IContent,
                     name = 'add_portlet',

@@ -24,8 +24,17 @@
     <h1 i18n:translate="">Manage portlets</h1>
     <p class="lead" i18n:translate="portlets-manager-help">
       Add or remove portlets. Note that the slots might not be positioned the way they'll be on the page later on.
+      
+      If you wish to resort portlets you can drag and drop them from the arrows-icon.
+      Dragging to another box is currently not supported.
     </p>
     <div class="clearfix"><!-- --></div>
+
+    <p>
+      <a href="${request.resource_url(context)}"
+        class="btn btn-default"
+        i18n:translate="">Back</a>
+    </p>
 
     <tal:custom condition="custom_slots">
       <tal:others repeat="slot custom_slots">

@@ -5,6 +5,8 @@ from fanstatic.core import render_js
 from js.bootstrap import bootstrap_css
 from js.bootstrap import bootstrap_js
 from js.jquery import jquery
+from js.jqueryui import jqueryui
+from js.jqueryui import ui_sortable
 
 #Note: A lot of the code here is under developent and review. Don't depend too much on this.
 
@@ -17,9 +19,9 @@ dropzonebootstrapcss = Resource(library, 'css/dropzone-bootstrap.css', depends=(
 dropzonebasiccss = Resource(library, 'css/basic.css', depends=(dropzonejs,))
 
 common_js = Resource(library, 'common.js', depends = (jquery,))
-jqueryui = Resource(library, 'jquery-ui-1.10.4.min.js', depends=(jquery,)) #FIXME: Doesn't this exist in deform?
 touchpunch_js = Resource(library, 'jquery.ui.touch-punch.min.js', depends = (jquery, jqueryui))
 picturefill_js = Resource(library, "picturefill.js")
+manage_portlets_js = Resource(library, 'manage_portlets.js', depends = (common_js,ui_sortable,))
 
 pure_js = Resource(library, 'pure.js', minified = 'pure.min.js', depends = (jquery,))
 

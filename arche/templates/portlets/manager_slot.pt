@@ -5,28 +5,34 @@
       i18n:domain="Arche">
 
   <div tal:condition="slotname in view.slots"
-      tal:define="portlets portlet_manager.get(slotname, {})">
+    tal:define="portlets portlet_manager.get(slotname, {})">
 
     <h4>${view.slots[slotname].title} (${slotname})</h4>
 
-    <ul class="list-group">
-        <li class="list-group-item" tal:repeat="portlet portlets.values()">
-            <a tal:omit-tag="portlet.schema_factory is None" href="${request.resource_url(context, 'edit_portlet', query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
-                ${portlet.title}
-            </a>
-            <span class="label label-default">${portlet.portlet_type}</span>
-            <a href="${request.resource_url(context, 'delete_portlet', query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
-                <span class="glyphicon glyphicon-remove"></span>
-            </a>
-        </li>
+    <ul class="list-group portlet-sortable"
+      data-portlet-slotname="${slotname}"
+      data-portlet-saveurl="${request.resource_url(context, '__save_portlet_slot_order__', slotname)}">
+      <li class="list-group-item portlet-item"
+        data-uid="${portlet.uid}"
+        tal:repeat="portlet portlets.values()">
+        <span class="glyphicon glyphicon-move sortable-drag"></span>
+        <a tal:omit-tag="portlet.schema_factory is None"
+          href="${request.resource_url(context, 'edit_portlet', query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
+          ${portlet.title}
+        </a>
+        <span class="label label-default">${portlet.portlet_type}</span>
+        <a href="${request.resource_url(context, 'delete_portlet', query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
+          <span class="glyphicon glyphicon-remove text-danger"></span>
+        </a>
+      </li>
     </ul>
 
     <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" data-target="#add-portlets-${slotname}">
-        <span class="glyphicon glyphicon-plus"></span>
-        <span i18n:translate="">Add to</span> '${view.slots[slotname].title}'
+      <span class="glyphicon glyphicon-plus"></span>
+      <span i18n:translate="">Add to</span> '${view.slots[slotname].title}'
     </button>
     <div class="collapse" id="add-portlets-${slotname}">
-        <tal:form replace="structure view.forms[slotname].render()" />
+      <tal:form replace="structure view.forms[slotname].render()" />
     </div>
   </div>
 </tal:main>
