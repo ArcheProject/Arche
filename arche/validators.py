@@ -1,16 +1,17 @@
 import re
 
-from pyramid.traversal import find_root
-import colander
 from pyramid.threadlocal import get_current_request
+from pyramid.traversal import find_root
+from six import string_types
+import colander
 
 from arche import _
+from arche import security
 from arche.interfaces import IUser
 from arche.interfaces import IUsers
 from arche.utils import check_unique_name
 from arche.utils import hash_method
 from arche.utils import image_mime_to_title
-from six import string_types
 
 
 NEW_USERID_PATTERN = re.compile(r'^[a-z]{1}[a-z0-9\-\_]{2,29}$')
@@ -190,6 +191,17 @@ class FileUploadValidator(object):
 @colander.deferred
 def deferred_current_password_validator(node, kw):
     context = kw['context']
+    return CurrentPasswordValidator(context)
+
+@colander.deferred
+def deferred_current_pw_or_manager_validator(node, kw):
+    context = kw['context']
+    request = kw['request']
+    if request.authenticated_userid != context.userid and request.has_permission(security.PERM_MANAGE_USERS, context):
+        #Fetch managers pw instead
+        root = find_root(context)
+        admin_user = root['users'][request.authenticated_userid]
+        return CurrentPasswordValidator(admin_user)
     return CurrentPasswordValidator(context)
 
 

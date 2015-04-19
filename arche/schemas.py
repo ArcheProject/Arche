@@ -7,9 +7,11 @@ import colander
 import deform
 
 from arche import _
+from arche import security
 from arche.interfaces import IPopulator
 from arche.utils import get_content_factories
 from arche.validators import deferred_current_password_validator
+from arche.validators import deferred_current_pw_or_manager_validator
 from arche.validators import existing_userid_or_email
 from arche.validators import existing_userids
 from arche.validators import login_password_validator
@@ -295,13 +297,21 @@ class GroupSchema(colander.Schema):
                                       widget = userid_hinder_widget,),
                                       title = _(u"Members"),)
 
+@colander.deferred
+def deferred_current_pw_title(node, kw):
+    request = kw['request']
+    context = kw['context']
+    if request.authenticated_userid != context.userid and request.has_permission(security.PERM_MANAGE_USERS, context):
+        return _("Your current password for your own account")
+    return _("Current password")
 
 class ChangePasswordSchema(colander.Schema):
     #Note: Current password field should be removed when token validation or similar is used.
+    #If an admin wish to change a password of another user the have to supply their own.
     current_password = colander.SchemaNode(colander.String(),
-                                   title = _('Current password'),
-                                   widget = deform.widget.PasswordWidget(size=20),
-                                   validator = deferred_current_password_validator)
+                                           title = deferred_current_pw_title,
+                                           widget = deform.widget.PasswordWidget(size=20),
+                                           validator = deferred_current_pw_or_manager_validator)
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
                                    widget = deform.widget.CheckedPasswordWidget())
