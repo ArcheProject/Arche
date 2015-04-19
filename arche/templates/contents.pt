@@ -144,7 +144,10 @@ $(document).ready(function() {
               <tr>
                 <td><input type="checkbox" class="select-content" name="select" value="" onChange="updateMultiselect(this)"></input></td>
                 <td>
-                  <span class="tmp-msg" i18n:translate="">Loading...</span>
+                  <span class="tmp-msg">
+                    <span class="glyphicon glyphicon-refresh rotate-me"></span>
+                    <tal:ts i18n:translate="">Loading...</tal:ts>
+                  </span>
                   <input type="hidden" name="content_name" value="" />
                   <a href="#"
                     title="">
