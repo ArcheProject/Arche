@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-04-18 09:05+0200\n"
+"POT-Creation-Date: 2015-04-21 15:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,269 +45,277 @@ msgstr ""
 msgid "File"
 msgstr ""
 
-#: ./arche/./resources.py:343 ./arche/./schemas.py:218
+#: ./arche/./resources.py:346 ./arche/./schemas.py:221
 msgid "Image"
 msgstr ""
 
-#: ./arche/./resources.py:352
+#: ./arche/./resources.py:355
 msgid "Initial setup"
 msgstr ""
 
-#: ./arche/./resources.py:355
+#: ./arche/./resources.py:358
 msgid "Welcome to Arche!"
 msgstr ""
 
-#: ./arche/./resources.py:362 ./arche/./resources.py:366
-#: ./arche/./schemas.py:69 ./arche/./views/actions.py:146
+#: ./arche/./resources.py:366 ./arche/./resources.py:370
+#: ./arche/./schemas.py:72 ./arche/./views/actions.py:146
 msgid "Users"
 msgstr ""
 
-#: ./arche/./resources.py:388 ./arche/./security.py:223
+#: ./arche/./resources.py:393 ./arche/./security.py:223
 msgid "User"
 msgstr ""
 
-#: ./arche/./resources.py:438 ./arche/./resources.py:442
-#: ./arche/./schemas.py:70 ./arche/./views/actions.py:151
+#: ./arche/./resources.py:443 ./arche/./resources.py:447
+#: ./arche/./schemas.py:73 ./arche/./views/actions.py:151
 msgid "Groups"
 msgstr ""
 
-#: ./arche/./resources.py:461 ./arche/./templates/content/groups.pt:12
+#: ./arche/./resources.py:467 ./arche/./templates/content/groups.pt:12
 msgid "Group"
 msgstr ""
 
-#: ./arche/./resources.py:495
+#: ./arche/./resources.py:501
 msgid "Token"
 msgstr ""
 
-#: ./arche/./schemas.py:65 ./arche/./views/actions.py:258
+#: ./arche/./schemas.py:68 ./arche/./views/actions.py:258
 msgid "Default"
 msgstr ""
 
-#: ./arche/./schemas.py:66
+#: ./arche/./schemas.py:69
 msgid "Visibility"
 msgstr ""
 
-#: ./arche/./schemas.py:67
+#: ./arche/./schemas.py:70
 msgid "Metadata"
 msgstr ""
 
-#: ./arche/./schemas.py:68
+#: ./arche/./schemas.py:71
 msgid "Related"
 msgstr ""
 
-#: ./arche/./schemas.py:71
+#: ./arche/./schemas.py:74
 msgid "Advanced"
 msgstr ""
 
-#: ./arche/./schemas.py:232
+#: ./arche/./schemas.py:235
 #, python-format
 msgid ""
 "Current default timezone is: '${tzname}', leave this field blank if your're "
 "okay with that."
 msgstr ""
 
-#: ./arche/./schemas.py:93
+#: ./arche/./schemas.py:315
+msgid "Current password"
+msgstr ""
+
+#: ./arche/./schemas.py:96
 msgid "No thanks"
 msgstr ""
 
-#: ./arche/./schemas.py:94
+#: ./arche/./schemas.py:97
 msgid "Don't install or change anything"
+msgstr ""
+
+#: ./arche/./schemas.py:314
+msgid "Your current password for your own account"
 msgstr ""
 
 #. Default: A link will be sent to this address. You need to click the link to
 #. finish the registration. If no email arrives within 15 minutes, you might
 #. need to check your emails' spam folder.
-#: ./arche/./schemas.py:356
+#: ./arche/./schemas.py:375
 msgid "reg_email_description"
 msgstr ""
 
-#: ./arche/./schemas.py:110
+#: ./arche/./schemas.py:113
 msgid "Type to search for UserIDs"
 msgstr ""
 
-#: ./arche/./schemas.py:129
+#: ./arche/./schemas.py:132
 msgid "Tags or subjects"
 msgstr ""
 
-#: ./arche/./schemas.py:149
+#: ./arche/./schemas.py:152
 msgid "Related content"
 msgstr ""
 
-#: ./arche/./schemas.py:150
+#: ./arche/./schemas.py:153
 msgid "Can be used to link to other content"
 msgstr ""
 
-#: ./arche/./schemas.py:158
+#: ./arche/./schemas.py:161
 msgid "Date"
 msgstr ""
 
-#: ./arche/./schemas.py:159
+#: ./arche/./schemas.py:162
 msgid "Publish date, or used for sorting"
 msgstr ""
 
-#: ./arche/./schemas.py:164
+#: ./arche/./schemas.py:167
 msgid "Licensing"
 msgstr ""
 
-#: ./arche/./schemas.py:188
+#: ./arche/./schemas.py:191
 msgid "Show in navigations"
 msgstr ""
 
-#: ./arche/./schemas.py:193
+#: ./arche/./schemas.py:196
 msgid "Show in listing or table views"
 msgstr ""
 
-#: ./arche/./schemas.py:194
+#: ./arche/./schemas.py:197
 msgid "The content view will always show this regardless of what you set."
 msgstr ""
 
-#: ./arche/./schemas.py:199
+#: ./arche/./schemas.py:202
 msgid "Include in search results"
 msgstr ""
 
-#: ./arche/./schemas.py:200
+#: ./arche/./schemas.py:203
 msgid ""
 "Note that this is not a permission setting - it's just a matter of "
 "practicality for users. They may even disable this setting."
 msgstr ""
 
-#: ./arche/./schemas.py:206
+#: ./arche/./schemas.py:209
 msgid "Navigation bar title"
 msgstr ""
 
-#: ./arche/./schemas.py:207
+#: ./arche/./schemas.py:210
 msgid "If you wish to use another name for when it's shown in menus."
 msgstr ""
 
-#: ./arche/./schemas.py:225
+#: ./arche/./schemas.py:228
 msgid "Show byline"
 msgstr ""
 
-#: ./arche/./schemas.py:248 ./arche/./schemas.py:378
+#: ./arche/./schemas.py:258 ./arche/./schemas.py:397
 #: ./arche/./templates/content/users_table.pt:38
 msgid "First name"
 msgstr ""
 
-#: ./arche/./schemas.py:251 ./arche/./schemas.py:381
+#: ./arche/./schemas.py:261 ./arche/./schemas.py:400
 #: ./arche/./templates/content/users_table.pt:39
 msgid "Last name"
 msgstr ""
 
-#: ./arche/./schemas.py:254 ./arche/./schemas.py:318
+#: ./arche/./schemas.py:264 ./arche/./schemas.py:337
 msgid "Email adress"
 msgstr ""
 
-#: ./arche/./schemas.py:260
+#: ./arche/./schemas.py:271
 msgid "Profile image"
 msgstr ""
 
-#: ./arche/./schemas.py:264
+#: ./arche/./schemas.py:275
 msgid "Set custom timezone"
 msgstr ""
 
-#: ./arche/./schemas.py:275 ./arche/./schemas.py:373 ./arche/./schemas.py:292
+#: ./arche/./schemas.py:286 ./arche/./schemas.py:392 ./arche/./schemas.py:303
 #: ./arche/./templates/content/users_table.pt:36
 msgid "UserID"
 msgstr ""
 
-#: ./arche/./schemas.py:278 ./arche/./schemas.py:306 ./arche/./schemas.py:322
-#: ./arche/./schemas.py:342 ./arche/./schemas.py:384
+#: ./arche/./schemas.py:289 ./arche/./schemas.py:325 ./arche/./schemas.py:341
+#: ./arche/./schemas.py:361 ./arche/./schemas.py:403
 msgid "Password"
 msgstr ""
 
-#: ./arche/./schemas.py:284 ./arche/./schemas.py:422
-#: ./arche/./templates/contents.pt:137
+#: ./arche/./schemas.py:295 ./arche/./schemas.py:441
+#: ./arche/./templates/contents.pt:135
 msgid "Title"
 msgstr ""
 
-#: ./arche/./schemas.py:286 ./arche/./templates/content/groups.pt:13
+#: ./arche/./schemas.py:297 ./arche/./templates/content/groups.pt:13
 msgid "Description"
 msgstr ""
 
-#: ./arche/./schemas.py:296 ./arche/./templates/content/groups.pt:14
+#: ./arche/./schemas.py:307 ./arche/./templates/content/groups.pt:14
 msgid "Members"
 msgstr ""
 
-#: ./arche/./schemas.py:302
-msgid "Current password"
-msgstr ""
-
-#: ./arche/./schemas.py:312
+#: ./arche/./schemas.py:331
 msgid "Site title"
 msgstr ""
 
-#: ./arche/./schemas.py:313
+#: ./arche/./schemas.py:332
 msgid "A site made with Arche"
 msgstr ""
 
-#: ./arche/./schemas.py:315
+#: ./arche/./schemas.py:334
 msgid "Admin userid - use lowercase!"
 msgstr ""
 
-#: ./arche/./schemas.py:326
+#: ./arche/./schemas.py:345
 msgid "Populate site"
 msgstr ""
 
-#: ./arche/./schemas.py:340 ./arche/./schemas.py:401
+#: ./arche/./schemas.py:359 ./arche/./schemas.py:420
 msgid "Email or UserID"
 msgstr ""
 
-#: ./arche/./schemas.py:365 ./arche/./templates/content/users_table.pt:37
+#: ./arche/./schemas.py:384 ./arche/./templates/content/users_table.pt:37
 msgid "Email"
 msgstr ""
 
 #. Default: Can contain lowercase a-z, '-', '_' or 0-9, but must always start
 #. with a letter.
-#: ./arche/./schemas.py:374
+#: ./arche/./schemas.py:393
 msgid "userid_description"
 msgstr ""
 
 #. Default: At least 6 characters. It's a good idea to use quite long
 #. passwords. If you forget your password you can reset it later.
-#: ./arche/./schemas.py:385
+#: ./arche/./schemas.py:404
 msgid "pw_description_help"
 msgstr ""
 
-#: ./arche/./schemas.py:406
+#: ./arche/./schemas.py:425
 msgid "Page head title"
 msgstr ""
 
-#: ./arche/./schemas.py:407
+#: ./arche/./schemas.py:426
 msgid "Usually shown as a title of the browser tab."
 msgstr ""
 
-#: ./arche/./schemas.py:409
+#: ./arche/./schemas.py:428
 msgid "Footer"
 msgstr ""
 
-#: ./arche/./schemas.py:423
+#: ./arche/./schemas.py:442
 msgid "Filename will be used if you leave this blank"
 msgstr ""
 
-#: ./arche/./schemas.py:426
+#: ./arche/./schemas.py:445
 msgid "Upload file"
 msgstr ""
 
-#: ./arche/./schemas.py:433
+#: ./arche/./schemas.py:452
 msgid "Change file"
 msgstr ""
 
-#: ./arche/./schemas.py:455
+#: ./arche/./schemas.py:474
 msgid "Allow users to register themselves to this site."
 msgstr ""
 
-#: ./arche/./schemas.py:458
+#: ./arche/./schemas.py:477
 msgid "Show login link."
 msgstr ""
 
-#: ./arche/./schemas.py:461
+#: ./arche/./schemas.py:480
 msgid "Skip email validation"
 msgstr ""
 
-#: ./arche/./schemas.py:462
+#: ./arche/./schemas.py:481
 msgid ""
 "This will allow users to register with a fake email address. Generally not "
 "recommended."
+msgstr ""
+
+#: ./arche/./schemas.py:492
+msgid "Skip validation email (change directly)"
 msgstr ""
 
 #: ./arche/./security.py:35
@@ -378,64 +386,68 @@ msgstr ""
 msgid "Review"
 msgstr ""
 
-#: ./arche/./validators.py:166
+#: ./arche/./validators.py:172
 #, python-format
 msgid ""
 "Not a valid image file! Any of these image types are supported: ${suggested}"
 msgstr ""
 
-#: ./arche/./validators.py:48
+#: ./arche/./validators.py:49
 msgid "Please use lowercase only."
 msgstr ""
 
-#: ./arche/./validators.py:51
+#: ./arche/./validators.py:52
 msgid "Already taken or conflicts with a restricted name."
 msgstr ""
 
 #. Default: UserID must be 3-30 chars, start with lowercase a-z and only
 #. contain lowercase a-z, numbers, minus and underscore.
-#: ./arche/./validators.py:54
+#: ./arche/./validators.py:55
 msgid "userid_char_error"
 msgstr ""
 
-#: ./arche/./validators.py:81 ./arche/./validators.py:105
+#: ./arche/./validators.py:82 ./arche/./validators.py:110
 msgid "Invalid email or UserID"
 msgstr ""
 
-#: ./arche/./validators.py:85 ./arche/./validators.py:206
+#: ./arche/./validators.py:86 ./arche/./validators.py:223
 msgid "Wrong password. Remember that passwords are case sensitive."
 msgstr ""
 
-#: ./arche/./validators.py:127
+#: ./arche/./validators.py:112
+msgid "User doesn't have a valid email address"
+msgstr ""
+
+#: ./arche/./validators.py:133
 #, python-format
 msgid "Can't find the UserID '${userid}'"
 msgstr ""
 
-#: ./arche/./validators.py:185
+#: ./arche/./validators.py:191
 #, python-format
 msgid "Not a valid file type, try any of the following: ${suggested}"
 msgstr ""
 
-#: ./arche/./validators.py:41
+#: ./arche/./validators.py:42
 msgid "Already used within this context"
 msgstr ""
 
 #. Default: Already registered. You may recover your password if you've lost
 #. it.
-#: ./arche/./validators.py:150
+#: ./arche/./validators.py:156
 msgid "already_registered_email_error"
 msgstr ""
 
 #. Default: This address is already used.
-#: ./arche/./validators.py:154
+#: ./arche/./validators.py:160
 msgid "already_used_email_error"
 msgstr ""
 
-#: ./arche/./widgets.py:35 ./arche/./templates/contents.pt:141
+#: ./arche/./widgets.py:37 ./arche/./templates/contents.pt:139
 msgid "Tags"
 msgstr ""
 
-#: ./arche/./widgets.py:71
+#: ./arche/./widgets.py:73
 msgid "Type something to search."
 msgstr ""
 
@@ -542,19 +554,19 @@ msgstr ""
 msgid "Container for portlets"
 msgstr ""
 
-#: ./arche/./portlets/__init__.py:210
+#: ./arche/./portlets/__init__.py:211
 msgid "Left"
 msgstr ""
 
-#: ./arche/./portlets/__init__.py:211
+#: ./arche/./portlets/__init__.py:212
 msgid "Right"
 msgstr ""
 
-#: ./arche/./portlets/__init__.py:212
+#: ./arche/./portlets/__init__.py:213
 msgid "Top"
 msgstr ""
 
-#: ./arche/./portlets/__init__.py:213
+#: ./arche/./portlets/__init__.py:214
 msgid "Bottom"
 msgstr ""
 
@@ -570,36 +582,36 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
-#: ./arche/./templates/contents.pt:120
+#: ./arche/./templates/contents.pt:118
 msgid "Contents of"
 msgstr ""
 
-#: ./arche/./templates/contents.pt:127
+#: ./arche/./templates/contents.pt:125
 msgid "Parent directory"
 msgstr ""
 
-#: ./arche/./templates/contents.pt:130
+#: ./arche/./templates/contents.pt:128
 msgid "Not a folder, so it can't have content"
 msgstr ""
 
-#: ./arche/./templates/contents.pt:138 ./arche/./templates/content/file.pt:25
+#: ./arche/./templates/contents.pt:136 ./arche/./templates/content/file.pt:25
 #: ./arche/./templates/content/image.pt:30
 #: ./arche/./templates/deform/file_upload.pt:20
 #: ./arche/./templates/deform/readonly/file_upload.pt:18
-#: ./arche/./views/portlets.py:33
+#: ./arche/./views/portlets.py:34
 msgid "Type"
 msgstr ""
 
-#: ./arche/./templates/contents.pt:139
+#: ./arche/./templates/contents.pt:137
 #: ./arche/./templates/content/users_table.pt:40
 msgid "Created"
 msgstr ""
 
-#: ./arche/./templates/contents.pt:140
+#: ./arche/./templates/contents.pt:138
 msgid "Modified"
 msgstr ""
 
-#: ./arche/./templates/contents.pt:142
+#: ./arche/./templates/contents.pt:140
 msgid "Info"
 msgstr ""
 
@@ -607,7 +619,7 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: ./arche/./templates/contents.pt:174
+#: ./arche/./templates/contents.pt:177
 msgid "Change order"
 msgstr ""
 
@@ -621,9 +633,15 @@ msgid "Manage portlets"
 msgstr ""
 
 #. Default: Add or remove portlets. Note that the slots might not be positioned
-#. the way they'll be on the page later on.
+#. the way they'll be on the page later on. If you wish to resort portlets you
+#. can drag and drop them from the arrows-icon. Dragging to another box is
+#. currently not supported.
 #: ./arche/./templates/manage_portlets.pt:25
 msgid "portlets-manager-help"
+msgstr ""
+
+#: ./arche/./templates/manage_portlets.pt:36
+msgid "Back"
 msgstr ""
 
 #: ./arche/./templates/master.pt:36
@@ -634,7 +652,7 @@ msgstr ""
 msgid "Saved"
 msgstr ""
 
-#: ./arche/./templates/permissions.pt:60 ./arche/./views/portlets.py:63
+#: ./arche/./templates/permissions.pt:60 ./arche/./views/portlets.py:86
 msgid "Added"
 msgstr ""
 
@@ -775,7 +793,7 @@ msgid "Actions"
 msgstr ""
 
 #: ./arche/./templates/menus/add_content.pt:8 ./arche/./views/actions.py:83
-#: ./arche/./views/base.py:202 ./arche/./views/portlets.py:18
+#: ./arche/./views/base.py:202 ./arche/./views/portlets.py:19
 msgid "Add"
 msgstr ""
 
@@ -787,7 +805,7 @@ msgstr ""
 msgid "(modified ${datetime})"
 msgstr ""
 
-#: ./arche/./templates/portlets/manager_slot.pt:26
+#: ./arche/./templates/portlets/manager_slot.pt:32
 msgid "Add to"
 msgstr ""
 
@@ -873,7 +891,7 @@ msgstr ""
 msgid "Recover password"
 msgstr ""
 
-#: ./arche/./views/auth.py:174
+#: ./arche/./views/auth.py:176
 msgid "Change password"
 msgstr ""
 
@@ -899,11 +917,11 @@ msgstr ""
 msgid "Message sent"
 msgstr ""
 
-#: ./arche/./views/auth.py:165
+#: ./arche/./views/auth.py:167
 msgid "Password recovery request"
 msgstr ""
 
-#: ./arche/./views/auth.py:195
+#: ./arche/./views/auth.py:197
 msgid "Not allowed"
 msgstr ""
 
@@ -915,12 +933,16 @@ msgstr ""
 msgid "Site doesn't allow self registration"
 msgstr ""
 
-#: ./arche/./views/auth.py:203
+#: ./arche/./views/auth.py:163
+msgid "There's no email associated with this account."
+msgstr ""
+
+#: ./arche/./views/auth.py:205
 msgid "Password changed"
 msgstr ""
 
 #. Default: You've logged in and changed your password
-#: ./arche/./views/auth.py:206
+#: ./arche/./views/auth.py:208
 msgid "logged_in_changed_pw"
 msgstr ""
 
@@ -1009,7 +1031,7 @@ msgstr ""
 msgid "generic_exception_explanation"
 msgstr ""
 
-#: ./arche/./views/exceptions.py:71
+#: ./arche/./views/exceptions.py:78
 msgid "Not allowed, perhaps you need to log in?"
 msgstr ""
 
@@ -1029,16 +1051,16 @@ msgstr ""
 msgid "That UserID don't exist"
 msgstr ""
 
-#: ./arche/./views/portlets.py:91
+#: ./arche/./views/portlets.py:114
 #, python-format
 msgid "Edit ${portlet_title}"
 msgstr ""
 
-#: ./arche/./views/portlets.py:28
+#: ./arche/./views/portlets.py:29
 msgid "<Select>"
 msgstr ""
 
-#: ./arche/./views/portlets.py:99
+#: ./arche/./views/portlets.py:122
 msgid "Nothing to edit for this portlet"
 msgstr ""
 
@@ -1065,26 +1087,26 @@ msgstr ""
 #. Default: Since you requested to change your email address we've sent you an
 #. email to verify your new address. As soon as you click the link in your
 #. email, your address will change. All other changes were saved.
-#: ./arche/./views/user.py:38
+#: ./arche/./views/user.py:39
 msgid "require_email_verification_notice"
 msgstr ""
 
-#: ./arche/./views/user.py:71
+#: ./arche/./views/user.py:72
 msgid "This link is invalid. Unable to change email."
 msgstr ""
 
-#: ./arche/./views/user.py:35
+#: ./arche/./views/user.py:36
 msgid "Email change validation"
 msgstr ""
 
-#: ./arche/./views/user.py:64
+#: ./arche/./views/user.py:65
 msgid "The email change request has expired."
 msgstr ""
 
-#: ./arche/./views/user.py:69
+#: ./arche/./views/user.py:70
 msgid "Email changed"
 msgstr ""
 
-#: ./arche/./views/user.py:62
+#: ./arche/./views/user.py:63
 msgid "No such token"
 msgstr ""
