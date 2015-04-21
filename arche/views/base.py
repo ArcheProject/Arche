@@ -244,7 +244,7 @@ class BaseForm(BaseView, FormView):
         if isclass(schema):
             schema = schema()
         self.schema = schema
-        event = SchemaCreatedEvent(self.schema)
+        event = SchemaCreatedEvent(self.schema, view = self, context = context, request = request)
         objectEventNotify(event)
 
     def get_schema(self):

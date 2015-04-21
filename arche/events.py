@@ -40,9 +40,12 @@ class ViewInitializedEvent(object):
 class SchemaCreatedEvent(object):
     """ Fire this event when schemas are instantiated.
     """
-    
-    def __init__(self, _object):
+    def __init__(self, _object, view = None, request = None, context = None, **kw):
         self.object = _object
+        self.view = view
+        self.request = request
+        self.context = context
+        self.__dict__.update(**kw)
 
 
 class _WorkflowTransition(object):
