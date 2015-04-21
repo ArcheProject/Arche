@@ -11,14 +11,16 @@
     $(document).ready(function() {
       var request = arche.do_request("${request.resource_url(context, 'users.json')}");
       request.done(function(response) {
+        $('[data-load-marker]').remove();
         var directive = {'tr':
           {'user<-items':
             {'.userid': 'user.userid',
              '.created': 'user.created',
              '.email': 'user.email',
+             '.email@href+': 'user.email',
              '.first_name': 'user.first_name',
              '.last_name': 'user.last_name',
-             'a@href': function(arg) {
+             '.profile-link@href': function(arg) {
                return '/users/' + arg.item['__name__'];
              }
             }
@@ -29,6 +31,7 @@
     })
   </script>
 
+  <h1 i18n:translate="">Showing <tal:ts content="len(context)" /> user(s)</h1>
 
   <table class="table table-responsive table-bordered table-striped table-hover">
     <thead>
@@ -43,11 +46,15 @@
     <tbody id="users">
       <tr>
         <td>
-          <a href="">
+          <span data-load-marker>
+            <span class="rotate-me glyphicon glyphicon-refresh"></span>
+            <tal:ts i18n:translate="">Loading...</tal:ts>
+          </span>
+          <a class="profile-link">
               <span class="userid"></span>
           </a>
         </td>
-        <td><span class="email"></span></td>
+        <td><a class="email" href="mailto:"></a></td>
         <td><span class="first_name"></span></td>
         <td><span class="last_name"></span></td>
         <td><span class="created"></span></td>
