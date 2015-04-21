@@ -155,8 +155,10 @@ $(document).ready(function() {
                   </a>
                  </td>
                  <td>
-                  <span data-css-icon></span>
-                  <span class="type_title"></span>
+                  <span class="text-nowrap">
+                    <span data-css-icon></span>
+                    <span class="type_title"></span>
+                  </span>
                   <span class="mimetype"></span>
                  </td>
                  <td><span class="created"></span></td>
