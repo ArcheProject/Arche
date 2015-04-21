@@ -25,8 +25,9 @@ class AddUserForm(DefaultAddForm):
 class EditUserForm(DefaultEditForm):
 
     def save_success(self, appstruct):
+        admin_override_skip_validation = appstruct.pop('admin_override_skip_validation', False)
         email_changed = appstruct['email'] != self.context.email
-        if email_changed and not self.root.skip_email_validation:
+        if email_changed and not (self.root.skip_email_validation or admin_override_skip_validation or not appstruct['email']):
             email = appstruct.pop('email')
             val_tokens = IEmailValidationTokens(self.context)
             token = val_tokens.new(email)

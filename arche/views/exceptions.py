@@ -67,9 +67,16 @@ class ForbiddenExceptionView(ExceptionView):
     def __call__(self):
         if self.request.is_xhr:
             return self.xhr_response()
+
+        msg = getattr(self.exc, 'message', '')
+        if isinstance(msg, TranslationString):
+            msg = self.request.localizer.translate(msg)
+        if msg:
+            self.flash_messages.add(msg, type = 'danger', require_commit = False)
         if not self.request.authenticated_userid:
-            msg = _("Not allowed, perhaps you need to log in?")
-            self.flash_messages.add(msg, type = 'warning')
+            if not msg:
+                msg = _("Not allowed, perhaps you need to log in?")
+                self.flash_messages.add(msg, type = 'warning', require_commit = False, auto_destruct = True)
             return HTTPFound(location = self.request.resource_url(self.root, 'login'))
         return {}
 

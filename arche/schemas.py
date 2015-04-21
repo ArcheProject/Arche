@@ -9,10 +9,11 @@ import deform
 from arche import _
 from arche import security
 from arche.interfaces import IPopulator
+from arche.interfaces import ISchemaCreatedEvent
 from arche.utils import get_content_factories
 from arche.validators import deferred_current_password_validator
 from arche.validators import deferred_current_pw_or_manager_validator
-from arche.validators import existing_userid_or_email
+from arche.validators import existing_userid_or_email_with_set_email
 from arche.validators import existing_userids
 from arche.validators import login_password_validator
 from arche.validators import new_userid_validator
@@ -244,6 +245,13 @@ def deferred_timezone_widget(node, kw):
                                                  values = list(common_timezones), #It's a lazy list
                                                  min_length=1)
 
+@colander.deferred
+def admin_allowed_empty(node, kw):
+    request = kw['request']
+    context = kw['context']
+    if request.has_permission(security.PERM_MANAGE_USERS, context):
+        return ""
+    return colander.required
 
 class UserSchema(colander.Schema):
     first_name = colander.SchemaNode(colander.String(),
@@ -254,6 +262,7 @@ class UserSchema(colander.Schema):
                                     missing = u"")
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Email adress"),
+                                missing = admin_allowed_empty,
                                 preparer = to_lowercase,
                                 validator = unique_email_validator)
     image_data = colander.SchemaNode(deform.FileData(),
@@ -407,7 +416,7 @@ class CombinedRegistrationSchema(FinishRegistrationSchema, RegistrationSchema):
 class RecoverPasswordSchema(colander.Schema):
     email_or_userid = colander.SchemaNode(colander.String(),
                                           preparer = to_lowercase,
-                                          validator = existing_userid_or_email,
+                                          validator = existing_userid_or_email_with_set_email,
                                           title = _(u"Email or UserID"),)
 
 
@@ -471,6 +480,19 @@ class SiteSettingsSchema(colander.Schema):
                                                 title = _("Skip email validation"),
                                                 description = _("This will allow users to register with a fake email address. Generally not recommended."))
 
+def user_schema_admin_changes(schema, event):
+    """ If an administrator (someone with security.PERM_MANAGE_USERS priviliges)
+        edits a profile, allow them to skip some things and adjust others.
+    """
+    if event.request.has_permission(security.PERM_MANAGE_USERS, event.context):
+        # Allow skip validation
+        if 'admin_override_skip_validation' not in schema:
+            schema.add(colander.SchemaNode(colander.Bool(),
+                                           name = 'admin_override_skip_validation',
+                                           title = _("Skip validation email (change directly)"),
+                                           default = False,
+                                           missing = False,))
+
 
 def includeme(config):
     config.add_content_schema('Document', DocumentSchema, ('view', 'edit', 'add'))
@@ -492,3 +514,4 @@ def includeme(config):
     config.add_content_schema('Root', SiteSettingsSchema, 'site_settings')
     config.add_content_schema('Link', AddLinkSchema, 'add')
     config.add_content_schema('Link', LinkSchema, 'edit')
+    config.add_subscriber(user_schema_admin_changes, [UserSchema, ISchemaCreatedEvent])

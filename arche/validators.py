@@ -91,11 +91,15 @@ class LoginPasswordValidator(object):
 def existing_userid_or_email(node, kw):
     return ExistingUserIDOrEmail(kw['context'])
 
+@colander.deferred
+def existing_userid_or_email_with_set_email(node, kw):
+    return ExistingUserIDOrEmail(kw['context'], require_email = True)
 
 class ExistingUserIDOrEmail(object):
 
-    def __init__(self, context):
+    def __init__(self, context, require_email = False):
         self.context = find_root(context)
+        self.require_email = require_email
 
     def __call__(self, node, value):
         if '@' in value:
@@ -104,7 +108,8 @@ class ExistingUserIDOrEmail(object):
             user = self.context['users'].get(value, None)
         if not user:
             raise colander.Invalid(node, _("Invalid email or UserID"))
-
+        if self.require_email and not user.email:
+            raise colander.Invalid(node, _("User doesn't have a valid email address"))
 
 @colander.deferred
 def existing_userids(node, kw):

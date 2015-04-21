@@ -159,6 +159,8 @@ class RecoverPasswordForm(BaseForm):
             user = self.context['users'].get(email_or_userid, None)
         if user is None:
             raise HTTPForbidden("Something went wrong during login. No user profile found.")
+        if not user.email:
+            raise HTTPForbidden(_("There's no email associated with this account."))
         user.pw_token = factory()
         url = self.request.resource_url(user, 'change_password', query = {'t': user.pw_token})
         html = self.render_template("arche:templates/emails/recover_password.pt", user = user, url = url)
