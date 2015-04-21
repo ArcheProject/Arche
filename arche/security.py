@@ -220,6 +220,6 @@ def includeme(config):
     review.add(ROLE_VIEWER, [PERM_VIEW])
     review.add(ROLE_REVIEWER, [PERM_VIEW, PERM_REVIEW_CONTENT])
 
-    user_acl = config.registry.acl.new_acl('User', title = _("User"))
-    user_acl.add(ROLE_ADMIN, ALL_PERMISSIONS)
+    user_acl = config.registry.acl.new_acl('user', title = _("User"))
+    user_acl.add(ROLE_ADMIN, [PERM_VIEW, PERM_EDIT, PERM_MANAGE_USERS, PERM_DELETE])
     user_acl.add(ROLE_OWNER, [PERM_VIEW, PERM_EDIT])
