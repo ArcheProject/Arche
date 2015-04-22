@@ -124,8 +124,10 @@ def to_lowercase(value):
     return value
 
 class DCMetadataSchema(colander.Schema):
-    title = colander.SchemaNode(colander.String())
+    title = colander.SchemaNode(colander.String(),
+                                title = _("Title"))
     description = colander.SchemaNode(colander.String(),
+                                      title = _("Description"),
                                       widget = deform.widget.TextAreaWidget(rows = 3),
                                       missing = u"")
     tags = colander.SchemaNode(colander.List(),
