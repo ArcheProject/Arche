@@ -81,6 +81,13 @@ class LoginPasswordValidator(object):
         if not user:
             exc['email_or_userid'] = _("Invalid email or UserID")
             raise exc
+        #Make sure one is set
+        if not user.password:
+            exc['password'] = _("no_password_set_error",
+                                default = u"Password login disabled for this user. "
+                                "If you own the account you may request one to "
+                                "be set by using the recover password form.")
+            raise exc
         #Validate password
         if not hash_method(password, hashed = user.password) == user.password:
             exc['password'] = _(u"Wrong password. Remember that passwords are case sensitive.")

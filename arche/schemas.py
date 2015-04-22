@@ -10,6 +10,7 @@ from arche import _
 from arche import security
 from arche.interfaces import IPopulator
 from arche.interfaces import ISchemaCreatedEvent
+from arche.interfaces import IUser
 from arche.utils import get_content_factories
 from arche.validators import deferred_current_password_validator
 from arche.validators import deferred_current_pw_or_manager_validator
@@ -281,7 +282,11 @@ class UserSchema(colander.Schema):
                                    missing = "",
                                    default = "",
                                    tab = "advanced")
-    
+
+
+class EditUserSchema(UserSchema):
+    pass
+
 
 class AddUserSchema(UserSchema):
     userid = colander.SchemaNode(colander.String(),
@@ -289,6 +294,7 @@ class AddUserSchema(UserSchema):
                                  validator = new_userid_validator)
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
+                                   missing = admin_allowed_empty,
                                    widget = deform.widget.CheckedPasswordWidget())
 
 
@@ -325,6 +331,7 @@ class ChangePasswordSchema(colander.Schema):
                                            validator = deferred_current_pw_or_manager_validator)
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
+                                   missing = admin_allowed_empty,
                                    widget = deform.widget.CheckedPasswordWidget())
 
 
@@ -482,12 +489,13 @@ class SiteSettingsSchema(colander.Schema):
                                                 title = _("Skip email validation"),
                                                 description = _("This will allow users to register with a fake email address. Generally not recommended."))
 
+
 def user_schema_admin_changes(schema, event):
     """ If an administrator (someone with security.PERM_MANAGE_USERS priviliges)
         edits a profile, allow them to skip some things and adjust others.
     """
-    if event.request.has_permission(security.PERM_MANAGE_USERS, event.context):
-        # Allow skip validation
+    if IUser.providedBy(event.context) and event.request.has_permission(security.PERM_MANAGE_USERS, event.context):
+        # Allow skip validation if this is the edit-view
         if 'admin_override_skip_validation' not in schema:
             schema.add(colander.SchemaNode(colander.Bool(),
                                            name = 'admin_override_skip_validation',
@@ -516,4 +524,4 @@ def includeme(config):
     config.add_content_schema('Root', SiteSettingsSchema, 'site_settings')
     config.add_content_schema('Link', AddLinkSchema, 'add')
     config.add_content_schema('Link', LinkSchema, 'edit')
-    config.add_subscriber(user_schema_admin_changes, [UserSchema, ISchemaCreatedEvent])
+    config.add_subscriber(user_schema_admin_changes, [EditUserSchema, ISchemaCreatedEvent])
