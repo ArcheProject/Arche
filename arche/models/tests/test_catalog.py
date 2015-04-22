@@ -90,6 +90,17 @@ class CatalogIntegrationTests(TestCase):
         res = obj.catalog.query("title == 'hello'")
         self.assertEqual(res[0], 1)
 
+    def test_tags_index(self):
+        root = self._fixture()
+        context = self._mk_context()
+        context.tags = ['one', 'TWO']
+        root['a'] = context
+        obj = self._cut(context)
+        obj.index_object()
+        self.assertEqual(1, obj.catalog.query("tags == 'one'")[0])
+        self.assertEqual(1, obj.catalog.query("tags == 'two'")[0])
+        self.assertEqual(0, obj.catalog.query("tags == 'TWO'")[0])
+
     def test_uid_index(self):
         root = self._fixture()
         root['a'] = context = self._mk_context()

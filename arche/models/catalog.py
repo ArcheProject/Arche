@@ -207,7 +207,7 @@ def get_modified(context, default):
 def get_tags(context, default):
     tags = getattr(context, 'tags', ())
     if tags:
-        return tuple(tags)
+        return tuple([x.lower() for x in tags])
     return default
 
 def get_sortable_title(context, default):
