@@ -411,7 +411,11 @@ class User(Content, LocalRolesMixin, ContextACLMixin):
     @property
     def password(self): return getattr(self, "__password_hash__", u"")
     @password.setter
-    def password(self, value): self.__password_hash__ = hash_method(value)
+    def password(self, value):
+        if value:
+            self.__password_hash__ = hash_method(value)
+        else:
+            self.__password_hash__ = None
 
     @property
     def image_data(self):
