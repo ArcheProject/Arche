@@ -285,6 +285,7 @@ def index_object_subscriber(context, event):
     if changed is not None:
         changed = set(changed)
         changed.add('searchable_text')
+        changed.add('tags') #temp fix until we can link indexes.
     cataloger = reg.queryAdapter(context, ICataloger)
     cataloger.index_object(indexes = changed)
 
