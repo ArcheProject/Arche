@@ -344,7 +344,7 @@ def get_profile(request):
         return request.root['users'].get(request.authenticated_userid, None)
 
 def resolve_docids(request, docids, perm = PERM_VIEW):
-    if isinstance(docids, string_types):
+    if isinstance(docids, int):
         docids = (docids,)
     for docid in docids:
         path = request.root.document_map.address_for_docid(docid)
