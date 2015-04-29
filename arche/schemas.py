@@ -496,17 +496,26 @@ def user_schema_admin_changes(schema, event):
     """
     if IUser.providedBy(event.context) and event.request.has_permission(security.PERM_MANAGE_USERS, event.context):
         # Allow skip validation if this is the edit-view
-        if 'admin_override_skip_validation' not in schema:
-            schema.add(colander.SchemaNode(colander.Bool(),
-                                           name = 'admin_override_skip_validation',
-                                           title = _("Skip validation email (change directly)"),
-                                           default = False,
-                                           missing = False,))
+        schema.add_before('email',
+                          colander.SchemaNode(colander.Bool(),
+                                              name = 'admin_override_skip_validation',
+                                              title = _("Skip validation email (change directly)"),
+                                              default = False,
+                                              missing = False,))
+        schema.add_before('email',
+                          colander.SchemaNode(colander.Bool(),
+                                              name = 'email_validated',
+                                              title = _("Email validated?"),
+                                              missing = False,
+                                              default = False,
+                                              description = _("manual_email_validated_edescription",
+                                                              default = "You may set this manually, but don't change it unless you know what you're doing. "
+                                                              "Other systems might depend on that this address is really validated!")))
 
 
 def includeme(config):
     config.add_content_schema('Document', DocumentSchema, ('view', 'edit', 'add'))
-    config.add_content_schema('User', UserSchema, ('view', 'edit'))
+    config.add_content_schema('User', EditUserSchema, ('view', 'edit'))
     config.add_content_schema('User', AddUserSchema, 'add')
     config.add_content_schema('User', ChangePasswordSchema, 'change_password')
     config.add_content_schema('InitialSetup', InitialSetup, 'setup')
