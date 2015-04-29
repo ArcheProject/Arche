@@ -21,6 +21,12 @@ class IViewInitializedEvent(IObjectEvent):
 
 class ISchemaCreatedEvent(IObjectEvent):
     pass
+
+class IEmailValidatedEvent(IObjectEvent):
+    """ A users email address was just validated.
+        The event is for User objects, but won't fire unless the object is attached to the resource tree.
+        It will fire when a User object is attached for the first time though.
+    """
 #/ObjectEvents
 
 

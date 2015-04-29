@@ -1,12 +1,13 @@
 from zope.interface import implementer
-from repoze.folder.events import (ObjectAddedEvent,
-                                  ObjectWillBeRemovedEvent) #API
+from repoze.folder.events import ObjectAddedEvent #API
+from repoze.folder.events import ObjectWillBeRemovedEvent #API
 
-from arche.interfaces import (IObjectUpdatedEvent,
-                              IViewInitializedEvent,
-                              ISchemaCreatedEvent,
-                              IWorkflowBeforeTransition,
-                              IWorkflowAfterTransition)
+from arche.interfaces import IEmailValidatedEvent
+from arche.interfaces import IObjectUpdatedEvent
+from arche.interfaces import ISchemaCreatedEvent
+from arche.interfaces import IViewInitializedEvent
+from arche.interfaces import IWorkflowAfterTransition
+from arche.interfaces import IWorkflowBeforeTransition
 
 
 @implementer(IObjectUpdatedEvent)
@@ -45,6 +46,15 @@ class SchemaCreatedEvent(object):
         self.view = view
         self.request = request
         self.context = context
+        self.__dict__.update(**kw)
+
+
+@implementer(IEmailValidatedEvent)
+class EmailValidatedEvent(object):
+    __doc__ = IEmailValidatedEvent.__doc__
+
+    def __init__(self, _object, **kw):
+        self.object = _object
         self.__dict__.update(**kw)
 
 
