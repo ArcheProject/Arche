@@ -22,6 +22,11 @@
              '.last_name': 'user.last_name',
              '.profile-link@href': function(arg) {
                return '/users/' + arg.item['__name__'];
+             },
+             '[data-email-validated]@class': function(arg) {
+               console.log(arg.item['email_validated'])
+               if (arg.item['email_validated'] == true) return 'glyphicon glyphicon-ok-sign text-success';
+               return 'glyphicon glyphicon-question-sign text-warning';
              }
             }
           }
@@ -54,7 +59,10 @@
               <span class="userid"></span>
           </a>
         </td>
-        <td><a class="email" href="mailto:"></a></td>
+        <td class="text-nowrap">
+          <span data-email-validated></span>
+          <a class="email" href="mailto:"></a>
+        </td>
         <td><span class="first_name"></span></td>
         <td><span class="last_name"></span></td>
         <td><span class="created"></span></td>

@@ -39,7 +39,7 @@ class JSONUsers(BaseView):
         res = []
         for obj in items:
             adapted = IJSONData(obj)
-            res.append(adapted(self.request, dt_formater = self.dt_handler.format_relative, attrs = ('userid', 'email', 'first_name', 'last_name')))
+            res.append(adapted(self.request, dt_formater = self.dt_handler.format_relative, attrs = ('userid', 'email', 'first_name', 'last_name', 'email_validated')))
         return res
 
 
