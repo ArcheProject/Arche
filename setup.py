@@ -29,6 +29,7 @@ requires = ('Babel',
             'pyramid_zodbconn',
             'pytz',
             'repoze.catalog',
+            'repoze.evolution',
             'repoze.folder',
             'repoze.lru',
             'six',
@@ -64,5 +65,6 @@ setup(name='Arche',
       arche = arche.fanstatic_lib:library
       [console_scripts]
       arche = arche.scripts:arche_console_script
+      evolver = arche.scripts:evolve_packages_script
       """,
       )

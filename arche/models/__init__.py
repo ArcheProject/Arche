@@ -3,6 +3,7 @@ def includeme(config):
     config.include('.blob')
     config.include('.catalog')
     config.include('.datetime_handler')
+    config.include('.evolver')
     config.include('.file_upload')
     config.include('.flash_messages')
     config.include('.jsondata')

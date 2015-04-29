@@ -197,6 +197,12 @@ class IBlobs(IContextAdapter):
     """
 
 
+class IEvolver(IContextAdapter):
+    """ Manages upgrades of the database and makes sure the dabase and the
+        software version are the same.
+    """
+
+
 class IThumbnails(IContextAdapter):
     pass
 

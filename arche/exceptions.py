@@ -12,3 +12,8 @@ class CatalogError(Exception):
     def __init__(self, msg):
         msg += "\nTry updating the catalog with the console script."
         super(CatalogError, self).__init__(msg)
+
+
+class EvolverVersionError(Exception):
+    """ The version requirement wasn't met.
+    """

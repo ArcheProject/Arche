@@ -7,13 +7,13 @@ import transaction
 from arche.utils import find_all_db_objects
 from arche.models.catalog import create_catalog
 from arche.interfaces import ICataloger
+from arche.interfaces import IEvolver
 
 
 #NOTE / FIXME:
 #This whole section will be refactored - we need to turn scripts into proper
 #tasks that can be run either from console or from the web.
 #Don't depend on this!
-
 
 def arche_console_script(*args):
     #Move this to some configurable place...
@@ -72,3 +72,23 @@ def create_catalog_script(args, root, **kw):
     print "-- Clearing/Creating catalog"
     create_catalog(root)
     print "-- Process complete. Run reindex_catalog now."
+
+def evolve_packages(args, root, registry, **kw):
+    evolver = registry.getAdapter(root, IEvolver, name = args.package)
+    if evolver.needs_upgrade:
+        print "Upgrade needed"
+        evolver.evolve()
+    else:
+        print "No upgrade required"
+
+
+def evolve_packages_script(*args):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("config_uri", help="Paster ini file to load settings from")
+    parser.add_argument("package", help="Which package to evolve")
+    args = parser.parse_args()
+    env = bootstrap(args.config_uri)
+    print "-- Running evolve scripts in %s" % args.package
+    evolve_packages(args, **env)
+    print "-- Committing to database" #FIXME: Optional dry run
+    env['closer']()
