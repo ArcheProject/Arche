@@ -20,6 +20,7 @@ from zope.index.text.lexicon import CaseNormalizer
 from zope.index.text.lexicon import Lexicon
 from zope.index.text.lexicon import Splitter
 from zope.interface import implementer
+from zope.interface.verify import verifyClass
 
 from arche import logger
 from arche.exceptions import CatalogError
@@ -35,7 +36,6 @@ from arche.interfaces import IUser
 from arche.interfaces import IWorkflowAfterTransition
 from arche.models.workflow import WorkflowException
 from arche.models.workflow import get_context_wf
-from zope.interface.verify import verifyClass
 from arche.utils import prep_html_for_search_indexing
 
 
@@ -338,8 +338,11 @@ def check_catalog_on_startup(event = None, env = None):
         Ment to be run by the IApplicationCreated event.
     """
     #Split this into other functions?
+    #This should be changed into something more sensible.
+    #Env vars?
     from sys import argv
-    if argv[0] == 'bin/arche': #Is this really a safe assumption? It seems kind of stupid
+    script_names = ['bin/arche', 'bin/evolver']
+    if argv[0] in script_names:
         return
     if env is None:
         from pyramid.scripting import prepare

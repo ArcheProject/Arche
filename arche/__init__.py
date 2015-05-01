@@ -65,7 +65,6 @@ def includeme(config):
     #setup workflows
     config.include('arche.models.workflow.read_paster_wf_config')
 
-
 def root_factory(request):
     conn = get_connection(request)
     return appmaker(conn.root())

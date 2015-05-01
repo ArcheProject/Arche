@@ -45,8 +45,8 @@ class BaseEvolver(object):
 
     def evolve(self):
         if self.needs_upgrade:
-            logger.info("Running evolve with package '%s'. Current version: %s - target version: %s" %\
-                        (self.name, self.db_version, self.sw_version))
+            logger.info("Running evolve with package '%s'. Current version: %s - target version: %s",
+                        self.name, self.db_version, self.sw_version)
             missing = self.check_requirements()
             if missing:
                 msg = "Version requirements not met. The following are required:\n"
@@ -56,7 +56,7 @@ class BaseEvolver(object):
             manager = self.get_manager()
             evolve_to_latest(manager)
         else:
-            logger.debug("'%s' is already up to date." % self.name)
+            logger.debug("'%s' is already up to date.", self.name)
 
     def check_requirements(self):
         reg = get_current_registry()
@@ -77,15 +77,18 @@ class ArcheEvolver(BaseEvolver):
 def check_sw_versions(event = None, env = None):
     """ Make sure software and database versions are up to date.
     """
+    #This should be changed into something more sensible.
+    #Env vars?
     from sys import argv
-    if argv[0] == 'bin/evolver': #Is this really a safe assumption? It seems kind of stupid
+    script_names = ['bin/arche', 'bin/evolver']
+    if argv[0] in script_names:
         return
     if env is None:
         from pyramid.scripting import prepare
         env = prepare()
     root = env['root']
     if not IRoot.providedBy(root):
-        logger.info("Root object is %r, so check_sw_versions won't run" % root)
+        logger.info("Root object is %r, so check_sw_versions won't run", root)
         return
     registry = env['registry']
     names = set()
@@ -95,6 +98,8 @@ def check_sw_versions(event = None, env = None):
     needed = set()
     for name in names:
         evolver = registry.getAdapter(root, IEvolver, name = name)
+        logger.debug("Evolver '%s': DB ver: %s Software version: %s",
+                     name, evolver.db_version, evolver.sw_version)
         if evolver.needs_upgrade:
             needed.add(evolver.name)
     if needed:
@@ -103,7 +108,10 @@ def check_sw_versions(event = None, env = None):
         raise EvolverVersionError(msg)
     env['closer']()
 
+def add_evolver(config, evolver):
+    config.registry.registerAdapter(evolver, name = evolver.name)
 
 def includeme(config):
-    config.registry.registerAdapter(ArcheEvolver, name = ArcheEvolver.name)
+    config.add_directive('add_evolver', add_evolver)
+    config.add_evolver(ArcheEvolver)
     config.add_subscriber(check_sw_versions, IApplicationCreated)
