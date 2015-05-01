@@ -5,10 +5,12 @@ from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
 
 from arche.interfaces import IBase
+from arche.interfaces import IUser
 from arche.interfaces import IUsers
 from arche.interfaces import IToken
 from arche.interfaces import IContextACL
 from arche.testing import barebone_fixture
+from arche.interfaces import IEmailValidatedEvent
 
 
 class BaseTests(TestCase):
@@ -79,6 +81,58 @@ class UsersTests(TestCase):
         obj = root['users']
         _marker = object()
         self.assertEqual(obj.get_user_by_email('JANE@archeproject.org', _marker), _marker)
+
+
+
+class UserTests(TestCase):
+    
+    def setUp(self):
+        self.config = testing.setUp()
+ 
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.api import User
+        return User
+
+    def test_verify_class(self):
+        verifyClass(IUser, self._cut)
+
+    def test_verify_object(self):
+        verifyObject(IUser, self._cut())
+
+    def _fixture(self):
+        self.config.include('arche.testing')
+        self.config.include('arche.models.catalog')
+        self.config.include('arche.subscribers')
+        return barebone_fixture(self.config)
+
+    def _subsc(self):
+        L = []
+        def subscriber(event):
+            L.append(event.user)
+        self.config.add_subscriber(subscriber, IEmailValidatedEvent)
+        return L
+
+    def test_email_event_fires_on_attach(self):
+        L = self._subsc()
+        root = self._fixture()
+        user = self._cut(email_validated = True, email = "hello@betahaus.net")
+        self.assertFalse(L)
+        root['users']['user'] = user
+        self.assertIn(user, L)
+
+    def test_email_event_fires_when_changed(self):
+        L = self._subsc()
+        root = self._fixture()
+        root['users']['user'] = user = self._cut(email = "hello@betahaus.net")
+        self.assertFalse(L)
+        user.email_validated = True
+        self.assertEqual(len(L), 1)
+        user.email_validated = True
+        self.assertEqual(len(L), 1)
 
 
 def _attach_dummy_acl(config, name = 'default', role = 'role:Dummy'):

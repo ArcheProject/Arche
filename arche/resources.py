@@ -9,6 +9,7 @@ from BTrees.OOBTree import OOSet
 from colander import null
 from persistent import Persistent
 from persistent.list import PersistentList
+from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
 from repoze.folder import Folder
@@ -18,6 +19,7 @@ from zope.interface import implementer
 
 from arche import _
 from arche.models.catalog import create_catalog
+from arche.events import EmailValidatedEvent
 from arche.events import ObjectUpdatedEvent
 from arche.interfaces import (IBase,
                               IBlobs,
@@ -397,7 +399,7 @@ class User(Content, LocalRolesMixin, ContextACLMixin):
     add_permission = "Add %s" % type_name
     pw_token = None
     css_icon = "glyphicon glyphicon-user"
-    email_validated = False
+    _email_validated = False
     __timezone__ = None
 
     @property
@@ -416,6 +418,24 @@ class User(Content, LocalRolesMixin, ContextACLMixin):
             self.__password_hash__ = hash_method(value)
         else:
             self.__password_hash__ = None
+
+    @property
+    def email_validated(self): return getattr(self, "_email_validated", False)
+    @email_validated.setter
+    def email_validated(self, value):
+        """ Set email as validated. If the object is attached to the resource tree
+            and the value was changed from False to True, send event.
+            Also, attaching this object to the resource tree will send the event
+            if email_validated is True.
+        """
+        if value == True:
+            if self._email_validated != True:
+                self._email_validated = True
+                if self.__parent__ != None:
+                    reg = get_current_registry()
+                    reg.notify(EmailValidatedEvent(self))
+        else:
+            self._email_validated = False
 
     @property
     def image_data(self):
@@ -513,7 +533,7 @@ class Token(Persistent):
 
     def __str__(self): return str(self.token)
     def __repr__(self): return repr(self.token)
-    def __cmp__(self, string): return cmp(self.token, string)
+    def __cmp__(self, txt): return cmp(self.token, txt)
 
     @property
     def valid(self):

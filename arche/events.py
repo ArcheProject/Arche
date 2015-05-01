@@ -53,8 +53,10 @@ class SchemaCreatedEvent(object):
 class EmailValidatedEvent(object):
     __doc__ = IEmailValidatedEvent.__doc__
 
-    def __init__(self, _object, **kw):
-        self.object = _object
+    def __init__(self, user, **kw):
+        self.user = user
+        if not user.email:
+            raise ValueError("EmailValidatedEvent fired, but user had no email address")
         self.__dict__.update(**kw)
 
 
