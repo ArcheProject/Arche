@@ -27,6 +27,7 @@ class IEmailValidatedEvent(Interface):
         The event is for User objects, but won't fire unless the object is attached to the resource tree.
         It will fire when a User object is attached for the first time though.
     """
+    user = Attribute("User profile for the email address.")
 #/ObjectEvents
 
 
