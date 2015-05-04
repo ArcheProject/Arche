@@ -360,6 +360,7 @@ class InitialSetup(Content):
     title = _("Welcome to Arche!")
     setup_data = {}
     add_permission = None
+    head_title = _("Initial Setup")
 
 
 @implementer(IUsers)
