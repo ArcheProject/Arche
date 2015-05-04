@@ -41,7 +41,7 @@ class BaseEvolver(object):
         return ZODBEvolutionManager(self.context,
                                     evolve_packagename = self.evolve_packagename,
                                     sw_version = self.sw_version,
-                                    initial_db_version = 0)
+                                    initial_db_version = self.sw_version)
 
     def evolve(self):
         if self.needs_upgrade:
