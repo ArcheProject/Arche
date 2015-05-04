@@ -80,7 +80,7 @@ def check_sw_versions(event = None, env = None):
     #This should be changed into something more sensible.
     #Env vars?
     from sys import argv
-    script_names = ['bin/arche', 'bin/evolver']
+    script_names = ['bin/arche', 'bin/evolver', 'bin/pshell']
     if argv[0] in script_names:
         return
     if env is None:
