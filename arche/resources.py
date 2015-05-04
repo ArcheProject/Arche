@@ -373,7 +373,7 @@ class Users(Content, LocalRolesMixin, ContextACLMixin):
     is_permanent = True
     add_permission = None
 
-    def get_user_by_email(self, email, default = None):
+    def get_user_by_email(self, email, default = None, only_validated = False):
         """ Get a user object by email address regardless of permissions.
             Used by validators, login etc.
         """
@@ -386,7 +386,10 @@ class Users(Content, LocalRolesMixin, ContextACLMixin):
             return default
         docid = tuple(docids)[0]
         path = root.document_map.address_for_docid(docid)
-        return find_resource(root, path)
+        user = find_resource(root, path)
+        if only_validated and user.email_validated == False:
+            return default
+        return user
 
 
 @implementer(IUser, IThumbnailedContent, IContent)

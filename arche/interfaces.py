@@ -77,9 +77,12 @@ class IUser(IBase):
 class IUsers(Interface):
     """ A folder containing all users. """
 
-    def get_user_by_email(email, default = None):
+    def get_user_by_email(email, default = None, only_validated = False):
         """ Get a user object by email address regardless of permissions.
             Used by validators, login etc.
+            
+            If only_validated is True, only return a hit if the users email
+            address has been validated.
         """
 
 

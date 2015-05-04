@@ -82,6 +82,15 @@ class UsersTests(TestCase):
         _marker = object()
         self.assertEqual(obj.get_user_by_email('JANE@archeproject.org', _marker), _marker)
 
+    def test_get_user_by_email_only_validated(self):
+        root = self._fixture()
+        obj = root['users']
+        _marker = object()
+        obj['jane'] = user = self._User(email = 'jane@archeproject.org')
+        self.assertEqual(obj.get_user_by_email('jane@archeproject.org', _marker, only_validated = True), _marker)
+        self.assertEqual(obj.get_user_by_email('jane@archeproject.org', _marker, only_validated = False), user)
+        user.email_validated = True
+        self.assertEqual(obj.get_user_by_email('jane@archeproject.org', _marker, only_validated = True), user)
 
 
 class UserTests(TestCase):
