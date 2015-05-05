@@ -419,6 +419,10 @@ class FinishRegistrationSchema(colander.Schema):
                                                    "If you forget your password you can reset it later."),
                                    validator = colander.Length(min = 6, max = 200),
                                    widget = deform.widget.CheckedPasswordWidget(redisplay = True))
+    came_from = colander.SchemaNode(colander.String(),
+                               missing = "",
+                               widget = deform.widget.HiddenWidget(),
+                               default = deferred_referer)
 
 
 class CombinedRegistrationSchema(FinishRegistrationSchema, RegistrationSchema):

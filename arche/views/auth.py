@@ -50,6 +50,8 @@ class RegisterForm(BaseForm):
 
     def __init__(self, context, request):
         super(RegisterForm, self).__init__(context, request)
+        if not context.site_settings.get('allow_self_registration', False):
+            raise HTTPForbidden(_(u"Site doesn't allow self registration"))
         if request.authenticated_userid:
             msg = _("Already logged in.")
             self.flash_messages.add(msg, type = 'warning', require_commit = False)
@@ -101,8 +103,6 @@ class RegisterFinishForm(BaseForm):
         super(RegisterFinishForm, self).__init__(context, request)
         if request.authenticated_userid != None:
             raise HTTPForbidden(_(u"Already logged in."))
-        if not context.site_settings.get('allow_self_registration', False):
-            raise HTTPForbidden(_(u"Site doesn't allow self registration"))
         rtokens = IRegistrationTokens(context)
         email = self.reg_email
         if not (email in rtokens and rtokens[email].valid and rtokens[email] == request.GET.get('t', object())):
@@ -126,6 +126,7 @@ def _finish_registration(view, appstruct):
     view.flash_messages.add(_("Welcome, you're now registered!"), type="success")
     factory = view.get_content_factory('User')
     userid = appstruct.pop('userid')
+    redirect_url = appstruct.pop('came_from', view.request.resource_url(view.root))
     if not view.root.skip_email_validation:
         appstruct['email_validated'] = True
     obj = factory(**appstruct)
@@ -136,7 +137,7 @@ def _finish_registration(view, appstruct):
         #Validation is handled by the view already
         pass
     headers = remember(view.request, obj.userid)
-    return HTTPFound(location = view.request.resource_url(view.root), headers = headers)
+    return HTTPFound(location = redirect_url, headers = headers)
 
 
 class RecoverPasswordForm(BaseForm):
