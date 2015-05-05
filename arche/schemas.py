@@ -400,7 +400,10 @@ class FinishRegistrationSchema(colander.Schema):
     userid = colander.SchemaNode(colander.String(),
                                  title = _("UserID"),
                                  description = _("userid_description",
-                                                 default = "Can contain lowercase a-z, '-', '_' or 0-9, but must always start with a letter."),
+                                                 default = "Use only lowercase a-z, '-', '_' or 0-9. "
+                                                 "It must start with a lowercase letter. "
+                                                 "This name will be visible to other users and they may use it to refer to you. "
+                                                 "It can't be changed later."),
                                  validator = new_userid_validator)
     first_name = colander.SchemaNode(colander.String(),
                                      title = _("First name"),
@@ -508,7 +511,7 @@ def user_schema_admin_changes(schema, event):
                                               title = _("Email validated?"),
                                               missing = False,
                                               default = False,
-                                              description = _("manual_email_validated_edescription",
+                                              description = _("manual_email_validated_description",
                                                               default = "You may set this manually, but don't change it unless you know what you're doing. "
                                                               "Other systems might depend on that this address is really validated!")))
 

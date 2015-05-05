@@ -36,7 +36,7 @@
     })
   </script>
 
-  <h1 i18n:translate="">Showing <tal:ts content="len(context)" /> user(s)</h1>
+  <h1 i18n:translate="">Showing <tal:ts content="len(context)" i18n:name="num" /> user(s)</h1>
 
   <table class="table table-responsive table-bordered table-striped table-hover">
     <thead>
