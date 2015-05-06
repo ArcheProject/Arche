@@ -54,7 +54,7 @@ class IBase(Interface):
             resource tree yet.
         """
 
-class ILocalRoles(Interface):
+class ILocalRoles(IDict):
     pass
 
 class IContent(Interface):
