@@ -11,7 +11,7 @@ from arche.exceptions import EvolverVersionError
 
 
 class _MockJar(object):
-    _root = {}
+    _root = {'repoze.evolution': {}}
 
     def root(self):
         return self._root
@@ -45,7 +45,12 @@ class BaseEvolverTests(TestCase):
         self.failUnless(verifyObject(IEvolver, self._cut(context)))
 
     def test_needs_upgrade(self):
-        obj = self._cut(_MockPersistentLike())
+        class _Evolver1(self._cut):
+            name = 'one'
+            sw_version = 0
+        root = _MockPersistentLike()
+        obj = _Evolver1(root)
+        self.assertFalse(obj.needs_upgrade)
         obj.sw_version = 1
         self.assertTrue(obj.needs_upgrade)
 
@@ -74,6 +79,7 @@ class BaseEvolverTests(TestCase):
         self.config.registry.registerAdapter(_Evolver2, name = 'two')
         root = _MockPersistentLike()
         one = _Evolver1(root)
+        root._p_jar.root()['repoze.evolution']['one.evolve'] = 0
         self.assertRaises(EvolverVersionError, one.evolve)
 
     def test_evolve(self):
@@ -82,6 +88,7 @@ class BaseEvolverTests(TestCase):
             sw_version = 1
             evolve_packagename = 'arche.models.tests.evolve_fixture'
         root = _MockPersistentLike()
+        root._p_jar.root()['repoze.evolution']['arche.models.tests.evolve_fixture'] = 0
         obj = _Evolver(root)
         obj.evolve()
         self.assertEqual(root.evolved, True)
