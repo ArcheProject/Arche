@@ -96,3 +96,12 @@ class RolesTests(TestCase):
         self.assertEqual(obj['hello'], frozenset(['one']))
         obj.remove('hello', 'one')
         self.assertNotIn('hello', obj)
+
+    def test_get_any_local_with(self):
+        context = _DummyContent()
+        obj = self._cut(context)
+        obj['first'] = ['one', 'two', 'three', 'four']
+        obj['second'] = ['one', 'two', 'three']
+        obj['third'] = ['three']
+        self.assertEqual(set(obj.get_any_local_with('one')), set(['first', 'second']))
+        self.assertEqual(set(obj.get_any_local_with('three')), set(['first', 'second', 'third']))

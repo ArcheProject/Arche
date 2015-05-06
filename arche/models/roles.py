@@ -108,6 +108,12 @@ class Roles(IterableUserDict):
             if self.get(k, marker) != v:
                 self[k] = v
 
+    def get_any_local_with(self, role):
+        assert isinstance(role, string_types) or IRole.providedBy(role)
+        for (name, local_roles) in self.items():
+            if role in local_roles:
+                yield name
+
     def __repr__(self): #pragma: no coverage
         klass = self.__class__
         classname = '%s.%s' % (klass.__module__, klass.__name__)
