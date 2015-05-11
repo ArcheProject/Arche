@@ -76,7 +76,7 @@ class RegisterForm(BaseForm):
         else:
             email = appstruct['email']
             factory = self.get_content_factory('Token')
-            token = factory()
+            token = factory(hours = 12)
             rtokens = IRegistrationTokens(self.context)
             rtokens[email] = token
             url = self.request.resource_url(self.context, 'register_finish', query = {'t': token, 'e': email})
@@ -106,7 +106,9 @@ class RegisterFinishForm(BaseForm):
         rtokens = IRegistrationTokens(context)
         email = self.reg_email
         if not (email in rtokens and rtokens[email].valid and rtokens[email] == request.GET.get('t', object())):
-            raise HTTPForbidden("Invalid")
+            raise HTTPForbidden(_("reg_token_expired_or_invalid",
+                                  default = "The registration link is either invalid or has expired. "
+                                  "You may request a new one if registration is open. "))
 
     @property
     def reg_email(self):
@@ -166,8 +168,8 @@ class RecoverPasswordForm(BaseForm):
         url = self.request.resource_url(user, 'change_password', query = {'t': user.pw_token})
         html = self.render_template("arche:templates/emails/recover_password.pt", user = user, url = url)
         self.request.send_email(_(u"Password recovery request"),
-                   [user.email],
-                   html)
+                                [user.email],
+                                html)
         return self.relocate_response(self.request.resource_url(self.root))
 
 
