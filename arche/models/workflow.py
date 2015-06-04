@@ -280,7 +280,7 @@ def read_paster_wf_config(config):
         else: #pragma : no coverage
             logger.warn("This row in the workflow configuration wasn't understood: %r" % row)
 
-def bulk_state_change(context, from_state, to_state, request = None, type_name = None, perm = None):
+def bulk_state_change(context, from_state, to_state, request = None, type_name = None, perm = None, force = True):
     """ Change all items from a state to another. This script will use the catalog to find items.
 
         context
@@ -299,6 +299,9 @@ def bulk_state_change(context, from_state, to_state, request = None, type_name =
 
         perm
             Require this perm on result, or None to apply on all.
+
+        force
+            Force transition regardless of permissions.
     """
     if request is None:
         request = get_current_request()
@@ -312,8 +315,7 @@ def bulk_state_change(context, from_state, to_state, request = None, type_name =
         obj = find_resource(root, path)
         wf = get_context_wf(obj, request.registry)
         if wf:
-            wf.do_transition("%s:%s" % (from_state, to_state))
-
+            wf.do_transition("%s:%s" % (from_state, to_state), force = force)
 
 def includeme(config):
     config.registry.workflows = WorkflowRegistry()
