@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-05-05 15:51+0200\n"
-"PO-Revision-Date: 2015-05-05 15:52+0100\n"
+"POT-Creation-Date: 2015-06-04 15:31+0200\n"
+"PO-Revision-Date: 2015-06-04 15:32+0100\n"
 "Last-Translator: Robin Harms Oredsson <robin@betahaus.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -40,49 +40,49 @@ msgstr "Innehåll som omdirigerar någonstans."
 msgid "Site root"
 msgstr "Siterot"
 
-#: arche/./resources.py:285
+#: arche/./resources.py:287
 msgid "Document"
 msgstr "Dokument"
 
-#: arche/./resources.py:303
+#: arche/./resources.py:305
 msgid "File"
 msgstr "Fil"
 
-#: arche/./resources.py:348 arche/./schemas.py:224
+#: arche/./resources.py:350 arche/./schemas.py:224
 msgid "Image"
 msgstr "Bild"
 
-#: arche/./resources.py:357
+#: arche/./resources.py:359
 msgid "Initial setup"
 msgstr "Initial konfiguration"
 
-#: arche/./resources.py:360
+#: arche/./resources.py:362
 msgid "Welcome to Arche!"
 msgstr "Välkommen till Arche!"
 
-#: arche/./resources.py:363 arche/./views/initial_setup.py:12
+#: arche/./resources.py:365 arche/./views/initial_setup.py:12
 msgid "Initial Setup"
 msgstr ""
 
-#: arche/./resources.py:369 arche/./resources.py:373 arche/./schemas.py:73
+#: arche/./resources.py:371 arche/./resources.py:375 arche/./schemas.py:73
 #: arche/./views/actions.py:146
 msgid "Users"
 msgstr "Användare"
 
-#: arche/./resources.py:399 arche/./security.py:223
+#: arche/./resources.py:401 arche/./security.py:223
 msgid "User"
 msgstr "Användare"
 
-#: arche/./resources.py:471 arche/./resources.py:475 arche/./schemas.py:74
+#: arche/./resources.py:473 arche/./resources.py:477 arche/./schemas.py:74
 #: arche/./views/actions.py:151
 msgid "Groups"
 msgstr "Grupper"
 
-#: arche/./resources.py:495 arche/./templates/content/groups.pt:12
+#: arche/./resources.py:497 arche/./templates/content/groups.pt:12
 msgid "Group"
 msgstr "Grupp"
 
-#: arche/./resources.py:529
+#: arche/./resources.py:531
 msgid "Token"
 msgstr "Token"
 
@@ -145,7 +145,7 @@ msgstr ""
 msgid "Type to search for UserIDs"
 msgstr "Skriv för att söka efter AnvändarIDn"
 
-#: arche/./schemas.py:129 arche/./schemas.py:303 arche/./schemas.py:453
+#: arche/./schemas.py:129 arche/./schemas.py:303 arche/./schemas.py:457
 #: arche/./templates/contents.pt:135
 msgid "Title"
 msgstr "Titel"
@@ -267,7 +267,7 @@ msgstr "Administratörens användarID - använd små bokstäver!"
 msgid "Populate site"
 msgstr "Populera sidan"
 
-#: arche/./schemas.py:368 arche/./schemas.py:432
+#: arche/./schemas.py:368 arche/./schemas.py:436
 msgid "Email or UserID"
 msgstr "Epost eller AnvändarID"
 
@@ -293,43 +293,43 @@ msgstr ""
 "Minst 6 tecken. Det är en bra idé att använda ganska långa lösenord. Om du "
 "glömmer bort ditt lösenordet kan du nollställa det senare."
 
-#: arche/./schemas.py:437
+#: arche/./schemas.py:441
 msgid "Page head title"
 msgstr "Sidans huvudtitel"
 
-#: arche/./schemas.py:438
+#: arche/./schemas.py:442
 msgid "Usually shown as a title of the browser tab."
 msgstr "Visas vanligtvis som titel på webbläsarfliken."
 
-#: arche/./schemas.py:440
+#: arche/./schemas.py:444
 msgid "Footer"
 msgstr "Sidfot"
 
-#: arche/./schemas.py:454
+#: arche/./schemas.py:458
 msgid "Filename will be used if you leave this blank"
 msgstr "Filnamnet används om du lämnar det här tomt"
 
-#: arche/./schemas.py:457
+#: arche/./schemas.py:461
 msgid "Upload file"
 msgstr "Ladda upp fil"
 
-#: arche/./schemas.py:464
+#: arche/./schemas.py:468
 msgid "Change file"
 msgstr "Ändra fil"
 
-#: arche/./schemas.py:486
+#: arche/./schemas.py:490
 msgid "Allow users to register themselves to this site."
 msgstr "Tillåt att användare registrerar sig själva."
 
-#: arche/./schemas.py:489
+#: arche/./schemas.py:493
 msgid "Show login link."
 msgstr "Visa inloggningslänk."
 
-#: arche/./schemas.py:492
+#: arche/./schemas.py:496
 msgid "Skip email validation"
 msgstr "Skippa epostvalidering"
 
-#: arche/./schemas.py:493
+#: arche/./schemas.py:497
 msgid ""
 "This will allow users to register with a fake email address. Generally not "
 "recommended."
@@ -337,18 +337,18 @@ msgstr ""
 "Det gör att användare kan använda en fejkat epostadress. Rekommenderas "
 "generellt inte."
 
-#: arche/./schemas.py:505
+#: arche/./schemas.py:509
 msgid "Skip validation email (change directly)"
 msgstr "Skippa epostvalideringsmeddelande (ändra direkt)"
 
-#: arche/./schemas.py:511
+#: arche/./schemas.py:515
 msgid "Email validated?"
 msgstr "Epost validerad?"
 
 #. Default: You may set this manually, but don't change it unless you know what
 #. you're doing. Other systems might depend on that this address is really
 #. validated!
-#: arche/./schemas.py:514
+#: arche/./schemas.py:518
 msgid "manual_email_validated_description"
 msgstr ""
 "Du kan ställa in det här manuellt, men ändra inte om du inte vet vad du gör. "
@@ -410,17 +410,17 @@ msgstr "Inkludera anonyma"
 msgid "Authenticated users"
 msgstr "Inloggade användare"
 
-#: arche/./security.py:204 arche/./models/workflow.py:114
-#: arche/./models/workflow.py:165
+#: arche/./security.py:204 arche/./models/workflow.py:117
+#: arche/./models/workflow.py:168
 msgid "Private"
 msgstr "Privat"
 
-#: arche/./security.py:211 arche/./models/workflow.py:115
-#: arche/./models/workflow.py:166
+#: arche/./security.py:211 arche/./models/workflow.py:118
+#: arche/./models/workflow.py:169
 msgid "Public"
 msgstr "Publik"
 
-#: arche/./security.py:216 arche/./models/workflow.py:167
+#: arche/./security.py:216 arche/./models/workflow.py:170
 msgid "Review"
 msgstr "Granska"
 
@@ -501,7 +501,7 @@ msgstr "Taggar"
 msgid "Type something to search."
 msgstr "Skriv något för att söka."
 
-#: arche/./models/acl.py:126 arche/./models/workflow.py:191
+#: arche/./models/acl.py:126 arche/./models/workflow.py:194
 msgid "Inherit"
 msgstr "Ärv"
 
@@ -536,55 +536,55 @@ msgstr "1 timme sedan"
 msgid "${diff} hours ago"
 msgstr "${diff} timmar sedan"
 
-#: arche/./models/workflow.py:113
+#: arche/./models/workflow.py:116
 msgid "Simple"
 msgstr "Enkel"
 
-#: arche/./models/workflow.py:164
+#: arche/./models/workflow.py:167
 msgid "Review workflow"
 msgstr "Granskningsarbetsflöde"
 
-#: arche/./models/workflow.py:190
+#: arche/./models/workflow.py:193
 msgid "Inherit workflow"
 msgstr "Ärv"
 
-#: arche/./models/workflow.py:100 arche/./models/workflow.py:132
-#: arche/./models/workflow.py:147
+#: arche/./models/workflow.py:103 arche/./models/workflow.py:135
+#: arche/./models/workflow.py:150
 msgid "Make private"
 msgstr "Gör privat"
 
-#: arche/./models/workflow.py:101 arche/./models/workflow.py:133
-#: arche/./models/workflow.py:148
+#: arche/./models/workflow.py:104 arche/./models/workflow.py:136
+#: arche/./models/workflow.py:151
 msgid "Now private"
 msgstr "Nu privat"
 
-#: arche/./models/workflow.py:106 arche/./models/workflow.py:137
-#: arche/./models/workflow.py:157
+#: arche/./models/workflow.py:109 arche/./models/workflow.py:140
+#: arche/./models/workflow.py:160
 msgid "Publish"
 msgstr "Publicera"
 
-#: arche/./models/workflow.py:107 arche/./models/workflow.py:138
-#: arche/./models/workflow.py:158
+#: arche/./models/workflow.py:110 arche/./models/workflow.py:141
+#: arche/./models/workflow.py:161
 msgid "Published"
 msgstr "Publicerad"
 
-#: arche/./models/workflow.py:142
+#: arche/./models/workflow.py:145
 msgid "Submit for review"
 msgstr "Skicka in för granskning"
 
-#: arche/./models/workflow.py:143
+#: arche/./models/workflow.py:146
 msgid "Submitted for review"
 msgstr "Inskickad för granskning"
 
-#: arche/./models/workflow.py:152
+#: arche/./models/workflow.py:155
 msgid "Retract and resubmit for review"
 msgstr "Dra tillbaka och skicka till granskning"
 
-#: arche/./models/workflow.py:153
+#: arche/./models/workflow.py:156
 msgid "Retracted and resubmitted for review"
 msgstr "Tillbakadragen och skickad till granskning"
 
-#: arche/./models/workflow.py:46
+#: arche/./models/workflow.py:49
 msgid "<Not found>"
 msgstr "<Hittades inte>"
 
@@ -794,17 +794,17 @@ msgstr ""
 "kan du strunta i detta meddelande. Annars, klicka på linken nedan medan du "
 "är inloggad på ditt konto."
 
-#. Default: This email was sent from the site ${request.root.head_title} at
-#. ${url}. You're not subscribed to a list and shouldn't receive this email
-#. unless you've requested it. If you think there has been an error, please
-#. contact someone at that site.
+#. Default: This email was sent from the site ${site_title} at ${url}. You're
+#. not subscribed to a list and shouldn't receive this email unless you've
+#. requested it. If you think there has been an error, please contact someone
+#. at that site.
 #: arche/./templates/emails/footer.pt:8
 msgid "email_footer_text"
 msgstr ""
-"Det här brevet skickades från sidan ${request.root.head_title} som finns på "
-"${url}. Du är inte med på någon utskickslista och borde inte ha fått detta "
-"brev om du inte har efterfrågat det. Om du tror att något har blivit fel, "
-"vänligen kontakta någon på den sidan."
+"Det här brevet skickades från sidan ${site_title} som finns på ${url}. Du är "
+"inte med på någon utskickslista och borde inte ha fått detta brev om du inte "
+"har efterfrågat det. Om du tror att något har blivit fel, vänligen kontakta "
+"någon på den sidan."
 
 #: arche/./templates/emails/recover_password.pt:6
 msgid "Password reset request"
@@ -906,7 +906,7 @@ msgid "Login"
 msgstr "Logga in"
 
 #: arche/./views/actions.py:129 arche/./views/auth.py:49
-#: arche/./views/auth.py:67 arche/./views/auth.py:117
+#: arche/./views/auth.py:69 arche/./views/auth.py:119
 msgid "Register"
 msgstr "Registrera"
 
@@ -950,19 +950,19 @@ msgstr ""
 msgid "Unset delegated view"
 msgstr ""
 
-#: arche/./views/auth.py:98
+#: arche/./views/auth.py:100
 msgid "Complete registration"
 msgstr "Slutför registrering"
 
-#: arche/./views/auth.py:145 arche/./views/auth.py:25
+#: arche/./views/auth.py:148 arche/./views/auth.py:25
 msgid "Recover password"
 msgstr "Återställ lösenord"
 
-#: arche/./views/auth.py:176
+#: arche/./views/auth.py:179
 msgid "Change password"
 msgstr "Byt lösenord"
 
-#: arche/./views/auth.py:126
+#: arche/./views/auth.py:128
 msgid "Welcome, you're now registered!"
 msgstr "Välkommen, du är nu registrerad!"
 
@@ -970,52 +970,58 @@ msgstr "Välkommen, du är nu registrerad!"
 msgid "Welcome!"
 msgstr "Välkommen!"
 
-#: arche/./views/auth.py:54 arche/./views/auth.py:103
+#: arche/./views/auth.py:56 arche/./views/auth.py:105
 msgid "Already logged in."
 msgstr "Redan inloggad."
 
 #. Default: An email with registration instructions have been sent to the
 #. address you specified.
-#: arche/./views/auth.py:86
+#: arche/./views/auth.py:88
 msgid "reg_email_notification"
 msgstr ""
 "Ett epostmeddelande med registreringsinstruktioner har skickats till "
 "adressen du angav."
 
-#: arche/./views/auth.py:153
+#: arche/./views/auth.py:156
 msgid "Message sent"
 msgstr "Meddelande skickat"
 
-#: arche/./views/auth.py:167
+#: arche/./views/auth.py:170
 msgid "Password recovery request"
 msgstr "Lösenordsåterställning"
 
-#: arche/./views/auth.py:197
+#: arche/./views/auth.py:200
 msgid "Not allowed"
 msgstr "Tillåts inte"
 
-#: arche/./views/auth.py:82
-msgid "Registration link"
-msgstr "Registreringslänk"
-
-#: arche/./views/auth.py:105
+#: arche/./views/auth.py:54
 msgid "Site doesn't allow self registration"
 msgstr "Sidan tillåter inte användare att registrera sig själva"
 
-#: arche/./views/auth.py:163
+#: arche/./views/auth.py:84
+msgid "Registration link"
+msgstr "Registreringslänk"
+
+#. Default: The registration link is either invalid or has expired. You may
+#. request a new one if registration is open.
+#: arche/./views/auth.py:109
+msgid "reg_token_expired_or_invalid"
+msgstr ""
+
+#: arche/./views/auth.py:166
 msgid "There's no email associated with this account."
 msgstr "Ingen epostadress är kopplad till kontot."
 
-#: arche/./views/auth.py:205
+#: arche/./views/auth.py:208
 msgid "Password changed"
 msgstr "Lösenord ändrat"
 
 #. Default: You've logged in and changed your password
-#: arche/./views/auth.py:208
+#: arche/./views/auth.py:211
 msgid "logged_in_changed_pw"
 msgstr "Du har loggat in och ändrat lösenord"
 
-#: arche/./views/auth.py:149
+#: arche/./views/auth.py:152
 msgid "Send"
 msgstr "Skicka"
 
