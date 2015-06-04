@@ -260,16 +260,18 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
 
     @property
     def __acl__(self):
-        acl_reg = get_acl_registry()
-        wf = get_context_wf(self)
         acl_entries = []
         if self.allow_self_registration:
             acl_entries.append((security.Allow, security.Everyone, security.PERM_REGISTER))
+        acl_reg = get_acl_registry()
+        wf = get_context_wf(self)
         if wf:
             state = wf.state in wf.states and wf.state or wf.initial_state
             acl_entries.extend(acl_reg.get_acl("%s:%s" % (wf.name, state)))
+        elif self.type_name in acl_reg:
+            acl_entries.extend( acl_reg.get_acl(self.type_name) )
         else:
-            acl_entries.extend(acl_reg.get_acl('default'))
+            acl_entries.append(security.DENY_ALL)
         return acl_entries
 
     @property
