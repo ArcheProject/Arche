@@ -4,6 +4,9 @@ from UserDict import IterableUserDict
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
+from pyramid.traversal import find_resource
+from pyramid.traversal import find_root
+from pyramid.traversal import resource_path
 from zope.component import adapter
 from zope.component.event import objectEventNotify
 from zope.interface.declarations import implementer
@@ -276,6 +279,41 @@ def read_paster_wf_config(config):
             config.set_content_workflow(items[0], items[1])
         else: #pragma : no coverage
             logger.warn("This row in the workflow configuration wasn't understood: %r" % row)
+
+def bulk_state_change(context, from_state, to_state, request = None, type_name = None, perm = None):
+    """ Change all items from a state to another. This script will use the catalog to find items.
+
+        context
+            Include this context and everything below.
+            Use root for everything.
+
+
+        from_state
+            Id of current state required.
+
+        to_state
+            Id to end up in.
+
+        type_name
+            What kind of type to change
+
+        perm
+            Require this perm on result, or None to apply on all.
+    """
+    if request is None:
+        request = get_current_request()
+    root = find_root(context)
+    query = "path == '%s' and " % resource_path(context)
+    query += "wf_state == '%s'" % from_state
+    if type_name:
+        query += " and type_name == '%s'" % type_name
+    for docid in root.catalog.query(query)[1]:
+        path = root.document_map.address_for_docid(docid)
+        obj = find_resource(root, path)
+        wf = get_context_wf(obj, request.registry)
+        if wf:
+            wf.do_transition("%s:%s" % (from_state, to_state))
+
 
 def includeme(config):
     config.registry.workflows = WorkflowRegistry()

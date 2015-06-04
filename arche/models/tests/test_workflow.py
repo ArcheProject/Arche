@@ -118,8 +118,7 @@ class WorkflowIntegrationTests(TestCase):
      
     def setUp(self):
         self.config = testing.setUp(request = testing.DummyRequest())
-        self.config.include('arche.utils')
-        self.config.include('arche.security')
+        self.config.include('arche.testing')
         self.config.include('arche.models.workflow')
  
     def tearDown(self):
@@ -193,3 +192,17 @@ class WfUtilsTests(TestCase):
         dummy = _mk_dummy()
         self.assertEqual(get_context_wf(dummy), None)
 
+    def test_bulk_state_change(self):
+        from arche.models.workflow import bulk_state_change
+        from arche.models.workflow import get_context_wf
+        from arche.api import Root
+        from arche.resources import Document
+        self.config.include('arche.models.catalog')
+        self.config.include('arche.models.workflow')
+        self.config.set_content_workflow('Document', 'simple_workflow')
+        root = Root()
+        root['d1'] = Document()
+        root['d2'] = Document()
+        bulk_state_change(root, 'private', 'public')
+        self.assertEqual(get_context_wf(root['d1']).state, 'public')
+        self.assertEqual(get_context_wf(root['d2']).state, 'public')
