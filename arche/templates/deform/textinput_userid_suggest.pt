@@ -1,0 +1,42 @@
+<span tal:define="name name|field.name;
+                  css_class css_class|field.widget.css_class;
+                  oid oid|field.oid;
+                  mask mask|field.widget.mask;
+                  mask_placeholder mask_placeholder|field.widget.mask_placeholder;
+                  style style|field.widget.style;">
+  <input type="text" name="${name}" value="${cstruct}"
+    tal:attributes="class string: form-control ${css_class};
+                    style style"
+    id="${oid}"/>
+  <script type="text/javascript">
+    //Suggest a UserID based on first_name and last_name
+    //This template is only usable in a context where these exist.
+    deform.addCallback(
+      '${oid}',
+      function (oid) {
+        $('input[name="userid"]').on('focus', function(event) {
+          var elem = $(this);
+          //Only change if nothing has been entered previously
+          if (elem.val().length == 0) {
+            var suggestion = ""
+            if ($('input[name="first_name"]').val().length > 0) {
+              suggestion += $('input[name="first_name"]').val();
+            }
+            if ($('input[name="last_name"]').val().length > 0) {
+              if (suggestion.length > 0) suggestion += '_';
+              suggestion += $('input[name="last_name"]').val()
+            }
+            elem.val(suggestion.toLowerCase());
+          }
+        });
+      }
+    );
+  </script>
+  <script tal:condition="mask" type="text/javascript">
+    deform.addCallback(
+      '${oid}',
+      function (oid) {
+        $("#" + oid).mask("${mask}", {placeholder:"${mask_placeholder}"});
+     });
+  </script>
+</span>

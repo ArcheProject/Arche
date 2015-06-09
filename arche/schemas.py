@@ -397,6 +397,12 @@ class RegistrationSchema(colander.Schema):
 
 
 class FinishRegistrationSchema(colander.Schema):
+    first_name = colander.SchemaNode(colander.String(),
+                                     title = _("First name"),
+                                     missing = "")
+    last_name = colander.SchemaNode(colander.String(),
+                                    title = _("Last name"),
+                                    missing = "")
     userid = colander.SchemaNode(colander.String(),
                                  title = _("UserID"),
                                  description = _("userid_description",
@@ -404,13 +410,8 @@ class FinishRegistrationSchema(colander.Schema):
                                                  "It must start with a lowercase letter. "
                                                  "This name will be visible to other users and they may use it to refer to you. "
                                                  "It can't be changed later."),
+                                 widget = deform.widget.TextInputWidget(template = 'textinput_userid_suggest'),
                                  validator = new_userid_validator)
-    first_name = colander.SchemaNode(colander.String(),
-                                     title = _("First name"),
-                                     missing = "")
-    last_name = colander.SchemaNode(colander.String(),
-                                    title = _("Last name"),
-                                    missing = "")
     password = colander.SchemaNode(colander.String(),
                                    title = _("Password"),
                                    description = _("pw_description_help",
