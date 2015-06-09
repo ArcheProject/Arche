@@ -471,6 +471,12 @@ def set_delegate_view(context, request, name = None):
         fm.add(_("Normal view restored"))
     return HTTPFound(location = request.resource_url(context))
 
+def addable_context_name(context, request):
+    suggestion = request.params.get('name', None)
+    if suggestion is None:
+        return {'name': ''}
+    return {'name': generate_slug(context, suggestion)}
+
 def includeme(config):
     config.add_view(DefaultAddForm,
                     context = 'arche.interfaces.IContent',
@@ -512,4 +518,9 @@ def includeme(config):
                     name = 'set_delegate_view',
                     context = 'arche.interfaces.IContent',
                     permission = security.PERM_MANAGE_SYSTEM,)
+    config.add_view(addable_context_name,
+                    name = 'get_addable_context_name.json',
+                    context = 'arche.interfaces.IBase',
+                    renderer = 'json',
+                    permission = security.NO_PERMISSION_REQUIRED)
     config.add_content_view('Document', 'dynamic_view', DynamicView)

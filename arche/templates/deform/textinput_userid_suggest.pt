@@ -3,7 +3,8 @@
                   oid oid|field.oid;
                   mask mask|field.widget.mask;
                   mask_placeholder mask_placeholder|field.widget.mask_placeholder;
-                  style style|field.widget.style;">
+                  style style|field.widget.style;
+                  query_url field.widget.query_url|''">
   <input type="text" name="${name}" value="${cstruct}"
     tal:attributes="class string: form-control ${css_class};
                     style style"
@@ -26,7 +27,13 @@
               if (suggestion.length > 0) suggestion += '_';
               suggestion += $('input[name="last_name"]').val()
             }
-            elem.val(suggestion.toLowerCase());
+            var request = arche.do_request('${query_url}', {data: {'name': suggestion}});
+            request.fail(function() {
+              elem.val(suggestion.toLowerCase());
+            });
+            request.done(function(response) {
+              elem.val(response['name']);
+            });
           }
         });
       }

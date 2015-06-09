@@ -410,7 +410,8 @@ class FinishRegistrationSchema(colander.Schema):
                                                  "It must start with a lowercase letter. "
                                                  "This name will be visible to other users and they may use it to refer to you. "
                                                  "It can't be changed later."),
-                                 widget = deform.widget.TextInputWidget(template = 'textinput_userid_suggest'),
+                                 widget = deform.widget.TextInputWidget(template = 'textinput_userid_suggest',
+                                                                        query_url = '/users/get_addable_context_name.json'),
                                  validator = new_userid_validator)
     password = colander.SchemaNode(colander.String(),
                                    title = _("Password"),
