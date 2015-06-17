@@ -62,7 +62,10 @@ class DateTimeHandler(object):
 
     def format_dt(self, value, format='short', parts = 'dt', localtime = True):
         if localtime:
-            dt = value.astimezone(self.timezone)
+            try:
+                dt = value.astimezone(self.timezone)
+            except ValueError: #Is this a safe assumption? To die on naive dt is silly too.
+                dt = value
         else:
             dt = value
         if parts == 'd':
