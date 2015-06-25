@@ -20,6 +20,10 @@ def setup_auth(config, userid = None, debug = True):
     ap.callback = groupfinder
     config.set_authentication_policy(ap)
 
+def catalog(config):
+    """ Include any catalog related things. Include arche.testing first. """
+    config.include('arche.models.catalog')
+
 def printing_mailer(config):
     """ Temporary: This is only while waiting for the release of pyramid_mailer's debug mode. """
     print "\nWARNING! Using printing mailer - no mail will be sent!\n"
