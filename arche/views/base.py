@@ -390,7 +390,7 @@ class DefaultDeleteForm(BaseForm):
         if hasattr(self.context, 'is_permanent'):
             raise HTTPForbidden("Can't delete this object because it is permanent.")
         msg = _("Deleted '${title}'",
-                mapping = {'title': self.context.title})
+                mapping = {'title': getattr(self.context, 'title', self.context.__name__)})
         parent = self.context.__parent__
         del parent[self.context.__name__]
         self.flash_messages.add(msg, type = 'warning')
