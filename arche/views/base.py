@@ -20,6 +20,7 @@ from zope.interface import implementer
 import colander
 import deform
 from pyramid.traversal import find_root
+from pyramid.i18n import TranslationString
 
 from arche import _
 from arche import security
@@ -40,6 +41,7 @@ from arche.utils import get_content_views
 from arche.utils import get_flash_messages
 from arche.utils import get_view
 from arche.utils import resolve_docids
+from pyramid.i18n import TranslationString
 
 
 @implementer(IBaseView)
@@ -368,7 +370,12 @@ class DefaultDeleteForm(BaseForm):
 
     @property
     def title(self):
-        return _("Delete " + self.context.title + " ( " + self.context.type_name + " ) ?")
+        title = getattr(self.context, 'title', self.context.__name__)
+        type_title = getattr(self.context, 'type_title', _("<Unknown Type>"))
+        if isinstance(type_title, TranslationString):
+            type_title = self.request.localizer.translate(type_title)
+        return _("Delete ${title} (${type_title}) ?",
+                 mapping = {'title': title, 'type_title': type_title})
 
     @property
     def type_name(self):

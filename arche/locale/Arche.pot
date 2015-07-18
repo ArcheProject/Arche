@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-06-04 15:31+0200\n"
+"POT-Creation-Date: 2015-07-18 17:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -137,7 +137,7 @@ msgstr ""
 msgid "Type to search for UserIDs"
 msgstr ""
 
-#: ./arche/./schemas.py:129 ./arche/./schemas.py:303 ./arche/./schemas.py:457
+#: ./arche/./schemas.py:129 ./arche/./schemas.py:303 ./arche/./schemas.py:459
 #: ./arche/./templates/contents.pt:135
 msgid "Title"
 msgstr ""
@@ -205,12 +205,12 @@ msgstr ""
 msgid "Show byline"
 msgstr ""
 
-#: ./arche/./schemas.py:261 ./arche/./schemas.py:409
+#: ./arche/./schemas.py:261 ./arche/./schemas.py:401
 #: ./arche/./templates/content/users_table.pt:46
 msgid "First name"
 msgstr ""
 
-#: ./arche/./schemas.py:264 ./arche/./schemas.py:412
+#: ./arche/./schemas.py:264 ./arche/./schemas.py:404
 #: ./arche/./templates/content/users_table.pt:47
 msgid "Last name"
 msgstr ""
@@ -227,13 +227,13 @@ msgstr ""
 msgid "Set custom timezone"
 msgstr ""
 
-#: ./arche/./schemas.py:293 ./arche/./schemas.py:401 ./arche/./schemas.py:311
+#: ./arche/./schemas.py:293 ./arche/./schemas.py:407 ./arche/./schemas.py:311
 #: ./arche/./templates/content/users_table.pt:44
 msgid "UserID"
 msgstr ""
 
 #: ./arche/./schemas.py:296 ./arche/./schemas.py:333 ./arche/./schemas.py:350
-#: ./arche/./schemas.py:370 ./arche/./schemas.py:415
+#: ./arche/./schemas.py:370 ./arche/./schemas.py:417
 msgid "Password"
 msgstr ""
 
@@ -257,7 +257,7 @@ msgstr ""
 msgid "Populate site"
 msgstr ""
 
-#: ./arche/./schemas.py:368 ./arche/./schemas.py:436
+#: ./arche/./schemas.py:368 ./arche/./schemas.py:438
 msgid "Email or UserID"
 msgstr ""
 
@@ -268,70 +268,70 @@ msgstr ""
 #. Default: Use only lowercase a-z, '-', '_' or 0-9. It must start with a
 #. lowercase letter. This name will be visible to other users and they may use
 #. it to refer to you. It can't be changed later.
-#: ./arche/./schemas.py:402
+#: ./arche/./schemas.py:408
 msgid "userid_description"
 msgstr ""
 
 #. Default: At least 6 characters. It's a good idea to use quite long
 #. passwords. If you forget your password you can reset it later.
-#: ./arche/./schemas.py:416
+#: ./arche/./schemas.py:418
 msgid "pw_description_help"
 msgstr ""
 
-#: ./arche/./schemas.py:441
+#: ./arche/./schemas.py:443
 msgid "Page head title"
 msgstr ""
 
-#: ./arche/./schemas.py:442
+#: ./arche/./schemas.py:444
 msgid "Usually shown as a title of the browser tab."
 msgstr ""
 
-#: ./arche/./schemas.py:444
+#: ./arche/./schemas.py:446
 msgid "Footer"
 msgstr ""
 
-#: ./arche/./schemas.py:458
+#: ./arche/./schemas.py:460
 msgid "Filename will be used if you leave this blank"
 msgstr ""
 
-#: ./arche/./schemas.py:461
+#: ./arche/./schemas.py:463
 msgid "Upload file"
 msgstr ""
 
-#: ./arche/./schemas.py:468
+#: ./arche/./schemas.py:470
 msgid "Change file"
 msgstr ""
 
-#: ./arche/./schemas.py:490
+#: ./arche/./schemas.py:492
 msgid "Allow users to register themselves to this site."
 msgstr ""
 
-#: ./arche/./schemas.py:493
+#: ./arche/./schemas.py:495
 msgid "Show login link."
 msgstr ""
 
-#: ./arche/./schemas.py:496
+#: ./arche/./schemas.py:498
 msgid "Skip email validation"
 msgstr ""
 
-#: ./arche/./schemas.py:497
+#: ./arche/./schemas.py:499
 msgid ""
 "This will allow users to register with a fake email address. Generally not "
 "recommended."
 msgstr ""
 
-#: ./arche/./schemas.py:509
+#: ./arche/./schemas.py:511
 msgid "Skip validation email (change directly)"
 msgstr ""
 
-#: ./arche/./schemas.py:515
+#: ./arche/./schemas.py:517
 msgid "Email validated?"
 msgstr ""
 
 #. Default: You may set this manually, but don't change it unless you know what
 #. you're doing. Other systems might depend on that this address is really
 #. validated!
-#: ./arche/./schemas.py:518
+#: ./arche/./schemas.py:520
 msgid "manual_email_validated_description"
 msgstr ""
 
@@ -482,29 +482,29 @@ msgstr ""
 msgid "Fetch the ACL from the parent object"
 msgstr ""
 
-#: ./arche/./models/datetime_handler.py:107
+#: ./arche/./models/datetime_handler.py:110
 msgid "Just now"
 msgstr ""
 
-#: ./arche/./models/datetime_handler.py:109
+#: ./arche/./models/datetime_handler.py:112
 #, python-format
 msgid "${diff} seconds ago"
 msgstr ""
 
-#: ./arche/./models/datetime_handler.py:111
+#: ./arche/./models/datetime_handler.py:114
 msgid "1 minute ago"
 msgstr ""
 
-#: ./arche/./models/datetime_handler.py:113
+#: ./arche/./models/datetime_handler.py:116
 #, python-format
 msgid "${diff} minutes ago"
 msgstr ""
 
-#: ./arche/./models/datetime_handler.py:115
+#: ./arche/./models/datetime_handler.py:118
 msgid "1 hour ago"
 msgstr ""
 
-#: ./arche/./models/datetime_handler.py:117
+#: ./arche/./models/datetime_handler.py:120
 #, python-format
 msgid "${diff} hours ago"
 msgstr ""
@@ -724,7 +724,7 @@ msgstr ""
 
 #: ./arche/./templates/deform/dropzone.pt:29
 #: ./arche/./templates/deform/file_upload.pt:25 ./arche/./views/actions.py:185
-#: ./arche/./views/base.py:199
+#: ./arche/./views/base.py:201
 msgid "Delete"
 msgstr ""
 
@@ -821,7 +821,7 @@ msgid "Actions"
 msgstr ""
 
 #: ./arche/./templates/menus/add_content.pt:8 ./arche/./views/actions.py:83
-#: ./arche/./views/base.py:202 ./arche/./views/portlets.py:19
+#: ./arche/./views/base.py:204 ./arche/./views/portlets.py:19
 msgid "Add"
 msgstr ""
 
@@ -984,56 +984,65 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: ./arche/./views/base.py:206
+#: ./arche/./views/base.py:208
 msgid "Done"
 msgstr ""
 
-#: ./arche/./views/base.py:207
+#: ./arche/./views/base.py:209
 msgid "Canceled"
 msgstr ""
 
-#: ./arche/./views/base.py:404
+#: ./arche/./views/base.py:411
 msgid "Dynamic view"
 msgstr ""
 
-#: ./arche/./views/base.py:200
+#: ./arche/./views/base.py:202
 msgid "Cancel"
 msgstr ""
 
-#: ./arche/./views/base.py:201
+#: ./arche/./views/base.py:203
 msgid "Save"
 msgstr ""
 
-#: ./arche/./views/base.py:335
+#: ./arche/./views/base.py:337
 #, python-format
 msgid "Add ${type_title}"
 msgstr ""
 
-#: ./arche/./views/base.py:356
+#: ./arche/./views/base.py:358
 #, python-format
 msgid "Edit ${type_title}"
 msgstr ""
 
-#: ./arche/./views/base.py:392
+#: ./arche/./views/base.py:377
+#, python-format
+msgid "Delete ${title} (${type_title}) ?"
+msgstr ""
+
+#: ./arche/./views/base.py:399
 #, python-format
 msgid "Deleted '${title}'"
 msgstr ""
 
-#: ./arche/./views/base.py:448
+#: ./arche/./views/base.py:455
 msgid "Default view"
 msgstr ""
 
-#: ./arche/./views/base.py:450
+#: ./arche/./views/base.py:457
 #, python-format
 msgid "View set to '${title}'"
 msgstr ""
 
-#: ./arche/./views/base.py:467
+#: ./arche/./views/base.py:374
+msgid "<Unknown Type>"
+msgstr ""
+
+#: ./arche/./views/base.py:474
 #, python-format
 msgid "View delegated to '${title}'"
 msgstr ""
 
-#: ./arche/./views/base.py:471
+#: ./arche/./views/base.py:478
 msgid "Normal view restored"
 msgstr ""
 

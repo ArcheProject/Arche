@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-06-04 15:31+0200\n"
-"PO-Revision-Date: 2015-06-04 15:32+0100\n"
+"POT-Creation-Date: 2015-07-18 17:24+0200\n"
+"PO-Revision-Date: 2015-07-18 17:24+0100\n"
 "Last-Translator: Robin Harms Oredsson <robin@betahaus.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -145,7 +145,7 @@ msgstr ""
 msgid "Type to search for UserIDs"
 msgstr "Skriv för att söka efter AnvändarIDn"
 
-#: arche/./schemas.py:129 arche/./schemas.py:303 arche/./schemas.py:457
+#: arche/./schemas.py:129 arche/./schemas.py:303 arche/./schemas.py:459
 #: arche/./templates/contents.pt:135
 msgid "Title"
 msgstr "Titel"
@@ -215,12 +215,12 @@ msgstr "Om du vill använda ett annat namn när det visas i menyer."
 msgid "Show byline"
 msgstr "Visa byline"
 
-#: arche/./schemas.py:261 arche/./schemas.py:409
+#: arche/./schemas.py:261 arche/./schemas.py:401
 #: arche/./templates/content/users_table.pt:46
 msgid "First name"
 msgstr "Förnamn"
 
-#: arche/./schemas.py:264 arche/./schemas.py:412
+#: arche/./schemas.py:264 arche/./schemas.py:404
 #: arche/./templates/content/users_table.pt:47
 msgid "Last name"
 msgstr "Efternamn"
@@ -237,13 +237,13 @@ msgstr "Profilbild"
 msgid "Set custom timezone"
 msgstr "Ställ in egen tidszon"
 
-#: arche/./schemas.py:293 arche/./schemas.py:401 arche/./schemas.py:311
+#: arche/./schemas.py:293 arche/./schemas.py:407 arche/./schemas.py:311
 #: arche/./templates/content/users_table.pt:44
 msgid "UserID"
 msgstr "AnvändarID"
 
 #: arche/./schemas.py:296 arche/./schemas.py:333 arche/./schemas.py:350
-#: arche/./schemas.py:370 arche/./schemas.py:415
+#: arche/./schemas.py:370 arche/./schemas.py:417
 msgid "Password"
 msgstr "Lösenord"
 
@@ -267,7 +267,7 @@ msgstr "Administratörens användarID - använd små bokstäver!"
 msgid "Populate site"
 msgstr "Populera sidan"
 
-#: arche/./schemas.py:368 arche/./schemas.py:436
+#: arche/./schemas.py:368 arche/./schemas.py:438
 msgid "Email or UserID"
 msgstr "Epost eller AnvändarID"
 
@@ -278,7 +278,7 @@ msgstr "Epost"
 #. Default: Use only lowercase a-z, '-', '_' or 0-9. It must start with a
 #. lowercase letter. This name will be visible to other users and they may use
 #. it to refer to you. It can't be changed later.
-#: arche/./schemas.py:402
+#: arche/./schemas.py:408
 msgid "userid_description"
 msgstr ""
 "Använd bara små bokstäver mellan a-z, '-', '_' eller 0-9. Måste starta med "
@@ -287,49 +287,49 @@ msgstr ""
 
 #. Default: At least 6 characters. It's a good idea to use quite long
 #. passwords. If you forget your password you can reset it later.
-#: arche/./schemas.py:416
+#: arche/./schemas.py:418
 msgid "pw_description_help"
 msgstr ""
 "Minst 6 tecken. Det är en bra idé att använda ganska långa lösenord. Om du "
 "glömmer bort ditt lösenordet kan du nollställa det senare."
 
-#: arche/./schemas.py:441
+#: arche/./schemas.py:443
 msgid "Page head title"
 msgstr "Sidans huvudtitel"
 
-#: arche/./schemas.py:442
+#: arche/./schemas.py:444
 msgid "Usually shown as a title of the browser tab."
 msgstr "Visas vanligtvis som titel på webbläsarfliken."
 
-#: arche/./schemas.py:444
+#: arche/./schemas.py:446
 msgid "Footer"
 msgstr "Sidfot"
 
-#: arche/./schemas.py:458
+#: arche/./schemas.py:460
 msgid "Filename will be used if you leave this blank"
 msgstr "Filnamnet används om du lämnar det här tomt"
 
-#: arche/./schemas.py:461
+#: arche/./schemas.py:463
 msgid "Upload file"
 msgstr "Ladda upp fil"
 
-#: arche/./schemas.py:468
+#: arche/./schemas.py:470
 msgid "Change file"
 msgstr "Ändra fil"
 
-#: arche/./schemas.py:490
+#: arche/./schemas.py:492
 msgid "Allow users to register themselves to this site."
 msgstr "Tillåt att användare registrerar sig själva."
 
-#: arche/./schemas.py:493
+#: arche/./schemas.py:495
 msgid "Show login link."
 msgstr "Visa inloggningslänk."
 
-#: arche/./schemas.py:496
+#: arche/./schemas.py:498
 msgid "Skip email validation"
 msgstr "Skippa epostvalidering"
 
-#: arche/./schemas.py:497
+#: arche/./schemas.py:499
 msgid ""
 "This will allow users to register with a fake email address. Generally not "
 "recommended."
@@ -337,18 +337,18 @@ msgstr ""
 "Det gör att användare kan använda en fejkat epostadress. Rekommenderas "
 "generellt inte."
 
-#: arche/./schemas.py:509
+#: arche/./schemas.py:511
 msgid "Skip validation email (change directly)"
 msgstr "Skippa epostvalideringsmeddelande (ändra direkt)"
 
-#: arche/./schemas.py:515
+#: arche/./schemas.py:517
 msgid "Email validated?"
 msgstr "Epost validerad?"
 
 #. Default: You may set this manually, but don't change it unless you know what
 #. you're doing. Other systems might depend on that this address is really
 #. validated!
-#: arche/./schemas.py:518
+#: arche/./schemas.py:520
 msgid "manual_email_validated_description"
 msgstr ""
 "Du kan ställa in det här manuellt, men ändra inte om du inte vet vad du gör. "
@@ -509,29 +509,29 @@ msgstr "Ärv"
 msgid "Fetch the ACL from the parent object"
 msgstr "Hämta ACL från föräldraobjektet"
 
-#: arche/./models/datetime_handler.py:107
+#: arche/./models/datetime_handler.py:110
 msgid "Just now"
 msgstr "Nyss"
 
-#: arche/./models/datetime_handler.py:109
+#: arche/./models/datetime_handler.py:112
 #, python-format
 msgid "${diff} seconds ago"
 msgstr "${diff} sekunder sedan"
 
-#: arche/./models/datetime_handler.py:111
+#: arche/./models/datetime_handler.py:114
 msgid "1 minute ago"
 msgstr "1 minut sedan"
 
-#: arche/./models/datetime_handler.py:113
+#: arche/./models/datetime_handler.py:116
 #, python-format
 msgid "${diff} minutes ago"
 msgstr "${diff} minuter sedan"
 
-#: arche/./models/datetime_handler.py:115
+#: arche/./models/datetime_handler.py:118
 msgid "1 hour ago"
 msgstr "1 timme sedan"
 
-#: arche/./models/datetime_handler.py:117
+#: arche/./models/datetime_handler.py:120
 #, python-format
 msgid "${diff} hours ago"
 msgstr "${diff} timmar sedan"
@@ -751,7 +751,7 @@ msgstr "Det blev ett problem med ditt formulär"
 
 #: arche/./templates/deform/dropzone.pt:29
 #: arche/./templates/deform/file_upload.pt:25 arche/./views/actions.py:185
-#: arche/./views/base.py:199
+#: arche/./views/base.py:201
 msgid "Delete"
 msgstr "Radera"
 
@@ -860,7 +860,7 @@ msgid "Actions"
 msgstr "Handlingar"
 
 #: arche/./templates/menus/add_content.pt:8 arche/./views/actions.py:83
-#: arche/./views/base.py:202 arche/./views/portlets.py:19
+#: arche/./views/base.py:204 arche/./views/portlets.py:19
 msgid "Add"
 msgstr "Lägg till"
 
@@ -1025,56 +1025,65 @@ msgstr "Du har loggat in och ändrat lösenord"
 msgid "Send"
 msgstr "Skicka"
 
-#: arche/./views/base.py:206
+#: arche/./views/base.py:208
 msgid "Done"
 msgstr "Klart"
 
-#: arche/./views/base.py:207
+#: arche/./views/base.py:209
 msgid "Canceled"
 msgstr "Avbruten"
 
-#: arche/./views/base.py:404
+#: arche/./views/base.py:411
 msgid "Dynamic view"
 msgstr "Dynamisk vy"
 
-#: arche/./views/base.py:200
+#: arche/./views/base.py:202
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: arche/./views/base.py:201
+#: arche/./views/base.py:203
 msgid "Save"
 msgstr "Spara"
 
-#: arche/./views/base.py:335
+#: arche/./views/base.py:337
 #, python-format
 msgid "Add ${type_title}"
 msgstr "Lägg till ${type_title}"
 
-#: arche/./views/base.py:356
+#: arche/./views/base.py:358
 #, python-format
 msgid "Edit ${type_title}"
 msgstr "Redigera ${type_title}"
 
-#: arche/./views/base.py:392
+#: arche/./views/base.py:377
+#, python-format
+msgid "Delete ${title} (${type_title}) ?"
+msgstr "Radera ${title} (${type_title}) ?"
+
+#: arche/./views/base.py:399
 #, python-format
 msgid "Deleted '${title}'"
 msgstr "Raderade '${title}'"
 
-#: arche/./views/base.py:448
+#: arche/./views/base.py:455
 msgid "Default view"
 msgstr "Standardvy"
 
-#: arche/./views/base.py:450
+#: arche/./views/base.py:457
 #, python-format
 msgid "View set to '${title}'"
 msgstr "Vy satt till '${title}'"
 
-#: arche/./views/base.py:467
+#: arche/./views/base.py:374
+msgid "<Unknown Type>"
+msgstr "<Okänd typ>"
+
+#: arche/./views/base.py:474
 #, python-format
 msgid "View delegated to '${title}'"
 msgstr "Vy delegerad till '${title}'"
 
-#: arche/./views/base.py:471
+#: arche/./views/base.py:478
 msgid "Normal view restored"
 msgstr "Normalvy återställd"
 
