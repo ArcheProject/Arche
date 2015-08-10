@@ -61,7 +61,7 @@ class DateTimeHandler(object):
         self.timezone = self.get_timezone()
 
     def format_dt(self, value, format='short', parts = 'dt', localtime = True):
-        if localtime:
+        if localtime and isinstance(value, datetime):
             try:
                 dt = value.astimezone(self.timezone)
             except ValueError: #Is this a safe assumption? To die on naive dt is silly too.
