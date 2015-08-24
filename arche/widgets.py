@@ -11,6 +11,7 @@ from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
 from pyramid.traversal import find_root
 from repoze.catalog.query import Any
+from repoze.catalog.query import Eq
 import colander
 
 from arche import _
@@ -55,12 +56,12 @@ class TaggingWidget(Select2Widget):
         return tuple(pstruct.split(','))
 
 
+#FIXME: Needs cleanup and documentation
 class ReferenceWidget(Select2Widget):
     """ A reference widget that searches for content to reference.
         It returns a list.
         
         Note! Any default values for this must return an iterator with uids.
-        
         
         query_params
             Things to send to search.json page
@@ -75,6 +76,7 @@ class ReferenceWidget(Select2Widget):
     show_thumbs = True
     default_query_params = {'glob': 1}
     query_params = {}
+    multiple = True
     #Make query view configurable?
     
     def _preload_data(self, field, cstruct):
@@ -84,16 +86,21 @@ class ReferenceWidget(Select2Widget):
         query = root.catalog.query
         address_for_docid = root.document_map.address_for_docid
         results = []
-        docids = query(Any('uid', cstruct))[1]
+        if self.multiple:
+            docids = query(Any('uid', cstruct))[1]
+        else:
+            docids = query(Eq('uid', cstruct))[1]
         for docid in docids:
             path = address_for_docid(docid)
             obj = find_resource(root, path)
             results.append({'id': obj.uid, 'text': obj.title})
+        if not self.multiple and results:
+            return dumps(results[0])
         return dumps(results)
 
     def serialize(self, field, cstruct, **kw):
         view = field.schema.bindings['view']
-        preload_data = "[]"
+        preload_data = self.multiple and "[]" or "''"
         if cstruct in (colander.null, None):
             cstruct = self.null_value
         else:
@@ -114,7 +121,7 @@ class ReferenceWidget(Select2Widget):
         #Make sure pstruct follows query params?
         if pstruct in (colander.null, self.null_value):
             return colander.null
-        return tuple(pstruct.split(','))
+        return self.multiple and tuple(pstruct.split(',')) or pstruct
 
 
 class DropzoneWidget(FileUploadWidget):
