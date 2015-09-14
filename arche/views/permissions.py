@@ -41,7 +41,7 @@ class HandlePermissions(PermissionsJSON):
         if method == 'add':
             principal = appstruct['principal']
             if principal.startswith('group:'):
-                if principal in self.root['groups']:
+                if principal[6:] in self.root['groups']:
                     self.context.local_roles[principal] = appstruct['roles']
                 else:
                     response['errors'] = {'principal': _("That GroupID don't exist")}

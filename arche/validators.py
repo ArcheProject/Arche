@@ -22,6 +22,10 @@ def unique_context_name_validator(node, kw):
     return UniqueContextNameValidator(kw['context'], kw['request'])
 
 @colander.deferred
+def unique_parent_context_name_validator(node, kw):
+    return UniqueContextNameValidator(kw['context'].__parent__, kw['request'])
+
+@colander.deferred
 def new_userid_validator(node, kw):
     root = find_root(kw['context'])
     request = kw['request']

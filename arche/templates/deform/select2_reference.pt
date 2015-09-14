@@ -62,7 +62,7 @@
            placeholder: "${field.widget.placeholder}",
            containerCssClass: 'form-control',
            minimumInputLength: ${field.widget.minimumInputLength},
-           multiple: true,
+           multiple: ${str(bool(field.widget.multiple)).lower()},
            formatResult: function (object, container, query) {
                if (${show_thumbs} == true) {
                    var out = $('#${field.oid}-struct').clone();
