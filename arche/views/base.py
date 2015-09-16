@@ -408,7 +408,6 @@ class DynamicView(BaseForm, ContentView):
     """ Based on view schemas. """
     schema_name = u'view'
     buttons = ()
-    title = _("Dynamic view")
 
     @property
     def type_name(self):
