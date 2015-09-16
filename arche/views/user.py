@@ -72,6 +72,12 @@ class ChangeEmailView(BaseView):
         raise HTTPForbidden(_("This link is invalid. Unable to change email."))
 
 
+class UserView(BaseView):
+
+    def __call__(self):
+        return {}
+
+
 def includeme(config):
     config.add_view(AddUserForm,
                     context = 'arche.interfaces.IUsers',
@@ -88,3 +94,7 @@ def includeme(config):
                     context = 'arche.interfaces.IUser',
                     name = 'change_email',
                     permission = security.PERM_EDIT)
+    config.add_view(UserView,
+                    permission = security.PERM_VIEW,
+                    renderer = "arche:templates/content/user.pt",
+                    context = 'arche.interfaces.IUser')

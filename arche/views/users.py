@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-
 from pyramid.decorator import reify
 
 from arche import _
@@ -43,12 +42,6 @@ class JSONUsers(BaseView):
         return res
 
 
-class UserView(BaseView):
-
-    def __call__(self):
-        return {}
-
-
 def includeme(config):
     config.add_view(UsersView,
                     name = 'view',
@@ -60,7 +53,3 @@ def includeme(config):
                     permission = security.PERM_MANAGE_USERS,
                     renderer = "json",
                     context = 'arche.interfaces.IUsers')
-    config.add_view(UserView,
-                    permission = security.PERM_VIEW,
-                    renderer = "arche:templates/content/user.pt",
-                    context = 'arche.interfaces.IUser')
