@@ -121,11 +121,18 @@ class IToken(Interface):
 #/Persistent Objects
 
 
-
-
 #Mixin for content objects
 class IContextACL(Interface):
-    pass
+    """ Mixin for content that cares about security in some way. Could either be workflows or ACL.
+        If the __acl__ attribute isn't provided for objects, Pyramids default behaviour is to inherit from the parent object.
+    """
+    __acl__ = Attribute("Returns ACL structure. Workflows have presidence over "
+                        "ACL registries with the same name as the type_name. "
+                        "If nothing can be found, the 'default' acl registry is returned.")
+    workflow = Attribute("Get the assigned workflow (an adapter) if any.")
+    wf_state = Attribute("Get the workflow state id or None. "
+                         "If an invalid state ID is set, the default state for the "
+                         "workflow will be returned.")
 
 #Markers
 class IIndexedContent(Interface):

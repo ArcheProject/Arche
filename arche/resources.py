@@ -175,13 +175,23 @@ class ContextACLMixin(object):
     @property
     def __acl__(self):
         acl_reg = get_acl_registry()
-        wf = get_context_wf(self)
+        wf = self.workflow
         if wf:
             state = wf.state in wf.states and wf.state or wf.initial_state
             return acl_reg.get_acl("%s:%s" % (wf.name, state))
         elif self.type_name in acl_reg:
             return acl_reg.get_acl(self.type_name)
         return acl_reg.get_acl('default')
+
+    @property
+    def workflow(self):
+        return get_context_wf(self)
+
+    @property
+    def wf_state(self):
+        wf = self.workflow
+        if wf:
+            return wf.state in wf.states and wf.state or wf.initial_state
 
 
 @implementer(IContent, IIndexedContent)
