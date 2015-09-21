@@ -28,6 +28,8 @@ def can_paste(context, request, view):
         if view.catalog_search(path = path, uid = paste_data['uid']):
             return False
     cut_obj = view.resolve_uid(paste_data['uid'])
+    if not cut_obj:
+        return False
     addable = get_addable_content(request.registry).get(cut_obj.type_name, ())
     if context.type_name not in addable:
         return False
