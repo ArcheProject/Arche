@@ -12,6 +12,7 @@ from arche.interfaces import IPopulator
 from arche.interfaces import ISchemaCreatedEvent
 from arche.interfaces import IUser
 from arche.utils import get_content_factories
+from arche.validators import allow_login_userid_or_email
 from arche.validators import deferred_current_password_validator
 from arche.validators import deferred_current_pw_or_manager_validator
 from arche.validators import existing_userid_or_email_with_set_email
@@ -365,6 +366,7 @@ class LoginSchema(colander.Schema):
     validator = login_password_validator
     email_or_userid = colander.SchemaNode(colander.String(),
                                           preparer = to_lowercase,
+                                          validator = allow_login_userid_or_email,
                                           title = _(u"Email or UserID"),)
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
@@ -498,6 +500,14 @@ class SiteSettingsSchema(colander.Schema):
                                                 title = _("Skip email validation"),
                                                 description = _("This will allow users to register with a fake email address. Generally not recommended."))
 
+@colander.deferred
+def allow_login_title(node, kw):
+    request = kw['request']
+    context = kw['context']
+    if request.authenticated_userid == context.__name__:
+        return _("allow_login_title_warning",
+                 default = "Allow user to login? WARNING: This is your current user, disabling this will probably lock you out of this account!")
+    return _("Allow user to login?")
 
 def user_schema_admin_changes(schema, event):
     """ If an administrator (someone with security.PERM_MANAGE_USERS priviliges)
@@ -520,6 +530,16 @@ def user_schema_admin_changes(schema, event):
                                               description = _("manual_email_validated_description",
                                                               default = "You may set this manually, but don't change it unless you know what you're doing. "
                                                               "Other systems might depend on that this address is really validated!")))
+        schema.add(colander.SchemaNode(colander.Bool(),
+                                       name = 'allow_login',
+                                       missing = True,
+                                       default = True,
+                                       title = allow_login_title,
+                                       tab = 'advanced',
+                                       description = _("allow_login_description",
+                                                       default = "If checked, this user may login with a regular login form. "
+                                                       "This is the default behaviour, but for some system specific "
+                                                       "users or someone you wish to shut out you may want to disable this."),))
 
 
 def includeme(config):

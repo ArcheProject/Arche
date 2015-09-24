@@ -404,6 +404,14 @@ class Users(Content, LocalRolesMixin, ContextACLMixin):
             return default
         return user
 
+    def get_user(self, value, default = None, only_validated = False):
+        """ Fetch a user by either email or userid.
+        """
+        value = value.lower()
+        if '@' in value:
+            return self.get_user_by_email(value, default = default, only_validated = only_validated)
+        return self.get(value, default)
+
 
 @implementer(IUser, IThumbnailedContent, IContent)
 class User(Content, LocalRolesMixin, ContextACLMixin):
@@ -415,6 +423,7 @@ class User(Content, LocalRolesMixin, ContextACLMixin):
     add_permission = "Add %s" % type_name
     pw_token = None
     css_icon = "glyphicon glyphicon-user"
+    allow_login = True
     _email_validated = False
     __timezone__ = None
 
