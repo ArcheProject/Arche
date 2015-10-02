@@ -6,6 +6,25 @@ from repoze.folder.interfaces import (IObjectAddedEvent,
                                       IFolder) #API
 
 
+#Regular events
+class IWillLoginEvent(Interface):
+    """ Event that fires after a user has passed all credential checks,
+        or registered and is about to receive a redirect with headers to authenticate.
+        
+        Note: The user is still counted as anonymous!
+    """
+    user = Attribute("The user object")
+    request = Attribute("Current request, remember that request.authenticated_userid won't work!")
+
+
+class IEmailValidatedEvent(Interface):
+    """ A users email address was just validated.
+        The event is for User objects, but won't fire unless the object is attached to the resource tree.
+        It will fire when a User object is attached for the first time though.
+    """
+    user = Attribute("User profile for the email address.")
+#/Regular events
+
 #ObjectEvents
 class IObjectUpdatedEvent(IObjectEvent):
     pass
@@ -22,12 +41,6 @@ class IViewInitializedEvent(IObjectEvent):
 class ISchemaCreatedEvent(IObjectEvent):
     pass
 
-class IEmailValidatedEvent(Interface):
-    """ A users email address was just validated.
-        The event is for User objects, but won't fire unless the object is attached to the resource tree.
-        It will fire when a User object is attached for the first time though.
-    """
-    user = Attribute("User profile for the email address.")
 #/ObjectEvents
 
 
@@ -121,11 +134,18 @@ class IToken(Interface):
 #/Persistent Objects
 
 
-
-
 #Mixin for content objects
 class IContextACL(Interface):
-    pass
+    """ Mixin for content that cares about security in some way. Could either be workflows or ACL.
+        If the __acl__ attribute isn't provided for objects, Pyramids default behaviour is to inherit from the parent object.
+    """
+    __acl__ = Attribute("Returns ACL structure. Workflows have presidence over "
+                        "ACL registries with the same name as the type_name. "
+                        "If nothing can be found, the 'default' acl registry is returned.")
+    workflow = Attribute("Get the assigned workflow (an adapter) if any.")
+    wf_state = Attribute("Get the workflow state id or None. "
+                         "If an invalid state ID is set, the default state for the "
+                         "workflow will be returned.")
 
 #Markers
 class IIndexedContent(Interface):

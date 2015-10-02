@@ -103,6 +103,53 @@ class UniqueEmailTests(TestCase):
         self.assertFalse(obj(None, 'some@email.com'))
 
 
+class AllowUserLoginValidatorTests(TestCase):
+    
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.validators import AllowUserLoginValidator
+        return AllowUserLoginValidator
+
+    def _fixture(self, **kw):
+        from arche.api import User
+        root = barebone_fixture(self.config)
+        root['users']['user'] = User(**kw)
+        return root
+
+    def test_allowed_userid(self):
+        root = self._fixture()
+        obj = self._cut(root)
+        self.assertFalse(obj(None, 'user'))
+
+    def test_not_allowed_userid(self):
+        root = self._fixture(allow_login = False)
+        obj = self._cut(root)
+        self.assertRaises(Invalid, obj, None, 'user')
+
+    def test_nonexistent_userid(self):
+        root = self._fixture()
+        obj = self._cut(root)
+        self.assertRaises(Invalid, obj, None, '404')
+
+    def test_nonexistent_email(self):
+        root = self._fixture()
+        obj = self._cut(root)
+        self.assertRaises(Invalid, obj, None, '404@betahaus.net')
+
+    def test_allowed_email(self):
+        root = self._fixture(email = 'found@betahaus.net')
+        obj = self._cut(root)
+        self.assertFalse(obj(None, 'found@betahaus.net'))
+
+
 class ExistingUserIDsTests(TestCase):
     
     def setUp(self):

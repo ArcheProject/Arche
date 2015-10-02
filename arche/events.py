@@ -5,7 +5,9 @@ from repoze.folder.events import ObjectWillBeRemovedEvent #API
 from arche.interfaces import IEmailValidatedEvent
 from arche.interfaces import IObjectUpdatedEvent
 from arche.interfaces import ISchemaCreatedEvent
+from arche.interfaces import IUser
 from arche.interfaces import IViewInitializedEvent
+from arche.interfaces import IWillLoginEvent
 from arche.interfaces import IWorkflowAfterTransition
 from arche.interfaces import IWorkflowBeforeTransition
 
@@ -57,6 +59,17 @@ class EmailValidatedEvent(object):
         self.user = user
         if not user.email:
             raise ValueError("EmailValidatedEvent fired, but user had no email address")
+        self.__dict__.update(**kw)
+
+
+@implementer(IWillLoginEvent)
+class WillLoginEvent(object):
+    __doc__ = IWillLoginEvent.__doc__
+
+    def __init__(self, user, request = None, **kw):
+        assert IUser.providedBy(user)
+        self.user = user
+        self.request = request
         self.__dict__.update(**kw)
 
 

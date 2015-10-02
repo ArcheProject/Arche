@@ -154,7 +154,7 @@ def register_link(context, request, va, **kw):
              view_name = 'groups',)
 @view_action('user_menu', 'logout',
              title = _("Logout"),
-             priority = 20,
+             priority = 50,
              divider = True,
              view_name = 'logout',)
 def generic_submenu_items(context, request, va, **kw):
@@ -174,11 +174,13 @@ def generic_submenu_items(context, request, va, **kw):
 @view_action('user_menu', 'profile',
              title = _("Profile"),
              priority = 10,)
-def profile_item(context, request, va, **kw):
-    userid = request.authenticated_userid
-    if userid:
-        view = kw['view']
-        url = request.resource_url(view.root['users'], userid)
+@view_action('user_menu', 'change_password',
+             title = _("Change password"),
+             priority = 20,
+             view_name = 'change_password',)
+def generic_profile_items(context, request, va, **kw):
+    if request.authenticated_userid and request.profile:
+        url = request.resource_url(request.profile, va.kwargs.get('view_name', ''))
         return generic_submenu_items(context, request, va, url = url, **kw)
 
 @view_action('actions_menu', 'delete',

@@ -175,7 +175,9 @@ class ContextACLTests(TestCase):
         self.failUnless(verifyClass(IContextACL, self._cut))
 
     def test_verify_obj(self):
-        self.failUnless(verifyObject(IContextACL, self._cut()))
+        #We need to add an acl here since the interface test won't like the raised attribute error
+        self.config.registry.acl.new_acl('Dummy')
+        self.failUnless(verifyObject(IContextACL, self._mk_dummy()))
 
     def test_default_if_nothing_else(self):
         context = self._mk_dummy()

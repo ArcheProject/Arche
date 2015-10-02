@@ -10,6 +10,7 @@ from arche.interfaces import IRegistrationTokens
 from arche.interfaces import IRoot
 from arche.views.base import BaseForm
 from arche.views.base import DefaultEditForm
+from arche.events import WillLoginEvent
 
 
 class LoginForm(BaseForm):
@@ -38,6 +39,7 @@ class LoginForm(BaseForm):
             user = self.context['users'].get(email_or_userid, None)
         if user is None:
             raise HTTPForbidden("Something went wrong during login. No user profile found.")
+        _notify_will_login(user, self.request)
         headers = remember(self.request, user.userid)
         url  = appstruct.pop('came_from', None)
         return self.relocate_response(url, headers = headers)
@@ -138,8 +140,13 @@ def _finish_registration(view, appstruct):
     except KeyError:
         #Validation is handled by the view already
         pass
+    _notify_will_login(obj, view.request)
     headers = remember(view.request, obj.userid)
     return HTTPFound(location = redirect_url, headers = headers)
+
+def _notify_will_login(user, request):
+    event = WillLoginEvent(user, request = request)
+    request.registry.notify(event)
 
 
 class RecoverPasswordForm(BaseForm):
@@ -210,6 +217,7 @@ class UserChangePasswordForm(DefaultEditForm):
         else:
             self.flash_messages.add(_("logged_in_changed_pw",
                                       default = "You've logged in and changed your password"))
+            _notify_will_login(self.context, self.request)
             headers = remember(self.request, self.context.userid)
             return self.relocate_response(self.request.resource_url(self.context), headers = headers)
 

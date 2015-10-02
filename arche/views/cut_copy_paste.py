@@ -12,8 +12,10 @@ from arche import security
 from arche.utils import generate_slug
 from arche.utils import get_addable_content
 from arche.views.base import BaseView, BaseForm
-from arche.validators import unique_context_name_validator
+from arche.validators import unique_parent_context_name_validator
 
+
+#FIXME: Check cut, copy and paste functionality.
 
 def can_paste(context, request, view):
     paste_data = request.session.get('__paste_data__')
@@ -26,6 +28,8 @@ def can_paste(context, request, view):
         if view.catalog_search(path = path, uid = paste_data['uid']):
             return False
     cut_obj = view.resolve_uid(paste_data['uid'])
+    if not cut_obj:
+        return False
     addable = get_addable_content(request.registry).get(cut_obj.type_name, ())
     if context.type_name not in addable:
         return False
@@ -68,20 +72,18 @@ class PasteContext(BaseView):
             self.flash_messages.add(_("New copy added here"))
         self.context[use_name] = cut_obj
         del self.request.session['__paste_data__']
-        return HTTPFound(location = self.request.resource_url(self.context))
+        return HTTPFound(location = self.request.resource_url(self.context[use_name]))
 
 
 class RenameContext(BaseForm):
 
-    def __call__(self):
+    def get_schema(self):
         class _RenameSchema(colander.Schema):
             name = colander.SchemaNode(colander.String(),
                                        title = _("Name, this will be part of the url"),
                                        default = self.context.__name__,
-                                       validator = unique_context_name_validator,
-                                       )
-        self.schema = _RenameSchema()
-        return super(RenameContext, self).__call__()
+                                       validator = unique_parent_context_name_validator,)
+        return _RenameSchema()
 
     @property
     def title(self):
