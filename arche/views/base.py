@@ -41,7 +41,6 @@ from arche.utils import get_content_views
 from arche.utils import get_flash_messages
 from arche.utils import get_view
 from arche.utils import resolve_docids
-from pyramid.i18n import TranslationString
 
 
 @implementer(IBaseView)
