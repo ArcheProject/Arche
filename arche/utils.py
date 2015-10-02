@@ -47,9 +47,13 @@ def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
             config.add_content_factory(MyClass, addable_to = ('Root', 'Document',), addable_in = 'Image')
     """
     assert inspect.isclass(ctype)
+    if not getattr(ctype, 'type_name', None):
+        name = ctype.__name__
+        logger.debug("%r got type_name %r", ctype, name)
+        ctype.type_name = name
     if not hasattr(ctype, 'add_permission'):
         add_perm = "Add %s" % ctype.type_name
-        logger.warn("%r lacks an add_permission attribute. Will add it with the value %r." % (ctype, add_perm))
+        logger.debug("%r got add_permission %r.", ctype, add_perm)
         ctype.add_permission = add_perm
     try:
         factories = config.registry._content_factories
