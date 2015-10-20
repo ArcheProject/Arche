@@ -63,7 +63,10 @@ class Workflow(object):
         #Check permission, treat input as unsafe!
         if request is None:
             request = get_current_request()
-        trans = self.transitions[name]
+        try:
+            trans = self.transitions[name]
+        except KeyError:
+            raise WorkflowException("The workflow '%s' doesn't have any transition with the id '%s'." % (self.name, name))
         if trans.from_state != self.state and force is False:
             raise ValueError("The transition '%s' cant go from state '%s'" % (trans.name, self.state))
         if not request.has_permission(trans.permission, self.context) and force is False:

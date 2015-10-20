@@ -156,6 +156,9 @@ function create_flash_message(message, params) {
 
   var out = '<div role="alert" id="' + params['id'] + '" class="alert alert-dismissable alert-'+ params['type'] + '">';
   out += '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>';
+  if (params['icon_class']) {
+    out += '<span class="' + params['icon_class'] +'"></span>&nbsp;&nbsp;&nbsp;';
+  }
   out += message;
   out += '</div>';
 

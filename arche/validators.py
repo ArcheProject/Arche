@@ -22,6 +22,10 @@ def unique_context_name_validator(node, kw):
     return UniqueContextNameValidator(kw['context'], kw['request'])
 
 @colander.deferred
+def unique_parent_context_name_validator(node, kw):
+    return UniqueContextNameValidator(kw['context'].__parent__, kw['request'])
+
+@colander.deferred
 def new_userid_validator(node, kw):
     root = find_root(kw['context'])
     request = kw['request']
@@ -58,6 +62,23 @@ class NewUserIDValidator(_BaseValidator):
 
 
 @colander.deferred
+def allow_login_userid_or_email(node, kw):
+    return AllowUserLoginValidator(kw['context'])
+
+
+class AllowUserLoginValidator(object):
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, node, value):
+        existing = ExistingUserIDOrEmail(self.context)
+        existing(node, value)
+        user = self.context['users'].get_user(value)
+        if user.allow_login != True:
+            raise colander.Invalid(node, _("Login disabled for this user"))
+
+@colander.deferred
 def login_password_validator(form, kw):
     context = kw['context']
     root = find_root(context)
@@ -74,10 +95,7 @@ class LoginPasswordValidator(object):
         exc = colander.Invalid(form, u"Login invalid") #Raised if trouble
         password = value['password']
         email_or_userid = value['email_or_userid']
-        if '@' in email_or_userid:
-            user = self.context['users'].get_user_by_email(email_or_userid)
-        else:
-            user = self.context['users'].get(email_or_userid, None)
+        user = self.context['users'].get_user(email_or_userid)
         if not user:
             exc['email_or_userid'] = _("Invalid email or UserID")
             raise exc
@@ -102,6 +120,7 @@ def existing_userid_or_email(node, kw):
 def existing_userid_or_email_with_set_email(node, kw):
     return ExistingUserIDOrEmail(kw['context'], require_email = True)
 
+
 class ExistingUserIDOrEmail(object):
 
     def __init__(self, context, require_email = False):
@@ -109,18 +128,17 @@ class ExistingUserIDOrEmail(object):
         self.require_email = require_email
 
     def __call__(self, node, value):
-        if '@' in value:
-            user = self.context['users'].get_user_by_email(value)
-        else:
-            user = self.context['users'].get(value, None)
+        user = self.context['users'].get_user(value)
         if not user:
             raise colander.Invalid(node, _("Invalid email or UserID"))
         if self.require_email and not user.email:
             raise colander.Invalid(node, _("User doesn't have a valid email address"))
 
+
 @colander.deferred
 def existing_userids(node, kw):
     return ExistingUserIDs(kw['context'])
+
 
 class ExistingUserIDs(object):
 

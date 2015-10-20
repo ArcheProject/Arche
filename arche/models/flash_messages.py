@@ -17,7 +17,7 @@ class FlashMessages(object):
     def __init__(self, request):
         self.request = request
 
-    def add(self, msg, type='info', auto_destruct = None, require_commit = True):
+    def add(self, msg, type='info', auto_destruct = None, require_commit = True, icon_class = None):
         """ Add a flash message to the session.
         
             msg
@@ -36,8 +36,12 @@ class FlashMessages(object):
 
                 This is usually a good idea, except for error messages that should be displayed
                 when something actually goes wrong.
+
+            icon_class
+                If set, render a span with this class(es). For instance, set 'glyphicon glyphicon-ok'
+                will render '<span class="glyphicon glyphicon-ok"></span>'.
         """
-        flash = {'msg':msg, 'type': type}
+        flash = {'msg':msg, 'type': type, 'icon_class': icon_class}
         if auto_destruct != None:
             flash['auto_destruct'] = auto_destruct
         if require_commit:

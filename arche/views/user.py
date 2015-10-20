@@ -4,10 +4,11 @@ from pyramid.httpexceptions import HTTPForbidden
 from arche import _
 from arche import security
 from arche.interfaces import IEmailValidationTokens
+from arche.utils import fail_marker
 from arche.views.base import BaseView
 from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultEditForm
-from arche.utils import fail_marker
+from arche.views.base import DynamicView
 
 
 class AddUserForm(DefaultAddForm):
@@ -72,6 +73,10 @@ class ChangeEmailView(BaseView):
         raise HTTPForbidden(_("This link is invalid. Unable to change email."))
 
 
+class UserView(DynamicView):
+    pass
+
+
 def includeme(config):
     config.add_view(AddUserForm,
                     context = 'arche.interfaces.IUsers',
@@ -88,3 +93,7 @@ def includeme(config):
                     context = 'arche.interfaces.IUser',
                     name = 'change_email',
                     permission = security.PERM_EDIT)
+    config.add_view(UserView,
+                    permission = security.PERM_VIEW,
+                    renderer = "arche:templates/content/user.pt",
+                    context = 'arche.interfaces.IUser')
