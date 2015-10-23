@@ -187,7 +187,6 @@ def includeme(config):
     """
     #Our version takes care of context as well
     config.add_request_method(has_permission, name = 'has_permission')
-
     #ACL registry must be created first
     config.include('arche.models.acl')
     config.include('arche.models.roles')
@@ -198,28 +197,31 @@ def includeme(config):
                           ROLE_REVIEWER,
                           ROLE_EVERYONE,
                           ROLE_AUTHENTICATED)
-
+    #ACL
     aclreg = config.registry.acl
     aclreg['default'] = 'inherit'
+    #Private
     private = aclreg.new_acl('private', title = _("Private"))
     private.add(ROLE_ADMIN, ALL_PERMISSIONS)
     private.add(ROLE_OWNER, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     private.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     private.add(ROLE_VIEWER, [PERM_VIEW])
     private.add(ROLE_REVIEWER, [PERM_REVIEW_CONTENT]) #May not be able to view
-    
+    #Public
     public = aclreg.new_acl('public', title = _("Public"))
     public.add(ROLE_ADMIN, ALL_PERMISSIONS)
     public.add(Everyone, [PERM_VIEW])
     public.add(ROLE_REVIEWER, [PERM_REVIEW_CONTENT])
-    
+    #Review
     review = aclreg.new_acl('review', title = _("Review"))
     review.add(ROLE_ADMIN, ALL_PERMISSIONS)
     review.add(ROLE_OWNER, [PERM_VIEW])
     review.add(ROLE_EDITOR, [PERM_VIEW])
     review.add(ROLE_VIEWER, [PERM_VIEW])
     review.add(ROLE_REVIEWER, [PERM_VIEW, PERM_REVIEW_CONTENT])
-
+    #User
     user_acl = config.registry.acl.new_acl('User', title = _("User"))
     user_acl.add(ROLE_ADMIN, [PERM_VIEW, PERM_EDIT, PERM_MANAGE_USERS, PERM_MANAGE_SYSTEM, PERM_DELETE])
     user_acl.add(ROLE_OWNER, [PERM_VIEW, PERM_EDIT])
+    #Root
+    aclreg['Root'] = 'public'

@@ -327,4 +327,3 @@ def includeme(config):
     config.add_workflow(ReviewWorkflow)
     config.add_workflow(InheritWorkflow)
     config.add_directive('set_content_workflow', set_content_workflow)
-    config.set_content_workflow('Root', 'simple_workflow')
