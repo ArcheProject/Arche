@@ -154,6 +154,13 @@ class Base(Persistent, BaseMixin):
     def __init__(self, **kw):
         BaseMixin.__init__(self, **kw)
 
+    def __repr__(self): #pragma: no coverage
+        klass = self.__class__
+        classname = '%s.%s' % (klass.__module__, klass.__name__)
+        return '<%s object %r at %#x>' % (classname,
+                                          self.__name__,
+                                          id(self))
+
 
 @implementer(ILocalRoles)
 class LocalRolesMixin(object):
