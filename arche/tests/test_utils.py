@@ -3,6 +3,9 @@ from __future__ import unicode_literals
 
 from unittest import TestCase
 
+from fanstatic import clear_needed
+from fanstatic import get_needed
+from fanstatic import init_needed
 from pyramid import testing
 
 
@@ -116,3 +119,31 @@ class PrepHTMLForSearchTests(TestCase):
         <script type="text/javascript"> And I'm a script //with a comment</script> """
         plaintext = "I'm just a paragraph"
         self.assertEqual(self._fut(html), plaintext)
+
+
+class ReplaceFanstaticResourceTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+        init_needed()
+
+    def tearDown(self):
+        testing.tearDown()
+        clear_needed()
+
+    def test_integration(self):
+        self.config.include('arche.utils')
+        self.assertTrue(hasattr(self.config, 'replace_fanstatic_resource'))
+
+    def test_replace_bootstrap(self):
+        #replace bootstrap css with pure_js
+        from arche.fanstatic_lib import main_css
+        from arche.fanstatic_lib import pure_js
+        from js.bootstrap import bootstrap_css
+        self.config.include('arche.utils')
+        self.config.replace_fanstatic_resource(bootstrap_css, pure_js)
+        main_css.need()
+        will_include = get_needed().resources()
+        self.assertIn(pure_js, will_include)
+        self.assertIn(main_css, will_include)
+        self.assertNotIn(bootstrap_css, will_include)

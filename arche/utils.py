@@ -229,7 +229,6 @@ def get_image_scales(registry = None):
         registry = get_current_registry()
     return getattr(registry, '_image_scales', {})
 
-
 def find_all_db_objects(root):
     """ Return all objects stored in context.values(), and all subobjects.
         Great for reindexing the catalog or other database migrations.
@@ -378,6 +377,33 @@ def prep_html_for_search_indexing(html):
     html2text.ignore_emphasis = 1
     return html2text.handle(html).strip()
 
+def replace_fanstatic_resource(config, to_remove, to_inject):
+    """ Use this to remove 'to_remove' from fanstatic, and replace
+        all it's dependencies with 'to_inject'.
+
+        Example usage: Use a custom built twitter bootstrap css-file instead.
+        
+        from fanstatic import Resource
+        from js.bootstrap import bootstrap_css #The default one
+        
+        my_custom = Resource(mylib, 'custom_bootstrap.css')
+        
+        def includeme(config):
+            config.replace_fanstatic_resource(bootstrap_css, my_custom)
+    """
+    from fanstatic import get_library_registry
+    from fanstatic import Resource
+    for item in (to_remove, to_inject):
+        assert isinstance(item, Resource), "Must be a fanstatic.Resource instance"
+    for lib in get_library_registry().values():
+        for resource in lib.known_resources.values():
+            if to_remove in resource.depends:
+                resource.depends.remove(to_remove)
+                resource.depends.add(to_inject)
+            if to_remove != resource and to_remove in resource.resources:
+                resource.resources.remove(to_remove)
+                resource.resources.add(to_inject)
+
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)
     config.registry.registerAdapter(EmailValidationTokens)
@@ -386,6 +412,7 @@ def includeme(config):
     config.add_directive('add_content_schema', add_content_schema)
     config.add_directive('add_content_view', add_content_view)
     config.add_directive('add_image_scale', add_image_scale)
+    config.add_directive('replace_fanstatic_resource', replace_fanstatic_resource)
     config.add_request_method(get_dt_handler, name = 'dt_handler', reify = True)
     config.add_request_method(get_root, name = 'root', reify = True)
     config.add_request_method(get_profile, name = 'profile', reify = True)
