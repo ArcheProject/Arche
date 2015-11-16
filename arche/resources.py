@@ -152,6 +152,7 @@ class BaseMixin(object):
 class Base(Persistent, BaseMixin):
 
     def __init__(self, **kw):
+        super(Base, self).__init__()
         BaseMixin.__init__(self, **kw)
 
     def __repr__(self): #pragma: no coverage
