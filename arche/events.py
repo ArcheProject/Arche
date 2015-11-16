@@ -75,10 +75,11 @@ class WillLoginEvent(object):
 
 class _WorkflowTransition(object):
 
-    def __init__(self, _object, workflow, transition):
+    def __init__(self, _object, workflow, transition, request = None):
         self.object = _object
         self.workflow = workflow
         self.transition = transition
+        self.request = request
 
 
 @implementer(IWorkflowBeforeTransition)

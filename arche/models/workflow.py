@@ -71,9 +71,9 @@ class Workflow(object):
             raise ValueError("The transition '%s' cant go from state '%s'" % (trans.name, self.state))
         if not request.has_permission(trans.permission, self.context) and force is False:
             raise HTTPForbidden("Wrong permissions for this transition")
-        objectEventNotify(WorkflowBeforeTransition(self.context, self, trans))
+        objectEventNotify(WorkflowBeforeTransition(self.context, self, trans, request = request))
         self.state = trans.to_state
-        objectEventNotify(WorkflowAfterTransition(self.context, self, trans))
+        objectEventNotify(WorkflowAfterTransition(self.context, self, trans, request = request))
         return trans
 
 
