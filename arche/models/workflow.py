@@ -221,10 +221,21 @@ class WorkflowRegistry(IterableUserDict):
             assert isinstance(wf_name, six.string_types), "wf_name must be a string, got: %r" % wf_name
             logger.debug("Workflow for %r set to %r" % (type_name, wf_name))
             self.content_type_mapping[type_name] = wf_name
+            if self.get_wf_adapter(wf_name) is None:
+                logger.warning("%r got a workflow assigned with the name %r, "
+                               "but there's no workflow registered with "
+                               "that name.", type_name, wf_name)
 
     def get_wf(self, type_name):
         """ Return mapped workflow name for a content type. """
         return self.content_type_mapping.get(type_name, None)
+
+    def get_wf_adapter(self, wf_name, default = None):
+        registry = get_current_registry()
+        for ar in registry.registeredAdapters():
+            if ar.name == wf_name and ar.provided == IWorkflow:
+                return ar.factory
+        return default
 
 
 def get_context_wf(context, registry = None):

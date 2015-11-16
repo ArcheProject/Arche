@@ -24,6 +24,10 @@ def catalog(config):
     """ Include any catalog related things. Include arche.testing first. """
     config.include('arche.models.catalog')
 
+def workflow(config):
+    """ Include workflow related things."""
+    config.include('arche.models.workflow')
+
 def printing_mailer(config):
     """ Temporary: This is only while waiting for the release of pyramid_mailer's debug mode. """
     print "\nWARNING! Using printing mailer - no mail will be sent!\n"
