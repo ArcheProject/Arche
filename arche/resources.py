@@ -150,6 +150,8 @@ class BaseMixin(object):
 
 
 class Base(Persistent, BaseMixin):
+    __name__ = None
+    __parent__ = None
 
     def __init__(self, **kw):
         super(Base, self).__init__()
