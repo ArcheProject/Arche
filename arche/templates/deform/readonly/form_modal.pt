@@ -79,7 +79,7 @@
 
         </div><!-- body -->
 
-        <div class="modal-footer">
+        <div class="modal-footer clearfix">
           <tal:loop tal:repeat="button buttons">
             <button
                   tal:define="btn_disposition repeat.button.start and 'btn-primary' or 'btn-default';
