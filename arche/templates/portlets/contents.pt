@@ -1,0 +1,20 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Arche">
+<div class="panel panel-default portlet">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      ${title}
+    </h4>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item" tal:repeat="obj contents">
+      <a href="${request.resource_url(obj)}">
+        ${obj.get_nav_title()|obj.title}
+      </a>
+    </li>
+  </ul>
+</div>
+</tal:main>

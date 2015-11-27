@@ -35,6 +35,14 @@ class PortletType(object):
     def render(self, context, request, view, **kwargs):
         return u""
 
+    @property
+    def context(self):
+        """ The context this portlet was originaly created at.
+            (I.e. the place where the PortletFolders will be)
+            It doesn't have to be the same context as the current request.
+        """
+        return self.portlet.__parent__.__parent__
+
 
 class BrokenPortletType(PortletType):
 

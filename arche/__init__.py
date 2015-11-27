@@ -44,6 +44,7 @@ def includeme(config):
     #Portlets
     config.include('arche.portlets.byline')
     config.include('arche.portlets.navigation')
+    config.include('arche.portlets.contents')
     #Translations
     config.add_translation_dirs('arche:locale/')
 
