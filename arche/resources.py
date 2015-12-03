@@ -35,10 +35,11 @@ from arche.interfaces import (IBase,
                               ILink,
                               ILocalRoles,
                               IObjectAddedEvent,
-                              IRoot,
                               IRoles,
+                              IRoot,
                               IThumbnailedContent,
                               IToken,
+                              ITrackRevisions,
                               IUser,
                               IUsers)
 from arche.security import (ROLE_OWNER,
@@ -204,7 +205,7 @@ class ContextACLMixin(object):
             return wf.state in wf.states and wf.state or wf.initial_state
 
 
-@implementer(IContent, IIndexedContent)
+@implementer(IContent, IIndexedContent, ITrackRevisions)
 class Content(Base, Folder):
     title = ""
     description = ""

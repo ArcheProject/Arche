@@ -56,7 +56,6 @@ class PrintingMailer(object):
 
     send_to_queue = send_immediately = send
 
-
 def includeme(config):
     """ Setup minimal basics for running tests. """
     config.include('arche.security')

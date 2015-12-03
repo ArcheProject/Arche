@@ -16,6 +16,7 @@ def includeme(config):
     config.include('arche.views.listing')
     config.include('arche.views.permissions')
     config.include('arche.views.portlets')
+    config.include('arche.views.revisions')
     config.include('arche.views.search')
     config.include('arche.views.selected_content')
     config.include('arche.views.site_settings')

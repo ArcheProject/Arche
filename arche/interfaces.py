@@ -5,6 +5,35 @@ from repoze.folder.interfaces import (IObjectAddedEvent,
                                       IObjectWillBeRemovedEvent,
                                       IFolder) #API
 
+#Base classes
+class IImmutableDict(Interface):
+    """ A dict-like interface that isn't ment to be changed like a dictionary.
+    """
+
+    def __contains__(k):
+        """ Return ``True`` if key ``k`` exists in the dictionary."""
+
+    def __getitem__(k):
+        """ Return the value for key ``k`` from the dictionary or raise a
+        KeyError if the key doesn't exist"""
+
+    def __iter__():
+        """ Return an iterator over the keys of this dictionary """
+
+    def get(k, default=None):
+        """ Return the value for key ``k`` from the renderer dictionary, or
+        the default if no such value exists."""
+
+    def items():
+        """ Return a list of [(k,v)] pairs from the dictionary """
+
+    def keys():
+        """ Return a list of keys from the dictionary """
+
+    def values():
+        """ Return a list of values from the dictionary """
+#/Base classes
+
 
 #Regular events
 class IWillLoginEvent(Interface):
@@ -24,6 +53,7 @@ class IEmailValidatedEvent(Interface):
     """
     user = Attribute("User profile for the email address.")
 #/Regular events
+
 
 #ObjectEvents
 class IObjectUpdatedEvent(IObjectEvent):
@@ -155,6 +185,10 @@ class IIndexedContent(Interface):
 class IThumbnailedContent(Interface):
     """ Marker for content that could have a thumbnail.
     """
+
+class ITrackRevisions(Interface):
+    """ Marker interface for content that could keep track of revisions.
+    """
 #/Markers
 
 
@@ -249,6 +283,13 @@ class IMetadata(IContextAdapter):
     def __call__(default = None):
         """ Return value to be stored, or default. """
 
+
+class IRevisions(IContextAdapter, IImmutableDict):
+    """ Keeps track of revisions for attributes.
+    """
+    def __delitem__(key):
+        """ Only allows delete of first or last item.
+        """
 
 class IPopulator(Interface):
     """ An adapter that populates the database with content or initial setup.

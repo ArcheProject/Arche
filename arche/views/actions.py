@@ -7,12 +7,14 @@ from deform_autoneed import need_lib
 
 from arche import _
 from arche import security
-from arche.interfaces import IContentView, IContextACL
+from arche.interfaces import IContentView
+from arche.interfaces import IContextACL
 from arche.interfaces import ILocalRoles
+from arche.interfaces import ITrackRevisions
+from arche.models.workflow import get_context_wf
 from arche.portlets import get_portlet_slots
 from arche.utils import get_content_views
 from arche.views.cut_copy_paste import can_paste
-from arche.models.workflow import get_context_wf
 
 
 def render_actionbar(view, **kw):
@@ -246,8 +248,18 @@ def manage_portlets(context, request, va, **kw):
                 {'url': request.resource_url(context, 'manage_portlets'),
                  'title': request.localizer.translate(va.title)}
 
+@view_action('actions_menu', 'revisions',
+             title = _("Revisions"),
+             permission = security.PERM_MANAGE_SYSTEM,
+             interface = ITrackRevisions,
+             priority = 30)
+def revisions_context(context, request, va, **kw):
+    return """<li><a href="%(url)s">%(title)s</a></li>""" %\
+            {'url': request.resource_url(context, '__revisions__'),
+             'title': request.localizer.translate(va.title)}
+
 @view_action('actions_menu', 'selectable_views',
-             priority = 30,
+             priority = 100,
              permission = security.PERM_MANAGE_SYSTEM)
 def selectable_views(context, request, va, **kw):
     #FIXME: Do a proper template. This is silly

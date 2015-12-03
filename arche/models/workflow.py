@@ -20,6 +20,7 @@ from arche.events import WorkflowBeforeTransition
 from arche.interfaces import IContextACL
 from arche.interfaces import IWorkflow
 from arche.exceptions import WorkflowException
+from arche.events import ObjectUpdatedEvent
 
 
 @implementer(IWorkflow)
@@ -73,6 +74,8 @@ class Workflow(object):
             raise HTTPForbidden("Wrong permissions for this transition")
         objectEventNotify(WorkflowBeforeTransition(self.context, self, trans, request = request))
         self.state = trans.to_state
+        #Any object implementing IContextACL will have the attribute wf_state that stores workflow state name
+        objectEventNotify(ObjectUpdatedEvent(self.context, changed = ('wf_state',)))
         objectEventNotify(WorkflowAfterTransition(self.context, self, trans, request = request))
         return trans
 
