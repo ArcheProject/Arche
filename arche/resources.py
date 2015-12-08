@@ -49,6 +49,7 @@ from arche import security
 from arche.utils import (hash_method,
                          utcnow)
 from arche.models.workflow import get_context_wf
+from arche.interfaces import ICataloger
 
 
 class DCMetadataMixin(object):
@@ -269,6 +270,9 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
     def __init__(self, data=None, **kwargs):
         create_catalog(self)
         super(Root, self).__init__(data=data, **kwargs)
+        cataloger = ICataloger(self, None)
+        if cataloger:
+            cataloger.index_object()
 
     @property
     def allow_self_registration(self):
