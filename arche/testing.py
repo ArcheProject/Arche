@@ -58,5 +58,6 @@ class PrintingMailer(object):
 
 def includeme(config):
     """ Setup minimal basics for running tests. """
+    config.include('betahaus.viewcomponent')
     config.include('arche.security')
     config.include('arche.utils')
