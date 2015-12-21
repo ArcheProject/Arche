@@ -51,6 +51,7 @@ class BaseWizardForm(BaseForm):
             buttons.append(button_next)
         if self.states.index(self.current_state) != 0:
             buttons.append(button_previous)
+        buttons.append(self.button_cancel)
         return buttons
 
     @property
@@ -78,6 +79,10 @@ class BaseWizardForm(BaseForm):
         self.current_state = self.states[self.states.index(self.current_state) - 1]
         return HTTPFound(location = self.request.url)
 
+    def previous_failure(self, *args):
+        self.current_state = self.states[self.states.index(self.current_state) - 1]
+        return HTTPFound(location = self.request.url)
+
     def finish_success(self, appstruct):
         self.data[self.current_state] = appstruct
         final_appstruct = {}
@@ -93,3 +98,8 @@ class BaseWizardForm(BaseForm):
         self.data.clear()
         self.flash_messages.add("Captured data was: %r" % final_appstruct, type = 'success')
         return HTTPFound(location = self.request.resource_url(self.context))
+
+    def cancel(self, *args):
+        self.data.clear()
+        return self.relocate_response(self.request.resource_url(self.context), msg = self.default_cancel)
+    cancel_success = cancel_failure = cancel
