@@ -45,7 +45,7 @@ class DateTimeHandlerTests(TestCase):
     def test_datetime_full_sv(self):
         obj = self._cut(locale = 'sv', tz_name = 'Europe/Stockholm')
         date_and_time = obj.timezone.localize(datetime.strptime('1999-12-14 19:12', "%Y-%m-%d %H:%M"))
-        self.assertEqual(obj.format_dt(date_and_time, format='full'), u'tisdagen den 14:e december 1999 kl. 19:12:00 Centraleuropa, normaltid')
+        self.assertEqual(obj.format_dt(date_and_time, format='full'), u'tisdag 14 december 1999 kl. 19:12:00 centraleuropeisk normaltid')
 
     def test_tz_to_utc(self):
         obj = self._cut(tz_name = "Europe/Stockholm")
