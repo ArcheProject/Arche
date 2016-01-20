@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from babel.dates import format_date
 from babel.dates import format_datetime
@@ -90,8 +90,10 @@ class DateTimeHandler(object):
         """
         if isinstance(value, int):
             value = datetime.fromtimestamp(value, pytz.utc)
+        if type(value) == date: #datetime subclasses date
+            return format_date(value, format = 'short', locale = self.locale)
         #Check if timezone is naive, convert
-        if value.tzinfo is None:
+        if isinstance(value, datetime) and value.tzinfo is None:
             raise ValueError("Not possible to use format_relative with timezone naive datetimes.")
         elif value.tzinfo is not pytz.utc:
             value = self.tz_to_utc(value)
