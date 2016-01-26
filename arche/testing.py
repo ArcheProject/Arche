@@ -1,5 +1,7 @@
+from mock.mock import self
 from pyramid.authentication import CallbackAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.interfaces import IRequestExtensions
 from pyramid_mailer.interfaces import IMailer
 from zope.interface import implementer
 
@@ -61,3 +63,11 @@ def includeme(config):
     config.include('betahaus.viewcomponent')
     config.include('arche.security')
     config.include('arche.utils')
+
+def init_request_methods(request):
+    """ Request methods addded via config.add_request_method isn't enalbed by default during testing.
+        This method will add them.
+    """
+    extensions = request.registry.queryUtility(IRequestExtensions)
+    if extensions is not None:
+        request._set_extensions(extensions)
