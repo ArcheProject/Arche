@@ -25,13 +25,13 @@ default_settings = {
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
 }
 
-
-def includeme(config):
+def setup_defaults(config):
     settings = config.registry.settings
     for key, value in default_settings.items():
         settings.setdefault(key, value)
     adjust_bools(settings)
 
+def includeme(config):
     config.include('arche.utils')
     config.include('arche.subscribers')
     config.include('arche.resources')
@@ -59,6 +59,7 @@ def includeme(config):
     resolvable_methods = ('arche.hash_method',
                           'arche.new_userid_validator',
                           'arche.actionbar',)
+    settings = config.registry.settings
     for name in resolvable_methods:
         if isinstance(settings[name], string_types):
             settings[name] = config.name_resolver.resolve(settings[name])
@@ -85,14 +86,15 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     config = base_config(**settings)
+    setup_defaults(config)
     cache_max_age = int(settings.get('arche.cache_max_age', 60*60*24))
     config.add_static_view('static', 'arche:static', cache_max_age = cache_max_age)
     config.include('betahaus.viewcomponent')
+    config.include('pyramid_deform')
     config.include('arche') #Must be included first to adjust settings for other packages!
     config.include('pyramid_beaker')
     config.include('pyramid_zodbconn')
     config.include('pyramid_tm')
-    config.include('pyramid_deform')
     config.include('pyramid_chameleon')
     config.include('deform_autoneed')
     config.hook_zca()
