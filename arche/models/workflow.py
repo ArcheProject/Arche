@@ -335,6 +335,9 @@ def bulk_state_change(context, from_state, to_state, request = None, type_name =
             wf.do_transition("%s:%s" % (from_state, to_state), force = force)
 
 def includeme(config):
+    if hasattr(config.registry, 'workflows'):
+        logger.warn("arche.models.workflow has already been loaded. Aborting")
+        return
     config.registry.workflows = WorkflowRegistry()
     config.add_directive('add_workflow', add_workflow)
     config.add_workflow(SimpleWorkflow)
