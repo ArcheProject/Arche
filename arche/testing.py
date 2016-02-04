@@ -67,7 +67,17 @@ def includeme(config):
 def init_request_methods(request):
     """ Request methods addded via config.add_request_method isn't enalbed by default during testing.
         This method will add them.
+
+        DEPRECATED b/c method. Use:
+        pyramid.request.apply_request_extensions
+
+        It was introduced in Pyramid 1.6 and does the same thing
     """
-    extensions = request.registry.queryUtility(IRequestExtensions)
-    if extensions is not None:
-        request._set_extensions(extensions)
+    try:
+        from pyramid.request import apply_request_extensions
+        apply_request_extensions(request)
+    except ImportError:
+        #Prior to Pyramid 1.6
+        extensions = request.registry.queryUtility(IRequestExtensions)
+        if extensions is not None:
+            request._set_extensions(extensions)
