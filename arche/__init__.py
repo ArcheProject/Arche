@@ -26,12 +26,16 @@ default_settings = {
 }
 
 def setup_defaults(config):
+    """ Make sure default settings exist. This will fire twice during normal startup since some settings
+        are required early. Make sure it doesn't destroy any existing settings!
+    """
     settings = config.registry.settings
     for key, value in default_settings.items():
         settings.setdefault(key, value)
     adjust_bools(settings)
 
 def includeme(config):
+    setup_defaults(config)
     config.include('arche.utils')
     config.include('arche.subscribers')
     config.include('arche.resources')
