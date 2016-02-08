@@ -1,4 +1,3 @@
-from mock.mock import self
 from pyramid.authentication import CallbackAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.interfaces import IRequestExtensions
