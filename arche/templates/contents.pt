@@ -8,109 +8,6 @@
 <body>
 <tal:blank metal:fill-slot="heading"></tal:blank>
 <div metal:fill-slot="content" class="row">
-<script type="text/javascript">
-var tpl;
-
-function update_table_from_response(response) {
-	var directive = {'tr':
-		{'obj<-items':
-			{
-				'.title': 'obj.title',
-				'input[name="select"]@value': 'obj.__name__',
-				'input[name="content_name"]@value': 'obj.__name__',
-				'a@title': 'obj.description',
-				'.type_title': 'obj.type_title',
-				'.mimetype': 'obj.mimetype',
-				'.created': 'obj.created',
-				'.modified': 'obj.modified',
-				'.tags': 'obj.tags',
-				'.size': 'obj.size',
-				'[data-css-icon]@class': 'obj.css_icon',
-				'a@href': function(arg) {
-					var out = './' + arg.item['__name__']
-					if (arg.item['is_folder']) {
-						out += '/contents';
-					}
-					return out
-				}
-			}
-		}
-	};
-	$('#sortable').html(tpl);
-	$('#sortable').render(response, directive);
-	$('.tmp-msg').remove();
-}
-
-function toggle_sorting(event) {
-  event.preventDefault();
-  var sort_elem = $("#sortable");
-  var btn = $(event.currentTarget);  
-  if (sort_elem.data('ordering-enabled') == true) {
-    btn.removeClass('active');
-    
-    //save data
-    var url = sort_elem.data('target-url');
-    var request = arche.do_request(url, {data: $( "#contents-form" ).serialize(), method: 'POST'})
-    request.done(function() {
-      sort_elem.data('ordering-enabled', false);
-      sort_elem.sortable('destroy');
-    });
-  } else {
-    btn.addClass('active');
-    sort_elem.sortable();
-    sort_elem.data('ordering-enabled', true);
-  }
-}
-
-$(document).ready(function() {
-	tpl = $('#sortable').html();
-  var request = arche.do_request('./contents.json');
-  request.done(update_table_from_response);
-  $("[data-ordering]").on('click', toggle_sorting);
-  
-	$('#contents-form').on('submit', function(event) {
-		event.preventDefault();
-		data = $(this).serialize();
-		data += "&action=delete"
-		var request = arche.do_request("${request.resource_url(context, 'contents.json')}", {data: data, method: 'post'});
-		request.done(update_table_from_response);
-	});
-});
-  
-	function toggleSelect(chkbox)
-	{
-		if(chkbox.checked)
-		{
-			$( ".select-content" ).each(function(){
-				this.checked = true;
-			});
-		}
-		else
-		{
-			$( ".select-content" ).each(function(){
-				this.checked = false;
-			});
-		}
-	}
-	
-	function updateMultiselect(chkbox)
-	{
-		if(chkbox.checked)
-		{
-			$( "#multi-select" ).prop("checked", true);
-			$( ".select-content" ).each(function(){
-				if(!this.checked)
-				{
-					$( "#multi-select" ).prop("checked", false);
-				}
-			});
-		}
-		else
-		{
-			$( "#multi-select" ).prop("checked", false);
-		}
-	}
-</script>
   <div class="col-md-12">
     <div class="panel panel-primary">
       <div class="panel-heading">
@@ -127,24 +24,29 @@ $(document).ready(function() {
         <p class="lead" tal:condition="not is_folderish"
           i18n:translate="">Not a folder, so it can't have content</p>
 
-        <form id="contents-form">
+        <form id="contents-form" action="${request.resource_url(context, 'contents.json')}" method="POST">
           <table tal:condition="is_folderish" class="table table-responsive table-bordered table-striped table-hover sortable-table">
             <thead>
               <tr>
-                <th><input type="checkbox" id="multi-select" onChange="toggleSelect(this)"></input></th>
+                <th>
+                  <input type="checkbox" data-mselect-for="checkbox-mselect" />
+                </th>
                 <th i18n:translate="">Title</th>
                 <th i18n:translate="">Type</th>
                 <th i18n:translate="">Created</th>
                 <th i18n:translate="">Modified</th>
                 <th i18n:translate="">Tags</th>
                 <th i18n:translate="">Info</th>
+                <th></th>
               </tr>
             </thead>
-            <tbody id="sortable" data-ordering-enabled="false" data-target-url="${request.resource_url(context, 'sorted')}">
+            <tbody id="sortable">
               <tr>
-                <td><input type="checkbox" class="select-content" name="select" value="" onChange="updateMultiselect(this)"></input></td>
                 <td>
-                  <span class="tmp-msg">
+                  <input type="checkbox" name="select" data-mselect-name="checkbox-mselect" />
+                </td>
+                <td>
+                  <span data-load-msg>
                     <span class="glyphicon glyphicon-refresh rotate-me"></span>
                     <tal:ts i18n:translate="">Loading...</tal:ts>
                   </span>
@@ -165,16 +67,12 @@ $(document).ready(function() {
                  <td><span class="modified"></span></td>
                  <td><span class="tags"></span></td>
                  <td><span class="size"></span></td>
+                 <td><span class="glyphicon glyphicon-move sortable-drag"></span></td>
               </tr>
             </tbody>
           </table>
-
+          <input type="hidden" name="action" value="" />
           <input type="submit" class="btn btn-danger" name="delete" value="Delete"></input>
-          <a tal:condition="is_folderish and len(context)"
-              class="btn btn-primary"
-              href="javascript:"
-              data-ordering
-              i18n:translate="">Change order</a>
         </form>
       </div>
     </div>

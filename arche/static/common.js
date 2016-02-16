@@ -204,7 +204,7 @@ arche.flash_error = flash_error;
  * 
  * The data-actionmarker values will be added as classes to the span
  */
-function actionmarker_feedback(elem, active) {
+arche.actionmarker_feedback = function(elem, active) {
   $(elem).find('[data-actionmarker]').each(function() {
     if (active == true) {
       $(this).addClass($(this).data('actionmarker'));
@@ -213,10 +213,20 @@ function actionmarker_feedback(elem, active) {
     }
   })
 }
-arche.actionmarker_feedback = actionmarker_feedback;
+
+/* Function to handle multi-select.
+   On the trigger: data-mselect-for="<name>"
+   On the items that should be triggered: data-mselect-name="<name>"
+ */
+arche.multi_select = function(event) {
+    var name = $(event.currentTarget).data('mselect-for');
+    var target_selectors = $('[data-mselect-name="' + name + '"]');
+    target_selectors.prop("checked", $(event.currentTarget).prop("checked"));
+}
 
 $(document).ready(function() {
   // Modal window listener for links with href defined
   $('body').on('click', "[data-open-modal]", arche.modal_from_event);
+  $('body').on('click', '[data-mselect-for]', arche.multi_select)
   arche.load_flash_messages();
 });
