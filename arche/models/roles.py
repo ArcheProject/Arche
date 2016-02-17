@@ -7,9 +7,9 @@ from BTrees.OOBTree import OOSet
 from pyramid.threadlocal import get_current_registry
 from zope.component import adapter
 from zope.interface import implementer
+from zope.interface import Interface
 from six import string_types
 
-from arche import _
 from arche import logger
 from arche.interfaces import ILocalRoles
 from arche.interfaces import IRole
@@ -28,7 +28,7 @@ class Role(UserString):
     def principal(self):
         return self.data
 
-    def __init__(self, principal, title = None, description = "", inheritable = False, assignable = False):
+    def __init__(self, principal, title = None, description = "", inheritable = False, assignable = False, required = ()):
         super(Role, self).__init__(principal)
         if title is None:
             title = principal
@@ -36,6 +36,14 @@ class Role(UserString):
         self.description = description
         self.inheritable = inheritable
         self.assignable = assignable
+        try:
+            if issubclass(required, Interface):
+                required = (required,)
+        except TypeError:
+            pass # issubclass for a list will raise TypeError
+        for iface in required:
+            assert issubclass(iface, Interface)
+        self.required = set(required)
 
 
 @adapter(ILocalRoles)
@@ -113,6 +121,26 @@ class Roles(IterableUserDict):
         for (name, local_roles) in self.items():
             if role in local_roles:
                 yield name
+
+    def get_assignable(self, registry = None):
+        if registry is None:
+            registry = get_current_registry()
+        roles = getattr(registry, 'roles', None)
+        if roles == None: #pragma: no coverage
+            logger.warning("No roles registered")
+            roles = {}
+        results = {}
+        for role in registry.roles.values():
+            if role.assignable != True:
+                continue
+            if role.required:
+                for required in role.required:
+                    if required.providedBy(self.context):
+                        results[role.principal] = role
+                        break
+            else:
+                results[role.principal] = role
+        return results
 
     def __repr__(self): #pragma: no coverage
         klass = self.__class__

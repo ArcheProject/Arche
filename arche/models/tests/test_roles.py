@@ -2,13 +2,21 @@ from unittest import TestCase
 
 from pyramid import testing
 from zope.interface import implementer
+from zope.interface import Interface
+from zope.interface.verify import verifyClass
+from zope.interface.verify import verifyObject
 
 from arche.interfaces import IContent
+from arche.interfaces import IRoles
 from arche.resources import LocalRolesMixin
 
 
 @implementer(IContent)
 class _DummyContent(testing.DummyResource, LocalRolesMixin):
+    pass
+
+
+class IOther(Interface):
     pass
 
 
@@ -30,6 +38,14 @@ class RolesTests(TestCase):
     def _role(self):
         from arche.models.roles import Role
         return Role
+
+    def test_verify_class(self):
+        self.failUnless(verifyClass(IRoles, self._cut))
+
+    def test_verify_obj(self):
+        context = _DummyContent()
+        obj = self._cut(context)
+        self.failUnless(verifyObject(IRoles, obj))
 
     def test_assign_string(self):
         context = _DummyContent()
@@ -105,3 +121,17 @@ class RolesTests(TestCase):
         obj['third'] = ['three']
         self.assertEqual(set(obj.get_any_local_with('one')), set(['first', 'second']))
         self.assertEqual(set(obj.get_any_local_with('three')), set(['first', 'second', 'third']))
+
+    def test_get_assignable(self):
+        role_global = self._role('role:Global', assignable=True)
+        role_non_assignable = self._role('role:Non', assignable=False)
+        role_content = self._role('role:Content', required=IContent, assignable=True)
+        role_other = self._role('role:Other', required=IOther, assignable=True)
+        self.config.register_roles(role_global, role_non_assignable, role_content, role_other)
+        context = _DummyContent()
+        obj = self._cut(context)
+        result = set(obj.get_assignable())
+        self.assertIn(role_global, result)
+        self.assertNotIn(role_non_assignable, result)
+        self.assertIn(role_content, result)
+        self.assertNotIn(role_other, result)
