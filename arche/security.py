@@ -53,7 +53,8 @@ ROLE_OWNER = Role('role:Owner',
                   assignable = True,)
 ROLE_REVIEWER = Role('role:Reviewer',
                   title = _(u"Reviewer"),
-                  description = _(u"Review and publish content. Usable when combined with a workflow that implements review before publish."),
+                  description = _("Review and publish content. Usable when combined "
+                                  "with a workflow that implements review before publish."),
                   inheritable = True,
                   assignable = True,)
 ROLE_EVERYONE = Role(Everyone,
@@ -98,11 +99,21 @@ def has_permission(request, permission, context=None):
         principals = authn_policy.effective_principals(request)
         return authz_policy.permits(context, principals, permission)
 
+def context_effective_principals(request, context = None):
+    #import pdb;pdb.set_trace()
+    if context is None:
+        context = request.context
+    authn_policy = request.registry.queryUtility(IAuthenticationPolicy)
+    if authn_policy is None:
+        return [Everyone]
+    with authz_context(context, request):
+        return authn_policy.effective_principals(request)
+
 def groupfinder(name, request):
     """ This method is called on each request to determine which
         principals a user has.
         Principals are groups, roles, userid and perhaps Authenticated or similar.
-        
+
         This method also calls itself to fetch any local roles for groups.
     """
     if name is None: #Abort for unauthenticated - no reason to use CPU
@@ -187,6 +198,7 @@ def includeme(config):
     """
     #Our version takes care of context as well
     config.add_request_method(has_permission, name = 'has_permission')
+    config.add_request_method(context_effective_principals)
     #ACL registry must be created first
     config.include('arche.models.acl')
     config.include('arche.models.roles')

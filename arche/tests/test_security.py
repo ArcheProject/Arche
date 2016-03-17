@@ -57,6 +57,18 @@ class ContextPermIntegrationTests(TestCase):
         self.failIf(security.has_permission(request, security.PERM_EDIT, root))
         self.failIf(security.has_permission(request, security.PERM_EDIT, root['b']))
 
+    def test_context_effective_principals(self):
+        root = self._fixture()
+        request = testing.DummyRequest(context = root['a'])
+        self.assertEqual(set(request.effective_principals),
+                         set([security.ROLE_ADMIN, 'system.Everyone', 'system.Authenticated', 'tester']))
+        self.assertEqual(set(security.context_effective_principals(request)),
+                         set([security.ROLE_ADMIN, 'system.Everyone', 'system.Authenticated', 'tester']))
+        self.assertEqual(set(security.context_effective_principals(request, root['a'])),
+                         set([security.ROLE_ADMIN, 'system.Everyone', 'system.Authenticated', 'tester']))
+        self.assertEqual(set(security.context_effective_principals(request, root['b'])),
+                         set(['system.Everyone', 'system.Authenticated', 'tester']))
+
 
 class GetRolesTests(TestCase):
 
