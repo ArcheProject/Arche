@@ -1,6 +1,5 @@
 from logging import getLogger
 
-from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.i18n import TranslationStringFactory
@@ -77,9 +76,10 @@ def root_factory(request):
 
 def base_config(**settings):
     from arche.security import groupfinder
-    authn_policy = AuthTktAuthenticationPolicy(secret = read_salt(settings),
-                                               callback = groupfinder,
-                                               hashalg = 'sha512')
+    from arche.models.authentication import KeyAndTktAuthentication
+    authn_policy = KeyAndTktAuthentication(secret = read_salt(settings),
+                                           callback = groupfinder,
+                                           hashalg = 'sha512')
     authz_policy = ACLAuthorizationPolicy()
     return Configurator(root_factory = root_factory,
                         settings = settings,

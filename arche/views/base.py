@@ -29,6 +29,7 @@ from arche.events import ViewInitializedEvent
 from arche.fanstatic_lib import common_js
 from arche.fanstatic_lib import html5shiv_js
 from arche.fanstatic_lib import main_css
+from arche.interfaces import IAPIKeyView
 from arche.interfaces import IBaseView
 from arche.interfaces import IContentView
 from arche.interfaces import IFolder
@@ -178,6 +179,13 @@ class BaseView(object):
             headers.append((str('X-Relocate'), str(url)))
             return Response(headers = headers, **kw)
         return HTTPFound(location = url, **kw)
+
+
+@implementer(IAPIKeyView)
+class APIKeyViewMixin(object):
+    """ Allow views inheriting this to be accessed via APIKeys Authentication method.
+        (Experimental and may change.)
+    """
 
 
 @implementer(IContentView)

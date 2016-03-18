@@ -202,6 +202,7 @@ def includeme(config):
     #ACL registry must be created first
     config.include('arche.models.acl')
     config.include('arche.models.roles')
+    config.include('arche.models.authentication')
     config.register_roles(ROLE_ADMIN,
                           ROLE_EDITOR,
                           ROLE_VIEWER,

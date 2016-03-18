@@ -340,7 +340,7 @@ image_mime_to_title = {'image/jpeg': "JPEG",
 
 
 def get_root(request):
-    return find_root(request.context)
+    return find_root(getattr(request, 'context', None))
 
 def get_profile(request):
     if request.authenticated_userid:

@@ -197,6 +197,10 @@ class IBaseView(Interface):
     """ Marker for more advanced views that inherit BaseView, which should be all view classes.
     """
 
+class IAPIKeyView(Interface):
+    """ Marker indicates that this view can be accessed remotely by using API keys.
+        It doesn't define guards or similar, it simply states that it's allowed.
+    """
 
 class IContentView(Interface):
     """ View for content types that have a bit more settings. They're also selectable

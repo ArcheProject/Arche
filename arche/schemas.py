@@ -540,6 +540,15 @@ def user_schema_admin_changes(schema, event):
                                                        default = "If checked, this user may login with a regular login form. "
                                                        "This is the default behaviour, but for some system specific "
                                                        "users or someone you wish to shut out you may want to disable this."),))
+        schema.add(colander.SchemaNode(colander.String(),
+                                       name = 'apikey',
+                                       missing = '',
+                                       tab = 'advanced',
+                                       title = _("API key for this user"),
+                                       description = _("api_key_schema_description",
+                                                       default = "If you enter something here you may authenticate as this user with this API-key. "
+                                                                 "Only use this on system accounts that you're never logged in as, "
+                                                                 "since having this makes the account less secure.")))
 
 
 def includeme(config):
