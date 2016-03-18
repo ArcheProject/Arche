@@ -3,9 +3,11 @@ import traceback
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString
+from pyramid.location import lineage
 from pyramid.response import Response
 
 from arche.security import NO_PERMISSION_REQUIRED
+from arche.security import PERM_VIEW
 from arche.views.base import BaseView
 from arche import _
 from arche import logger
@@ -67,18 +69,21 @@ class ForbiddenExceptionView(ExceptionView):
     def __call__(self):
         if self.request.is_xhr:
             return self.xhr_response()
-
         msg = getattr(self.exc, 'message', '')
         if isinstance(msg, TranslationString):
             msg = self.request.localizer.translate(msg)
-        if msg:
-            self.flash_messages.add(msg, type = 'danger', require_commit = False)
         if not self.request.authenticated_userid:
+            if msg:
+                self.flash_messages.add(msg, type = 'danger', require_commit = False)
             if not msg:
                 msg = _("Not allowed, perhaps you need to log in?")
                 self.flash_messages.add(msg, type = 'warning', require_commit = False, auto_destruct = True)
-            return HTTPFound(location = self.request.resource_url(self.root, 'login'))
-        return {}
+            return HTTPFound(location = self.request.resource_url(self.root, 'login', query = {'came_from': self.request.url}))
+        if self.context:
+            for obj in lineage(self.context):
+                if self.request.has_permission(PERM_VIEW, obj):
+                    return {'ok_context': obj}
+        return {'ok_context': None}
 
 
 def includeme(config):

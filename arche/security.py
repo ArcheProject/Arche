@@ -156,6 +156,7 @@ def get_acl_registry(registry = None):
         raise ACLException("ACL not initialized, include arche.security")
 
 def get_local_roles(context, registry = None):
+    #FIXME: Deprecated, remove this
     if registry is None:
         registry = get_current_registry()
     return registry.getAdapter(context, IRoles)

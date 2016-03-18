@@ -1,4 +1,3 @@
-from mock.mock import self
 from pyramid.authentication import CallbackAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.interfaces import IRequestExtensions
@@ -29,6 +28,9 @@ def catalog(config):
 def workflow(config):
     """ Include workflow related things."""
     config.include('arche.models.workflow')
+
+def portlets(config):
+    config.include('arche.portlets')
 
 def printing_mailer(config):
     """ Temporary: This is only while waiting for the release of pyramid_mailer's debug mode. """

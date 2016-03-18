@@ -5,7 +5,6 @@ from uuid import uuid4
 
 from BTrees.OOBTree import OOBTree
 from persistent import Persistent
-from persistent.list import PersistentList
 from pyramid.threadlocal import get_current_registry
 from repoze.folder import Folder
 from zope.component import ComponentLookupError

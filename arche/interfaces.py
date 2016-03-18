@@ -98,7 +98,49 @@ class IBase(Interface):
         """
 
 class ILocalRoles(IDict):
-    pass
+
+    def add(key, value):
+        """
+        Append one or more roles.
+
+        :param key: principal (usually userid or group) to add roles to
+        :type key: str
+        :param value: Role or roles to add
+        :type value: iterable, role or string.
+        """
+
+    def remove(key, value):
+        """
+        Remove one or more roles. If all roles have been removed, the key will be removed too.
+
+        :param key: principal (usually userid or group) to remove roles from
+        :type key: str
+        :param value: Role or roles to remove
+        :type value: iterable, role or string.
+        """
+
+    def set_from_appstruct(value):
+        """
+        Set local roles to value, where value must be a dict with principal as key and roles as values.
+        Will clear any keys not present in value.
+        """
+
+    def get_any_local_with(role):
+        """
+        Fetch any local principals with the assigned role.
+
+        :returns: Generator
+        """
+
+    def get_assignable(registry = None):
+        """
+        Return any roles that might be assignable in this context.
+        Will first check if assignable is True and after that check if required is set to any interfaces.
+        If so, check the interfaces against the current context.
+
+        :returns: Dict with role name as key and role as value.
+        """
+
 
 class IContent(Interface):
     pass

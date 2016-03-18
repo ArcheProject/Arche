@@ -14,6 +14,7 @@
       var directive = {'tr':
       {'principal<-principals':
         {'.name': 'principal.name',
+         '.principal-url@href': 'principal.url',
          '[name="__start__"]@value': function(arg) {
            return arg.item['name'] + ':sequence'
          },
@@ -68,8 +69,9 @@
       <div class="panel-heading">
         <h4 class="panel-title">
           <a data-toggle="collapse" data-parent="#permissions"
-            href="#current_local_roles" aria-expanded="true" aria-controls="current_local_roles">
-            Current settings at "${context.title}"
+             href="#current_local_roles" aria-expanded="true"
+             aria-controls="current_local_roles" i18n:translate="">
+            Current settings at <tal:ts i18n:name="title">"${context.title}"</tal:ts>
           </a>
         </h4>
       </div>
@@ -91,7 +93,7 @@
             <tbody id="principals">
               <tr>
                 <td>
-                  <a href="">
+                  <a class="principal-url" href="">
                     <span class="name"></span>
                   </a>
                 </td>
@@ -110,7 +112,7 @@
           <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}" />
           <input type="hidden" name="method" value="set" />
           <div class="panel-body">
-            <input type="submit" value="Save" class="btn btn-primary" />
+            <input type="submit" value="Save" class="btn btn-primary" i18n:attributes="value;" />
           </div>
         </form>
       </div>
@@ -120,7 +122,7 @@
       <div class="panel-heading">
         <h4 class="panel-title">
           <a data-toggle="collapse" data-parent="#permissions" href="#add_local_roles"
-            aria-expanded="true" aria-controls="add_local_roles">
+            aria-expanded="true" aria-controls="add_local_roles" i18n:translate="">
             Add local roles
           </a>
         </h4>
@@ -164,7 +166,7 @@
           <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}" />
           <input type="hidden" name="method" value="add" />
           <div class="panel-body">
-            <input type="submit" value="Add" class="btn btn-primary" />
+            <input type="submit" value="Add" class="btn btn-primary" i18n:attributes="value;" />
           </div>
         </form>
       </div>

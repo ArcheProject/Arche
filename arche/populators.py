@@ -8,7 +8,6 @@ from arche import _
 from arche.interfaces import IPopulator
 from arche.interfaces import IRoot
 from arche.security import ROLE_ADMIN
-from arche.security import get_local_roles
 from arche.utils import get_content_factories
 from arche.models.workflow import WorkflowException
 from arche.models.workflow import get_context_wf
@@ -31,8 +30,7 @@ def root_populator(title = "", userid = "", email = "", password = "", populator
                                                               description = description,
                                                               members = [userid])
     #Add admin role
-    local_roles = get_local_roles(root)
-    local_roles[adm_group.principal_name] = (ROLE_ADMIN,)
+    root.local_roles[adm_group.principal_name] = (ROLE_ADMIN,)
     #Run extra populator
     if populator_name:
         reg = get_current_registry()
