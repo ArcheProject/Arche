@@ -25,7 +25,9 @@ class KeyAndTktAuthentication(AuthTktAuthenticationPolicy):
 
 
 def view_guard(view, event):
-    if getattr(view.request, 'is_apiuser', False) and not IAPIKeyView.providedBy(view):
+    if getattr(view.request, 'is_apiuser', False) and\
+            not isinstance(getattr(view, 'context', None), Exception) and\
+            not IAPIKeyView.providedBy(view):
         raise HTTPForbidden("Authentication with API-keys aren't allowed for this view.")
 
 def includeme(config):
