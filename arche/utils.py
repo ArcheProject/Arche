@@ -73,6 +73,9 @@ def get_content_factories(registry = None):
         registry = get_current_registry()
     return getattr(registry, '_content_factories', {})
 
+def content_factories(request):
+    return get_content_factories(request.registry)
+
 def add_addable_content(config, ctype, addable_to):
     try:
         addable_content = config.registry._addable_content
@@ -357,7 +360,6 @@ def resolve_docids(request, docids, perm = PERM_VIEW):
             continue
         yield obj
 
-
 class _FailMarker(object):
     def __contains__(self, other):
         return False
@@ -418,6 +420,7 @@ def includeme(config):
     config.add_request_method(get_profile, name = 'profile', reify = True)
     config.add_request_method(send_email)
     config.add_request_method(resolve_docids)
+    config.add_request_method(content_factories, property = True)
     #Init default scales
     for (name, scale) in image_scales.items():
         config.add_image_scale(name, *scale)

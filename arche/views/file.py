@@ -14,7 +14,6 @@ from arche.interfaces import IBlobs
 from arche.models.file_upload import FileUploadTempStore
 from arche.schemas import AddFileSchema
 from arche.utils import generate_slug
-from arche.utils import get_content_factories
 from arche.utils import get_mimetype_views
 from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultView
@@ -59,7 +58,7 @@ def batch_file_upload_handler_view(context, request):
     schema = schema.bind(request = request, context = context)
     form = deform.Form(schema)
     appstruct = form.validate(controls)
-    factory = get_content_factories()['File']
+    factory = request.content_factories['File']
     obj = factory(**appstruct)
     name = generate_slug(context, obj.filename)
     context[name] = obj

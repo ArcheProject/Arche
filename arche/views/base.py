@@ -36,7 +36,6 @@ from arche.interfaces import IFolder
 from arche.portlets import get_portlet_manager
 from arche.utils import generate_slug
 from arche.utils import get_addable_content
-from arche.utils import get_content_factories
 from arche.utils import get_content_schemas
 from arche.utils import get_content_views
 from arche.utils import get_flash_messages
@@ -114,7 +113,7 @@ class BaseView(object):
         return reversed(list(lineage(self.context)))
 
     def get_content_factory(self, name):
-        return get_content_factories(self.request.registry).get(name)
+        return self.request.content_factories.get(name)
 
     def macro(self, asset_spec, xhr_asset = None, macro_name='main'):
         if xhr_asset and self.request.is_xhr:
@@ -124,7 +123,7 @@ class BaseView(object):
     def addable_content(self, context):
         _marker = object()
         context_type = getattr(context, 'type_name', None)
-        factories = get_content_factories(self.request.registry)
+        factories = self.request.content_factories
         for (name, addable) in get_addable_content(self.request.registry).items():
             if context_type in addable:
                 factory = factories.get(name, None)
