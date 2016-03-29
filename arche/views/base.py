@@ -245,10 +245,14 @@ class BaseForm(BaseView, FormView):
             if not schema_factory:
                 err = "Schema type '%s' not registered for content type '%s'." % \
                       (self.schema_name, self.type_name)
+                if self.request.registry.settings.get('arche.debug', False) == True:
+                    raise ValueError(err)
                 raise HTTPForbidden(err)
             schema = schema_factory()
         if not schema:
             err = "No schema found for this form view. %r" % self
+            if self.request.registry.settings.get('arche.debug', False) == True:
+                raise ValueError(err)
             raise HTTPForbidden(err)
         if isclass(schema):
             schema = schema()
