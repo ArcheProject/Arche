@@ -69,7 +69,7 @@ class ReferenceWidget(Select2Widget):
             type_name: Limit to these content types only. Either a list or a single name as a string.
     """
     template = 'select2_reference'
-    readonly_template = 'select2_reference' #XXX
+    readonly_template = 'readonly/select2_reference'
     null_value = ''
     placeholder = _("Type something to search.")
     minimumInputLength = 2
@@ -80,7 +80,14 @@ class ReferenceWidget(Select2Widget):
     #Make query view configurable?
     
     def _preload_data(self, field, cstruct):
-        #XXX: Should this be moved to the json search view and invoked as a subrequest? Maybe
+        results = []
+        for obj in self._fetch_referenced_objects(field, cstruct):
+            results.append({'id': obj.uid, 'text': obj.title})
+        if not self.multiple and results:
+            return dumps(results[0])
+        return dumps(results)
+
+    def _fetch_referenced_objects(self, field, cstruct):
         view = field.schema.bindings['view']
         root = view.root
         query = root.catalog.query
@@ -93,19 +100,12 @@ class ReferenceWidget(Select2Widget):
         for docid in docids:
             path = address_for_docid(docid)
             obj = find_resource(root, path)
-            results.append({'id': obj.uid, 'text': obj.title})
-        if not self.multiple and results:
-            return dumps(results[0])
-        return dumps(results)
+            results.append(obj)
+        return results
 
     def serialize(self, field, cstruct, **kw):
-        view = field.schema.bindings['view']
-        preload_data = self.multiple and "[]" or "''"
-        if cstruct in (colander.null, None):
-            cstruct = self.null_value
-        else:
-            preload_data = self._preload_data(field, cstruct)
         readonly = kw.get('readonly', self.readonly)
+        view = field.schema.bindings['view']
         kw['placeholder'] = kw.get('placeholder', self.placeholder)
         kw['minimumInputLength'] = kw.get('minimumInputLength', self.minimumInputLength)
         kw['show_thumbs'] = str(kw.get('show_thumbs', self.show_thumbs)).lower() #true or false in js
@@ -114,8 +114,18 @@ class ReferenceWidget(Select2Widget):
         query_url = view.request.resource_url(view.root, 'search.json', query = query_params)
         #FIXME: Support all kinds of keywords that the select2 widget supports?
         template = readonly and self.readonly_template or self.template
+        kw.setdefault('request', view.request)
         tmpl_values = self.get_template_values(field, cstruct, kw)
-        return field.renderer(template, preload_data = preload_data, query_url = query_url, **tmpl_values)
+        if readonly:
+            tmpl_values['referenced_objects'] = self._fetch_referenced_objects(field, cstruct)
+        else:
+            preload_data = self.multiple and "[]" or "''"
+            if cstruct in (colander.null, None):
+                cstruct = self.null_value
+            else:
+                preload_data = self._preload_data(field, cstruct)
+            tmpl_values.update(preload_data = preload_data, query_url = query_url)
+        return field.renderer(template, **tmpl_values)
 
     def deserialize(self, field, pstruct):
         #Make sure pstruct follows query params?
