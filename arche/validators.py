@@ -84,6 +84,14 @@ def login_password_validator(form, kw):
     root = find_root(context)
     return LoginPasswordValidator(root)
 
+def ascii_encodable_validator(node, value):
+    try:
+        str(value)
+    except UnicodeEncodeError:
+        raise colander.Invalid(node,
+                               _("asci_encodable_error",
+                                 default = "Avoid non-english letters for this field."))
+
 
 class LoginPasswordValidator(object):
     """ Validate a password during login. context must be site root."""

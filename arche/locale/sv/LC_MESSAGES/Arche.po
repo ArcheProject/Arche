@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2015-07-18 17:24+0200\n"
-"PO-Revision-Date: 2015-07-18 17:24+0100\n"
+"POT-Creation-Date: 2016-03-31 11:56+0200\n"
+"PO-Revision-Date: 2016-03-31 12:03+0200\n"
 "Last-Translator: Robin Harms Oredsson <robin@betahaus.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -15,98 +15,181 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Lingua 3.9\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.9\n"
+"X-Generator: Poedit 1.8.6\n"
 
 #. Default: Group for all administrators. Add any administrators to this group.
-#: arche/./populators.py:28
+#: arche/./populators.py:27
 msgid "admin_group_desc"
 msgstr ""
 "Grupp för alla administratörer. Lägg till användare här om de ska ha den "
 "rättigheten."
 
-#: arche/./populators.py:30
+#: arche/./populators.py:29
 msgid "Administrators"
 msgstr "Administratörer"
 
-#: arche/./resources.py:223
+#: arche/./resources.py:245
 msgid "Link"
 msgstr "Länk"
 
-#: arche/./resources.py:224
+#: arche/./resources.py:246
 msgid "Content type that redirects to somewhere."
 msgstr "Innehåll som omdirigerar någonstans."
 
-#: arche/./resources.py:241
+#: arche/./resources.py:263
 msgid "Site root"
 msgstr "Siterot"
 
-#: arche/./resources.py:287
+#: arche/./resources.py:312
 msgid "Document"
 msgstr "Dokument"
 
-#: arche/./resources.py:305
+#: arche/./resources.py:330
 msgid "File"
 msgstr "Fil"
 
-#: arche/./resources.py:350 arche/./schemas.py:224
+#: arche/./resources.py:375 arche/./schemas.py:225
 msgid "Image"
 msgstr "Bild"
 
-#: arche/./resources.py:359
+#: arche/./resources.py:384
 msgid "Initial setup"
 msgstr "Initial konfiguration"
 
-#: arche/./resources.py:362
+#: arche/./resources.py:387
 msgid "Welcome to Arche!"
 msgstr "Välkommen till Arche!"
 
-#: arche/./resources.py:365 arche/./views/initial_setup.py:12
+#: arche/./resources.py:390 arche/./views/initial_setup.py:12
 msgid "Initial Setup"
 msgstr ""
 
-#: arche/./resources.py:371 arche/./resources.py:375 arche/./schemas.py:73
-#: arche/./views/actions.py:146
+#: arche/./resources.py:396 arche/./resources.py:400 arche/./schemas.py:74
+#: arche/./views/actions.py:148
 msgid "Users"
 msgstr "Användare"
 
-#: arche/./resources.py:401 arche/./security.py:223
+#: arche/./resources.py:434 arche/./security.py:237
+#: arche/./templates/revisions.pt:27
 msgid "User"
 msgstr "Användare"
 
-#: arche/./resources.py:473 arche/./resources.py:477 arche/./schemas.py:74
-#: arche/./views/actions.py:151
+#: arche/./resources.py:508 arche/./resources.py:512 arche/./schemas.py:75
+#: arche/./views/actions.py:153
 msgid "Groups"
 msgstr "Grupper"
 
-#: arche/./resources.py:497 arche/./templates/content/groups.pt:12
+#: arche/./resources.py:532 arche/./templates/content/groups.pt:12
 msgid "Group"
 msgstr "Grupp"
 
-#: arche/./resources.py:531
+#: arche/./resources.py:566
 msgid "Token"
 msgstr "Token"
 
-#: arche/./schemas.py:69 arche/./views/actions.py:258
+#: arche/./schemas.py:70 arche/./views/actions.py:272
 msgid "Default"
 msgstr "Standard"
 
-#: arche/./schemas.py:70
+#: arche/./schemas.py:71
 msgid "Visibility"
 msgstr "Synlighet"
 
-#: arche/./schemas.py:71
+#: arche/./schemas.py:72
 msgid "Metadata"
 msgstr "Metadata"
 
-#: arche/./schemas.py:72
+#: arche/./schemas.py:73
 msgid "Related"
 msgstr "Relaterade"
 
-#: arche/./schemas.py:75
+#: arche/./schemas.py:76
 msgid "Advanced"
 msgstr "Avancerat"
 
-#: arche/./schemas.py:238
+#: arche/./schemas.py:98
+msgid "No thanks"
+msgstr "Nej tack"
+
+#: arche/./schemas.py:99
+msgid "Don't install or change anything"
+msgstr "Ändra eller installera inget"
+
+#: arche/./schemas.py:115
+msgid "Type to search for UserIDs"
+msgstr "Skriv för att söka efter AnvändarIDn"
+
+#: arche/./schemas.py:130 arche/./schemas.py:305 arche/./schemas.py:465
+#: arche/./templates/contents.pt:34
+msgid "Title"
+msgstr "Titel"
+
+#: arche/./schemas.py:132 arche/./schemas.py:307
+#: arche/./templates/content/groups.pt:13
+msgid "Description"
+msgstr "Beskrivning"
+
+#: arche/./schemas.py:136
+msgid "Tags or subjects"
+msgstr "Taggar eller ämnen"
+
+#: arche/./schemas.py:156
+msgid "Related content"
+msgstr "Relaterat innehåll"
+
+#: arche/./schemas.py:157
+msgid "Can be used to link to other content"
+msgstr "Kan användas för att länka till annat innehåll"
+
+#: arche/./schemas.py:165
+msgid "Date"
+msgstr "Datum"
+
+#: arche/./schemas.py:166
+msgid "Publish date, or used for sorting"
+msgstr "Publiceringsdatum, eller för sortering"
+
+#: arche/./schemas.py:171
+msgid "Licensing"
+msgstr "Licens"
+
+#: arche/./schemas.py:195
+msgid "Show in navigations"
+msgstr "Visa i navigation"
+
+#: arche/./schemas.py:200
+msgid "Show in listing or table views"
+msgstr "Visa i listor eller tabellvyer"
+
+#: arche/./schemas.py:201
+msgid "The content view will always show this regardless of what you set."
+msgstr "Innehållsvyn visar däremot alltid innehåll oavsett denna inställning."
+
+#: arche/./schemas.py:206
+msgid "Include in search results"
+msgstr "Inkludera i sökresultat"
+
+#: arche/./schemas.py:207
+msgid ""
+"Note that this is not a permission setting - it's just a matter of "
+"practicality for users. They may even disable this setting."
+msgstr ""
+"Notera att det här inte är en rättighetsinställning - bara en fråga om "
+"användbarhet. Användare kan gå runt denna inställning."
+
+#: arche/./schemas.py:213
+msgid "Navigation bar title"
+msgstr "Titel i navigationsfältet"
+
+#: arche/./schemas.py:214
+msgid "If you wish to use another name for when it's shown in menus."
+msgstr "Om du vill använda ett annat namn när det visas i menyer."
+
+#: arche/./schemas.py:232
+msgid "Show byline"
+msgstr "Visa byline"
+
+#: arche/./schemas.py:239
 #, python-format
 msgid ""
 "Current default timezone is: '${tzname}', leave this field blank if your're "
@@ -115,170 +198,88 @@ msgstr ""
 "Nuvarande standardtidszon är: '${tzname}', låt fältet vara blankt om du vill "
 "använda den."
 
-#: arche/./schemas.py:323
+#: arche/./schemas.py:262 arche/./schemas.py:407
+#: arche/./templates/content/users_table.pt:46
+msgid "First name"
+msgstr "Förnamn"
+
+#: arche/./schemas.py:265 arche/./schemas.py:410
+#: arche/./templates/content/users_table.pt:47
+msgid "Last name"
+msgstr "Efternamn"
+
+#: arche/./schemas.py:268 arche/./schemas.py:350
+msgid "Email adress"
+msgstr "Epostadress"
+
+#: arche/./schemas.py:275
+msgid "Profile image"
+msgstr "Profilbild"
+
+#: arche/./schemas.py:279
+msgid "Set custom timezone"
+msgstr "Ställ in egen tidszon"
+
+#: arche/./schemas.py:294 arche/./schemas.py:313 arche/./schemas.py:413
+#: arche/./templates/content/users_table.pt:44
+msgid "UserID"
+msgstr "AnvändarID"
+
+#: arche/./schemas.py:297 arche/./schemas.py:336 arche/./schemas.py:354
+#: arche/./schemas.py:375 arche/./schemas.py:423
+msgid "Password"
+msgstr "Lösenord"
+
+#: arche/./schemas.py:317 arche/./templates/content/groups.pt:14
+msgid "Members"
+msgstr "Medlemmar"
+
+#: arche/./schemas.py:324
+msgid "Your current password for your own account"
+msgstr "Ditt nuvarande lösenord för ditt eget konto"
+
+#: arche/./schemas.py:325
 msgid "Current password"
 msgstr "Nuvarande lösenord"
 
-#: arche/./schemas.py:97
-msgid "No thanks"
-msgstr "Nej tack"
+#: arche/./schemas.py:344
+msgid "Site title"
+msgstr "Sidans titel"
 
-#: arche/./schemas.py:98
-msgid "Don't install or change anything"
-msgstr "Ändra eller installera inget"
+#: arche/./schemas.py:345
+msgid "A site made with Arche"
+msgstr "En sida gjord med Arche"
 
-#: arche/./schemas.py:322
-msgid "Your current password for your own account"
-msgstr "Ditt nuvarande lösenord för ditt eget konto"
+#: arche/./schemas.py:347
+msgid "Admin userid - use lowercase!"
+msgstr "Administratörens användarID - använd små bokstäver!"
+
+#: arche/./schemas.py:358
+msgid "Populate site"
+msgstr "Populera sidan"
+
+#: arche/./schemas.py:373 arche/./schemas.py:444
+msgid "Email or UserID"
+msgstr "Epost eller AnvändarID"
 
 #. Default: A link will be sent to this address. You need to click the link to
 #. finish the registration. If no email arrives within 15 minutes, you might
 #. need to check your emails' spam folder.
-#: arche/./schemas.py:384
+#: arche/./schemas.py:390
 msgid "reg_email_description"
 msgstr ""
 "En länk kommer skickas till denna adress. Du behöver klicka på länken för "
 "att avsluta registreringen. Om du inte fått något brev inom 15 minuter kan "
 "du behöva titta i din eposts skräppost-mapp."
 
-#: arche/./schemas.py:114
-msgid "Type to search for UserIDs"
-msgstr "Skriv för att söka efter AnvändarIDn"
-
-#: arche/./schemas.py:129 arche/./schemas.py:303 arche/./schemas.py:459
-#: arche/./templates/contents.pt:135
-msgid "Title"
-msgstr "Titel"
-
-#: arche/./schemas.py:131 arche/./schemas.py:305
-#: arche/./templates/content/groups.pt:13
-msgid "Description"
-msgstr "Beskrivning"
-
-#: arche/./schemas.py:135
-msgid "Tags or subjects"
-msgstr "Taggar eller ämnen"
-
-#: arche/./schemas.py:155
-msgid "Related content"
-msgstr "Relaterat innehåll"
-
-#: arche/./schemas.py:156
-msgid "Can be used to link to other content"
-msgstr "Kan användas för att länka till annat innehåll"
-
-#: arche/./schemas.py:164
-msgid "Date"
-msgstr "Datum"
-
-#: arche/./schemas.py:165
-msgid "Publish date, or used for sorting"
-msgstr "Publiceringsdatum, eller för sortering"
-
-#: arche/./schemas.py:170
-msgid "Licensing"
-msgstr "Licens"
-
-#: arche/./schemas.py:194
-msgid "Show in navigations"
-msgstr "Visa i navigation"
-
-#: arche/./schemas.py:199
-msgid "Show in listing or table views"
-msgstr "Visa i listor eller tabellvyer"
-
-#: arche/./schemas.py:200
-msgid "The content view will always show this regardless of what you set."
-msgstr "Innehållsvyn visar däremot alltid innehåll oavsett denna inställning."
-
-#: arche/./schemas.py:205
-msgid "Include in search results"
-msgstr "Inkludera i sökresultat"
-
-#: arche/./schemas.py:206
-msgid ""
-"Note that this is not a permission setting - it's just a matter of "
-"practicality for users. They may even disable this setting."
-msgstr ""
-"Notera att det här inte är en rättighetsinställning - bara en fråga om "
-"användbarhet. Användare kan gå runt denna inställning."
-
-#: arche/./schemas.py:212
-msgid "Navigation bar title"
-msgstr "Titel i navigationsfältet"
-
-#: arche/./schemas.py:213
-msgid "If you wish to use another name for when it's shown in menus."
-msgstr "Om du vill använda ett annat namn när det visas i menyer."
-
-#: arche/./schemas.py:231
-msgid "Show byline"
-msgstr "Visa byline"
-
-#: arche/./schemas.py:261 arche/./schemas.py:401
-#: arche/./templates/content/users_table.pt:46
-msgid "First name"
-msgstr "Förnamn"
-
-#: arche/./schemas.py:264 arche/./schemas.py:404
-#: arche/./templates/content/users_table.pt:47
-msgid "Last name"
-msgstr "Efternamn"
-
-#: arche/./schemas.py:267 arche/./schemas.py:346
-msgid "Email adress"
-msgstr "Epostadress"
-
-#: arche/./schemas.py:274
-msgid "Profile image"
-msgstr "Profilbild"
-
-#: arche/./schemas.py:278
-msgid "Set custom timezone"
-msgstr "Ställ in egen tidszon"
-
-#: arche/./schemas.py:293 arche/./schemas.py:407 arche/./schemas.py:311
-#: arche/./templates/content/users_table.pt:44
-msgid "UserID"
-msgstr "AnvändarID"
-
-#: arche/./schemas.py:296 arche/./schemas.py:333 arche/./schemas.py:350
-#: arche/./schemas.py:370 arche/./schemas.py:417
-msgid "Password"
-msgstr "Lösenord"
-
-#: arche/./schemas.py:315 arche/./templates/content/groups.pt:14
-msgid "Members"
-msgstr "Medlemmar"
-
-#: arche/./schemas.py:340
-msgid "Site title"
-msgstr "Sidans titel"
-
-#: arche/./schemas.py:341
-msgid "A site made with Arche"
-msgstr "En sida gjord med Arche"
-
-#: arche/./schemas.py:343
-msgid "Admin userid - use lowercase!"
-msgstr "Administratörens användarID - använd små bokstäver!"
-
-#: arche/./schemas.py:354
-msgid "Populate site"
-msgstr "Populera sidan"
-
-#: arche/./schemas.py:368 arche/./schemas.py:438
-msgid "Email or UserID"
-msgstr "Epost eller AnvändarID"
-
-#: arche/./schemas.py:393 arche/./templates/content/users_table.pt:45
+#: arche/./schemas.py:399 arche/./templates/content/users_table.pt:45
 msgid "Email"
 msgstr "Epost"
 
 #. Default: Use only lowercase a-z, '-', '_' or 0-9. It must start with a
 #. lowercase letter. This name will be visible to other users and they may use
 #. it to refer to you. It can't be changed later.
-#: arche/./schemas.py:408
+#: arche/./schemas.py:414
 msgid "userid_description"
 msgstr ""
 "Använd bara små bokstäver mellan a-z, '-', '_' eller 0-9. Måste starta med "
@@ -287,49 +288,49 @@ msgstr ""
 
 #. Default: At least 6 characters. It's a good idea to use quite long
 #. passwords. If you forget your password you can reset it later.
-#: arche/./schemas.py:418
+#: arche/./schemas.py:424
 msgid "pw_description_help"
 msgstr ""
 "Minst 6 tecken. Det är en bra idé att använda ganska långa lösenord. Om du "
 "glömmer bort ditt lösenordet kan du nollställa det senare."
 
-#: arche/./schemas.py:443
+#: arche/./schemas.py:449
 msgid "Page head title"
 msgstr "Sidans huvudtitel"
 
-#: arche/./schemas.py:444
+#: arche/./schemas.py:450
 msgid "Usually shown as a title of the browser tab."
 msgstr "Visas vanligtvis som titel på webbläsarfliken."
 
-#: arche/./schemas.py:446
+#: arche/./schemas.py:452
 msgid "Footer"
 msgstr "Sidfot"
 
-#: arche/./schemas.py:460
+#: arche/./schemas.py:466
 msgid "Filename will be used if you leave this blank"
 msgstr "Filnamnet används om du lämnar det här tomt"
 
-#: arche/./schemas.py:463
+#: arche/./schemas.py:469
 msgid "Upload file"
 msgstr "Ladda upp fil"
 
-#: arche/./schemas.py:470
+#: arche/./schemas.py:476
 msgid "Change file"
 msgstr "Ändra fil"
 
-#: arche/./schemas.py:492
+#: arche/./schemas.py:498
 msgid "Allow users to register themselves to this site."
 msgstr "Tillåt att användare registrerar sig själva."
 
-#: arche/./schemas.py:495
+#: arche/./schemas.py:501
 msgid "Show login link."
 msgstr "Visa inloggningslänk."
 
-#: arche/./schemas.py:498
+#: arche/./schemas.py:504
 msgid "Skip email validation"
 msgstr "Skippa epostvalidering"
 
-#: arche/./schemas.py:499
+#: arche/./schemas.py:505
 msgid ""
 "This will allow users to register with a fake email address. Generally not "
 "recommended."
@@ -337,22 +338,50 @@ msgstr ""
 "Det gör att användare kan använda en fejkat epostadress. Rekommenderas "
 "generellt inte."
 
-#: arche/./schemas.py:511
+#. Default: Allow user to login? WARNING: This is your current user, disabling
+#. this will probably lock you out of this account!
+#: arche/./schemas.py:512
+msgid "allow_login_title_warning"
+msgstr ""
+
+#: arche/./schemas.py:514
+msgid "Allow user to login?"
+msgstr "Tillåt användaren att logga in?"
+
+#: arche/./schemas.py:525
 msgid "Skip validation email (change directly)"
 msgstr "Skippa epostvalideringsmeddelande (ändra direkt)"
 
-#: arche/./schemas.py:517
+#: arche/./schemas.py:531
 msgid "Email validated?"
 msgstr "Epost validerad?"
 
 #. Default: You may set this manually, but don't change it unless you know what
 #. you're doing. Other systems might depend on that this address is really
 #. validated!
-#: arche/./schemas.py:520
+#: arche/./schemas.py:534
 msgid "manual_email_validated_description"
 msgstr ""
 "Du kan ställa in det här manuellt, men ändra inte om du inte vet vad du gör. "
 "Andra system kan bero av att adressen verkligen är validerad!"
+
+#. Default: If checked, this user may login with a regular login form. This is
+#. the default behaviour, but for some system specific users or someone you
+#. wish to shut out you may want to disable this.
+#: arche/./schemas.py:543
+msgid "allow_login_description"
+msgstr ""
+
+#: arche/./schemas.py:551
+msgid "API key for this user"
+msgstr ""
+
+#. Default: If you enter something here you may authenticate as this user with
+#. this API-key. Only use this on system accounts that you're never logged in
+#. as, since having this makes the account less secure.
+#: arche/./schemas.py:552
+msgid "api_key_schema_description"
+msgstr ""
 
 #: arche/./security.py:35
 msgid "Administrator"
@@ -398,110 +427,119 @@ msgstr ""
 "Granska och publicera innehåll. Användbart när det kombineras med ett "
 "arbetsflöde som kräver granskning innan publicering."
 
-#: arche/./security.py:60
+#: arche/./security.py:61
 msgid "Everyone"
 msgstr "Alla"
 
-#: arche/./security.py:61
+#: arche/./security.py:62
 msgid "Including anonymous"
 msgstr "Inkludera anonyma"
 
-#: arche/./security.py:64
+#: arche/./security.py:65
 msgid "Authenticated users"
 msgstr "Inloggade användare"
 
-#: arche/./security.py:204 arche/./models/workflow.py:117
-#: arche/./models/workflow.py:168
+#: arche/./security.py:218 arche/./models/workflow.py:123
+#: arche/./models/workflow.py:174
 msgid "Private"
 msgstr "Privat"
 
-#: arche/./security.py:211 arche/./models/workflow.py:118
-#: arche/./models/workflow.py:169
+#: arche/./security.py:225 arche/./models/workflow.py:124
+#: arche/./models/workflow.py:175
 msgid "Public"
 msgstr "Publik"
 
-#: arche/./security.py:216 arche/./models/workflow.py:170
+#: arche/./security.py:230 arche/./models/workflow.py:176
 msgid "Review"
 msgstr "Granska"
 
-#: arche/./validators.py:179
-#, python-format
-msgid ""
-"Not a valid image file! Any of these image types are supported: ${suggested}"
-msgstr "Inte en giltig bildfil! Dessa stöds: ${suggested}"
+#: arche/./validators.py:46
+msgid "Already used within this context"
+msgstr "Används redan i denna kontext"
 
-#: arche/./validators.py:49
+#: arche/./validators.py:53
 msgid "Please use lowercase only."
 msgstr "Vänligen använd bara små bokstäver."
 
-#: arche/./validators.py:52
+#: arche/./validators.py:56
 msgid "Already taken or conflicts with a restricted name."
 msgstr "Redan taget eller i konflikt med ett skyddat namn."
 
 #. Default: UserID must be 3-30 chars, start with lowercase a-z and only
 #. contain lowercase a-z, numbers, minus and underscore.
-#: arche/./validators.py:55
+#: arche/./validators.py:59
 msgid "userid_char_error"
 msgstr ""
 "AnvändarID måste vara 3-30 bokstäver, börja med en bokstav mellan a-z och "
 "bara innehålla a-z, nummer, minus eller understreck."
 
-#: arche/./validators.py:82 arche/./validators.py:117
+#: arche/./validators.py:79
+msgid "Login disabled for this user"
+msgstr ""
+
+#. Default: Avoid non-english letters for this field.
+#: arche/./validators.py:92
+msgid "asci_encodable_error"
+msgstr "Undvik icke-engelska bokstäver för detta fält."
+
+#: arche/./validators.py:108 arche/./validators.py:141
 msgid "Invalid email or UserID"
 msgstr "Ogiltig epost eller användarID"
 
 #. Default: Password login disabled for this user. If you own the account you
 #. may request one to be set by using the recover password form.
-#: arche/./validators.py:86
+#: arche/./validators.py:112
 msgid "no_password_set_error"
 msgstr ""
 "Lösenordsinloggning är avstängt för denna användare. Om du äger kontot kan "
 "du ställa in ett lösenord genom att använda formuläret för att återställa "
 "lösenord."
 
-#: arche/./validators.py:93 arche/./validators.py:230
+#: arche/./validators.py:119 arche/./validators.py:256
 msgid "Wrong password. Remember that passwords are case sensitive."
 msgstr "Fel lösenord. Kom ihåg att de är skriflägetskänsliga."
 
-#: arche/./validators.py:119
+#: arche/./validators.py:143
 msgid "User doesn't have a valid email address"
 msgstr "Användaren har inte en giltig epostadress"
 
-#: arche/./validators.py:140
+#: arche/./validators.py:166
 #, python-format
 msgid "Can't find the UserID '${userid}'"
 msgstr "Kan inte hitta användarID '${userid}'"
 
-#: arche/./validators.py:198
-#, python-format
-msgid "Not a valid file type, try any of the following: ${suggested}"
-msgstr "Inte en giltig filtyp, prova någon av följande: ${suggested}"
-
-#: arche/./validators.py:42
-msgid "Already used within this context"
-msgstr "Används redan i denna kontext"
-
 #. Default: Already registered. You may recover your password if you've lost
 #. it.
-#: arche/./validators.py:163
+#: arche/./validators.py:189
 msgid "already_registered_email_error"
 msgstr ""
 "Redan registrerad. Du kan återskapa ditt lösenord om du glömt bort det."
 
 #. Default: This address is already used.
-#: arche/./validators.py:167
+#: arche/./validators.py:193
 msgid "already_used_email_error"
 msgstr "Denna adress används redan."
 
-#: arche/./widgets.py:37 arche/./templates/contents.pt:139
+#: arche/./validators.py:205
+#, python-format
+msgid ""
+"Not a valid image file! Any of these image types are supported: ${suggested}"
+msgstr "Inte en giltig bildfil! Dessa stöds: ${suggested}"
+
+#: arche/./validators.py:224
+#, python-format
+msgid "Not a valid file type, try any of the following: ${suggested}"
+msgstr "Inte en giltig filtyp, prova någon av följande: ${suggested}"
+
+#: arche/./widgets.py:38 arche/./templates/contents.pt:38
 msgid "Tags"
 msgstr "Taggar"
 
-#: arche/./widgets.py:73
+#: arche/./widgets.py:74
 msgid "Type something to search."
 msgstr "Skriv något för att söka."
 
-#: arche/./models/acl.py:126 arche/./models/workflow.py:194
+#: arche/./models/acl.py:126 arche/./models/workflow.py:200
 msgid "Inherit"
 msgstr "Ärv"
 
@@ -509,120 +547,124 @@ msgstr "Ärv"
 msgid "Fetch the ACL from the parent object"
 msgstr "Hämta ACL från föräldraobjektet"
 
-#: arche/./models/datetime_handler.py:110
+#: arche/./models/datetime_handler.py:112
 msgid "Just now"
 msgstr "Nyss"
 
-#: arche/./models/datetime_handler.py:112
+#: arche/./models/datetime_handler.py:114
 #, python-format
 msgid "${diff} seconds ago"
 msgstr "${diff} sekunder sedan"
 
-#: arche/./models/datetime_handler.py:114
+#: arche/./models/datetime_handler.py:116
 msgid "1 minute ago"
 msgstr "1 minut sedan"
 
-#: arche/./models/datetime_handler.py:116
+#: arche/./models/datetime_handler.py:118
 #, python-format
 msgid "${diff} minutes ago"
 msgstr "${diff} minuter sedan"
 
-#: arche/./models/datetime_handler.py:118
+#: arche/./models/datetime_handler.py:120
 msgid "1 hour ago"
 msgstr "1 timme sedan"
 
-#: arche/./models/datetime_handler.py:120
+#: arche/./models/datetime_handler.py:122
 #, python-format
 msgid "${diff} hours ago"
 msgstr "${diff} timmar sedan"
 
-#: arche/./models/workflow.py:116
-msgid "Simple"
-msgstr "Enkel"
-
-#: arche/./models/workflow.py:167
-msgid "Review workflow"
-msgstr "Granskningsarbetsflöde"
-
-#: arche/./models/workflow.py:193
-msgid "Inherit workflow"
-msgstr "Ärv"
-
-#: arche/./models/workflow.py:103 arche/./models/workflow.py:135
-#: arche/./models/workflow.py:150
-msgid "Make private"
-msgstr "Gör privat"
-
-#: arche/./models/workflow.py:104 arche/./models/workflow.py:136
-#: arche/./models/workflow.py:151
-msgid "Now private"
-msgstr "Nu privat"
-
-#: arche/./models/workflow.py:109 arche/./models/workflow.py:140
-#: arche/./models/workflow.py:160
-msgid "Publish"
-msgstr "Publicera"
-
-#: arche/./models/workflow.py:110 arche/./models/workflow.py:141
-#: arche/./models/workflow.py:161
-msgid "Published"
-msgstr "Publicerad"
-
-#: arche/./models/workflow.py:145
-msgid "Submit for review"
-msgstr "Skicka in för granskning"
-
-#: arche/./models/workflow.py:146
-msgid "Submitted for review"
-msgstr "Inskickad för granskning"
-
-#: arche/./models/workflow.py:155
-msgid "Retract and resubmit for review"
-msgstr "Dra tillbaka och skicka till granskning"
-
-#: arche/./models/workflow.py:156
-msgid "Retracted and resubmitted for review"
-msgstr "Tillbakadragen och skickad till granskning"
-
-#: arche/./models/workflow.py:49
+#: arche/./models/workflow.py:50
 msgid "<Not found>"
 msgstr "<Hittades inte>"
 
-#: arche/./portlets/__init__.py:55
+#: arche/./models/workflow.py:109 arche/./models/workflow.py:141
+#: arche/./models/workflow.py:156
+msgid "Make private"
+msgstr "Gör privat"
+
+#: arche/./models/workflow.py:110 arche/./models/workflow.py:142
+#: arche/./models/workflow.py:157
+msgid "Now private"
+msgstr "Nu privat"
+
+#: arche/./models/workflow.py:115 arche/./models/workflow.py:146
+#: arche/./models/workflow.py:166
+msgid "Publish"
+msgstr "Publicera"
+
+#: arche/./models/workflow.py:116 arche/./models/workflow.py:147
+#: arche/./models/workflow.py:167
+msgid "Published"
+msgstr "Publicerad"
+
+#: arche/./models/workflow.py:122
+msgid "Simple"
+msgstr "Enkel"
+
+#: arche/./models/workflow.py:151
+msgid "Submit for review"
+msgstr "Skicka in för granskning"
+
+#: arche/./models/workflow.py:152
+msgid "Submitted for review"
+msgstr "Inskickad för granskning"
+
+#: arche/./models/workflow.py:161
+msgid "Retract and resubmit for review"
+msgstr "Dra tillbaka och skicka till granskning"
+
+#: arche/./models/workflow.py:162
+msgid "Retracted and resubmitted for review"
+msgstr "Tillbakadragen och skickad till granskning"
+
+#: arche/./models/workflow.py:173
+msgid "Review workflow"
+msgstr "Granskningsarbetsflöde"
+
+#: arche/./models/workflow.py:199
+msgid "Inherit workflow"
+msgstr "Ärv"
+
+#: arche/./portlets/__init__.py:62
 msgid "Portlet"
 msgstr ""
 
-#: arche/./portlets/__init__.py:56
+#: arche/./portlets/__init__.py:63
 msgid "A mini view within another view"
 msgstr "En minivy inuti en annan vy"
 
-#: arche/./portlets/__init__.py:118
+#: arche/./portlets/__init__.py:125
 msgid "Portlet folder"
 msgstr ""
 
-#: arche/./portlets/__init__.py:119
+#: arche/./portlets/__init__.py:126
 msgid "Container for portlets"
 msgstr "Container för portlets"
 
-#: arche/./portlets/__init__.py:211
+#: arche/./portlets/__init__.py:218
 msgid "Left"
 msgstr "Vänster"
 
-#: arche/./portlets/__init__.py:212
+#: arche/./portlets/__init__.py:219
 msgid "Right"
 msgstr "Höger"
 
-#: arche/./portlets/__init__.py:213
+#: arche/./portlets/__init__.py:220
 msgid "Top"
 msgstr "Topp"
 
-#: arche/./portlets/__init__.py:214
+#: arche/./portlets/__init__.py:221
 msgid "Bottom"
 msgstr "Botten"
 
 #: arche/./portlets/byline.py:11
 msgid "Byline"
 msgstr ""
+
+#: arche/./portlets/contents.py:13 arche/./views/actions.py:64
+msgid "Contents"
+msgstr "Innehåll"
 
 #: arche/./portlets/navigation.py:15
 msgid "Navigation"
@@ -632,19 +674,19 @@ msgstr "Navigation"
 msgid "Toggle navigation"
 msgstr ""
 
-#: arche/./templates/contents.pt:118
+#: arche/./templates/contents.pt:15
 msgid "Contents of"
 msgstr "Innehållet i"
 
-#: arche/./templates/contents.pt:125
+#: arche/./templates/contents.pt:22
 msgid "Parent directory"
 msgstr "Föräldermapp"
 
-#: arche/./templates/contents.pt:128
+#: arche/./templates/contents.pt:25
 msgid "Not a folder, so it can't have content"
 msgstr "Ingen folder, den kan inte ha innehåll"
 
-#: arche/./templates/contents.pt:136 arche/./templates/content/file.pt:25
+#: arche/./templates/contents.pt:35 arche/./templates/content/file.pt:25
 #: arche/./templates/content/image.pt:30
 #: arche/./templates/deform/file_upload.pt:20
 #: arche/./templates/deform/readonly/file_upload.pt:18
@@ -652,34 +694,28 @@ msgstr "Ingen folder, den kan inte ha innehåll"
 msgid "Type"
 msgstr "Typ"
 
-#: arche/./templates/contents.pt:137
-#: arche/./templates/content/users_table.pt:48
+#: arche/./templates/contents.pt:36 arche/./templates/content/users_table.pt:48
 msgid "Created"
 msgstr "Skapad"
 
-#: arche/./templates/contents.pt:138
+#: arche/./templates/contents.pt:37
 msgid "Modified"
 msgstr "Modifierad"
 
-#: arche/./templates/contents.pt:140
+#: arche/./templates/contents.pt:39
 msgid "Info"
 msgstr "Info"
 
-#: arche/./templates/contents.pt:149
-#: arche/./templates/content/users_table.pt:56
+#: arche/./templates/contents.pt:51 arche/./templates/content/users_table.pt:56
 msgid "Loading..."
 msgstr "Laddar..."
-
-#: arche/./templates/contents.pt:177
-msgid "Change order"
-msgstr "Ändra ordning"
 
 #: arche/./templates/initial_setup.pt:25
 msgid ""
 "This is the setup page - there's no site here yet. What would you like to do?"
 msgstr ""
 
-#: arche/./templates/manage_portlets.pt:24 arche/./views/actions.py:238
+#: arche/./templates/manage_portlets.pt:24 arche/./views/actions.py:242
 msgid "Manage portlets"
 msgstr "Hantera portlets"
 
@@ -701,18 +737,58 @@ msgstr "Tillbaka"
 msgid "Search"
 msgstr "Sök"
 
-#: arche/./templates/permissions.pt:48
+#: arche/./templates/permissions.pt:49
 msgid "Saved"
 msgstr "Sparad"
 
-#: arche/./templates/permissions.pt:60 arche/./views/portlets.py:86
+#: arche/./templates/permissions.pt:61 arche/./views/portlets.py:86
 msgid "Added"
 msgstr "Tillagd"
 
-#: arche/./templates/permissions.pt:81 arche/./templates/permissions.pt:133
-#: arche/./templates/permissions.pt:148
+#: arche/./templates/permissions.pt:73
+msgid "Current settings at ${title}"
+msgstr "Nuvarande inställningar för '${title}'"
+
+#: arche/./templates/permissions.pt:83 arche/./templates/permissions.pt:135
+#: arche/./templates/permissions.pt:150
 msgid "UserID or group"
 msgstr "AnvändarID eller grupp"
+
+#: arche/./templates/permissions.pt:115 arche/./views/base.py:209
+msgid "Save"
+msgstr "Spara"
+
+#: arche/./templates/permissions.pt:125
+msgid "Add local roles"
+msgstr ""
+
+#: arche/./templates/permissions.pt:169
+#: arche/./templates/menus/add_content.pt:8 arche/./views/actions.py:85
+#: arche/./views/base.py:210 arche/./views/portlets.py:19
+msgid "Add"
+msgstr "Lägg till"
+
+#: arche/./templates/revisions.pt:10 arche/./views/actions.py:252
+msgid "Revisions"
+msgstr "Revisioner"
+
+#. Default: While it would be possible to have versioning in this context, no
+#. attributes are currently tracked.
+#: arche/./templates/revisions.pt:12
+msgid "no_tracked_attrs_versioning"
+msgstr ""
+
+#: arche/./templates/revisions.pt:25
+msgid "ID"
+msgstr "ID"
+
+#: arche/./templates/revisions.pt:26
+msgid "Timestamp"
+msgstr ""
+
+#: arche/./templates/revisions.pt:28
+msgid "Data"
+msgstr "Data"
 
 #: arche/./templates/search.pt:12
 msgid "Search result"
@@ -723,7 +799,7 @@ msgid "Download file"
 msgstr "Spara fil"
 
 #: arche/./templates/content/file.pt:20 arche/./templates/content/image.pt:25
-#: arche/./views/actions.py:43
+#: arche/./views/actions.py:45
 msgid "View"
 msgstr "Vy"
 
@@ -750,8 +826,8 @@ msgid "There was a problem with your submission"
 msgstr "Det blev ett problem med ditt formulär"
 
 #: arche/./templates/deform/dropzone.pt:29
-#: arche/./templates/deform/file_upload.pt:25 arche/./views/actions.py:185
-#: arche/./views/base.py:201
+#: arche/./templates/deform/file_upload.pt:25 arche/./views/actions.py:189
+#: arche/./views/base.py:207
 msgid "Delete"
 msgstr "Radera"
 
@@ -837,6 +913,10 @@ msgstr "Inte tillåtet"
 msgid "You don't have correct permission to do that."
 msgstr "Du har inte rättighet att göra det här."
 
+#: arche/./templates/exceptions/403.pt:17
+msgid "Back to ${title}"
+msgstr "Tillbaka till '${title}'"
+
 #: arche/./templates/exceptions/404.pt:13
 msgid "Not found"
 msgstr "Hittas inte"
@@ -855,14 +935,9 @@ msgid ""
 msgstr ""
 "arche.debug är satt till True, så felet kommer visas istället för att loggas."
 
-#: arche/./templates/menus/actions.pt:8 arche/./views/actions.py:92
+#: arche/./templates/menus/actions.pt:8 arche/./views/actions.py:94
 msgid "Actions"
 msgstr "Handlingar"
-
-#: arche/./templates/menus/add_content.pt:8 arche/./views/actions.py:83
-#: arche/./views/base.py:204 arche/./views/portlets.py:19
-msgid "Add"
-msgstr "Lägg till"
 
 #: arche/./templates/menus/site.pt:9
 msgid "Site"
@@ -876,249 +951,243 @@ msgstr "(modifierad ${datetime})"
 msgid "Add to"
 msgstr "Lägg till i"
 
-#: arche/./views/actions.py:30
+#: arche/./views/actions.py:32
 msgid "Workflow"
 msgstr "Arbetsflöde"
 
-#: arche/./views/actions.py:57
+#: arche/./views/actions.py:59
 msgid "Edit"
 msgstr "Redigera"
 
-#: arche/./views/actions.py:62
-msgid "Contents"
-msgstr "Innehåll"
-
-#: arche/./views/actions.py:68
+#: arche/./views/actions.py:70
 msgid "Permissions"
 msgstr "Rättigheter"
 
-#: arche/./views/actions.py:102
+#: arche/./views/actions.py:104
 msgid "User menu"
 msgstr "Användarmeny"
 
-#: arche/./views/actions.py:110
+#: arche/./views/actions.py:112
 msgid "Site menu"
 msgstr "Sitemeny"
 
-#: arche/./views/actions.py:118 arche/./views/auth.py:18
-#: arche/./views/auth.py:24
+#: arche/./views/actions.py:120 arche/./views/auth.py:19
+#: arche/./views/auth.py:25
 msgid "Login"
 msgstr "Logga in"
 
-#: arche/./views/actions.py:129 arche/./views/auth.py:49
-#: arche/./views/auth.py:69 arche/./views/auth.py:119
+#: arche/./views/actions.py:131 arche/./views/auth.py:51
+#: arche/./views/auth.py:71 arche/./views/auth.py:121
 msgid "Register"
 msgstr "Registrera"
 
-#: arche/./views/actions.py:141
+#: arche/./views/actions.py:143
 msgid "Settings"
 msgstr "Inställningar"
 
-#: arche/./views/actions.py:156
+#: arche/./views/actions.py:158
 msgid "Logout"
 msgstr "Logga ut"
 
-#: arche/./views/actions.py:175
+#: arche/./views/actions.py:177
 msgid "Profile"
 msgstr "Profil"
 
-#: arche/./views/actions.py:195 arche/./views/cut_copy_paste.py:38
-msgid "Cut"
-msgstr "Klipp"
-
-#: arche/./views/actions.py:205 arche/./views/cut_copy_paste.py:48
-msgid "Copy"
-msgstr "Kopiera"
-
-#: arche/./views/actions.py:218
-msgid "Paste"
-msgstr "Klistra in"
-
-#: arche/./views/actions.py:228
-msgid "Rename"
-msgstr "Byt namn"
-
-#: arche/./views/actions.py:262
-msgid "View selection"
-msgstr ""
-
-#: arche/./views/actions.py:291
-msgid "View settings"
-msgstr ""
-
-#: arche/./views/actions.py:282
-msgid "Unset delegated view"
-msgstr ""
-
-#: arche/./views/auth.py:100
-msgid "Complete registration"
-msgstr "Slutför registrering"
-
-#: arche/./views/auth.py:148 arche/./views/auth.py:25
-msgid "Recover password"
-msgstr "Återställ lösenord"
-
-#: arche/./views/auth.py:179
+#: arche/./views/actions.py:180 arche/./views/auth.py:186
 msgid "Change password"
 msgstr "Byt lösenord"
 
-#: arche/./views/auth.py:128
-msgid "Welcome, you're now registered!"
-msgstr "Välkommen, du är nu registrerad!"
+#: arche/./views/actions.py:199 arche/./views/cut_copy_paste.py:42
+msgid "Cut"
+msgstr "Klipp"
 
-#: arche/./views/auth.py:33
+#: arche/./views/actions.py:209 arche/./views/cut_copy_paste.py:52
+msgid "Copy"
+msgstr "Kopiera"
+
+#: arche/./views/actions.py:222
+msgid "Paste"
+msgstr "Klistra in"
+
+#: arche/./views/actions.py:232
+msgid "Rename"
+msgstr "Byt namn"
+
+#: arche/./views/actions.py:276
+msgid "View selection"
+msgstr ""
+
+#: arche/./views/actions.py:296
+msgid "Unset delegated view"
+msgstr ""
+
+#: arche/./views/actions.py:305
+msgid "View settings"
+msgstr ""
+
+#: arche/./views/auth.py:26 arche/./views/auth.py:155
+msgid "Recover password"
+msgstr "Återställ lösenord"
+
+#: arche/./views/auth.py:34
 msgid "Welcome!"
 msgstr "Välkommen!"
 
-#: arche/./views/auth.py:56 arche/./views/auth.py:105
+#: arche/./views/auth.py:56
+msgid "Site doesn't allow self registration"
+msgstr "Sidan tillåter inte användare att registrera sig själva"
+
+#: arche/./views/auth.py:58 arche/./views/auth.py:107
 msgid "Already logged in."
 msgstr "Redan inloggad."
 
+#: arche/./views/auth.py:86
+msgid "Registration link"
+msgstr "Registreringslänk"
+
 #. Default: An email with registration instructions have been sent to the
 #. address you specified.
-#: arche/./views/auth.py:88
+#: arche/./views/auth.py:90
 msgid "reg_email_notification"
 msgstr ""
 "Ett epostmeddelande med registreringsinstruktioner har skickats till "
 "adressen du angav."
 
-#: arche/./views/auth.py:156
-msgid "Message sent"
-msgstr "Meddelande skickat"
-
-#: arche/./views/auth.py:170
-msgid "Password recovery request"
-msgstr "Lösenordsåterställning"
-
-#: arche/./views/auth.py:200
-msgid "Not allowed"
-msgstr "Tillåts inte"
-
-#: arche/./views/auth.py:54
-msgid "Site doesn't allow self registration"
-msgstr "Sidan tillåter inte användare att registrera sig själva"
-
-#: arche/./views/auth.py:84
-msgid "Registration link"
-msgstr "Registreringslänk"
+#: arche/./views/auth.py:102
+msgid "Complete registration"
+msgstr "Slutför registrering"
 
 #. Default: The registration link is either invalid or has expired. You may
 #. request a new one if registration is open.
-#: arche/./views/auth.py:109
+#: arche/./views/auth.py:111
 msgid "reg_token_expired_or_invalid"
 msgstr ""
+"Registreringslänken är antagligen ogiltig eller har gått ut. Du kan be om en "
+"ny om registrering är tillåten på sidan"
 
-#: arche/./views/auth.py:166
+#: arche/./views/auth.py:130
+msgid "Welcome, you're now registered!"
+msgstr "Välkommen, du är nu registrerad!"
+
+#: arche/./views/auth.py:159
+msgid "Send"
+msgstr "Skicka"
+
+#: arche/./views/auth.py:163
+msgid "Message sent"
+msgstr "Meddelande skickat"
+
+#: arche/./views/auth.py:173
 msgid "There's no email associated with this account."
 msgstr "Ingen epostadress är kopplad till kontot."
 
-#: arche/./views/auth.py:208
+#: arche/./views/auth.py:177
+msgid "Password recovery request"
+msgstr "Lösenordsåterställning"
+
+#: arche/./views/auth.py:207
+msgid "Not allowed"
+msgstr "Tillåts inte"
+
+#: arche/./views/auth.py:215
 msgid "Password changed"
 msgstr "Lösenord ändrat"
 
 #. Default: You've logged in and changed your password
-#: arche/./views/auth.py:211
+#: arche/./views/auth.py:218
 msgid "logged_in_changed_pw"
 msgstr "Du har loggat in och ändrat lösenord"
 
-#: arche/./views/auth.py:152
-msgid "Send"
-msgstr "Skicka"
-
 #: arche/./views/base.py:208
-msgid "Done"
-msgstr "Klart"
-
-#: arche/./views/base.py:209
-msgid "Canceled"
-msgstr "Avbruten"
-
-#: arche/./views/base.py:411
-msgid "Dynamic view"
-msgstr "Dynamisk vy"
-
-#: arche/./views/base.py:202
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: arche/./views/base.py:203
-msgid "Save"
-msgstr "Spara"
+#: arche/./views/base.py:214
+msgid "Done"
+msgstr "Klart"
 
-#: arche/./views/base.py:337
+#: arche/./views/base.py:215
+msgid "Canceled"
+msgstr "Avbruten"
+
+#: arche/./views/base.py:332
+msgid "You're not allowed to add this content type here."
+msgstr ""
+
+#: arche/./views/base.py:350
 #, python-format
 msgid "Add ${type_title}"
 msgstr "Lägg till ${type_title}"
 
-#: arche/./views/base.py:358
+#: arche/./views/base.py:371
 #, python-format
 msgid "Edit ${type_title}"
 msgstr "Redigera ${type_title}"
 
-#: arche/./views/base.py:377
+#: arche/./views/base.py:387
+msgid "<Unknown Type>"
+msgstr "<Okänd typ>"
+
+#: arche/./views/base.py:390
 #, python-format
 msgid "Delete ${title} (${type_title}) ?"
 msgstr "Radera ${title} (${type_title}) ?"
 
-#: arche/./views/base.py:399
+#: arche/./views/base.py:412
 #, python-format
 msgid "Deleted '${title}'"
 msgstr "Raderade '${title}'"
 
-#: arche/./views/base.py:455
+#: arche/./views/base.py:467
 msgid "Default view"
 msgstr "Standardvy"
 
-#: arche/./views/base.py:457
+#: arche/./views/base.py:469
 #, python-format
 msgid "View set to '${title}'"
 msgstr "Vy satt till '${title}'"
 
-#: arche/./views/base.py:374
-msgid "<Unknown Type>"
-msgstr "<Okänd typ>"
-
-#: arche/./views/base.py:474
+#: arche/./views/base.py:486
 #, python-format
 msgid "View delegated to '${title}'"
 msgstr "Vy delegerad till '${title}'"
 
-#: arche/./views/base.py:478
+#: arche/./views/base.py:490
 msgid "Normal view restored"
 msgstr "Normalvy återställd"
 
-#: arche/./views/cut_copy_paste.py:88
+#: arche/./views/cut_copy_paste.py:61
+msgid "Can't paste to this context"
+msgstr ""
+
+#: arche/./views/cut_copy_paste.py:68
+msgid "Moved here"
+msgstr ""
+
+#: arche/./views/cut_copy_paste.py:72
+msgid "New copy added here"
+msgstr ""
+
+#: arche/./views/cut_copy_paste.py:83
+msgid "Name, this will be part of the url"
+msgstr ""
+
+#: arche/./views/cut_copy_paste.py:90
 #, python-format
 msgid "Rename '${name}'"
 msgstr "Byt namn på '${name}'"
 
-#: arche/./views/cut_copy_paste.py:57
-msgid "Can't paste to this context"
-msgstr ""
-
-#: arche/./views/cut_copy_paste.py:64
-msgid "Moved here"
-msgstr ""
-
-#: arche/./views/cut_copy_paste.py:68
-msgid "New copy added here"
-msgstr ""
-
-#: arche/./views/cut_copy_paste.py:79
-msgid "Name, this will be part of the url"
-msgstr ""
-
 #. Default: Something isn't behaving the way it should. The error has been
 #. logged. You may wish to contact the person running this site about this
 #. error. It's one of those things that should never happen.
-#: arche/./views/exceptions.py:14
+#: arche/./views/exceptions.py:16
 msgid "generic_exception_explanation"
 msgstr ""
 "Något beter sig inte som det ska. Felet har loggats. Det kan vara en bra idé "
 "att kontakta de som driver sidan om detta. Det här är en sådan sak som "
 "aldrig ska hända."
 
-#: arche/./views/exceptions.py:78
+#: arche/./views/exceptions.py:79
 msgid "Not allowed, perhaps you need to log in?"
 msgstr "Inte tillåtet, du behöver kanske logga in?"
 
@@ -1126,22 +1195,22 @@ msgstr "Inte tillåtet, du behöver kanske logga in?"
 msgid "Content listing"
 msgstr ""
 
-#: arche/./views/permissions.py:47
+#: arche/./views/permissions.py:58
 msgid "That GroupID don't exist"
 msgstr ""
 
-#: arche/./views/permissions.py:52
+#: arche/./views/permissions.py:63
 msgid "That UserID don't exist"
 msgstr ""
+
+#: arche/./views/portlets.py:29
+msgid "<Select>"
+msgstr "<Välj>"
 
 #: arche/./views/portlets.py:114
 #, python-format
 msgid "Edit ${portlet_title}"
 msgstr "Redigera ${portlet_title}"
-
-#: arche/./views/portlets.py:29
-msgid "<Select>"
-msgstr "<Välj>"
 
 #: arche/./views/portlets.py:122
 msgid "Nothing to edit for this portlet"
@@ -1151,10 +1220,6 @@ msgstr ""
 msgid "Invalid search query - try something else!"
 msgstr "Ogiltig sökning - prova något annat!"
 
-#: arche/./views/selected_content.py:20
-msgid "Selected content"
-msgstr ""
-
 #: arche/./views/selected_content.py:11
 msgid "Select content to show"
 msgstr ""
@@ -1163,39 +1228,61 @@ msgstr ""
 msgid "Show content body, if any"
 msgstr ""
 
+#: arche/./views/selected_content.py:20
+msgid "Selected content"
+msgstr ""
+
 #: arche/./views/site_settings.py:11
 msgid "Site settings"
 msgstr "Siteinställningar"
 
+#: arche/./views/user.py:37
+msgid "Email change validation"
+msgstr "Validering av epoständring"
+
 #. Default: Since you requested to change your email address we've sent you an
 #. email to verify your new address. As soon as you click the link in your
 #. email, your address will change. All other changes were saved.
-#: arche/./views/user.py:39
+#: arche/./views/user.py:40
 msgid "require_email_verification_notice"
 msgstr ""
 "Eftersom du ändrade epostadressen så har vi skickat ett epostmeddelande till "
 "adressen du angav. Så snart du klickar på länken i brevet, så ändras din "
 "adress. Alla andra ändringar sparades."
 
-#: arche/./views/user.py:72
-msgid "This link is invalid. Unable to change email."
-msgstr "Länken är ogiltig. Kan inte ändra epost."
+#: arche/./views/user.py:64
+msgid "No such token"
+msgstr "Ingen sådan token"
 
-#: arche/./views/user.py:36
-msgid "Email change validation"
-msgstr "Validering av epoständring"
-
-#: arche/./views/user.py:65
+#: arche/./views/user.py:66
 msgid "The email change request has expired."
 msgstr "Frågan om ändring av epost har gått ut."
 
-#: arche/./views/user.py:70
+#: arche/./views/user.py:71
 msgid "Email changed"
 msgstr "Epost ändrad"
 
-#: arche/./views/user.py:63
-msgid "No such token"
-msgstr "Ingen sådan token"
+#: arche/./views/user.py:73
+msgid "This link is invalid. Unable to change email."
+msgstr "Länken är ogiltig. Kan inte ändra epost."
+
+#: arche/./views/wizard.py:8
+msgid "Finish"
+msgstr "Slutför"
+
+#: arche/./views/wizard.py:9
+msgid "Next"
+msgstr "Nästa"
+
+#: arche/./views/wizard.py:10
+msgid "Previous"
+msgstr ""
+
+#~ msgid "Change order"
+#~ msgstr "Ändra ordning"
+
+#~ msgid "Dynamic view"
+#~ msgstr "Dynamisk vy"
 
 #~ msgid "Already registered. You may recover your password if you've lost it."
 #~ msgstr ""

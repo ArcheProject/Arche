@@ -329,8 +329,11 @@ class DefaultAddForm(BaseForm):
         if factory is None:
             raise HTTPNotFound()
         if not self.request.has_permission(factory.add_permission):
-            raise HTTPForbidden(_("You're not allowed to add this content type here. "
-                                  "It requires the permission '%s'" % factory.add_permission))
+            msg = self.request.localizer.translate(_("You're not allowed to add this content type here."))
+            if self.request.registry.settings.get('arche.debug', False) == True:
+                msg += " %s" % self.request.localizer.translate(_("Required permission: '${perm}'",
+                                                                 mapping = {'perm': factory.add_permission}))
+            raise HTTPForbidden(msg)
         return super(DefaultAddForm, self).__call__()
 
     @property

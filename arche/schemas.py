@@ -12,7 +12,7 @@ from arche.interfaces import IPopulator
 from arche.interfaces import ISchemaCreatedEvent
 from arche.interfaces import IUser
 from arche.utils import get_content_factories
-from arche.validators import allow_login_userid_or_email
+from arche.validators import allow_login_userid_or_email, ascii_encodable_validator
 from arche.validators import deferred_current_password_validator
 from arche.validators import deferred_current_pw_or_manager_validator
 from arche.validators import existing_userid_or_email_with_set_email
@@ -296,6 +296,7 @@ class AddUserSchema(UserSchema):
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
                                    missing = admin_allowed_empty,
+                                   validator = ascii_encodable_validator,
                                    widget = deform.widget.CheckedPasswordWidget())
 
 
@@ -323,6 +324,7 @@ def deferred_current_pw_title(node, kw):
         return _("Your current password for your own account")
     return _("Current password")
 
+
 class ChangePasswordSchema(colander.Schema):
     #Note: Current password field should be removed when token validation or similar is used.
     #If an admin wish to change a password of another user the have to supply their own.
@@ -333,6 +335,7 @@ class ChangePasswordSchema(colander.Schema):
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
                                    missing = admin_allowed_empty,
+                                   validator = ascii_encodable_validator,
                                    widget = deform.widget.CheckedPasswordWidget())
 
 
@@ -370,6 +373,7 @@ class LoginSchema(colander.Schema):
                                           title = _(u"Email or UserID"),)
     password = colander.SchemaNode(colander.String(),
                                    title = _(u"Password"),
+                                   validator = ascii_encodable_validator,
                                    widget = deform.widget.PasswordWidget())
     came_from = colander.SchemaNode(colander.String(),
                                missing = "",
@@ -421,7 +425,7 @@ class FinishRegistrationSchema(colander.Schema):
                                                    default = "At least 6 characters. "
                                                    "It's a good idea to use quite long passwords. "
                                                    "If you forget your password you can reset it later."),
-                                   validator = colander.Length(min = 6, max = 200),
+                                   validator = colander.All(colander.Length(min = 6, max = 200), ascii_encodable_validator),
                                    widget = deform.widget.CheckedPasswordWidget(redisplay = True))
     came_from = colander.SchemaNode(colander.String(),
                                missing = "",
@@ -537,7 +541,7 @@ def user_schema_admin_changes(schema, event):
                                        title = allow_login_title,
                                        tab = 'advanced',
                                        description = _("allow_login_description",
-                                                       default = "If checked, this user may login with a regular login form. "
+                                                       default = "User may login with a regular login form. "
                                                        "This is the default behaviour, but for some system specific "
                                                        "users or someone you wish to shut out you may want to disable this."),))
         schema.add(colander.SchemaNode(colander.String(),
