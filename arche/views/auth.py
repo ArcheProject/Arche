@@ -107,7 +107,7 @@ class RegisterFinishForm(BaseForm):
             raise HTTPForbidden(_(u"Already logged in."))
         rtokens = IRegistrationTokens(context)
         email = self.reg_email
-        if not (email in rtokens and rtokens[email].valid and rtokens[email] == request.GET.get('t', object())):
+        if not (email is not None and email in rtokens and rtokens[email].valid and rtokens[email] == request.GET.get('t', object())):
             raise HTTPForbidden(_("reg_token_expired_or_invalid",
                                   default = "The registration link is either invalid or has expired. "
                                   "You may request a new one if registration is open. "))
