@@ -140,12 +140,12 @@ def _finish_registration(view, appstruct):
     except KeyError:
         #Validation is handled by the view already
         pass
-    _notify_will_login(obj, view.request)
+    _notify_will_login(obj, view.request, first_login = True)
     headers = remember(view.request, obj.userid)
     return HTTPFound(location = redirect_url, headers = headers)
 
-def _notify_will_login(user, request):
-    event = WillLoginEvent(user, request = request)
+def _notify_will_login(user, request, first_login = False):
+    event = WillLoginEvent(user, request = request, first_login=first_login)
     request.registry.notify(event)
 
 

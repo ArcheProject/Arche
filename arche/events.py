@@ -66,10 +66,11 @@ class EmailValidatedEvent(object):
 class WillLoginEvent(object):
     __doc__ = IWillLoginEvent.__doc__
 
-    def __init__(self, user, request = None, **kw):
+    def __init__(self, user, request = None, first_login = False, **kw):
         assert IUser.providedBy(user)
         self.user = user
         self.request = request
+        self.first_login = first_login
         self.__dict__.update(**kw)
 
 

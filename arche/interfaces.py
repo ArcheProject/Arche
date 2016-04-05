@@ -44,6 +44,7 @@ class IWillLoginEvent(Interface):
     """
     user = Attribute("The user object")
     request = Attribute("Current request, remember that request.authenticated_userid won't work!")
+    first_login = Attribute("First login since registration?")
 
 
 class IEmailValidatedEvent(Interface):
