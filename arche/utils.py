@@ -303,6 +303,11 @@ class AttributeAnnotations(IterableUserDict):
             setattr(context, self.attr_name, OOBTree())
             self.data = getattr(context, self.attr_name)
 
+    def __repr__(self):
+        klass = self.__class__
+        classname = '%s.%s' % (klass.__module__, klass.__name__)
+        return '<%s object at %#x>' % (classname, id(self),)
+
 
 @implementer(IRegistrationTokens)
 @adapter(IRoot)
