@@ -6,6 +6,7 @@ def includeme(config):
     config.include('.evolver')
     config.include('.file_upload')
     config.include('.flash_messages')
+    config.include('.folder')
     config.include('.jsondata')
     config.include('.mimetype_views')
     config.include('.thumbnails')

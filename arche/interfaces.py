@@ -148,6 +148,9 @@ class IContent(Interface):
 class IDocument(Interface):
     pass
 
+class IArcheFolder(IContent):
+    pass
+
 class IUser(IBase):
     first_name = Attribute("First name")
     last_name = Attribute("Last name")

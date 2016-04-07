@@ -300,6 +300,10 @@ class AddUserSchema(UserSchema):
                                    widget = deform.widget.CheckedPasswordWidget())
 
 
+class FolderSchema(BaseSchema, DCMetadataSchema):
+    pass
+
+
 class GroupSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
                                 title = _(u"Title"))
@@ -566,6 +570,7 @@ def includeme(config):
     config.add_content_schema('Auth', FinishRegistrationSchema, 'register_finish')
     config.add_content_schema('Auth', CombinedRegistrationSchema, 'register_skip_validation')
     config.add_content_schema('Auth', RecoverPasswordSchema, 'recover_password')
+    config.add_content_schema('Folder', FolderSchema, ('add', 'view', 'edit'))
     config.add_content_schema('Group', GroupSchema, ('add', 'view', 'edit'))
     config.add_content_schema('File', AddFileSchema, 'add')
     config.add_content_schema('File', EditFileSchema, 'edit')
