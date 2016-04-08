@@ -461,7 +461,10 @@ def set_view(context, request, name = None):
                             u"Perhaps you forgot to register the view for this context?")
     context.default_view = name
     if name != 'view':
-        view_cls = get_content_views(request.registry)[context.type_name][name]
+        try:
+            view_cls = get_content_views(request.registry)[context.type_name][name]
+        except KeyError:
+            raise HTTPForbidden("No view named '%s' registered for type '%s'" % (name, context.type_name))
         title = getattr(view_cls, 'title', name)
     else:
         title = _("Default view")
