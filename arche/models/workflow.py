@@ -151,7 +151,7 @@ class Transition(object):
         self.from_state = from_state
         self.to_state = to_state
         self.permission = permission
-        self.title = title
+        self.title = title and title or to_state
         self.message = message
 
     @property
