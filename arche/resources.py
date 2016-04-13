@@ -224,7 +224,10 @@ class Content(Base, Folder):
 
     def get_nav_title(self):
         nav_title = getattr(self, 'nav_title', None)
-        return nav_title and nav_title or self.title
+        if nav_title:
+            return nav_title
+        title = getattr(self, 'title', '')
+        return title and title or self.__name__
 
     @property
     def tags(self): return getattr(self, '__tags__', ())
