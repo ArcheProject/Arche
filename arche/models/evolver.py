@@ -19,6 +19,7 @@ from arche.interfaces import IRoot
 class BaseEvolver(object):
     name = ""
     sw_version = 0
+    initial_db_version = 0
     version_requirements = {}
 
     def __init__(self, context):
@@ -35,13 +36,13 @@ class BaseEvolver(object):
 
     @property
     def needs_upgrade(self):
-        return self.db_version != self.sw_version
+        return self.db_version < self.sw_version
 
     def get_manager(self):
         return ZODBEvolutionManager(self.context,
                                     evolve_packagename = self.evolve_packagename,
                                     sw_version = self.sw_version,
-                                    initial_db_version = self.sw_version)
+                                    initial_db_version = self.initial_db_version)
 
     def evolve(self):
         if self.needs_upgrade:

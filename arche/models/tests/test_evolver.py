@@ -1,20 +1,25 @@
 from __future__ import unicode_literals
+
 from unittest import TestCase
 
 from pyramid import testing
+from zope.interface import implementer
 from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
-from arche.interfaces import IEvolver
-from zope.interface import implementer
-from arche.interfaces import IRoot
+
 from arche.exceptions import EvolverVersionError
+from arche.interfaces import IEvolver
+from arche.interfaces import IRoot
 
 
 class _MockJar(object):
-    _root = {'repoze.evolution': {}}
+
+    def __init__(self):
+        self._root = {'repoze.evolution': {}}
 
     def root(self):
         return self._root
+
 
 @implementer(IRoot)
 class _MockPersistentLike(testing.DummyResource):
@@ -92,3 +97,16 @@ class BaseEvolverTests(TestCase):
         obj = _Evolver(root)
         obj.evolve()
         self.assertEqual(root.evolved, True)
+
+    def test_evolve_skip_version(self):
+        class _Evolver(self._cut):
+            name = 'one'
+            sw_version = 2
+            initial_db_version = 1
+            evolve_packagename = 'arche.models.tests.evolve_fixture'
+        root = _MockPersistentLike()
+        root._p_jar.root()
+        obj = _Evolver(root)
+        obj.evolve()
+        self.failIf(hasattr(root, 'evolved'))
+        self.failUnless(root.evolved2)
