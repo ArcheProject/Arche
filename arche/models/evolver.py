@@ -112,6 +112,14 @@ def check_sw_versions(event = None, env = None):
 def add_evolver(config, evolver):
     config.registry.registerAdapter(evolver, name = evolver.name)
 
+def run_initial_migrations(root):
+    #Fetch any evolvers and run them if needed.
+    reg = get_current_registry()
+    names = [x.name for x in reg.registeredAdapters() if x.provided == IEvolver]
+    for name in names:
+        evolver = reg.getAdapter(root, IEvolver, name = name)
+        evolver.evolve()
+
 def includeme(config):
     config.add_directive('add_evolver', add_evolver)
     config.add_evolver(ArcheEvolver)
