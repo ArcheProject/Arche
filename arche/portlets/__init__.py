@@ -168,6 +168,15 @@ class PortletManager(IterableUserDict):
         portlet.__parent__ = portlets
         return portlet
 
+    def get_portlets(self, slot, portlet_type = None):
+       # [x.portlet_type for x in manager.get('agenda_item', {}).values()]
+        results = []
+        for portlet in self.get(slot, {}).values():
+            if portlet_type and portlet_type != portlet.portlet_type:
+                continue
+            results.append(portlet)
+        return results
+
     def remove(self, slot, portlet_uid):
         self[slot].pop(portlet_uid, None)
 
