@@ -37,6 +37,13 @@ class WorkflowTests(TestCase):
         from arche.models.workflow import Workflow
         return Workflow
 
+    def _mk_dummy_wf(self):
+        class DummyWf(self._cut):
+            states = {}
+            transitions = {}
+            name = 'dummy_wf'
+        return DummyWf
+
     def test_verify_class(self):
         verifyClass(IWorkflow, self._cut)
 
@@ -44,23 +51,26 @@ class WorkflowTests(TestCase):
         verifyObject(IWorkflow, self._cut(_mk_dummy()))
 
     def test_state_title(self):
-        obj = self._cut(_mk_dummy())
+        wf =  self._mk_dummy_wf()
+        obj = wf(_mk_dummy())
         obj.states['one'] = 'Hello'
         obj.initial_state = 'one'
         self.assertEqual(obj.state_title, 'Hello')
 
     def test_get_transitions(self):
-        obj = self._cut(_mk_dummy())
+        wf =  self._mk_dummy_wf()
+        obj = wf(_mk_dummy())
         obj.initial_state = 'current'
         one = _mk_dummy_transition()
         two = _mk_dummy_transition(from_state = 'other')
-        obj.transitions['one'] = one
-        obj.transitions['two'] = two
+        obj.transitions[one.name] = one
+        obj.transitions[two.name] = two
         self.assertEqual(tuple(obj.get_transitions()), (one,))
 
     def test_get_transitions_wrong_perm(self):
         self.config.testing_securitypolicy('userid', permissive = False)
-        obj = self._cut(_mk_dummy())
+        wf =  self._mk_dummy_wf()
+        obj = wf(_mk_dummy())
         obj.initial_state = 'current'
         one = _mk_dummy_transition()
         two = _mk_dummy_transition(from_state = 'other')
@@ -69,49 +79,98 @@ class WorkflowTests(TestCase):
         self.assertEqual(tuple(obj.get_transitions()), ())
 
     def test_do_transition(self):
-        obj = self._cut(_mk_dummy())
+        wf =  self._mk_dummy_wf()
+        obj = wf(_mk_dummy())
         obj.initial_state = 'current'
         obj.states['future'] = 'x'
         one = _mk_dummy_transition()
-        obj.transitions['one'] = one
-        obj.do_transition('one')
+        obj.transitions['one:future'] = one
+        obj.do_transition('one:future')
         self.assertEqual(obj.state, 'future')
 
     def test_do_transition_wrong_transition(self):
-        obj = self._cut(_mk_dummy())
+        wf =  self._mk_dummy_wf()
+        obj = wf(_mk_dummy())
         obj.initial_state = 'other'
         obj.states['future'] = 'x'
         one = _mk_dummy_transition()
-        obj.transitions['one'] = one
-        self.assertRaises(ValueError, obj.do_transition, 'one')
+        obj.transitions['one:future'] = one
+        self.assertRaises(ValueError, obj.do_transition, 'one:future')
 
     def test_do_transition_force_wrong_initial_state(self):
-        obj = self._cut(_mk_dummy())
+        wf =  self._mk_dummy_wf()
+        obj = wf(_mk_dummy())
         obj.initial_state = 'other'
         obj.states['future'] = 'x'
         one = _mk_dummy_transition()
-        obj.transitions['one'] = one
-        obj.do_transition('one', force = True)
+        obj.transitions['one:future'] = one
+        obj.do_transition('one:future', force = True)
         self.assertEqual(obj.state, 'future')
 
     def test_do_transition_force_wrong_perm(self):
         self.config.testing_securitypolicy('userid', permissive = False)
-        obj = self._cut(_mk_dummy())
+        wf =  self._mk_dummy_wf()
+        obj = wf(_mk_dummy())
         obj.initial_state = 'current'
         obj.states['future'] = 'x'
         one = _mk_dummy_transition()
-        obj.transitions['one'] = one
-        obj.do_transition('one', force = True)
+        obj.transitions['one:future'] = one
+        obj.do_transition('one:future', force = True)
         self.assertEqual(obj.state, 'future')
 
     def test_do_transition_wrong_perm(self):
         self.config.testing_securitypolicy('userid', permissive = False)
-        obj = self._cut(_mk_dummy())
+        wf =  self._mk_dummy_wf()
+        obj = wf(_mk_dummy())
         obj.initial_state = 'current'
         obj.states['future'] = 'x'
         one = _mk_dummy_transition()
-        obj.transitions['one'] = one
-        self.assertRaises(HTTPForbidden, obj.do_transition, 'one')
+        obj.transitions['one:future'] = one
+        self.assertRaises(HTTPForbidden, obj.do_transition, 'one:future')
+
+    def test_add_tranistions_one(self):
+        wf = self._mk_dummy_wf()
+        wf.states = {'private': '', 'published': ''}
+        wf.add_transitions(from_states = 'private', to_states = 'published')
+        self.assertEqual(len(wf.transitions), 1)
+
+    def test_add_tranistions_many_to(self):
+        wf = self._mk_dummy_wf()
+        wf.states = {'private': '', 'published': '', 'pending': ''}
+        wf.add_transitions(from_states = 'private', to_states = ('published', 'pending'))
+        self.assertEqual(len(wf.transitions), 2)
+
+    def test_add_tranistions_many_from(self):
+        wf = self._mk_dummy_wf()
+        wf.states = {'private': '', 'published': '', 'pending': ''}
+        wf.add_transitions(from_states = ('published', 'pending'), to_states = 'private')
+        self.assertEqual(len(wf.transitions), 2)
+
+    def test_add_tranistions_all(self):
+        wf = self._mk_dummy_wf()
+        wf.states = {'private': '', 'published': '', 'pending': ''}
+        wf.add_transitions(from_states = 'private', to_states = '*')
+        self.assertEqual(len(wf.transitions), 3)
+
+    def test_add_tranistions_all2(self):
+        wf = self._mk_dummy_wf()
+        wf.states = {'private': '', 'published': '', 'pending': ''}
+        wf.add_transitions(from_states = '*', to_states = '*')
+        self.assertEqual(len(wf.transitions), 9)
+
+    def test_add_transitions_create(self):
+        wf = self._mk_dummy_wf()
+        wf.states = {'one': ''}
+        wf.add_transitions(from_states = '*', to_states = 'two', create_states=True)
+        self.assertEqual(len(wf.transitions), 1)
+
+    def test_add_transitions_dont_create(self):
+        wf = self._mk_dummy_wf()
+        self.assertRaises(KeyError, wf.add_transitions, from_states = 'one', to_states = 'two')
+
+    def test_add_transitions_nothing_to_do(self):
+        wf = self._mk_dummy_wf()
+        self.assertRaises(ValueError, wf.add_transitions, from_states = '*', to_states = '*')
 
 
 class WorkflowIntegrationTests(TestCase):
@@ -151,6 +210,15 @@ class WorkflowIntegrationTests(TestCase):
         dummy = _mk_dummy()
         wf = get_context_wf(dummy)
         wf.do_transition('private:public')
+        self.assertEqual(wf.state, 'public')
+
+    def test_do_transition_expected_state_as_name(self):
+        from arche.models.workflow import get_context_wf
+        self.config.set_content_workflow('Dummy', 'simple_workflow')
+        dummy = _mk_dummy()
+        wf = get_context_wf(dummy)
+        wf.do_transition('public')
+        self.assertEqual(wf.state, 'public')
 
     def test_do_transiton_events(self):
         from arche.models.workflow import get_context_wf

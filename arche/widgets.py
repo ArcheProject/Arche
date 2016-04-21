@@ -88,6 +88,8 @@ class ReferenceWidget(Select2Widget):
         return dumps(results)
 
     def _fetch_referenced_objects(self, field, cstruct):
+        if cstruct in (colander.null, None, ''):
+            return []
         view = field.schema.bindings['view']
         root = view.root
         query = root.catalog.query

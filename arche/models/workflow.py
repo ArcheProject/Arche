@@ -53,6 +53,55 @@ class Workflow(object):
     def init_acl(cls, registry):
         pass #pragma : no coverage
 
+    @classmethod
+    def add_transitions(cls, from_states = '', to_states = '',
+                       permission = "__NOT_ALLOWED__", title = '',
+                       message = '', create_states = False):
+        """
+        :param from_states: '*' for all current states, or state name, or an iterator with state names.
+        :param to_states: '*' for all current states, or state name, or an iterator with state names.
+        :param permission: The required permission or None
+        :param title: Name of the transition, like "Publish"
+        :param message: Message to display when it was executed, like "Item was published"
+        :return: created transition(s)
+
+        A quick shortcut to create transitions.
+        """
+        from_states = cls._get_states(from_states, create = create_states)
+        to_states = cls._get_states(to_states, create = create_states)
+        results = []
+        for fstate in from_states:
+            for tstate in to_states:
+                transition = Transition(from_state = fstate,
+                                        to_state = tstate,
+                                        permission=permission,
+                                        title=title,
+                                        message=message)
+                if transition.name in cls.transitions:
+                    logger.warn("Overriding tranistion %r in workflow %r", transition.name, cls.name)
+                cls.transitions[transition.name] = transition
+                results.append(transition)
+        return results
+
+    @classmethod
+    def _get_states(cls, states, create = False):
+        found_states = set()
+        if states == '*':
+            found_states.update(cls.states)
+        elif isinstance(states, six.string_types):
+            found_states.add(states)
+        else:
+            found_states.update(states)
+        for state in found_states:
+            if state not in cls.states:
+                if create:
+                    cls.states[state] = state
+                else:
+                    raise KeyError("No state called %r for %r" % (state, cls))
+        if not found_states:
+            raise ValueError("No states to work with")
+        return found_states
+
     def get_transitions(self, request = None):
         if request is None:
             request = get_current_request()
@@ -61,9 +110,17 @@ class Workflow(object):
                 yield trans
 
     def do_transition(self, name, request = None, force = False):
+        """
+        :param name: Either the name of the transision or the expected state
+        :param request: current request
+        :param force: Do transition regardless of permission.
+        :return: transition
+        """
         #Check permission, treat input as unsafe!
         if request is None:
             request = get_current_request()
+        if ':' not in name:
+            name = "%s:%s" % (self.state, name)
         try:
             trans = self.transitions[name]
         except KeyError:
@@ -94,7 +151,7 @@ class Transition(object):
         self.from_state = from_state
         self.to_state = to_state
         self.permission = permission
-        self.title = title
+        self.title = title and title or to_state
         self.message = message
 
     @property

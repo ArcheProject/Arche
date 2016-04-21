@@ -40,11 +40,10 @@ def root_populator(title = "", userid = "", email = "", password = "", populator
     try:
         wf = get_context_wf(root)
         if wf:
-            wf.do_transition('private:public', force = True)
+            wf.do_transition('public', force = True)
     except WorkflowException:
         pass
     return root
-
 
 @implementer(IPopulator)
 @adapter(IRoot)

@@ -111,10 +111,10 @@ def appmaker(zodb_root):
         from pyramid.threadlocal import get_current_registry
         from zope.interface import alsoProvides
         import transaction
-
         from arche.utils import get_content_factories
         from arche.interfaces import IRoot
         from arche.populators import root_populator
+        from arche.models.evolver import run_initial_migrations
 
         factories = get_content_factories()
         #This is where initial population takes place, but first some site setup
@@ -128,9 +128,11 @@ def appmaker(zodb_root):
             #Root added
             data = dict(zodb_root['initial_setup'].setup_data)
             #Attach and remove setup context
-            zodb_root['app_root'] = root_populator(**data)
+            zodb_root['app_root'] = root = root_populator(**data)
+            transaction.commit()
+            run_initial_migrations(root)
             del zodb_root['initial_setup']
-            return zodb_root['app_root']
+            return root
 
 def adjust_bools(settings):
     true_vals = set(['true', '1', 'on'])
