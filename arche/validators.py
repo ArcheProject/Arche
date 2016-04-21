@@ -136,6 +136,9 @@ class ExistingUserIDOrEmail(object):
         self.require_email = require_email
 
     def __call__(self, node, value):
+        if '@' in value:
+            email_validator = colander.Email()
+            email_validator(node, value)
         user = self.context['users'].get_user(value)
         if not user:
             raise colander.Invalid(node, _("Invalid email or UserID"))
