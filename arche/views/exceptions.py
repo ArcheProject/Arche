@@ -1,6 +1,7 @@
 import sys
 import traceback
 
+from pyramid.httpexceptions import HTTPClientError
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString
 from pyramid.location import lineage
@@ -43,7 +44,11 @@ class ExceptionView(BaseView):
             logger.critical(exception_str)
         if self.request.is_xhr:
             return self.xhr_response()
-        response['generic_exc_msg'] = _generic_exc_msg
+        if self.request.response.status == 500:
+            response['exc_msg'] = _generic_exc_msg
+        else:
+            msg = getattr(self.exc, 'message', "")
+            response['exc_msg'] = self.request.localizer.translate(msg)
         return response
 
     def xhr_response(self):
@@ -91,6 +96,10 @@ def includeme(config):
                               renderer = "arche:templates/exceptions/403.pt")
     config.add_notfound_view(NotFoundExceptionView,
                              renderer = "arche:templates/exceptions/404.pt")
+    config.add_view(ExceptionView,
+                    context = HTTPClientError,
+                    renderer = "arche:templates/exceptions/400.pt",
+                    permission = NO_PERMISSION_REQUIRED)
     config.add_view(ExceptionView,
                     context = Exception,
                     renderer = "arche:templates/exceptions/generic.pt",

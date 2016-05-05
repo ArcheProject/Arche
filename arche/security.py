@@ -100,7 +100,6 @@ def has_permission(request, permission, context=None):
         return authz_policy.permits(context, principals, permission)
 
 def context_effective_principals(request, context = None):
-    #import pdb;pdb.set_trace()
     if context is None:
         context = request.context
     authn_policy = request.registry.queryUtility(IAuthenticationPolicy)
