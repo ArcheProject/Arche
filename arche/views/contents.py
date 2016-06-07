@@ -13,7 +13,9 @@ class ContentsView(BaseView):
     def __call__(self):
         folderish_contents_js.need()
         touchpunch_js.need()
-        return {'is_folderish': IFolder.providedBy(self.context)}
+        addable_types = set([x.type_name for x in self.addable_content(self.context)])
+        show_upload = bool(set(['File', 'Image']) & addable_types)
+        return {'is_folderish': IFolder.providedBy(self.context), 'show_upload': show_upload}
 
 
 class JSONContents(BaseView):

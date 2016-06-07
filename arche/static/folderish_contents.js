@@ -8,7 +8,6 @@ function update_table_from_response(response) {
     if (typeof(content_table_tpl) === 'undefined') {
         content_table_tpl = $("#sortable").clone().html();
     } else {
-        console.log("hello world")
         $("#sortable").html(content_table_tpl);
     }
     var directive = {'tr':
@@ -53,17 +52,28 @@ function update_table_from_response(response) {
 }
 
 
-$(document).ready(function() {
+$(function () {
     var request = arche.do_request('./contents.json');
     request.done(update_table_from_response);
 
-    $('#contents-form').on('submit', function(event) {
+    $('[data-delete-button]').on('click', function(event) {
+        var form = $('#contents-form');
         event.preventDefault();
-        $(this).find('[name="action"]').attr('value', 'delete');
-        var url = $(this).attr('action');
-        var data = $(this).serialize();
+        form.find('[name="action"]').attr('value', 'delete');
+        var url = form.attr('action');
+        var data = form.serialize();
         var request = arche.do_request(url, {data: data, method: 'post'});
         request.done(update_table_from_response);
-        $(this).find('[name="action"]').attr('value', '');
+        form.find('[name="action"]').attr('value', '');
+    });
+
+    $('#fileupload').fileupload({
+        dataType: 'json',
+        done: function (e, response) {
+            update_table_from_response(response.result);
+        },
+        error: function(response) {
+            arche.flash_error(response);
+        }
     });
 });

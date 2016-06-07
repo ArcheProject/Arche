@@ -72,8 +72,16 @@
             </tbody>
           </table>
           <input type="hidden" name="action" value="" />
-          <input type="submit" class="btn btn-danger" name="delete" value="Delete"></input>
         </form>
+
+        <input data-delete-button type="button" class="btn btn-danger pull-right" name="delete" value="Delete"></input>
+
+        <span class="btn btn-success fileinput-button" tal:condition="show_upload">
+            <span class="glyphicon glyphicon-plus"></span>
+            <span i18n:translate="">Drag and drop or click to upload...</span>
+            <input id="fileupload" type="file" name="upload" data-url="./upload" multiple />
+        </span>
+
       </div>
     </div>
   </div>
