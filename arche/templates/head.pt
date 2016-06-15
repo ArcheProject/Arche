@@ -13,7 +13,7 @@
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Description" />
-    <link tal:define="favicon request.registry.settings.get('arche.favicon')"
+    <link tal:define="favicon request.registry.settings.get('arche.favicon', None)"
       tal:condition="favicon"
       rel="shortcut icon" href="${request.static_url(favicon)}" />
 </tal:main>
