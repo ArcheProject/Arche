@@ -352,7 +352,7 @@ def get_root(request):
 
 def get_profile(request):
     if request.authenticated_userid:
-        return request.root['users'].get(request.authenticated_userid, None)
+        return request.root.get('users', {}).get(request.authenticated_userid, None)
 
 def resolve_docids(request, docids, perm = PERM_VIEW):
     if isinstance(docids, int):
