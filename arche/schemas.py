@@ -67,7 +67,8 @@ class LocalDateTime(colander.DateTime):
             raise colander.Invalid(node, colander_ts(self.err_template,
                                                      mapping={'val':cstruct, 'err':e}))
         tzinfo = self._get_tz()
-        result = tzinfo.localize(result)
+        if getattr(result, 'tzinfo', None) is None:
+            result = tzinfo.localize(result)
         return result.astimezone(UTC) #ALWAYS save UTC!
 
 
