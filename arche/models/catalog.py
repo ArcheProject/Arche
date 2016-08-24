@@ -350,6 +350,7 @@ def check_catalog_on_startup(event = None, env = None):
     root = env['root']
     if not IRoot.providedBy(root):
         logger.info("Root object is %r, so check_catalog_on_startup won't run" % root)
+        env['closer']()
         return
     catalog = root.catalog
     reg = env['registry']

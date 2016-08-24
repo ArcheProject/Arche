@@ -1,10 +1,5 @@
 .dashed-border { border: #ccc 1px dashed; }
 
-.navbar-brand.arche-logo {
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
 .rotate-me {
   -webkit-animation: rotation 2s infinite linear;
   -moz-animation: rotation 2s infinite linear;
@@ -35,3 +30,25 @@
 /* Add a glyphicon-collapse-toggle inside the link of something collapsible to use this */
 .glyphicon-collapse-toggle:before { content: "\e160"; } /*collapse-up*/
 .collapsed > .glyphicon-collapse-toggle:before { content: "\e159"; } /*collapse-down*/
+
+.fileinput-button {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+.fileinput-button input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  opacity: 0;
+  -ms-filter: 'alpha(opacity=0)';
+  font-size: 200px !important;
+  direction: ltr;
+  cursor: pointer;
+}
+#white-nav-logo {
+  width: 60px;
+  height: 100%;
+  fill:#fff;
+}

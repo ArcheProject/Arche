@@ -115,18 +115,22 @@ class BaseMixin(object):
     show_byline = False
     naming_attr = 'title'
 
-    def __init__(self, **kwargs):
+    def __init__(self, request = None, **kwargs):
         #IContent should be the same iface registered by the roles adapter
-        if 'local_roles' not in kwargs and ILocalRoles.providedBy(self):
+        if request is None:
             request = get_current_request()
+        userid = getattr(request, 'authenticated_userid', None)
+        if 'local_roles' not in kwargs and ILocalRoles.providedBy(self):
             #Check creators attribute?
-            userid = getattr(request, 'authenticated_userid', None)
             if userid:
                 kwargs['local_roles'] = {userid: [ROLE_OWNER]}
         if 'uid' not in kwargs:
             kwargs['uid'] = unicode(uuid4())
         if 'created' not in kwargs and hasattr(self, 'created'):
             kwargs['created'] = utcnow()
+        if 'creator' not in kwargs and hasattr(self, 'creator'):
+            if userid:
+                kwargs['creator'] = [userid]
         if 'data' in kwargs: #Shouldn't be set here. Create a proper blocklist?
             del kwargs['data']
         self.update(event = False, **kwargs)

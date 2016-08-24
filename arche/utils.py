@@ -352,7 +352,7 @@ def get_root(request):
 
 def get_profile(request):
     if request.authenticated_userid:
-        return request.root['users'].get(request.authenticated_userid, None)
+        return request.root.get('users', {}).get(request.authenticated_userid, None)
 
 def resolve_docids(request, docids, perm = PERM_VIEW):
     if isinstance(docids, int):
@@ -364,6 +364,11 @@ def resolve_docids(request, docids, perm = PERM_VIEW):
         if perm and not request.has_permission(perm, obj):
             continue
         yield obj
+
+def resolve_uid(request, uid, perm = PERM_VIEW):
+    docids = request.root.catalog.query("uid == '%s'" % uid)[1]
+    for obj in resolve_docids(request, docids, perm = perm):
+        return obj
 
 class _FailMarker(object):
     def __contains__(self, other):
@@ -425,6 +430,7 @@ def includeme(config):
     config.add_request_method(get_profile, name = 'profile', reify = True)
     config.add_request_method(send_email)
     config.add_request_method(resolve_docids)
+    config.add_request_method(resolve_uid)
     config.add_request_method(content_factories, property = True)
     #Init default scales
     for (name, scale) in image_scales.items():

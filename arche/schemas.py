@@ -3,6 +3,7 @@ import datetime
 
 from pyramid.threadlocal import get_current_request
 from pytz import common_timezones
+from pytz import UTC
 import colander
 import deform
 
@@ -32,7 +33,7 @@ colander_ts = colander._
 class LocalDateTime(colander.DateTime):
     """ Override datetime to be able to handle local timezones and DST.
         - Fetches timezone from dt_handler.timezone
-        - Converts deserialized value to widgets default_timezone (Which should always be UTC)
+        - Converts deserialized value to UTC
     """
 
     def _get_tz(self):
@@ -50,7 +51,7 @@ class LocalDateTime(colander.DateTime):
                             mapping={'val':appstruct})
                           )
         if appstruct.tzinfo is None:
-            appstruct = appstruct.replace(tzinfo=self.default_tzinfo)
+            appstruct = appstruct.replace(tzinfo=UTC)
         appstruct = appstruct.astimezone(self._get_tz())
         return appstruct.isoformat()
 
@@ -58,12 +59,17 @@ class LocalDateTime(colander.DateTime):
         if not cstruct:
             return colander.null
         try:
+            #Note: Don't pass timezone to colander. It will simply attach it
+            #and not convert properly which messes up the DST.
             result = colander.iso8601.parse_date(
-                cstruct, default_timezone = self._get_tz())
+                cstruct, default_timezone = None)
         except colander.iso8601.ParseError as e:
             raise colander.Invalid(node, colander_ts(self.err_template,
                                                      mapping={'val':cstruct, 'err':e}))
-        return result.astimezone(self.default_tzinfo) #ALWAYS save UTC!
+        tzinfo = self._get_tz()
+        if getattr(result, 'tzinfo', None) is None:
+            result = tzinfo.localize(result)
+        return result.astimezone(UTC) #ALWAYS save UTC!
 
 
 #FIXME: This will change later

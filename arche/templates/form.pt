@@ -5,9 +5,5 @@
   xmlns:i18n="http://xml.zope.org/namespaces/i18n"
   metal:use-macro="view.macro('arche:templates/master.pt', 'arche:templates/inline.pt')"
   i18n:domain="Arche">
-<div metal:fill-slot="content" class="row">
-  <div class="col-md-12">
-    <form tal:replace="structure form" />
-  </div>
-</div>
+<form metal:fill-slot="content" tal:replace="structure form" />
 </html>
