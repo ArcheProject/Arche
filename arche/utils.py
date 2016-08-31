@@ -375,8 +375,7 @@ class _FailMarker(object):
         return False
     def __eq__(self, other):
         return False
-    def __cmp__(self, other):
-        return False
+    __hash__ = None
 
 fail_marker = _FailMarker()
 
@@ -416,6 +415,24 @@ def replace_fanstatic_resource(config, to_remove, to_inject):
                 resource.resources.remove(to_remove)
                 resource.resources.add(to_inject)
 
+def validate_appstruct(request, schema, appstruct, **kw):
+    """
+    Args:
+        schema: colander.Schema
+        appstruct: dict
+        **kw: bind keywords
+
+    Returns:
+        Validated appstruct with defaults + any missing values
+    """
+    if isinstance(schema, type):
+        schema = schema()
+    if schema.bindings is None:
+        if 'request' not in kw:
+            kw['request'] = request
+        schema = schema.bind(**kw)
+    return schema.deserialize(schema.serialize(appstruct))
+
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)
     config.registry.registerAdapter(EmailValidationTokens)
@@ -432,6 +449,7 @@ def includeme(config):
     config.add_request_method(resolve_docids)
     config.add_request_method(resolve_uid)
     config.add_request_method(content_factories, property = True)
+    config.add_request_method(validate_appstruct)
     #Init default scales
     for (name, scale) in image_scales.items():
         config.add_image_scale(name, *scale)
