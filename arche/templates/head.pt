@@ -5,10 +5,10 @@
       i18n:domain="Arche">
     <meta charset="utf-8" />
     <title metal:define-slot="page-title">
-        ${request.root.head_title}
+        ${request.root.head_title|''}
         <tal:subpage condition="request.root != context">
           |
-          ${context.get_nav_title()|context.title|context.__name__}
+          ${context.get_nav_title()|context.title|context.__name__|''}
         </tal:subpage>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
