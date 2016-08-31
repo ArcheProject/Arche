@@ -2,11 +2,13 @@
 from __future__ import unicode_literals
 
 from unittest import TestCase
+from datetime import date
 
 from fanstatic import clear_needed
 from fanstatic import get_needed
 from fanstatic import init_needed
 from pyramid import testing
+import colander
 
 
 def _dummy_view(*args):
@@ -147,3 +149,71 @@ class ReplaceFanstaticResourceTests(TestCase):
         self.assertIn(pure_js, will_include)
         self.assertIn(main_css, will_include)
         self.assertNotIn(bootstrap_css, will_include)
+
+
+@colander.deferred
+def _today(node, kw):
+    return date.today()
+
+@colander.deferred
+def _maybe_context_title(node, kw):
+    context = kw.get('context', None)
+    if context:
+        return getattr(context, 'title', '')
+    return ''
+
+
+class _DummySchema(colander.Schema):
+    title = colander.SchemaNode(colander.String())
+    date = colander.SchemaNode(colander.Date(),
+                               default = _today)
+    tag = colander.SchemaNode(colander.String(),
+                              missing = 'misc')
+    maybe = colander.SchemaNode(colander.String(),
+                                missing = "",
+                                default = _maybe_context_title)
+
+
+class ValidateAppstructTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _fut(self):
+        from arche.utils import validate_appstruct
+        return validate_appstruct
+
+    def test_invalid(self):
+        schema = _DummySchema()
+        request = testing.DummyRequest()
+        self.assertRaises(colander.Invalid, self._fut, request, schema, {})
+
+    def test_bound_schema(self):
+        schema = _DummySchema()
+        schema = schema.bind()
+        request = testing.DummyRequest()
+        self.assertEqual(
+            self._fut(request, schema, {'title': 'Hello'}),
+            {'title': 'Hello', 'date': date.today(), 'tag': 'misc', 'maybe': ''}
+        )
+
+    def test_unbound_class(self):
+        request = testing.DummyRequest()
+        self.assertEqual(
+            self._fut(request, _DummySchema, {'title': 'Hello'}),
+            {'title': 'Hello', 'date': date.today(), 'tag': 'misc', 'maybe': ''}
+        )
+
+    def test_unbound_instance(self):
+        request = testing.DummyRequest()
+        context = testing.DummyModel()
+        context.title = 'Hello world'
+        result = self._fut(request, _DummySchema(), {'title': 'Hello'}, context = context)
+        self.assertEqual(
+            result,
+            {'title': 'Hello', 'date': date.today(), 'tag': 'misc', 'maybe': 'Hello world'}
+        )
