@@ -28,7 +28,7 @@ PERM_DELETE = 'perm:Delete'
 PERM_MANAGE_SYSTEM = 'perm:Manage system'
 PERM_MANAGE_USERS = 'perm:Manage users'
 PERM_REVIEW_CONTENT = 'perm:Review content'
-
+PERM_ACCESS_AUTH_SESSIONS = 'perm:Access auth sessions'
 
 
 ROLE_ADMIN = Role('role:Administrator',
@@ -202,7 +202,6 @@ def includeme(config):
     #ACL registry must be created first
     config.include('arche.models.acl')
     config.include('arche.models.roles')
-    config.include('arche.models.authentication')
     config.register_roles(ROLE_ADMIN,
                           ROLE_EDITOR,
                           ROLE_VIEWER,
@@ -234,7 +233,9 @@ def includeme(config):
     review.add(ROLE_REVIEWER, [PERM_VIEW, PERM_REVIEW_CONTENT])
     #User
     user_acl = config.registry.acl.new_acl('User', title = _("User"))
-    user_acl.add(ROLE_ADMIN, [PERM_VIEW, PERM_EDIT, PERM_MANAGE_USERS, PERM_MANAGE_SYSTEM, PERM_DELETE])
-    user_acl.add(ROLE_OWNER, [PERM_VIEW, PERM_EDIT])
+    user_acl.add(ROLE_ADMIN, [PERM_VIEW, PERM_EDIT, PERM_MANAGE_USERS,
+                              PERM_MANAGE_SYSTEM, PERM_DELETE,
+                              PERM_ACCESS_AUTH_SESSIONS])
+    user_acl.add(ROLE_OWNER, [PERM_VIEW, PERM_EDIT, PERM_ACCESS_AUTH_SESSIONS])
     #Root
     aclreg['Root'] = 'public'

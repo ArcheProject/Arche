@@ -13,7 +13,6 @@ logger = getLogger(__name__)
 default_settings = {
     'arche.hash_method': 'arche.security.sha512_hash_method',
     'arche.includes': '',
-#   'arche.favicon': 'arche:static/favicon.ico',
     'arche.debug': False,
     'arche.use_exception_views': True,
     'arche.timezone': 'UTC', #Default timezone
@@ -22,6 +21,10 @@ default_settings = {
     'arche.actionbar': 'arche.views.actions.render_actionbar',
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
+    'arche.auth.max_sessions': 5, #Per user
+    'arche.auth.activity_update': 60, #Seconds
+    'arche.auth.default_max_valid': 60, #Minutes
+    'arche.auth.max_keep_days': 30, #Days since last activity
 }
 
 def setup_defaults(config):
@@ -32,6 +35,11 @@ def setup_defaults(config):
     for key, value in default_settings.items():
         settings.setdefault(key, value)
     adjust_bools(settings)
+    ints = ['arche.auth.max_sessions',
+            'arche.auth.activity_update',
+            'arche.auth.default_max_valid',
+            'arche.auth.max_keep_days']
+    adjust_ints(settings, ints)
 
 def includeme(config):
     setup_defaults(config)
@@ -76,10 +84,12 @@ def root_factory(request):
 
 def base_config(**settings):
     from arche.security import groupfinder
-    from arche.models.authentication import KeyAndTktAuthentication
-    authn_policy = KeyAndTktAuthentication(secret = read_salt(settings),
-                                           callback = groupfinder,
-                                           hashalg = 'sha512')
+    from pyramid.authentication import AuthTktAuthenticationPolicy
+    authn_policy = AuthTktAuthenticationPolicy(
+        secret = read_salt(settings),
+        callback = groupfinder,
+        hashalg = 'sha512'
+    )
     authz_policy = ACLAuthorizationPolicy()
     return Configurator(root_factory = root_factory,
                         settings = settings,
@@ -135,8 +145,8 @@ def appmaker(zodb_root):
             return root
 
 def adjust_bools(settings):
-    true_vals = set(['true', '1', 'on'])
-    false_vals = set(['false', '0', 'off'])
+    true_vals = set(['true', 'on'])
+    false_vals = set(['false', 'off'])
     for (k, v) in settings.copy().items():
         if not k.startswith('arche.') or not isinstance(v, basestring):
             continue
@@ -144,6 +154,10 @@ def adjust_bools(settings):
             settings[k] = True
         elif v.lower() in false_vals:
             settings[k] = False
+
+def adjust_ints(settings, keys):
+    for k in keys:
+        settings[k] = int(settings[k])
 
 def read_salt(settings):
     from uuid import uuid4

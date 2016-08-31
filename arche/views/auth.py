@@ -6,11 +6,11 @@ import deform
 
 from arche import _
 from arche import security
+from arche.events import WillLoginEvent
 from arche.interfaces import IRegistrationTokens
 from arche.interfaces import IRoot
 from arche.views.base import BaseForm
 from arche.views.base import DefaultEditForm
-from arche.events import WillLoginEvent
 
 
 class LoginForm(BaseForm):
@@ -39,8 +39,8 @@ class LoginForm(BaseForm):
             user = self.context['users'].get(email_or_userid, None)
         if user is None:
             raise HTTPForbidden("Something went wrong during login. No user profile found.")
-        _notify_will_login(user, self.request)
-        headers = remember(self.request, user.userid)
+        event = _notify_will_login(user, self.request)
+        headers = remember(self.request, user.userid, **event.auth_kw)
         url  = appstruct.pop('came_from', None)
         return self.relocate_response(url, headers = headers)
 
@@ -140,14 +140,14 @@ def _finish_registration(view, appstruct):
     except KeyError:
         #Validation is handled by the view already
         pass
-    _notify_will_login(obj, view.request, first_login = True)
-    headers = remember(view.request, obj.userid)
+    event = _notify_will_login(obj, view.request, first_login = True)
+    headers = remember(view.request, obj.userid, **event.auth_kw)
     return HTTPFound(location = redirect_url, headers = headers)
 
 def _notify_will_login(user, request, first_login = False):
     event = WillLoginEvent(user, request = request, first_login=first_login)
     request.registry.notify(event)
-
+    return event
 
 class RecoverPasswordForm(BaseForm):
     type_name = u'Auth'
@@ -227,6 +227,7 @@ def logout(context, request):
     request.session.delete()
     return HTTPFound(location = request.resource_url(context),
                      headers = headers)
+
 
 def includeme(config):
     config.add_view(LoginForm,

@@ -446,7 +446,6 @@ class User(Content, LocalRolesMixin, ContextACLMixin):
     pw_token = None
     css_icon = "glyphicon glyphicon-user"
     allow_login = True
-    apikey = None
     _email_validated = False
     __timezone__ = None
 
