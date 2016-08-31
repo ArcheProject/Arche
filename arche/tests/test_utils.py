@@ -10,6 +10,8 @@ from fanstatic import init_needed
 from pyramid import testing
 import colander
 
+from arche.testing import barebone_fixture
+
 
 def _dummy_view(*args):
     return {}
@@ -87,6 +89,131 @@ class GenerateSlugTests(TestCase):
         context = testing.DummyResource()
         context['hello'] = testing.DummyResource()
         self.assertEqual(self._fut(context, 'hello'), "hello-1")
+
+
+class ProfileTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _fut(self):
+        from arche.utils import get_profile
+        return get_profile
+
+    def test_get_profile_bad_root(self):
+        request = testing.DummyRequest()
+        context = testing.DummyModel()
+        request.root = context
+        self.assertEqual(self._fut(request), None)
+        self.config.testing_securitypolicy(userid = 'jeff')
+        self.assertEqual(self._fut(request), None)
+
+    def test_get_profile(self):
+        request = testing.DummyRequest()
+        root = barebone_fixture(self.config)
+        from arche.api import User
+        root['users']['jeff'] = jeff = User()
+        request.root = root
+        self.assertEqual(self._fut(request), None)
+        self.config.testing_securitypolicy(userid = 'jeff')
+        self.assertEqual(self._fut(request), jeff)
+
+
+class ResolveDocIDsTests(TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.utils import resolve_docids
+        return resolve_docids
+
+    def _fixture(self):
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
+        self.config.include('arche.testing.workflow')
+        self.config.set_content_workflow('User', 'simple_workflow')
+        root = barebone_fixture(self.config)
+        from arche.api import User
+        root['a'] = User()
+        root['b'] = User()
+        request = testing.DummyRequest()
+        request.root = root
+        return root, request
+
+    def _docids(self, root):
+        atd = root.document_map.address_to_docid
+        return [atd['/a'], atd['/b']]
+
+    def test_no_perm(self):
+        root, request = self._fixture()
+        docids = self._docids(root)
+        self.assertEqual(tuple(self._cut(request, docids, perm = None)), (root['a'], root['b']))
+
+    def test_with_view_perm(self):
+        self.config.include('arche.testing.setup_auth')
+        root, request = self._fixture()
+        root['a'].workflow.state = 'public'
+        docids = self._docids(root)
+        self.assertEqual(tuple(self._cut(request, docids)), (root['a'],))
+
+    def test_just_docid(self):
+        root, request = self._fixture()
+        docids = self._docids(root)
+        self.assertEqual(tuple(self._cut(request, docids[0], perm = None)), (root['a'],))
+
+
+class ResolveUIDTests(TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.utils import resolve_uid
+        return resolve_uid
+
+    def test_resolve_uid(self):
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
+        root = barebone_fixture(self.config)
+        from arche.api import Content
+        obj = Content(uid = 'hello')
+        root['o'] = obj
+        request = testing.DummyRequest()
+        request.root = root
+        self.assertEqual(self._cut(request, 'hello'), obj)
+
+
+class FailMarkerTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.utils import _FailMarker
+        return _FailMarker
+
+    def test_always_fails(self):
+        obj = self._cut()
+        self.assertNotIn('hello', obj)
+        self.assertNotEqual(obj, False)
+        self.assertNotEqual(None, obj)
+        self.assertNotEqual(True, obj)
+        self.failIf(0 == obj)
 
 
 class PrepHTMLForSearchTests(TestCase):

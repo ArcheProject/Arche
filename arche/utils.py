@@ -375,8 +375,7 @@ class _FailMarker(object):
         return False
     def __eq__(self, other):
         return False
-    def __cmp__(self, other):
-        return False
+    __hash__ = None
 
 fail_marker = _FailMarker()
 
