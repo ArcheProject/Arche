@@ -341,6 +341,8 @@ def check_catalog_on_startup(event = None, env = None):
     #This should be changed into something more sensible.
     #Env vars?
     from sys import argv
+    #FIXME: This makes arche unusable on windows, or if someone types
+    #"./bin/arche" this won't work.
     script_names = ['bin/arche', 'bin/evolver', 'bin/pshell']
     if argv[0] in script_names:
         return
