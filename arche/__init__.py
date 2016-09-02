@@ -3,6 +3,7 @@ from logging import getLogger
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.i18n import TranslationStringFactory
+from pyramid.util import DottedNameResolver
 from pyramid_zodbconn import get_connection
 from six import string_types
 
@@ -21,17 +22,17 @@ default_settings = {
     'arche.actionbar': 'arche.views.actions.render_actionbar',
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
+    'arche.authn_factory': 'arche.security.auth_tkt_factory',
     'arche.auth.max_sessions': 5, #Per user
     'arche.auth.activity_update': 60, #Seconds
     'arche.auth.default_max_valid': 60, #Minutes
     'arche.auth.max_keep_days': 30, #Days since last activity
 }
 
-def setup_defaults(config):
+def setup_defaults(settings):
     """ Make sure default settings exist. This will fire twice during normal startup since some settings
         are required early. Make sure it doesn't destroy any existing settings!
     """
-    settings = config.registry.settings
     for key, value in default_settings.items():
         settings.setdefault(key, value)
     adjust_bools(settings)
@@ -42,7 +43,7 @@ def setup_defaults(config):
     adjust_ints(settings, ints)
 
 def includeme(config):
-    setup_defaults(config)
+    setup_defaults(config.registry.settings) #This will run twice...
     config.include('arche.utils')
     config.include('arche.subscribers')
     config.include('arche.resources')
@@ -83,13 +84,9 @@ def root_factory(request):
     return appmaker(conn.root())
 
 def base_config(**settings):
-    from arche.security import groupfinder
-    from pyramid.authentication import AuthTktAuthenticationPolicy
-    authn_policy = AuthTktAuthenticationPolicy(
-        secret = read_salt(settings),
-        callback = groupfinder,
-        hashalg = 'sha512'
-    )
+    resolver = DottedNameResolver()
+    setup_defaults(settings)
+    authn_policy = resolver.maybe_resolve(settings['arche.authn_factory'])(settings)
     authz_policy = ACLAuthorizationPolicy()
     return Configurator(root_factory = root_factory,
                         settings = settings,
@@ -100,7 +97,6 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     config = base_config(**settings)
-    setup_defaults(config)
     cache_max_age = int(settings.get('arche.cache_max_age', 60*60*24))
     config.add_static_view('static', 'arche:static', cache_max_age = cache_max_age)
     config.include('betahaus.viewcomponent')
@@ -158,29 +154,3 @@ def adjust_bools(settings):
 def adjust_ints(settings, keys):
     for k in keys:
         settings[k] = int(settings[k])
-
-def read_salt(settings):
-    from uuid import uuid4
-    from os.path import isfile
-    filename = settings.get('arche.salt_file', None)
-    if filename is None:
-        print "\nUsing random salt which means that all users must reauthenticate on restart."
-        print "Please specify a salt file by adding the parameter:\n"
-        print "arche.salt_file = <path to file>\n"
-        print "in paster ini config and add the salt as the sole contents of the file.\n"
-        return str(uuid4())
-    if not isfile(filename):
-        print "\nCan't find salt file specified in paster ini. Trying to create one..."
-        f = open(filename, 'w')
-        salt = str(uuid4())
-        f.write(salt)
-        f.close()
-        print "Wrote new salt in: %s" % filename
-        return salt
-    else:
-        f = open(filename, 'r')
-        salt = f.read()
-        if not salt:
-            raise ValueError("Salt file is empty - it needs to contain at least some text. File: %s" % filename)
-        f.close()
-        return salt

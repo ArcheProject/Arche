@@ -192,6 +192,41 @@ def bcrypt_hash_method(value, hashed = None):
     except ValueError: #Invalid salt
         return bcrypt.hashpw(value.encode('utf-8'), bcrypt.gensalt())
 
+def auth_tkt_factory(settings):
+    from pyramid.authentication import AuthTktAuthenticationPolicy
+
+    def read_salt(settings):
+        from uuid import uuid4
+        from os.path import isfile
+        filename = settings.get('arche.salt_file', None)
+        if filename is None:
+            print "\nUsing random salt which means that all users must reauthenticate on restart."
+            print "Please specify a salt file by adding the parameter:\n"
+            print "arche.salt_file = <path to file>\n"
+            print "in paster ini config and add the salt as the sole contents of the file.\n"
+            return str(uuid4())
+        if not isfile(filename):
+            print "\nCan't find salt file specified in paster ini. Trying to create one..."
+            f = open(filename, 'w')
+            salt = str(uuid4())
+            f.write(salt)
+            f.close()
+            print "Wrote new salt in: %s" % filename
+            return salt
+        else:
+            f = open(filename, 'r')
+            salt = f.read()
+            if not salt:
+                raise ValueError("Salt file is empty - it needs to contain at least some text. File: %s" % filename)
+            f.close()
+            return salt
+
+    return AuthTktAuthenticationPolicy(
+        secret = read_salt(settings),
+        callback = groupfinder,
+        hashalg = 'sha512'
+    )
+
 def includeme(config):
     """ Enable security subsystem.
         Initialize ACL and populate with default acl lists.
