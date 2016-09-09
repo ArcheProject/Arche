@@ -13,8 +13,8 @@
         </tal:subpage>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta tal:condition="context.meta_description|False" name="description"
-          content="${context.meta_description|''}" />
+    <meta tal:condition="request.root.meta_description|False" name="description"
+          content="${request.root.meta_description|''}" />
     <link tal:define="favicon request.registry.settings.get('arche.favicon', None)"
       tal:condition="favicon"
       rel="shortcut icon" href="${request.static_url(favicon)}" />
