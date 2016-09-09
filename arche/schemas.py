@@ -455,13 +455,25 @@ class RecoverPasswordSchema(colander.Schema):
 
 
 class RootSchema(BaseSchema, DCMetadataSchema):
-    head_title = colander.SchemaNode(colander.String(),
+    head_title = colander.SchemaNode(
+        colander.String(),
         title = _("Page head title"),
-        description = _("Usually shown as a title of the browser tab."),)
-    footer = colander.SchemaNode(colander.String(),
+        description = _("Usually shown as a title of the browser tab."),
+    )
+    meta_description = colander.SchemaNode(
+        colander.String(),
+        title = _("meta_description_title",
+                  default = "Meta-description in the head-section. (No more than 155 chars)"),
+        description = _("meta_description_description",
+                        default = "Mosty used by search engines and robots."
+                        "The content of this tag won't be visible on the actual page.")
+    )
+    footer = colander.SchemaNode(
+        colander.String(),
         title = _("Footer"),
         missing = "",
-        widget = deform.widget.RichTextWidget(delayed_load = True, height = 200))
+        widget = deform.widget.RichTextWidget(delayed_load = True, height = 200),
+    )
 
 
 @colander.deferred

@@ -273,6 +273,7 @@ class Root(Content, LocalRolesMixin, DCMetadataMixin, ContextACLMixin):
     is_permanent = True
     footer = ""
     head_title = "Arche"
+    meta_description = ""
 
     def __init__(self, data=None, **kwargs):
         create_catalog(self)
