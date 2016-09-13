@@ -4,16 +4,18 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
     <meta charset="utf-8" />
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <title metal:define-slot="page-title">
-        ${request.root.head_title}
+        ${request.root.head_title|''}
         <tal:subpage condition="request.root != context">
           |
-          ${context.get_nav_title()|context.title|context.__name__}
+          ${context.get_nav_title()|context.title|context.__name__|''}
         </tal:subpage>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Description" />
-    <link tal:define="favicon request.registry.settings.get('arche.favicon')"
+    <meta tal:condition="request.root.meta_description|False" name="description"
+          content="${request.root.meta_description|''}" />
+    <link tal:define="favicon request.registry.settings.get('arche.favicon', None)"
       tal:condition="favicon"
       rel="shortcut icon" href="${request.static_url(favicon)}" />
 </tal:main>

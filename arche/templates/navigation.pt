@@ -2,6 +2,7 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
       i18n:domain="Arche">
 <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
   <div class="container">
@@ -13,8 +14,9 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand arche-logo" href="${request.application_url}">
-          <img height="40" width="40"
-              src="${request.static_url('arche:static/images/arche_neg.png')}" />
+        <svg id="white-nav-logo">
+          <use xlink:href="${request.static_url('arche:static/images/arche.svg')}#logo" />
+        </svg>
       </a>
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapsible">

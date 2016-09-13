@@ -4,7 +4,6 @@ from uuid import uuid4
 
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
-from pyramid.traversal import resource_path
 import colander
 
 from arche import _
@@ -23,13 +22,12 @@ def can_paste(context, request, view):
         return False
     if context.uid == paste_data['uid']:
         return False
-    if paste_data['move'] == True:
-        path = resource_path(context)
-        if view.catalog_search(path = path, uid = paste_data['uid']):
-            return False
     cut_obj = view.resolve_uid(paste_data['uid'])
     if not cut_obj:
         return False
+    if paste_data['move'] == True:
+        if context == cut_obj.__parent__:
+            return False
     addable = get_addable_content(request.registry).get(cut_obj.type_name, ())
     if context.type_name not in addable:
         return False

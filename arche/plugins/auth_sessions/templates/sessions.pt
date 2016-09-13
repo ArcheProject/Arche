@@ -1,0 +1,104 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/base_view.pt', 'arche:templates/inline.pt')"
+      i18n:domain="Arche">
+<body>
+<div metal:fill-slot="main-content">
+
+  <h1>
+    <span i18n:translate="">Auth sessions</span>
+    <a href="${request.resource_url(context, 'add_auth_session')}">+</a>
+  </h1>
+
+  <table class="table" id="session-listing">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th i18n:translate="">Name</th>
+        <th i18n:translate="">Active</th>
+        <th i18n:translate="">IP</th>
+        <th i18n:translate="">Last</th>
+        <th i18n:translate="">Last login</th>
+        <th i18n:translate="">Max valid (min)</th>
+        <th i18n:translate="">API key</th>
+        <th i18n:translate="">User agent</th>
+        <th i18n:translate="">Edit</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr tal:repeat="obj session_data">
+        <td>${obj.key}</td>
+        <td>${obj.title}</td>
+        <td>
+          <div tal:condition="obj == active">
+            Yes, current
+          </div>
+          <div tal:condition="obj.active and not obj == active" class="dropdown">
+            <button class="btn-xs btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Yes
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dLabel">
+              <li>
+                <a href="${request.resource_url(context, 'auth_sessions', query = {'inactivate': obj.key})}">
+                  <span class="glyphicon glyphicon-off"></span>
+                  Logout
+                </a>
+              </li>
+            </ul>
+          </div>
+        </td>
+        <td>${obj.ip}</td>
+        <td>${request.dt_handler.format_relative(obj.last)}</td>
+        <td>${request.dt_handler.format_relative(obj.login)}</td>
+        <td>
+          <tal:ts condition="obj.max_valid is None" i18n:translate="">Always</tal:ts>
+          <tal:min tal:condition="obj.max_valid">
+            ${obj.max_valid}
+          </tal:min>
+
+        </td>
+        <td>
+          <a href="#" data-toggle="popover"
+             title="API key"
+             i18n:attributes="title;"
+             data-content="${obj.api_key}"
+             data-placement="bottom"
+             tal:condition="obj.api_key">
+            <span class="glyphicon glyphicon-lock"></span>
+          </a>
+        </td>
+        <td>
+          <a href="#" data-toggle="popover"
+             i18n:attributes="title;"
+             title="Browser user agent string"
+             data-content="${obj.user_agent}"
+             data-placement="bottom"
+             tal:condition="obj.user_agent">
+            <span class="glyphicon glyphicon-phone"></span>
+          </a>
+        </td>
+        <td>
+          <a href="${request.resource_url(context, 'edit_auth_session', obj.key)}">
+            <span class="glyphicon glyphicon-edit"></span>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      });
+      $(function () {
+        $('[data-toggle="popover"]').popover()
+      });
+  </script>
+
+</div>
+</body>
+</html>

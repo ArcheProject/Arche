@@ -503,7 +503,7 @@ def includeme(config):
     config.add_view(DefaultAddForm,
                     context = 'arche.interfaces.IContent',
                     name = 'add',
-                    permission = security.NO_PERMISSION_REQUIRED, #FIXME: perm check in add
+                    permission = security.NO_PERMISSION_REQUIRED,
                     renderer = 'arche:templates/form.pt')
     config.add_view(DefaultEditForm,
                     context = 'arche.interfaces.IBase',

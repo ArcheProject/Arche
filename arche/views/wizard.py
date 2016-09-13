@@ -33,11 +33,10 @@ class BaseWizardForm(BaseForm):
 
     @property
     def current_state(self):
-        return self.data.get('_current_state', self.states[0])
-    @current_state.setter
-    def current_state(self, value):
-        assert value in self.states
-        self.data['_current_state'] = value
+        state = self.request.GET.get('_ws', None)
+        if state and state in self.states:
+            return state
+        return self.states[0]
 
     @property
     def buttons(self):
@@ -69,18 +68,24 @@ class BaseWizardForm(BaseForm):
                 return state_appstruct()
         return self.data.get(self.current_state, {})
 
+    def _inject_state(self, state):
+        self.request.GET['_ws'] = state
+
     def next_success(self, appstruct):
         self.data[self.current_state] = appstruct
-        self.current_state = self.states[self.states.index(self.current_state) + 1]
+        state = self.states[self.states.index(self.current_state) + 1]
+        self._inject_state(state)
         return HTTPFound(location = self.request.url)
 
     def previous_success(self, appstruct):
         self.data[self.current_state] = appstruct
-        self.current_state = self.states[self.states.index(self.current_state) - 1]
+        state = self.states[self.states.index(self.current_state) - 1]
+        self._inject_state(state)
         return HTTPFound(location = self.request.url)
 
     def previous_failure(self, *args):
-        self.current_state = self.states[self.states.index(self.current_state) - 1]
+        state = self.states[self.states.index(self.current_state) - 1]
+        self._inject_state(state)
         return HTTPFound(location = self.request.url)
 
     def finish_success(self, appstruct):

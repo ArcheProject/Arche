@@ -3,6 +3,7 @@ import datetime
 
 from pyramid.threadlocal import get_current_request
 from pytz import common_timezones
+from pytz import UTC
 import colander
 import deform
 
@@ -32,7 +33,7 @@ colander_ts = colander._
 class LocalDateTime(colander.DateTime):
     """ Override datetime to be able to handle local timezones and DST.
         - Fetches timezone from dt_handler.timezone
-        - Converts deserialized value to widgets default_timezone (Which should always be UTC)
+        - Converts deserialized value to UTC
     """
 
     def _get_tz(self):
@@ -50,7 +51,7 @@ class LocalDateTime(colander.DateTime):
                             mapping={'val':appstruct})
                           )
         if appstruct.tzinfo is None:
-            appstruct = appstruct.replace(tzinfo=self.default_tzinfo)
+            appstruct = appstruct.replace(tzinfo=UTC)
         appstruct = appstruct.astimezone(self._get_tz())
         return appstruct.isoformat()
 
@@ -58,12 +59,17 @@ class LocalDateTime(colander.DateTime):
         if not cstruct:
             return colander.null
         try:
+            #Note: Don't pass timezone to colander. It will simply attach it
+            #and not convert properly which messes up the DST.
             result = colander.iso8601.parse_date(
-                cstruct, default_timezone = self._get_tz())
+                cstruct, default_timezone = None)
         except colander.iso8601.ParseError as e:
             raise colander.Invalid(node, colander_ts(self.err_template,
                                                      mapping={'val':cstruct, 'err':e}))
-        return result.astimezone(self.default_tzinfo) #ALWAYS save UTC!
+        tzinfo = self._get_tz()
+        if getattr(result, 'tzinfo', None) is None:
+            result = tzinfo.localize(result)
+        return result.astimezone(UTC) #ALWAYS save UTC!
 
 
 #FIXME: This will change later
@@ -449,13 +455,26 @@ class RecoverPasswordSchema(colander.Schema):
 
 
 class RootSchema(BaseSchema, DCMetadataSchema):
-    head_title = colander.SchemaNode(colander.String(),
+    head_title = colander.SchemaNode(
+        colander.String(),
         title = _("Page head title"),
-        description = _("Usually shown as a title of the browser tab."),)
-    footer = colander.SchemaNode(colander.String(),
+        description = _("Usually shown as a title of the browser tab."),
+    )
+    meta_description = colander.SchemaNode(
+        colander.String(),
+        missing = "",
+        title = _("meta_description_title",
+                  default = "Meta-description in the head-section. (No more than 155 chars)"),
+        description = _("meta_description_description",
+                        default = "Mosty used by search engines and robots."
+                        "The content of this tag won't be visible on the actual page.")
+    )
+    footer = colander.SchemaNode(
+        colander.String(),
         title = _("Footer"),
         missing = "",
-        widget = deform.widget.RichTextWidget(delayed_load = True, height = 200))
+        widget = deform.widget.RichTextWidget(delayed_load = True, height = 200),
+    )
 
 
 @colander.deferred
@@ -548,15 +567,6 @@ def user_schema_admin_changes(schema, event):
                                                        default = "User may login with a regular login form. "
                                                        "This is the default behaviour, but for some system specific "
                                                        "users or someone you wish to shut out you may want to disable this."),))
-        schema.add(colander.SchemaNode(colander.String(),
-                                       name = 'apikey',
-                                       missing = '',
-                                       tab = 'advanced',
-                                       title = _("API key for this user"),
-                                       description = _("api_key_schema_description",
-                                                       default = "If you enter something here you may authenticate as this user with this API-key. "
-                                                                 "Only use this on system accounts that you're never logged in as, "
-                                                                 "since having this makes the account less secure.")))
 
 
 def includeme(config):

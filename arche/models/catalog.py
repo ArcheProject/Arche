@@ -341,6 +341,8 @@ def check_catalog_on_startup(event = None, env = None):
     #This should be changed into something more sensible.
     #Env vars?
     from sys import argv
+    #FIXME: This makes arche unusable on windows, or if someone types
+    #"./bin/arche" this won't work.
     script_names = ['bin/arche', 'bin/evolver', 'bin/pshell']
     if argv[0] in script_names:
         return
@@ -350,6 +352,7 @@ def check_catalog_on_startup(event = None, env = None):
     root = env['root']
     if not IRoot.providedBy(root):
         logger.info("Root object is %r, so check_catalog_on_startup won't run" % root)
+        env['closer']()
         return
     catalog = root.catalog
     reg = env['registry']

@@ -184,3 +184,52 @@ class ExistingUserIDsTests(TestCase):
         users['jane'] =  testing.DummyResource()
         obj = self._cut(users)
         self.assertEqual(obj(None, ['jane', 'arche']), None)
+
+
+class ExistingUserIDOrEmailTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.validators import ExistingUserIDOrEmail
+        return ExistingUserIDOrEmail
+
+    def _fixture(self):
+        root = barebone_fixture(self.config)
+        return root['users']
+
+    def test_supposed_pass_userid(self):
+        users = self._fixture()
+        users['userid'] = testing.DummyResource()
+        obj = self._cut(users)
+        self.assertEqual(obj(None, 'userid'), None)
+
+    def test_supposed_fail_userid(self):
+        users = self._fixture()
+        obj = self._cut(users)
+        self.assertRaises(Invalid, obj, None, 'userid')
+
+    def test_supposed_pass_email(self):
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
+        from arche.api import User
+        users = self._fixture()
+        users['userid'] = user = User(email = 'tester@archeproject.org')
+        obj = self._cut(users)
+        self.assertEqual(obj(None, 'tester@archeproject.org'), None)
+
+    def test_supposed_fail_email(self):
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
+        from arche.api import User
+        users = self._fixture()
+        users['userid'] = user = User(email = 'tester@archeproject.org')
+        obj = self._cut(users)
+        self.assertRaises(Invalid, obj, None, 'no_one@archeproject.org')
+        self.assertRaises(Invalid, obj, None, 'hello @ jeff')
+        self.assertRaises(Invalid, obj, None, 'åäö@archeproject.org')

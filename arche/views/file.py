@@ -1,22 +1,18 @@
-import random
-import string
-
-from deform.compat import uppercase
+import deform
+from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.response import Response
 from pyramid.view import render_view_to_response
-import deform
 
-from arche import _
 from arche import security
 from arche.interfaces import IBlobs
-from arche.models.file_upload import FileUploadTempStore
 from arche.schemas import AddFileSchema
 from arche.utils import generate_slug
 from arche.utils import get_mimetype_views
 from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultView
+from arche.views.contents import JSONContents
 
 
 class AddFileForm(DefaultAddForm):
@@ -50,44 +46,59 @@ def download_view(context, request):
 def inline_view(context, request):
     return file_data_response(context, request, disposition = 'inline')
 
-def batch_file_upload_handler_view(context, request):
-    controls = request.params.items()
-    controls.insert(0, ('__start__', 'file_data:mapping'))
-    controls.append(('__end__', 'file_data:mapping'))
-    schema = AddFileSchema()
-    schema = schema.bind(request = request, context = context)
-    form = deform.Form(schema)
-    appstruct = form.validate(controls)
-    factory = request.content_factories['File']
-    obj = factory(**appstruct)
-    name = generate_slug(context, obj.filename)
-    context[name] = obj
-    return Response()
 
-def upload_temp(context, request):
-    upload = request.params['upload']
-    uid = None
-    tmpstore = FileUploadTempStore(request)
-    
-    if hasattr(upload, 'file'):
-        # the upload control had a file selected
-        data = dict()
-        data['fp'] = upload.file
-        filename = upload.filename
-        # sanitize IE whole-path filenames
-        filename = filename[filename.rfind('\\')+1:].strip()
-        data['filename'] = filename
-        data['mimetype'] = upload.type
-        data['size']  = upload.length
-        while 1:
-            uid = ''.join([random.choice(uppercase+string.digits) for i in range(10)])
-            if tmpstore.get(uid) is None:
-                data['uid'] = uid
-                tmpstore[uid] = data
-                preview_url = tmpstore.preview_url(uid)
-                tmpstore[uid]['preview_url'] = preview_url
-                break
-    return {'uid':uid}
+#FIXME: This reloads all content when something is uploaded. Pretty silly.
+class BatchFileUploadView(JSONContents):
+
+    def __call__(self):
+        controls = self.request.params.items()
+        controls.insert(0, ('__start__', 'file_data:mapping'))
+        controls.append(('__end__', 'file_data:mapping'))
+        schema = AddFileSchema()
+        schema = schema.bind(request = self.request, context = self.context, view = self)
+        form = deform.Form(schema)
+        try:
+            appstruct = form.validate(controls)
+        except Exception as exc:
+            raise HTTPForbidden("Validation error")
+        addable_factories = dict([(x.type_name, x) for x in self.addable_content(self.context)])
+        factory = None
+        if appstruct['file_data']['mimetype'] in self.request.registry.settings['supported_thumbnail_mimetypes']:
+            factory = addable_factories.get('Image', None)
+        else:
+            factory = addable_factories.get('File', None)
+        if not factory:
+            raise HTTPForbidden("You can't upload this type here")
+        obj = factory(**appstruct)
+        name = generate_slug(self.context, obj.filename)
+        self.context[name] = obj
+        return super(BatchFileUploadView, self).__call__()
+
+
+# def upload_temp(context, request):
+#     upload = request.params['upload']
+#     uid = None
+#     tmpstore = FileUploadTempStore(request)
+#
+#     if hasattr(upload, 'file'):
+#         # the upload control had a file selected
+#         data = dict()
+#         data['fp'] = upload.file
+#         filename = upload.filename
+#         # sanitize IE whole-path filenames
+#         filename = filename[filename.rfind('\\')+1:].strip()
+#         data['filename'] = filename
+#         data['mimetype'] = upload.type
+#         data['size']  = upload.length
+#         while 1:
+#             uid = ''.join([random.choice(uppercase+string.digits) for i in range(10)])
+#             if tmpstore.get(uid) is None:
+#                 data['uid'] = uid
+#                 tmpstore[uid] = data
+#                 preview_url = tmpstore.preview_url(uid)
+#                 tmpstore[uid]['preview_url'] = preview_url
+#                 break
+#     return {'uid':uid}
 
 
 def mimetype_view_selector(context, request):
@@ -122,12 +133,13 @@ def includeme(config):
                     context = 'arche.interfaces.IFile',
                     permission = security.PERM_VIEW,
                     name = 'inline')
-    config.add_view(batch_file_upload_handler_view,
+    config.add_view(BatchFileUploadView,
                     context = 'arche.interfaces.IContent',
                     permission = security.PERM_VIEW,
-                    name = 'upload')
-    config.add_view(upload_temp,
-                    context = 'arche.interfaces.IContent',
-                    permission = security.PERM_VIEW,
-                    name = 'upload_temp',
+                    name = 'upload',
                     renderer = 'json')
+    # config.add_view(upload_temp,
+    #                 context = 'arche.interfaces.IContent',
+    #                 permission = security.PERM_VIEW,
+    #                 name = 'upload_temp',
+    #                 renderer = 'json')
