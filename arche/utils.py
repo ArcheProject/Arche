@@ -245,8 +245,10 @@ def find_all_db_objects(root):
             pass
         yield obj
 
+
 def get_dt_handler(request):
     return IDateTimeHandler(request)
+
 
 def utcnow():
     """Get the current datetime localized to UTC.
@@ -255,11 +257,17 @@ def utcnow():
     datetime object, whereas this one includes the UTC tz info."""
     return pytz.utc.localize(datetime.utcnow())
 
-def send_email(request, subject, recipients, html, sender = None, plaintext = None, send_immediately = False, **kw):
-    """ Send an email to users. This also checks the required settings and translates
-        the subject.
 
-        returns the message object sent, or None
+def compose_email(request, subject, recipients, html, sender = None, plaintext = None, **kw):
+    """
+    :param request:
+    :param subject: Email subject
+    :param recipients: A list of recipients
+    :param html: HTML-version of the email
+    :param sender: Should normally be None so it's fetched from the default configuration.
+    :param plaintext: A custom plaintext version. By default, it will be created from the HTML-version
+    :param **kw: Extra keywords to send to the message constructor
+    :return: A Pyramid mailer Message object
     """
     if isinstance(subject, TranslationString):
         subject = request.localizer.translate(subject)
@@ -274,12 +282,23 @@ def send_email(request, subject, recipients, html, sender = None, plaintext = No
     if not plaintext:
         plaintext = None #In case it was an empty string
     #It seems okay to leave sender blank since it's part of the default configuration
-    msg = Message(subject = subject,
-                  recipients = recipients,
-                  sender = sender,
-                  body = plaintext,
-                  html = html,
-                  **kw)
+    return Message(
+        subject = subject,
+        recipients = recipients,
+        sender = sender,
+        body = plaintext,
+        html = html,
+        **kw
+    )
+
+
+def send_email(request, subject, recipients, html, sender = None, plaintext = None, send_immediately = False, **kw):
+    """ Send an email to users. This also checks the required settings and translates
+        the subject.
+
+        returns the message object sent, or None
+    """
+    msg = compose_email(request, subject, recipients, html, sender = None, plaintext = None, **kw)
     mailer = get_mailer(request)
     #Note that messages are sent during the transaction process. See pyramid_mailer docs
     if send_immediately:
@@ -445,6 +464,7 @@ def includeme(config):
     config.add_request_method(get_dt_handler, name = 'dt_handler', reify = True)
     config.add_request_method(get_root, name = 'root', reify = True)
     config.add_request_method(get_profile, name = 'profile', reify = True)
+    config.add_request_method(compose_email)
     config.add_request_method(send_email)
     config.add_request_method(resolve_docids)
     config.add_request_method(resolve_uid)
