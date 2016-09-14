@@ -232,7 +232,9 @@ class BaseForm(BaseView, FormView):
             var loc = xhr.getResponseHeader('X-Relocate');
             if (loc) {
               document.location = loc;
-            };
+            } else {
+              arche.load_flash_messages();
+            }
            }
         }
     """
