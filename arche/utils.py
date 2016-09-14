@@ -275,7 +275,7 @@ def compose_email(request, subject, recipients, html, sender = None, plaintext =
         recipients = (recipients,)
     if plaintext is None:
         html2text = HTML2Text()
-        html2text.ignore_links = True
+        html2text.ignore_links = False
         html2text.ignore_images = True
         html2text.body_width = 0
         plaintext = html2text.handle(html).strip()
