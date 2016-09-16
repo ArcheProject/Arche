@@ -1,8 +1,8 @@
 """ Things like navigation, action menu etc. """
 
 from betahaus.viewcomponent import view_action
-from repoze.folder.interfaces import IFolder
 from deform_autoneed import need_lib
+from repoze.folder.interfaces import IFolder
 
 from arche import _
 from arche import security
@@ -14,6 +14,7 @@ from arche.interfaces import ITrackRevisions
 from arche.models.workflow import get_context_wf
 from arche.portlets import get_portlet_slots
 from arche.utils import get_content_views
+from arche.utils import get_content_schemas
 from arche.views.cut_copy_paste import can_paste
 
 
@@ -58,11 +59,6 @@ def actionbar_view(context, request, va, **kw):
             'title': request.localizer.translate(va.title),}
 
 
-@view_action('actionbar_main', 'edit',
-             title=_("Edit"),
-             permission=security.PERM_EDIT,
-             view_name='edit',
-             priority=20)
 @view_action('actionbar_main', 'contents',
              title=_("Contents"),
              permission=security.PERM_EDIT,  # XXX: ?
@@ -82,6 +78,19 @@ def actionbar_main_generic(context, request, va, **kw):
             'title': request.localizer.translate(va.title),
             'active_cls': active_cls,
             'desc': va.kwargs.get('description', '')}
+
+
+@view_action('actionbar_main', 'edit',
+             title=_("Edit"),
+             permission=security.PERM_EDIT,
+             view_name='edit',
+             priority=20)
+def edit_actionbar(context, request, va, **kw):
+    try:
+        get_content_schemas(request.registry)[getattr(context, 'type_name', None)]['edit']
+    except KeyError:
+        return
+    return actionbar_main_generic(context, request, va, **kw)
 
 
 # Permission to add handled by content types!
