@@ -128,6 +128,8 @@ class Workflow(object):
         if trans.from_state != self.state and force is False:
             raise ValueError("The transition '%s' cant go from state '%s'" % (trans.name, self.state))
         if not request.has_permission(trans.permission, self.context) and force is False:
+            if request.registry.settings.get('arche.debug', False):
+                raise Exception("Wrong permissions for this transition")
             raise HTTPForbidden("Wrong permissions for this transition")
         objectEventNotify(WorkflowBeforeTransition(self.context, self, trans, request = request))
         self.state = trans.to_state
