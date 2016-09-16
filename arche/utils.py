@@ -18,6 +18,7 @@ from pyramid_mailer.message import Message
 from six import string_types
 from slugify import UniqueSlugify
 from zope.component import adapter
+from zope.component.event import objectEventNotify
 from zope.interface import implementer
 from zope.interface import providedBy
 from zope.interface.interfaces import ComponentLookupError
@@ -452,6 +453,18 @@ def validate_appstruct(request, schema, appstruct, **kw):
         schema = schema.bind(**kw)
     return schema.deserialize(schema.serialize(appstruct))
 
+def get_schema(request, context, type_name, schema_name, bind = None, event = True):
+    schema = get_content_schemas(request.registry)[type_name][schema_name]()
+    if event:
+        from arche.events import SchemaCreatedEvent
+        event = SchemaCreatedEvent(schema, context = context, request = request)
+        objectEventNotify(event)
+    if bind is None:
+        schema = schema.bind(context = context, request = request)
+    else:
+        schema = schema.bind(**bind)
+    return schema
+
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)
     config.registry.registerAdapter(EmailValidationTokens)
@@ -470,6 +483,7 @@ def includeme(config):
     config.add_request_method(resolve_uid)
     config.add_request_method(content_factories, property = True)
     config.add_request_method(validate_appstruct)
+    config.add_request_method(get_schema)
     #Init default scales
     for (name, scale) in image_scales.items():
         config.add_image_scale(name, *scale)
