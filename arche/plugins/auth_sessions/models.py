@@ -46,6 +46,8 @@ class ExtendedSessionAuthenticationPolicy(SessionAuthenticationPolicy):
         return 'userid' in params and 'key' in params and 'session' in params
 
     def _get_session_userid(self, request):
+        if not getattr(request, 'root', None):
+            return None
         if hasattr(request, '_kauth_userid'):
             return request._kauth_userid
         userid = request.params['userid']
@@ -69,9 +71,6 @@ class ExtendedSessionAuthenticationPolicy(SessionAuthenticationPolicy):
         if self._is_key_session(request.params):
             return self._get_session_userid(request)
         return request.session.get(self.userid_key)
-
-#    def authenticated_userid(self, request):
-#        return super(ExtendedSessionAuthenticationPolicy, self).authenticated_userid(request)
 
 
 @implementer(IAuthSessionData)
