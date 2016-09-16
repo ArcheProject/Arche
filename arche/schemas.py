@@ -462,6 +462,7 @@ class RootSchema(BaseSchema, DCMetadataSchema):
     )
     meta_description = colander.SchemaNode(
         colander.String(),
+        missing = "",
         title = _("meta_description_title",
                   default = "Meta-description in the head-section. (No more than 155 chars)"),
         description = _("meta_description_description",

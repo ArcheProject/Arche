@@ -232,7 +232,9 @@ class BaseForm(BaseView, FormView):
             var loc = xhr.getResponseHeader('X-Relocate');
             if (loc) {
               document.location = loc;
-            };
+            } else {
+              arche.load_flash_messages();
+            }
            }
         }
     """
@@ -316,7 +318,9 @@ class BaseForm(BaseView, FormView):
         return appstruct
 
     def cancel(self, *args):
-        return self.relocate_response(self.request.resource_url(self.context), msg = self.default_cancel)
+        came_from = self.request.GET.get('came_from', None)
+        url = came_from and came_from or self.request.resource_url(self.context)
+        return self.relocate_response(url, msg = self.default_cancel)
     cancel_success = cancel_failure = cancel
 
 
@@ -374,7 +378,8 @@ class DefaultEditForm(BaseForm):
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
         self.context.update(**appstruct)
-        return HTTPFound(location = self.request.resource_url(self.context))
+        came_from = self.request.GET.get('came_from', None)
+        return HTTPFound(location = came_from and came_from or self.request.resource_url(self.context))
 
 
 class DefaultDeleteForm(BaseForm):
