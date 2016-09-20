@@ -369,9 +369,17 @@ def check_catalog_on_startup(event = None, env = None):
                                    "Current: %r \n"
                                    "Required: %r \n"
                                    "Required by: %r" % (key, catalog[key].discriminator, index.discriminator, util.name))
+    indexes_to_remove = set()
     for key in catalog:
         if key not in registered_keys:
-            raise CatalogError("Index %r is no longer required and should be removed from the catalog." % key)
+            indexes_to_remove.add(key)
+            #raise CatalogError("Index %r is no longer required and should be removed from the catalog." % key)
+    for key in indexes_to_remove:
+        logger.warn("Removing catalog index '%s' since it's not registered anywhere.", key)
+        del catalog[key]
+    if indexes_to_remove:
+        import transaction
+        transaction.commit()
     _unregister_index_utils(reg)
     env['closer']()
 

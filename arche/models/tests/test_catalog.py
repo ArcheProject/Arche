@@ -350,7 +350,8 @@ class CheckCatalogOnStartupTests(TestCase):
     def test_check_detects_too_many(self):
         env = self._fixture()
         env['root'].catalog['dummy'] = CatalogFieldIndex('hello!')
-        self.assertRaises(CatalogError, self._fut, env = env)
+        self._fut(env=env)
+        self.assertNotIn('dummy', env['root'].catalog)
 
     def test_check_detects_duplicate_key(self):
         env = self._fixture()

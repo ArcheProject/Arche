@@ -18,7 +18,7 @@ from arche.interfaces import IEvolver
 def arche_console_script(*args):
     #Move this to some configurable place...
     available_commands = {'reindex_catalog': reindex_catalog,
-                          'create_catalog': create_catalog_script}
+                          'create_catalog': create_catalog_script,}
     #description = """Blabla"""
     #usage = """Usage instructions"""
     #Format and make this cuter
@@ -49,6 +49,7 @@ def arche_console_script(*args):
         raise
         #Lockfile? zc.lockfile works and is needed by zope
 
+
 def reindex_catalog(args, root, registry, **kw):
     print "-- Reindexing catalog without clearing it."
     i = 0
@@ -68,10 +69,13 @@ def reindex_catalog(args, root, registry, **kw):
             print total
     print "-- Process complete. Reindexed %s objects" % total
 
-def create_catalog_script(args, root, **kw):
+
+def create_catalog_script(args, root, registry, **kw):
     print "-- Clearing/Creating catalog"
     create_catalog(root)
-    print "-- Process complete. Run reindex_catalog now."
+    print "-- Process complete. Running reindex now."
+    reindex_catalog(args, root, registry, **kw)
+
 
 def evolve_packages(args, root, registry, **kw):
     evolver = registry.getAdapter(root, IEvolver, name = args.package)
