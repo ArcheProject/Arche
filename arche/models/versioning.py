@@ -1,4 +1,5 @@
 from UserDict import IterableUserDict
+from logging import getLogger
 
 from BTrees.LOBTree import LOBTree
 from BTrees.OOBTree import OOBTree
@@ -160,6 +161,7 @@ def add_versioning(config, iface_or_ctype, attributes = ()):
         versioning_reg[iface_or_ctype] = set()
     versioning_reg[iface_or_ctype].update(attributes)
 
+
 def get_versioning(registry = None):
     if registry is None: #pragma: no coverage
         registry = get_current_registry()
@@ -169,9 +171,23 @@ def get_versioning(registry = None):
         vr = registry._versioning_registry = VersioningRegistry()
         return vr
 
+
 def versioning_subscriber(context, event):
     revisions = IRevisions(context)
     revisions.new(event)
+
+
+def read_paster_versioning_config(config):
+    logger = getLogger(__name__)
+    for (k, v) in config.registry.settings.items():
+        if not k.startswith('arche.versioning.'):
+            continue
+        type_name = k.split('.')[-1]
+        attributes = [x for x in v.split() if x]
+        if attributes:
+            config.add_versioning(type_name, attributes=attributes)
+            logger.debug("%r: versioning for: %r", type_name, ", ".join(attributes))
+
 
 def includeme(config):
     """ Include versioning. """

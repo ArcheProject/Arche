@@ -79,6 +79,10 @@ def includeme(config):
     #setup workflows
     config.include('arche.models.workflow.read_paster_wf_config')
 
+    #setup versioning from paster config
+    config.include('arche.models.versioning.read_paster_versioning_config')
+
+
 def root_factory(request):
     conn = get_connection(request)
     return appmaker(conn.root())
