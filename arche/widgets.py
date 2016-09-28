@@ -74,11 +74,11 @@ class ReferenceWidget(Select2Widget):
     placeholder = _("Type something to search.")
     minimumInputLength = 2
     show_thumbs = True
-    default_query_params = {'glob': 1}
+    default_query_params = {'glob': 1, 'show_hidden': 1}
     query_params = {}
     multiple = True
     #Make query view configurable?
-    
+
     def _preload_data(self, field, cstruct):
         results = []
         for obj in self._fetch_referenced_objects(field, cstruct):

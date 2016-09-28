@@ -16,22 +16,30 @@ class SearchView(BaseView):
 
     def _mk_query(self):
         self.docids = ()
-        query_obj = Eq('search_visible', True)
+        query_objs = []
+        if self.request.GET.get('show_hidden', False):
+            query_objs.append(Eq('search_visible', True))
         query = self.request.GET.get('query', None)
         if query:
             if self.request.GET.get('glob', False):
                 if '*' not in query:
                     query = "%s*" % query
-            query_obj &= Contains('searchable_text', query)
-
+            query_objs.append(Contains('searchable_text', query))
         #Check other get-values:
         #FIXME: This should be smarter, and should perhaps be able to handle glob, other types of queries etc.
         for (k, v) in self.request.GET.mixed().items():
             if v and k in self.root.catalog:
                 if isinstance(v, string_types):
-                    query_obj &= Eq(k, v)
+                    query_objs.append(Eq(k, v))
                 else:
-                    query_obj &= Any(k, v)
+                    query_objs.append(Any(k, v))
+        query_obj = None
+        for obj in query_objs:
+            #There must be a smarter way to do this, right?
+            try:
+                query_obj &= obj
+            except TypeError:
+                query_obj = obj
         try:
             self.docids = self.root.catalog.query(query_obj)[1]
         except ParseError:
