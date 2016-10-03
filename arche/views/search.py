@@ -17,7 +17,7 @@ class SearchView(BaseView):
     def _mk_query(self):
         self.docids = ()
         query_objs = []
-        if self.request.GET.get('show_hidden', False):
+        if not self.request.GET.get('show_hidden', False):
             query_objs.append(Eq('search_visible', True))
         query = self.request.GET.get('query', None)
         if query:
