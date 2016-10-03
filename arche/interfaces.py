@@ -231,6 +231,8 @@ class IIndexedContent(Interface):
 class IThumbnailedContent(Interface):
     """ Marker for content that could have a thumbnail.
     """
+    blob_key = Attribute("Where the blob for the thumbnail will be stored. "
+                         "For images and files, it's usually 'file'")
 
 class ITrackRevisions(Interface):
     """ Marker interface for content that could keep track of revisions.
