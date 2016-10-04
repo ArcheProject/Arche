@@ -209,6 +209,7 @@ def hash_method(value, registry = None, hashed = None):
 image_scales = {
     'icon': [20, 20],
     'mini': [40, 40],
+    'square': [64, 64],
     'col-1': [60, 120],
     'col-2': [160, 320],
     'col-3': [260, 520],

@@ -17,7 +17,7 @@ class SearchView(BaseView):
     def _mk_query(self):
         self.docids = ()
         query_objs = []
-        if self.request.GET.get('show_hidden', False):
+        if not self.request.GET.get('show_hidden', False):
             query_objs.append(Eq('search_visible', True))
         query = self.request.GET.get('query', None)
         if query:
@@ -34,6 +34,9 @@ class SearchView(BaseView):
                 else:
                     query_objs.append(Any(k, v))
         query_obj = None
+        if not query_objs:
+            self.docids = ()
+            return
         for obj in query_objs:
             #There must be a smarter way to do this, right?
             try:
@@ -50,7 +53,8 @@ class SearchView(BaseView):
     @view_config(name = 'search', renderer = 'arche:templates/search.pt')
     def search_page(self):
         self._mk_query()
-        return {'results': self.resolve_docids(self.docids)}
+        return {'results': tuple(self.resolve_docids(self.docids)),
+                'query': self.request.GET.get('query', ''),}
 
     @view_config(name = 'search.json', renderer = 'json')
     def search_json(self):
