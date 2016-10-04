@@ -143,6 +143,8 @@ def generate_slug(parent, text, limit=40):
     #Stop words configurable?
     #We don't have any language settings anywhere
     #Note about kw uids: It's keys already used.
+    if not isinstance(text, string_types):
+        text = str(text)
     used_names = set(parent.keys())
     request = get_current_request()
     used_names.update(get_context_view_names(parent, request))
