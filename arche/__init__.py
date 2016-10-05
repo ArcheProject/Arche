@@ -57,6 +57,7 @@ def includeme(config):
     config.include('arche.portlets.byline')
     config.include('arche.portlets.navigation')
     config.include('arche.portlets.contents')
+    config.include('arche.portlets.richtext')
     #Translations
     config.add_translation_dirs('arche:locale/')
 
