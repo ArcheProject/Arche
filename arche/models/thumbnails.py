@@ -103,8 +103,10 @@ def thumb_url(request, context, scale, key = 'image', direction = 'thumb'):
         if IThumbnailedContent.providedBy(context):
             return request.resource_url(context, 'thumbnail', key, scale, query = {'direction': direction})
 
-def thumb_tag(request, context, scale_name, default = u"", extra_cls = '', direction = "thumb", key = "image", **kw):
+def thumb_tag(request, context, scale_name, default = u"", extra_cls = '', direction = "thumb", key = None, **kw):
     #FIXME: Default?
+    if key is None:
+        key = getattr(context, 'blob_key', 'image')
     url = request.thumb_url(context, scale_name, key = key, direction = direction)
     if not url:
         return default

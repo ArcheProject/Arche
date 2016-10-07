@@ -1,7 +1,7 @@
 from zope.component import adapter
 from zope.interface import implementer
 
-from arche.interfaces import IBase
+from arche.interfaces import IBase, IContextACL
 from arche.interfaces import IFolder
 from arche.interfaces import IJSONData
 from pyramid.i18n import TranslationString
@@ -26,6 +26,12 @@ class JSONData(object):
         dt_attrs.extend(dt_attrs)
         #wf_state and name?
         results = {}
+        if IContextACL.providedBy(self.context) and self.context.workflow != None:
+            results['wf_state'] = self.context.wf_state
+            results['workflow'] = self.context.workflow.name
+        else:
+            results['wf_state'] = ""
+            results['workflow'] = ""
         results['css_icon'] = getattr(self.context, 'css_icon', '')
         results['tags'] = tuple(getattr(self.context, 'tags', ()))
         results['is_folder'] = IFolder.providedBy(self.context)

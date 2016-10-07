@@ -143,6 +143,8 @@ def generate_slug(parent, text, limit=40):
     #Stop words configurable?
     #We don't have any language settings anywhere
     #Note about kw uids: It's keys already used.
+    if not isinstance(text, string_types):
+        text = str(text)
     used_names = set(parent.keys())
     request = get_current_request()
     used_names.update(get_context_view_names(parent, request))
@@ -207,6 +209,7 @@ def hash_method(value, registry = None, hashed = None):
 image_scales = {
     'icon': [20, 20],
     'mini': [40, 40],
+    'square': [64, 64],
     'col-1': [60, 120],
     'col-2': [160, 320],
     'col-3': [260, 520],
