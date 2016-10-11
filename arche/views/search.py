@@ -25,6 +25,9 @@ class SearchView(BaseView):
                 if '*' not in query:
                     query = "%s*" % query
             query_objs.append(Contains('searchable_text', query))
+        else:
+            #Abort search without query
+            return
         #Check other get-values:
         #FIXME: This should be smarter, and should perhaps be able to handle glob, other types of queries etc.
         for (k, v) in self.request.GET.mixed().items():
