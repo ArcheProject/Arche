@@ -20,25 +20,24 @@ class SearchView(BaseView):
         if not self.request.GET.get('show_hidden', False):
             query_objs.append(Eq('search_visible', True))
         query = self.request.GET.get('query', None)
+        perform_query = False
         if query:
             if self.request.GET.get('glob', False):
                 if '*' not in query:
                     query = "%s*" % query
             query_objs.append(Contains('searchable_text', query))
-        else:
-            #Abort search without query
-            return
+            perform_query = True
         #Check other get-values:
         #FIXME: This should be smarter, and should perhaps be able to handle glob, other types of queries etc.
         for (k, v) in self.request.GET.mixed().items():
             if v and k in self.root.catalog:
+                perform_query = True
                 if isinstance(v, string_types):
                     query_objs.append(Eq(k, v))
                 else:
                     query_objs.append(Any(k, v))
         query_obj = None
-        if not query_objs:
-            self.docids = ()
+        if not query_objs or perform_query == False:
             return
         for obj in query_objs:
             #There must be a smarter way to do this, right?
