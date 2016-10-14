@@ -4,9 +4,8 @@ import argparse
 from pyramid.paster import bootstrap
 import transaction
 
-from arche.utils import find_all_db_objects
 from arche.models.catalog import create_catalog
-from arche.interfaces import ICataloger
+from arche.models.catalog import reindex_catalog
 from arche.interfaces import IEvolver
 
 
@@ -17,8 +16,8 @@ from arche.interfaces import IEvolver
 
 def arche_console_script(*args):
     #Move this to some configurable place...
-    available_commands = {'reindex_catalog': reindex_catalog,
-                          'create_catalog': create_catalog_script}
+    available_commands = {'reindex_catalog': reindex_catalog_script,
+                          'create_catalog': create_catalog_script,}
     #description = """Blabla"""
     #usage = """Usage instructions"""
     #Format and make this cuter
@@ -49,29 +48,18 @@ def arche_console_script(*args):
         raise
         #Lockfile? zc.lockfile works and is needed by zope
 
-def reindex_catalog(args, root, registry, **kw):
-    print "-- Reindexing catalog without clearing it."
-    i = 0
-    limit = 500
-    total = 0
-    for obj in find_all_db_objects(root):
-        try:
-            cataloger = ICataloger(obj)
-        except TypeError:
-            continue
-        cataloger.index_object()
-        i += 1
-        total += 1
-        if i>=limit:
-            i = 0
-            transaction.savepoint()
-            print total
-    print "-- Process complete. Reindexed %s objects" % total
 
-def create_catalog_script(args, root, **kw):
+def reindex_catalog_script(args, root, registry, **kw):
+    print "-- Reindexing catalog without clearing it."
+    reindex_catalog(root)
+
+
+def create_catalog_script(args, root, registry, **kw):
     print "-- Clearing/Creating catalog"
     create_catalog(root)
-    print "-- Process complete. Run reindex_catalog now."
+    print "-- Process complete. Running reindex now."
+    reindex_catalog(root)
+
 
 def evolve_packages(args, root, registry, **kw):
     evolver = registry.getAdapter(root, IEvolver, name = args.package)

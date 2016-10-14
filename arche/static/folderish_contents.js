@@ -14,6 +14,12 @@ function update_table_from_response(response) {
         {'obj<-items':
             {
                 '.title': 'obj.title',
+                '.title@class+': function(arg) {
+                    if (arg.item['workflow'] != '') {
+                        return ' workflow-' + arg.item['workflow'] + ' wf-state wf-state-' + arg.item['wf_state'];
+                    }
+                    return '';
+                },
                 'input[name="select"]@value': 'obj.__name__',
                 'input[name="content_name"]@value': 'obj.__name__',
                 'a@title': 'obj.description',

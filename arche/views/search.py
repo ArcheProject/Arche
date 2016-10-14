@@ -16,22 +16,35 @@ class SearchView(BaseView):
 
     def _mk_query(self):
         self.docids = ()
-        query_obj = Eq('search_visible', True)
+        query_objs = []
+        if not self.request.GET.get('show_hidden', False):
+            query_objs.append(Eq('search_visible', True))
         query = self.request.GET.get('query', None)
+        perform_query = False
         if query:
             if self.request.GET.get('glob', False):
                 if '*' not in query:
                     query = "%s*" % query
-            query_obj &= Contains('searchable_text', query)
-
+            query_objs.append(Contains('searchable_text', query))
+            perform_query = True
         #Check other get-values:
         #FIXME: This should be smarter, and should perhaps be able to handle glob, other types of queries etc.
         for (k, v) in self.request.GET.mixed().items():
             if v and k in self.root.catalog:
+                perform_query = True
                 if isinstance(v, string_types):
-                    query_obj &= Eq(k, v)
+                    query_objs.append(Eq(k, v))
                 else:
-                    query_obj &= Any(k, v)
+                    query_objs.append(Any(k, v))
+        query_obj = None
+        if not query_objs or perform_query == False:
+            return
+        for obj in query_objs:
+            #There must be a smarter way to do this, right?
+            try:
+                query_obj &= obj
+            except TypeError:
+                query_obj = obj
         try:
             self.docids = self.root.catalog.query(query_obj)[1]
         except ParseError:
@@ -42,7 +55,8 @@ class SearchView(BaseView):
     @view_config(name = 'search', renderer = 'arche:templates/search.pt')
     def search_page(self):
         self._mk_query()
-        return {'results': self.resolve_docids(self.docids)}
+        return {'results': tuple(self.resolve_docids(self.docids)),
+                'query': self.request.GET.get('query', ''),}
 
     @view_config(name = 'search.json', renderer = 'json')
     def search_json(self):

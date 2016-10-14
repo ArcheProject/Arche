@@ -18,6 +18,7 @@ from pyramid_mailer.message import Message
 from six import string_types
 from slugify import UniqueSlugify
 from zope.component import adapter
+from zope.component.event import objectEventNotify
 from zope.interface import implementer
 from zope.interface import providedBy
 from zope.interface.interfaces import ComponentLookupError
@@ -142,6 +143,8 @@ def generate_slug(parent, text, limit=40):
     #Stop words configurable?
     #We don't have any language settings anywhere
     #Note about kw uids: It's keys already used.
+    if not isinstance(text, string_types):
+        text = str(text)
     used_names = set(parent.keys())
     request = get_current_request()
     used_names.update(get_context_view_names(parent, request))
@@ -206,6 +209,7 @@ def hash_method(value, registry = None, hashed = None):
 image_scales = {
     'icon': [20, 20],
     'mini': [40, 40],
+    'square': [64, 64],
     'col-1': [60, 120],
     'col-2': [160, 320],
     'col-3': [260, 520],
@@ -245,8 +249,10 @@ def find_all_db_objects(root):
             pass
         yield obj
 
+
 def get_dt_handler(request):
     return IDateTimeHandler(request)
+
 
 def utcnow():
     """Get the current datetime localized to UTC.
@@ -255,11 +261,17 @@ def utcnow():
     datetime object, whereas this one includes the UTC tz info."""
     return pytz.utc.localize(datetime.utcnow())
 
-def send_email(request, subject, recipients, html, sender = None, plaintext = None, send_immediately = False, **kw):
-    """ Send an email to users. This also checks the required settings and translates
-        the subject.
 
-        returns the message object sent, or None
+def compose_email(request, subject, recipients, html, sender = None, plaintext = None, **kw):
+    """
+    :param request:
+    :param subject: Email subject
+    :param recipients: A list of recipients
+    :param html: HTML-version of the email
+    :param sender: Should normally be None so it's fetched from the default configuration.
+    :param plaintext: A custom plaintext version. By default, it will be created from the HTML-version
+    :param **kw: Extra keywords to send to the message constructor
+    :return: A Pyramid mailer Message object
     """
     if isinstance(subject, TranslationString):
         subject = request.localizer.translate(subject)
@@ -267,19 +279,30 @@ def send_email(request, subject, recipients, html, sender = None, plaintext = No
         recipients = (recipients,)
     if plaintext is None:
         html2text = HTML2Text()
-        html2text.ignore_links = True
+        html2text.ignore_links = False
         html2text.ignore_images = True
         html2text.body_width = 0
         plaintext = html2text.handle(html).strip()
     if not plaintext:
         plaintext = None #In case it was an empty string
     #It seems okay to leave sender blank since it's part of the default configuration
-    msg = Message(subject = subject,
-                  recipients = recipients,
-                  sender = sender,
-                  body = plaintext,
-                  html = html,
-                  **kw)
+    return Message(
+        subject = subject,
+        recipients = recipients,
+        sender = sender,
+        body = plaintext,
+        html = html,
+        **kw
+    )
+
+
+def send_email(request, subject, recipients, html, sender = None, plaintext = None, send_immediately = False, **kw):
+    """ Send an email to users. This also checks the required settings and translates
+        the subject.
+
+        returns the message object sent, or None
+    """
+    msg = compose_email(request, subject, recipients, html, sender = None, plaintext = None, **kw)
     mailer = get_mailer(request)
     #Note that messages are sent during the transaction process. See pyramid_mailer docs
     if send_immediately:
@@ -433,6 +456,18 @@ def validate_appstruct(request, schema, appstruct, **kw):
         schema = schema.bind(**kw)
     return schema.deserialize(schema.serialize(appstruct))
 
+def get_schema(request, context, type_name, schema_name, bind = None, event = True):
+    schema = get_content_schemas(request.registry)[type_name][schema_name]()
+    if event:
+        from arche.events import SchemaCreatedEvent
+        event = SchemaCreatedEvent(schema, context = context, request = request)
+        objectEventNotify(event)
+    if bind is None:
+        schema = schema.bind(context = context, request = request)
+    else:
+        schema = schema.bind(**bind)
+    return schema
+
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)
     config.registry.registerAdapter(EmailValidationTokens)
@@ -445,11 +480,13 @@ def includeme(config):
     config.add_request_method(get_dt_handler, name = 'dt_handler', reify = True)
     config.add_request_method(get_root, name = 'root', reify = True)
     config.add_request_method(get_profile, name = 'profile', reify = True)
+    config.add_request_method(compose_email)
     config.add_request_method(send_email)
     config.add_request_method(resolve_docids)
     config.add_request_method(resolve_uid)
     config.add_request_method(content_factories, property = True)
     config.add_request_method(validate_appstruct)
+    config.add_request_method(get_schema)
     #Init default scales
     for (name, scale) in image_scales.items():
         config.add_image_scale(name, *scale)

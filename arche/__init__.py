@@ -20,6 +20,7 @@ default_settings = {
     'arche.cache_max_age': 24*60*60, #seconds
     'arche.new_userid_validator': 'arche.validators.NewUserIDValidator',
     'arche.actionbar': 'arche.views.actions.render_actionbar',
+    'arche.auto_recreate_catalog': False,
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
     'arche.authn_factory': 'arche.security.auth_tkt_factory',
@@ -57,6 +58,7 @@ def includeme(config):
     config.include('arche.portlets.byline')
     config.include('arche.portlets.navigation')
     config.include('arche.portlets.contents')
+    config.include('arche.portlets.richtext')
     #Translations
     config.add_translation_dirs('arche:locale/')
 
@@ -78,6 +80,10 @@ def includeme(config):
 
     #setup workflows
     config.include('arche.models.workflow.read_paster_wf_config')
+
+    #setup versioning from paster config
+    config.include('arche.models.versioning.read_paster_versioning_config')
+
 
 def root_factory(request):
     conn = get_connection(request)

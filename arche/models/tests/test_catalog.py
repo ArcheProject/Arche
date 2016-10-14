@@ -12,6 +12,7 @@ from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
 
 from arche.exceptions import CatalogError
+from arche.exceptions import CatalogConfigError
 from arche.interfaces import ICataloger
 from arche.interfaces import IIndexedContent
 from arche.interfaces import IMetadata
@@ -350,12 +351,13 @@ class CheckCatalogOnStartupTests(TestCase):
     def test_check_detects_too_many(self):
         env = self._fixture()
         env['root'].catalog['dummy'] = CatalogFieldIndex('hello!')
-        self.assertRaises(CatalogError, self._fut, env = env)
+        self._fut(env=env)
+        self.assertNotIn('dummy', env['root'].catalog)
 
     def test_check_detects_duplicate_key(self):
         env = self._fixture()
         self.config.add_catalog_indexes(__name__, {'title': CatalogFieldIndex('other')})
-        self.assertRaises(CatalogError, self._fut, env = env)
+        self.assertRaises(CatalogConfigError, self._fut, env = env)
 
     def test_check_detects_other_discriminator(self):
         env = self._fixture()

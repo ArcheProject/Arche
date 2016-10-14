@@ -24,6 +24,7 @@ from zope.interface.verify import verifyClass
 
 from arche import logger
 from arche.exceptions import CatalogError
+from arche.exceptions import CatalogConfigError
 from arche.interfaces import ICatalogIndexes
 from arche.interfaces import ICataloger
 from arche.interfaces import IIndexedContent
@@ -36,6 +37,7 @@ from arche.interfaces import IUser
 from arche.interfaces import IWorkflowAfterTransition
 from arche.models.workflow import WorkflowException
 from arche.models.workflow import get_context_wf
+from arche.utils import find_all_db_objects
 from arche.utils import prep_html_for_search_indexing
 
 
@@ -153,6 +155,7 @@ def add_metadata_field(config, metadata_cls):
             logger.warn("Metadata adapter %r already registered with name %r. Registering %r might override it." % (ar.factory, ar.name, metadata_cls))
     config.registry.registerAdapter(metadata_cls, name = metadata_cls.name)
 
+
 def create_metadata_field(config, callable_or_attr, name, adapts = IIndexedContent):
     """ Helper method to dynamically create metadata adapters.
         Callables must be methods that can replace the __call__ attribute of the
@@ -180,6 +183,7 @@ def create_metadata_field(config, callable_or_attr, name, adapts = IIndexedConte
     _DynMetadata.name = name
     config.add_metadata_field(_DynMetadata)
 
+
 def _get_unix_time(dt, default):
     """ The created time is stored in the catalog as unixtime.
         See the time.gmtime and calendar.timegm Python modules for more info.
@@ -190,19 +194,24 @@ def _get_unix_time(dt, default):
         return timegm(dt.timetuple())
     return default
 
+
 def get_path(context, default): return resource_path(context)
+
 
 def get_date(context, default):
     res = getattr(context, 'date', default)
     return _get_unix_time(res, default)
 
+
 def get_created(context, default):
     res = getattr(context, 'created', default)
     return _get_unix_time(res, default)
 
+
 def get_modified(context, default):
     res = getattr(context, 'modified', default)
     return _get_unix_time(res, default)
+
 
 def get_tags(context, default):
     tags = getattr(context, 'tags', ())
@@ -210,9 +219,11 @@ def get_tags(context, default):
         return tuple([x.lower() for x in tags])
     return default
 
+
 def get_sortable_title(context, default):
     title = getattr(context, 'title', default)
     return title and title.lower() or default
+
 
 class _AttrDiscriminator(object):
     def __init__(self, attr):
@@ -220,6 +231,7 @@ class _AttrDiscriminator(object):
 
     def __call__(self, context, default):
         return getattr(context, self.attr, default)
+
 
 def get_searchable_text(context, default):
     root = find_root(context)
@@ -250,12 +262,14 @@ def get_searchable_text(context, default):
     text = text.strip()
     return text and text or default
 
+
 def get_wf_state(context, default):
     try:
         wf = get_context_wf(context)
     except WorkflowException:
         return default
     return wf and wf.state or default
+
 
 def get_workflow(context, default):
     try:
@@ -264,9 +278,11 @@ def get_workflow(context, default):
         return default
     return wf and wf.name or default
 
+
 def get_creator(context, default):
     creator = getattr(context, 'creator', None)
     return creator and tuple(creator) or default
+
 
 def create_catalog(root):
     root.catalog = Catalog()
@@ -289,6 +305,7 @@ def index_object_subscriber(context, event):
     cataloger = reg.queryAdapter(context, ICataloger)
     cataloger.index_object(indexes = changed)
 
+
 def unindex_object_subscriber(context, event):
     reg = get_current_registry()
     cataloger = reg.queryAdapter(context, ICataloger)
@@ -308,6 +325,7 @@ def add_searchable_text_discriminator(config, discriminator):
         discriminators = config.registry.searchable_text_discriminators = set()
     discriminators.add(discriminator)
 
+
 def add_searchable_text_index(config, name):
     """ Fetch the content of another index and add make it globally searchable.
         (From the index searchable_text)
@@ -319,6 +337,7 @@ def add_searchable_text_index(config, name):
         indexes = config.registry.searchable_text_indexes = set()
     indexes.add(name)
 
+
 _default_searchable_text_indexes = (
     'title',
     'description',
@@ -327,16 +346,49 @@ _default_searchable_text_indexes = (
     'last_name',
 )
 
+
 def _searchable_html_body(context, default):
     body = getattr(context, 'body', default)
     if body != default and isinstance(body, string_types):
         return prep_html_for_search_indexing(body)
     return default
 
+
+def _savepoint_callback(current):
+    logger.info("Reindexing-progress: ", current)
+
+
+def reindex_catalog(root, savepoint_limit = 1000, savepoint_callback=_savepoint_callback):
+    i = 0
+    total = 0
+    import transaction
+    logger.info("Reindexing catalog")
+    for obj in find_all_db_objects(root):
+        try:
+            cataloger = ICataloger(obj)
+        except TypeError:
+            continue
+        cataloger.index_object()
+        i += 1
+        total += 1
+        if i>=savepoint_limit:
+            i = 0
+            transaction.savepoint()
+            savepoint_callback(total)
+    logger.info("Process complete. %s objects reindexed", total)
+
+
 def check_catalog_on_startup(event = None, env = None):
     """ Check that the catalog has all required indexes and that they're up to date.
         Ment to be run by the IApplicationCreated event.
     """
+    def _commit_and_cleanup(closer, commit=False):
+        if commit:
+            import transaction
+            transaction.commit()
+        _unregister_index_utils(reg)
+        closer()
+
     #Split this into other functions?
     #This should be changed into something more sensible.
     #Env vars?
@@ -356,24 +408,41 @@ def check_catalog_on_startup(event = None, env = None):
         return
     catalog = root.catalog
     reg = env['registry']
+    auto_recreate = reg.settings.get('arche.auto_recreate_catalog', False)
     registered_keys = {}
-    for util in reg.getAllUtilitiesRegisteredFor(ICatalogIndexes):
-        for (key, index) in util.items():
-            if key in registered_keys:
-                raise CatalogError("Both %r and %r tried to add the same key %r" % (util.name, registered_keys[key], key))
-            registered_keys[key] = util.name
-            if key not in catalog:
-                raise CatalogError("%r requires %r to exist in the catalog." % (util.name, key))
-            if catalog[key].discriminator != index.discriminator:
-                raise CatalogError("Index stored at %r has a missmatching discriminator. \n"
-                                   "Current: %r \n"
-                                   "Required: %r \n"
-                                   "Required by: %r" % (key, catalog[key].discriminator, index.discriminator, util.name))
+    try:
+        for util in reg.getAllUtilitiesRegisteredFor(ICatalogIndexes):
+            for (key, index) in util.items():
+                if key in registered_keys:
+                    raise CatalogConfigError("Both %r and %r tried to add the same key %r" % (util.name, registered_keys[key], key))
+                registered_keys[key] = util.name
+                if key not in catalog:
+                    raise CatalogError("%r requires %r to exist in the catalog." % (util.name, key))
+                if catalog[key].discriminator != index.discriminator:
+                    raise CatalogError("Catalog index stored at %r has a missmatching discriminator. \n"
+                                           "Current: %r \n"
+                                           "Required: %r \n"
+                                           "Required by: %r" % (key, catalog[key].discriminator, index.discriminator, util.name))
+    except CatalogError:
+        if auto_recreate:
+            print "-- Auto-recreate catalog is set to true and the catalog needs to be recreated."
+            print "-- Recreating now"
+            create_catalog(root)
+            print "-- Process complete. Running reindex."
+            reindex_catalog(root)
+            _commit_and_cleanup(env['closer'], commit=True)
+            return
+        else:
+            raise
+    indexes_to_remove = set()
     for key in catalog:
         if key not in registered_keys:
-            raise CatalogError("Index %r is no longer required and should be removed from the catalog." % key)
-    _unregister_index_utils(reg)
-    env['closer']()
+            indexes_to_remove.add(key)
+    for key in indexes_to_remove:
+        logger.warn("Removing catalog index '%s' since it's not registered anywhere.", key)
+        del catalog[key]
+    _commit_and_cleanup(env['closer'], commit=bool(indexes_to_remove))
+
 
 def _unregister_index_utils(registry):
     for util in registry.getAllUtilitiesRegisteredFor(ICatalogIndexes):

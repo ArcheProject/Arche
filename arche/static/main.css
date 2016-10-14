@@ -1,3 +1,16 @@
+
+/* default workflow states */
+.wf-state.wf-state-public {
+  color: #5cb85c;
+}
+.wf-state.wf-state-private {
+  color: #d9534f;
+}
+.wf-state.wf-state-review {
+  color: #f0ad4e;
+}
+
+
 .dashed-border { border: #ccc 1px dashed; }
 
 .rotate-me {

@@ -6,25 +6,64 @@
       i18n:domain="Arche">
 <body>
 <tal:slot metal:fill-slot="content">
-<div class="row">
+  <div class="row">
     <div class="col-sm-12">
-        <h1 class="page-header">
-            <span i18n:translate="">Search result</span>
-        </h1>
+      <h1 class="page-header">
+        <span i18n:translate="">Search</span>
+      </h1>
+
+      <form action="${request.resource_url(request.root,'search')}" class="search" role="search" method="get">
+        <div class="input-group">
+          <input name="query" type="text" class="form-control" placeholder="Search"
+              i18n:attributes="placeholder" value="${query}"/>
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-default">
+            <span class="glyphicon glyphicon-search"></span>&nbsp;
+            </button>
+          </span>
+        </div>
+      </form>
     </div>
-</div>
-<div class="row media" tal:repeat="obj results">
-    <div class="col-sm-10">
-        <h3 class="media-heading">
+  </div>
+
+  <span tal:condition="query" i18n:translate="">
+    Found <i18n:c name="count">${len(results)}</i18n:c> items for
+    <i18n:q name="query">'${query}'</i18n:q>
+    <a tal:condition="'*' not in query"
+       href="${request.resource_url(request.root, 'search', query = {'query': '*%s*' % query})}"
+       i18n:translate="">
+      Search for anything that contains ${query}.
+    </a>
+  </span>
+
+  <div class="list-group">
+    <div class="list-group-item"
+         tal:repeat="obj results">
+      <div class="row">
+        <div class="col-sm-1">
+          <img tal:replace="structure view.thumb_tag(obj, 'square', extra_cls = 'media-object hidden-xs', direction='down')" />
+        </div>
+        <div class="col-sm-7">
+          <h3 class="media-heading">
             <a href="${request.resource_url(obj)}" title="${obj.description}">${obj.title}</a>
-            <small class="pull-right">${obj.type_title}</small>
-        </h3>
-        <p class="lead">${obj.description}</p>
+          </h3>
+          <p>${obj.description}</p>
+        </div>
+        <div class="col-sm-2">
+            <p class="text-mute text-nowrap">
+              <span tal:condition="hasattr(obj, 'css_icon')" class="${obj.css_icon}"></span>
+              ${obj.type_title}
+            </p>
+        </div>
+        <div class="col-sm-2">
+          <tal:pub_date condition="getattr(obj, 'date', False)">
+            ${request.dt_handler.format_dt(obj.date)|''}
+          </tal:pub_date>
+        </div>
+
+      </div>
     </div>
-    <div class="col-sm-2">
-        <img tal:replace="structure view.thumb_tag(obj, 'col-2', extra_cls = 'media-object hidden-xs')" />
-    </div>
-</div>
+  </div>
 </tal:slot>
 </body>
 </html>

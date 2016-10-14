@@ -321,15 +321,16 @@ class Document(Content, DCMetadataMixin, LocalRolesMixin, ContextACLMixin):
     body = ""
     add_permission = "Add %s" % type_name
     css_icon = "glyphicon glyphicon-font"
+    blob_key = 'image'
 
     @property
     def image_data(self):
         blobs = IBlobs(self, None)
         if blobs:
-            return blobs.formdata_dict('image')
+            return blobs.formdata_dict(self.blob_key)
     @image_data.setter
     def image_data(self, value):
-        IBlobs(self).create_from_formdata('image', value)
+        IBlobs(self).create_from_formdata(self.blob_key, value)
 
 
 @implementer(IFile, IThumbnailedContent)
@@ -449,6 +450,7 @@ class User(Content, LocalRolesMixin, ContextACLMixin):
     allow_login = True
     _email_validated = False
     __timezone__ = None
+    blob_key = 'image'
 
     @property
     def title(self):

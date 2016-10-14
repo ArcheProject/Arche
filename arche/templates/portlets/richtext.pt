@@ -1,0 +1,17 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Arche">
+<div class="panel panel-default portlet" tal:condition="show_container">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      ${title}
+    </h4>
+  </div>
+  <div class="panel-body">
+    ${structure: body}
+  </div>
+</div>
+<div tal:condition="not show_container">${structure: body}</div>
+</tal:main>
