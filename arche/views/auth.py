@@ -224,7 +224,7 @@ class UserChangePasswordForm(DefaultEditForm):
 
 def logout(context, request):
     headers = forget(request)
-    request.session.delete()
+    request.session.invalidate()
     return HTTPFound(location = request.resource_url(context),
                      headers = headers)
 
