@@ -27,21 +27,32 @@ class AddFileForm(DefaultAddForm):
         return HTTPFound(location = self.request.resource_url(obj))
 
 
-def file_data_response(context, request, disposition = 'inline'):
-    res = Response(
-        headerlist=[
-            ('Content-Disposition', '%s;filename="%s"' % (
-                disposition, context.filename.encode('ascii', 'ignore'))),
-            ('Content-Type', str(context.mimetype)),
-            ]
-        )
-    #Should this be fault tolerant in some way?
-    with IBlobs(context)['file'].blob.open() as f:
-        res.body = f.read()
-    return res
+def file_data_response(context, request, disposition = 'inline', blob_key = None):
+    filename = getattr(context, 'filename', context.uid).encode('ascii', 'ignore')
+    if blob_key is None:
+        blob_key = getattr(context, 'blob_key', 'file')
+    body = None
+    mimetype = ""
+    try:
+        blobfile = IBlobs(context)[blob_key]
+        with blobfile.blob.open() as f:
+            body = f.read()
+        mimetype = blobfile.mimetype
+    except KeyError:
+        pass
+    if not body:
+        raise HTTPNotFound("No such key")
+    headerslist = [
+        ('Content-Disposition', '%s;filename="%s"' % (
+            disposition, filename)),
+        ('Content-Type', str(mimetype)),
+    ]
+    return Response(headerlist=headerslist, body=body)
+
 
 def download_view(context, request):
     return file_data_response(context, request, disposition = 'attachment')
+
 
 def inline_view(context, request):
     return file_data_response(context, request, disposition = 'inline')

@@ -12,7 +12,7 @@
         <span i18n:translate="">Search</span>
       </h1>
 
-      <form action="${request.resource_url(request.root,'search')}" id="search" role="search" method="get">
+      <form action="${request.resource_url(request.root,'search')}" class="search" role="search" method="get">
         <div class="input-group">
           <input name="query" type="text" class="form-control" placeholder="Search"
               i18n:attributes="placeholder" value="${query}"/>

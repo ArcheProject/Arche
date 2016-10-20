@@ -52,8 +52,8 @@
           <p class="errorMsg">${field.errormsg}</p>
         </div>
 
-        <div class="section first" tal:condition="description"
-          tal:content="structure description"></div>
+        <p class="section first" tal:condition="description"
+          tal:content="structure description"></p>
 
         <!-- Tab panes -->
         <div class="tab-content" tal:condition="tabbed_fields">

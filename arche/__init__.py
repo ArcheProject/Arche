@@ -13,6 +13,7 @@ logger = getLogger(__name__)
 
 default_settings = {
     'arche.hash_method': 'arche.security.sha512_hash_method',
+    'arche.session_factory': 'pyramid_beaker',
     'arche.includes': '',
     'arche.debug': False,
     'arche.use_exception_views': True,
@@ -84,6 +85,9 @@ def includeme(config):
     #setup versioning from paster config
     config.include('arche.models.versioning.read_paster_versioning_config')
 
+    #Include session factory
+    config.include(settings['arche.session_factory'].strip())
+
 
 def root_factory(request):
     conn = get_connection(request)
@@ -108,7 +112,6 @@ def main(global_config, **settings):
     config.include('betahaus.viewcomponent')
     config.include('pyramid_deform')
     config.include('arche') #Must be included first to adjust settings for other packages!
-    config.include('pyramid_beaker')
     config.include('pyramid_zodbconn')
     config.include('pyramid_tm')
     config.include('pyramid_chameleon')

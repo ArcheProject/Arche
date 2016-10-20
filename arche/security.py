@@ -192,6 +192,12 @@ def bcrypt_hash_method(value, hashed = None):
     except ValueError: #Invalid salt
         return bcrypt.hashpw(value.encode('utf-8'), bcrypt.gensalt())
 
+
+def auth_session_factory(settings):
+    from pyramid.authentication import SessionAuthenticationPolicy
+    return SessionAuthenticationPolicy(callback = groupfinder)
+
+
 def auth_tkt_factory(settings):
     from pyramid.authentication import AuthTktAuthenticationPolicy
 
