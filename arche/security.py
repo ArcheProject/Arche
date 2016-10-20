@@ -258,6 +258,7 @@ def includeme(config):
     public = aclreg.new_acl('public', title = _("Public"))
     public.add(ROLE_ADMIN, ALL_PERMISSIONS)
     public.add(Everyone, [PERM_VIEW])
+    public.add(ROLE_EDITOR, [PERM_VIEW, PERM_EDIT, PERM_DELETE])
     public.add(ROLE_REVIEWER, [PERM_REVIEW_CONTENT])
     #Review
     review = aclreg.new_acl('review', title = _("Review"))
