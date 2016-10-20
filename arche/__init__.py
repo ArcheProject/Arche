@@ -111,11 +111,11 @@ def main(global_config, **settings):
     config.add_static_view('static', 'arche:static', cache_max_age = cache_max_age)
     config.include('betahaus.viewcomponent')
     config.include('pyramid_deform')
+    config.include('deform_autoneed')
     config.include('arche') #Must be included first to adjust settings for other packages!
     config.include('pyramid_zodbconn')
     config.include('pyramid_tm')
     config.include('pyramid_chameleon')
-    config.include('deform_autoneed')
     config.hook_zca()
     return config.make_wsgi_app()
 
