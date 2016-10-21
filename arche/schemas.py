@@ -473,7 +473,7 @@ class RootSchema(BaseSchema, DCMetadataSchema):
         colander.String(),
         title = _("Footer"),
         missing = "",
-        widget = deform.widget.RichTextWidget(delayed_load = True, height = 200),
+        widget = deform.widget.RichTextWidget(height = 200),
     )
 
 
