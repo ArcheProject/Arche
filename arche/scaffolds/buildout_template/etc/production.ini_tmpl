@@ -1,0 +1,130 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+[app:arche]
+use = egg:arche
+
+pyramid.reload_templates = false
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+#pyramid.default_locale_name = sv
+pyramid.includes =
+    pyramid_exclog
+    pyramid_mailer
+
+tm.attempts = 3
+zodbconn.uri = zeo://%(here)s/../var/ZEO.sock?blob_dir=%(here)s/../var/blob&shared_blob_dir=true
+
+arche.salt_file = %(here)s/../var/.salt.txt
+arche.debug = False
+arche.timezone = Europe/Stockholm
+arche.includes =
+    {{package}}
+    arche_introspect
+
+#arche.versioning.Document = body
+
+
+#Beaker
+session.type = file
+session.data_dir = %(here)s/../var/sessions/data
+session.lock_dir = %(here)s/../var/sessions/lock
+session.key = {{package}}
+session.secret = {{random_string}}
+session.cookie_on_exception = true
+
+#pyramid_mailer settings
+mail.host = localhost
+mail.port = 25
+mail.default_sender = noreply@{{package}}.com
+#mail.debug = false
+#mail.username   None    SMTP username
+#mail.password   None    SMTP password
+#mail.tls    false   Use TLS
+#mail.ssl    false   Use SSL
+#mail.keyfile    None    SSL key file
+#mail.certfile   None    SSL certificate file
+#mail.queue_path None    Location of maildir
+
+[pipeline:main]
+pipeline =
+    fanstatic
+    arche
+
+
+[filter:fanstatic]
+use = egg:fanstatic#fanstatic
+bottom = true
+versioning = true
+minified = true
+
+
+###
+# wsgi server configuration
+###
+
+
+[server:main]
+use = egg:waitress#main
+unix_socket = %(here)s/../var/waitress.sock
+unix_socket_perms = 666
+threads = 4
+#url_scheme = https
+
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[loggers]
+keys = root, arche, exc_logger
+
+[handlers]
+keys = console, arche, exc_handler
+
+[formatters]
+keys = generic, exc_formatter
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_arche]
+level = INFO
+handlers = arche
+qualname = arche
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s] %(message)s
+
+[logger_exc_logger]
+level = WARN
+handlers = exc_handler
+qualname = exc_logger
+
+[handler_exc_handler]
+class = FileHandler
+args = ('%(here)s/../var/log/exceptions.log',)
+level = WARN
+formatter = exc_formatter
+
+[handler_arche]
+class = FileHandler
+args = ('%(here)s/../var/log/arche.log',)
+level = WARN
+formatter = exc_formatter
+
+[formatter_exc_formatter]
+format = %(asctime)s %(message)s
+
+# End logging configuration

@@ -66,5 +66,7 @@ setup(name='Arche',
       [console_scripts]
       arche = arche.scripts:arche_console_script
       evolver = arche.scripts:evolve_packages_script
+      [pyramid.scaffold]
+      arche_buildout=arche.scaffolds:BuildoutTemplate
       """,
       )

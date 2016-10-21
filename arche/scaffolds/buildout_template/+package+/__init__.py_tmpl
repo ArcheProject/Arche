@@ -1,0 +1,13 @@
+
+def includeme(config):
+    config.include('.fanstatic_lib')
+    config.include('.models')
+    config.include('.schemas')
+    config.include('.views')
+    #Static dir
+    config.add_static_view('static_{{package}}', 'static', cache_max_age=3600)
+    #Arche overrides
+    config.override_asset(to_override='arche:templates/',
+                          override_with='{{package}}:templates/overrides/arche/')
+    #Set favicon
+    config.registry.settings['arche.favicon'] = '{{package}}:static/assets/favicon.ico'

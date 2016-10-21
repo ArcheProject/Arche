@@ -1,0 +1,40 @@
+# make a soft link in /etc/nginx/sites-enabled to etc/nginx.conf
+# Check package name too
+
+upstream {{package}} {
+    server unix:<FIXME>/var/waitress-0.sock max_fails=3 fail_timeout=30s;
+}
+
+server {
+    listen *:80;
+#    server_name {{package}}.com;
+#    rewrite ^/(.*) https://{{package}}.com/$1 redirect;
+}
+
+server {
+#    listen *:443;
+#    ssl on;
+#    ssl_certificate      /etc/nginx/ssl/{{package}}.crt;
+#    ssl_certificate_key  /etc/nginx/ssl/{{package}}.key;
+    server_name {{package}}.com;
+    access_log  /var/log/nginx/{{package}}-access.log;
+    error_log  /var/log/nginx/{{package}}-error.log;
+
+    location / {
+        proxy_pass http://{{package}};
+
+        proxy_set_header        Host $host;
+        proxy_set_header        X-Real-IP $remote_addr;
+        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header        X-Forwarded-Proto $scheme;
+
+        client_max_body_size    10m;
+        client_body_buffer_size 128k;
+        proxy_connect_timeout   60s;
+        proxy_send_timeout      90s;
+        proxy_read_timeout      90s;
+        proxy_buffering         off;
+        proxy_temp_file_write_size 64k;
+        proxy_redirect          off;
+    }
+}

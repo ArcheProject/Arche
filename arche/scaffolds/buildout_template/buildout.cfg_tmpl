@@ -1,0 +1,66 @@
+[buildout]
+
+parts =
+    {{project}}
+    crontab-pack
+
+eggs =
+    {{package}}
+    waitress
+    supervisor
+    pyramid_exclog
+    arche_introspect
+
+
+#Managed by Mr Developer
+develop = .
+
+newest = false
+prefer-final = true
+eggs-directory = ${buildout:directory}/eggs
+download-cache =
+
+extensions =
+    mr.developer
+
+# mr.developer settings:
+sources = sources
+auto-checkout = *
+
+versions = versions
+
+
+[{{project}}]
+recipe = zc.recipe.egg
+dependent-scripts = true
+unzip = true
+eggs =
+    ${buildout:eggs}
+interpreter = py
+
+
+[crontab-pack]
+#Pack database to remove old versioned objects
+recipe = z3c.recipe.usercrontab
+# m h   dom mon dow | pack tue night
+times = 00 04   * *  2
+command = ${buildout:directory}/bin/zeopack -u ${buildout:directory}/var/ZEO.sock
+
+
+[sources]
+Arche = git https://github.com/ArcheProject/Arche.git
+arche_introspect = git https://github.com/ArcheProject/arche_introspect.git
+arche_google_analytics = git https://github.com/ArcheProject/arche_google_analytics.git
+
+
+[versions]
+#You may want to check these
+deform = 2.0a2
+js.bootstrap = 3.3.4
+pyramid = 1.7
+repoze.sendmail = 4.1
+ZEO = 4.3.0
+ZODB = 4.4.3
+colander = 1.2
+transaction = 1.5.0
+persistent = 4.2.0

@@ -1,0 +1,86 @@
+###
+# app configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+###
+
+[app:arche]
+use = egg:arche
+
+pyramid.reload_templates = true
+pyramid.debug_authorization = false
+pyramid.debug_notfound = false
+pyramid.debug_routematch = false
+#pyramid.default_locale_name = sv
+pyramid.includes =
+#  pyramid_debugtoolbar
+  arche.testing.printing_mailer
+
+tm.attempts = 3
+zodbconn.uri = file://%(here)s/../var/Data.fs?blobstorage_dir=%(here)s/../var/blob
+
+arche.salt_file = %(here)s/../var/.salt.txt
+arche.debug = True
+arche.timezone = Europe/Stockholm
+arche.includes =
+    {{package}}
+    arche_introspect
+
+
+[pipeline:main]
+pipeline =
+    fanstatic
+    arche
+
+
+[filter:fanstatic]
+use = egg:fanstatic#fanstatic
+debug = True
+bottom = True
+rollup = True
+
+###
+# wsgi server configuration
+###
+
+
+[server:main]
+use = egg:waitress#main
+host = 0.0.0.0
+port = 6543
+
+###
+# logging configuration
+# http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/logging.html
+###
+
+[loggers]
+keys = root, arche
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[logger_celery]
+level = INFO
+handlers = console
+qualname = celery
+
+[logger_arche]
+level = DEBUG
+handlers =
+qualname = arche
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s] %(message)s
