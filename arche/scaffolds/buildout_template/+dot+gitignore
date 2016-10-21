@@ -4,3 +4,13 @@
 *.pt.py
 .tmp*
 .coverage
+.Python
+.installed.cfg
+.mr.developer.cfg
+bin
+develop-eggs
+dist
+eggs
+include
+lib
+src
