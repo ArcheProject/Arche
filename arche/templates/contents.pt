@@ -27,7 +27,9 @@
           i18n:translate="">Not a folder, so it can't have content</p>
 
         <form id="contents-form" action="${request.resource_url(context, 'contents.json')}" method="POST">
-          <table tal:condition="is_folderish" class="table table-responsive table-bordered table-striped table-hover sortable-table">
+          <table tal:condition="is_folderish"
+                 class="table table-responsive table-bordered table-striped table-hover sortable-table"
+                 tal:define="ord_enabled getattr(context, '_order', None) is not None">
             <thead>
               <tr>
                 <th>
@@ -39,7 +41,17 @@
                 <th i18n:translate="">Modified</th>
                 <th i18n:translate="">Tags</th>
                 <th i18n:translate="">Info</th>
-                <th></th>
+                <th>
+                  <span title="Ordering enabled."
+                        i18n:attributes="title;"
+                        tal:condition="ord_enabled"
+                        class="glyphicon glyphicon-ok"></span>
+                  <span title="Ordering not stored. If you drag and drop items,
+                  ordering will be enabled automatically."
+                        i18n:attributes="title ordering_enabled_notice;"
+                        tal:condition="not ord_enabled"
+                        class="glyphicon glyphicon-remove"></span>
+                </th>
               </tr>
             </thead>
             <tbody id="sortable">

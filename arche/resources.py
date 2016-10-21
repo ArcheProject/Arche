@@ -223,6 +223,9 @@ class Content(Base, Folder):
     show_byline = False
 
     def __init__(self, **kw):
+        #To set that this should keep track of ordering. See Folder
+        #If _order is set to None, ordering isn't stored
+        self._order = ()
         Folder.__init__(self)
         super(Content, self).__init__(**kw)
 
