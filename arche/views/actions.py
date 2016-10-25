@@ -234,9 +234,6 @@ def cut_context(context, request, va, **kw):
              priority=20,
              permission=security.PERM_VIEW)  # FIXME: Permission?
 def copy_context(context, request, va, **kw):
-    # Copying objects with subobjects aren't supported yet, since subobjects and references need to be updated.
-    if IFolder.providedBy(context) and len(context):
-        return ""
     if context != kw['view'].root:
         return """<li><a href="%(url)s">%(title)s</a></li>""" % \
                {'url': request.resource_url(context, '__copy_context__'),

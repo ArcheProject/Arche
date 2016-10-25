@@ -2,6 +2,8 @@ from UserDict import IterableUserDict
 from collections import deque
 from datetime import datetime
 import inspect
+from copy import deepcopy
+from uuid import uuid4
 
 from BTrees.OOBTree import OOBTree
 from html2text import HTML2Text
@@ -236,6 +238,7 @@ def get_image_scales(registry = None):
         registry = get_current_registry()
     return getattr(registry, '_image_scales', {})
 
+
 def find_all_db_objects(root):
     """ Return all objects stored in context.values(), and all subobjects.
         Great for reindexing the catalog or other database migrations.
@@ -248,6 +251,17 @@ def find_all_db_objects(root):
         except AttributeError:
             pass
         yield obj
+
+
+def copy_recursive(original_contex, change_uids = True):
+    """ Note that a copy should always have changed UIDs if the original is kept
+        in the resource tree.
+    """
+    new_context = deepcopy(original_contex)
+    if change_uids:
+        for obj in find_all_db_objects(new_context):
+            obj.uid = unicode(uuid4())
+    return new_context
 
 
 def get_dt_handler(request):

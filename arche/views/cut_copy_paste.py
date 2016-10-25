@@ -1,17 +1,17 @@
 from __future__ import unicode_literals
-from copy import deepcopy
-from uuid import uuid4
 
+import colander
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
-import colander
 
 from arche import _
 from arche import security
+from arche.utils import copy_recursive
 from arche.utils import generate_slug
 from arche.utils import get_addable_content
-from arche.views.base import BaseView, BaseForm
 from arche.validators import unique_parent_context_name_validator
+from arche.views.base import BaseForm
+from arche.views.base import BaseView
 
 
 #FIXME: Check cut, copy and paste functionality.
@@ -45,8 +45,6 @@ class CutContext(BaseView):
 class CopyContext(BaseView):
 
     def __call__(self):
-        if len(self.context):
-            raise HTTPForbidden("Can't copy objects with subobjects")
         self.flash_messages.add(_("Copy"))
         self.request.session['__paste_data__'] = {'uid': self.context.uid, 'move': False}
         return HTTPFound(location = self.request.resource_url(self.context))
@@ -58,19 +56,22 @@ class PasteContext(BaseView):
         if not can_paste(self.context, self.request, self):
             raise HTTPForbidden(_("Can't paste to this context"))
         paste_data = self.request.session.get('__paste_data__')
-        cut_obj = self.resolve_uid(paste_data['uid'])
-        parent = cut_obj.__parent__
-        use_name = generate_slug(self.context, cut_obj.__name__)
+        action_obj = self.resolve_uid(paste_data['uid'])
+        parent = action_obj.__parent__
+        use_name = generate_slug(self.context, action_obj.__name__)
         if paste_data.get('move', False):
-            del parent[cut_obj.__name__]
+            del parent[action_obj.__name__]
             self.flash_messages.add(_("Moved here"))
         else:
-            cut_obj.uid = unicode(uuid4())
-            cut_obj = deepcopy(cut_obj)
-            self.flash_messages.add(_("New copy added here"))
-        self.context[use_name] = cut_obj
+            action_obj = copy_recursive(action_obj)
+            self.flash_messages.add(_("copy_references_notice",
+                                      default = "New copy added here. "
+                                      "References that pointed to the original object won't point to this one."))
+        self.context[use_name] = action_obj
         del self.request.session['__paste_data__']
         return HTTPFound(location = self.request.resource_url(self.context[use_name]))
+
+
 
 
 class RenameContext(BaseForm):
