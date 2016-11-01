@@ -1,7 +1,7 @@
-from UserDict import IterableUserDict
-
 import six
 from pyramid.threadlocal import get_current_registry
+
+from arche.compat import IterableUserDict
 
 
 class MIMETypeViews(IterableUserDict):

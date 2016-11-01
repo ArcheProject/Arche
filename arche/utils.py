@@ -1,4 +1,3 @@
-from UserDict import IterableUserDict
 from collections import deque
 from datetime import datetime
 import inspect
@@ -18,6 +17,7 @@ from pyramid.traversal import find_root
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 from six import string_types
+from six import text_type
 from slugify import UniqueSlugify
 from zope.component import adapter
 from zope.component.event import objectEventNotify
@@ -28,6 +28,7 @@ import pytz
 
 from arche import _
 from arche import logger
+from arche.compat import IterableUserDict
 from arche.interfaces import IContentView
 from arche.interfaces import IDateTimeHandler
 from arche.interfaces import IEmailValidationTokens

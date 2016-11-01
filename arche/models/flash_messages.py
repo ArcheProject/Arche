@@ -5,6 +5,7 @@ from zope.interface import implementer
 from pyramid.interfaces import IRequest
 from pyramid.renderers import render
 import transaction
+from six import text_type
 
 from arche.interfaces import IFlashMessages
 
@@ -54,7 +55,7 @@ class FlashMessages(object):
 
     def get_messages(self):
         for message in self.request.session.pop_flash():
-            message['id'] = unicode(uuid4())
+            message['id'] = text_type(uuid4())
             yield message
 
     def render(self):

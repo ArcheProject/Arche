@@ -1,4 +1,3 @@
-from UserDict import IterableUserDict
 from logging import getLogger
 
 from BTrees.LOBTree import LOBTree
@@ -13,6 +12,7 @@ from zope.interface import providedBy
 from zope.interface.declarations import implementer
 
 from arche.interfaces import IRevisions
+from arche.compat import IterableUserDict
 from arche.utils import utcnow
 from arche.interfaces import ITrackRevisions
 from arche.interfaces import IObjectUpdatedEvent
@@ -82,6 +82,7 @@ class Revisions(object):
 
     def __nonzero__(self):
         return True
+    __bool__ = __nonzero__
 
     def __len__(self):
         return len(self.data)

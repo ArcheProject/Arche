@@ -1,6 +1,4 @@
 from __future__ import unicode_literals
-from UserString import UserString
-from UserDict import IterableUserDict
 
 from BTrees.OOBTree import OOBTree
 from BTrees.OOBTree import OOSet
@@ -14,6 +12,8 @@ from arche import logger
 from arche.interfaces import ILocalRoles
 from arche.interfaces import IRole
 from arche.interfaces import IRoles
+from arche.compat import IterableUserDict
+from arche.compat import UserString
 
 
 @implementer(IRole)

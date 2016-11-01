@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-from UserDict import IterableUserDict
 
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.threadlocal import get_current_registry
@@ -15,6 +14,7 @@ import six
 from arche import _
 from arche import logger
 from arche import security
+from arche.compat import IterableUserDict
 from arche.events import WorkflowAfterTransition
 from arche.events import WorkflowBeforeTransition
 from arche.interfaces import IContextACL

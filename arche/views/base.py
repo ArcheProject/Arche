@@ -70,7 +70,8 @@ class BaseView(object):
             return self.request.profile
         except AttributeError:
             #To be nice to tests
-            self.root['users'].get(self.request.authenticated_userid)
+            if self.root:
+                self.root.get('users', {}).get(self.request.authenticated_userid)
 
     @reify
     def flash_messages(self):

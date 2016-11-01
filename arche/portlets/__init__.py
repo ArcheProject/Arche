@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-from UserDict import IterableUserDict
 from uuid import uuid4
 
 from BTrees.OOBTree import OOBTree
@@ -11,9 +10,11 @@ from zope.component import ComponentLookupError
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface.verify import verifyClass
+from six import text_type
 
 from arche import _
 from arche import logger
+from arche.compat import IterableUserDict
 from arche.interfaces import IContent
 from arche.interfaces import IPortlet
 from arche.interfaces import IPortletManager
@@ -65,7 +66,7 @@ class Portlet(Persistent):
     add_permission = "Add %s" % type_name
 
     def __init__(self, portlet_type, **kw):
-        self.uid = unicode(uuid4())
+        self.uid = text_type(uuid4())
         self.portlet_type = portlet_type
         self.__settings__ = OOBTree()
         settings = kw.pop('settings', {})
@@ -193,6 +194,7 @@ class PortletManager(IterableUserDict):
 
     def __nonzero__(self):
         return True
+    __bool__ = __nonzero__
 
 
 def get_portlet_slots(registry = None):
