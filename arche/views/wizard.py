@@ -73,6 +73,7 @@ class BaseWizardForm(BaseForm):
 
     def next_success(self, appstruct):
         self.data[self.current_state] = appstruct
+        self.request.session.changed()
         state = self.states[self.states.index(self.current_state) + 1]
         self._inject_state(state)
         return HTTPFound(location = self.request.url)
