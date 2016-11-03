@@ -63,11 +63,19 @@ class Cataloger(object):
             docid = self.document_map.add(self.path)
             for index in indexes:
                 if index in self.catalog:
-                    self.catalog[index].index_doc(docid, self.context)
+                    try:
+                        self.catalog[index].index_doc(docid, self.context)
+                    except Exception as exc:
+                        logger.warn("Failing index: %s" % index)
+                        raise
         else:
             for index in indexes:
                 if index in self.catalog:
-                    self.catalog[index].reindex_doc(docid, self.context)
+                    try:
+                        self.catalog[index].reindex_doc(docid, self.context)
+                    except Exception as exc:
+                        logger.warn("Failing index: %s" % index)
+                        raise
         self.update_metadata(docid)
 
     def unindex_object(self):
