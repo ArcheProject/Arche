@@ -72,6 +72,8 @@ class Workflow(object):
         results = []
         for fstate in from_states:
             for tstate in to_states:
+                if tstate == fstate:
+                    continue
                 transition = Transition(from_state = fstate,
                                         to_state = tstate,
                                         permission=permission,
