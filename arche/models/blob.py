@@ -1,4 +1,3 @@
-from UserDict import IterableUserDict
 
 from BTrees.OOBTree import OOBTree
 from ZODB.blob import Blob
@@ -7,6 +6,7 @@ from persistent import Persistent
 from zope.component import adapter
 from zope.interface import implementer
 
+from arche.compat import IterableUserDict
 from arche.interfaces import IBase
 from arche.interfaces import IBlobs
 

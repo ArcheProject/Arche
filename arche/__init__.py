@@ -154,7 +154,7 @@ def adjust_bools(settings):
     true_vals = set(['true', 'on'])
     false_vals = set(['false', 'off'])
     for (k, v) in settings.copy().items():
-        if not k.startswith('arche.') or not isinstance(v, basestring):
+        if not k.startswith('arche.') or not isinstance(v, string_types):
             continue
         if v.lower() in true_vals:
             settings[k] = True

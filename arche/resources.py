@@ -14,6 +14,7 @@ from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
 from repoze.folder import Folder
 from six import string_types
+from six import text_type
 from zope.component.event import objectEventNotify
 from zope.interface import implementer
 
@@ -125,7 +126,7 @@ class BaseMixin(object):
             if userid:
                 kwargs['local_roles'] = {userid: [ROLE_OWNER]}
         if 'uid' not in kwargs:
-            kwargs['uid'] = unicode(uuid4())
+            kwargs['uid'] = text_type(uuid4())
         if 'created' not in kwargs and hasattr(self, 'created'):
             kwargs['created'] = utcnow()
         if 'creator' not in kwargs and hasattr(self, 'creator'):

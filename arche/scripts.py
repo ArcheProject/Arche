@@ -34,13 +34,13 @@ def arche_console_script(*args):
     env = bootstrap(args.config_uri)
     
     if args.command not in available_commands:
-        print "ERROR: No such command, must be one of:"
-        print ", ".join(available_commands.keys())
+        print ("ERROR: No such command, must be one of:")
+        print (", ".join(available_commands.keys()))
         return 2
     try:
-        print "-- Running %s" % args.command
+        print ("-- Running %s" % args.command)
         available_commands[args.command](args, **env)
-        print "-- Committing to database" #FIXME: Optional dry run
+        print ("-- Committing to database") #FIXME: Optional dry run
         transaction.commit()
     except Exception:
         #FIXME: Do this properly with logging instead
@@ -50,24 +50,24 @@ def arche_console_script(*args):
 
 
 def reindex_catalog_script(args, root, registry, **kw):
-    print "-- Reindexing catalog without clearing it."
+    print ("-- Reindexing catalog without clearing it.")
     reindex_catalog(root)
 
 
 def create_catalog_script(args, root, registry, **kw):
-    print "-- Clearing/Creating catalog"
+    print ( "-- Clearing/Creating catalog")
     create_catalog(root)
-    print "-- Process complete. Running reindex now."
+    print ( "-- Process complete. Running reindex now.")
     reindex_catalog(root)
 
 
 def evolve_packages(args, root, registry, **kw):
     evolver = registry.getAdapter(root, IEvolver, name = args.package)
     if evolver.needs_upgrade:
-        print "Upgrade needed"
+        print ( "Upgrade needed")
         evolver.evolve()
     else:
-        print "No upgrade required"
+        print ( "No upgrade required")
 
 
 def evolve_packages_script(*args):
@@ -76,7 +76,7 @@ def evolve_packages_script(*args):
     parser.add_argument("package", help="Which package to evolve")
     args = parser.parse_args()
     env = bootstrap(args.config_uri)
-    print "-- Running evolve scripts in %s" % args.package
+    print ( "-- Running evolve scripts in %s") % args.package
     evolve_packages(args, **env)
-    print "-- Committing to database" #FIXME: Optional dry run
+    print ( "-- Committing to database") #FIXME: Optional dry run
     env['closer']()

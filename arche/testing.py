@@ -34,7 +34,7 @@ def portlets(config):
 
 def printing_mailer(config):
     """ Temporary: This is only while waiting for the release of pyramid_mailer's debug mode. """
-    print "\nWARNING! Using printing mailer - no mail will be sent!\n"
+    print ("\nWARNING! Using printing mailer - no mail will be sent!\n")
     mailer = PrintingMailer()
     config.registry.registerUtility(mailer)
 
@@ -49,14 +49,14 @@ class PrintingMailer(object):
         """
         Print message content instead of sending it
         """
-        print "From: %s " % message.sender
-        print "Subject: %s" % message.subject
-        print "To: %s" % ", ".join(message.recipients)
-        print "=== HTML"
-        print message.html
-        print "=== PLAINTEXT"
-        print message.body
-        print "---"
+        print ( "From: %s " % message.sender)
+        print ( "Subject: %s" % message.subject)
+        print ( "To: %s" % ", ".join(message.recipients))
+        print ( "=== HTML")
+        print ( message.html)
+        print ( "=== PLAINTEXT")
+        print ( message.body)
+        print ( "---")
 
     send_to_queue = send_immediately = send
 

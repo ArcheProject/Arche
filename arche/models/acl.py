@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-from UserDict import IterableUserDict
 
 from pyramid.security import AllPermissionsList
 from pyramid.security import Allow
@@ -10,6 +9,7 @@ import six
 
 from arche import _
 from arche import logger
+from arche.compat import IterableUserDict
 from arche.interfaces import IACLRegistry
 from arche.interfaces import IRole
 from arche.models.roles import Role

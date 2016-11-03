@@ -1,4 +1,3 @@
-from urllib import unquote
 import datetime
 
 from pyramid.threadlocal import get_current_request
@@ -6,9 +5,11 @@ from pytz import common_timezones
 from pytz import UTC
 import colander
 import deform
+from six import string_types
 
 from arche import _
 from arche import security
+from arche.compat import unquote
 from arche.interfaces import IPopulator
 from arche.interfaces import ISchemaCreatedEvent
 from arche.interfaces import IUser
@@ -127,7 +128,7 @@ def default_now(node, kw):
     return request.dt_handler.localnow()
 
 def to_lowercase(value):
-    if isinstance(value, basestring):
+    if isinstance(value, string_types):
         return value.lower()
     return value
 

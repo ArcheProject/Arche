@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-from UserDict import IterableUserDict
 from calendar import timegm
 from copy import copy
 from datetime import datetime
@@ -23,6 +22,7 @@ from zope.interface import implementer
 from zope.interface.verify import verifyClass
 
 from arche import logger
+from arche.compat import IterableUserDict
 from arche.exceptions import CatalogError
 from arche.exceptions import CatalogConfigError
 from arche.interfaces import ICatalogIndexes
@@ -63,11 +63,19 @@ class Cataloger(object):
             docid = self.document_map.add(self.path)
             for index in indexes:
                 if index in self.catalog:
-                    self.catalog[index].index_doc(docid, self.context)
+                    try:
+                        self.catalog[index].index_doc(docid, self.context)
+                    except Exception as exc:
+                        logger.warn("Failing index: %s" % index)
+                        raise
         else:
             for index in indexes:
                 if index in self.catalog:
-                    self.catalog[index].reindex_doc(docid, self.context)
+                    try:
+                        self.catalog[index].reindex_doc(docid, self.context)
+                    except Exception as exc:
+                        logger.warn("Failing index: %s" % index)
+                        raise
         self.update_metadata(docid)
 
     def unindex_object(self):
@@ -425,10 +433,10 @@ def check_catalog_on_startup(event = None, env = None):
                                            "Required by: %r" % (key, catalog[key].discriminator, index.discriminator, util.name))
     except CatalogError:
         if auto_recreate:
-            print "-- Auto-recreate catalog is set to true and the catalog needs to be recreated."
-            print "-- Recreating now"
+            print ( "-- Auto-recreate catalog is set to true and the catalog needs to be recreated.")
+            print ( "-- Recreating now")
             create_catalog(root)
-            print "-- Process complete. Running reindex."
+            print ( "-- Process complete. Running reindex.")
             reindex_catalog(root)
             _commit_and_cleanup(env['closer'], commit=True)
             return
