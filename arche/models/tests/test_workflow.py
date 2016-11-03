@@ -150,13 +150,13 @@ class WorkflowTests(TestCase):
         wf = self._mk_dummy_wf()
         wf.states = {'private': '', 'published': '', 'pending': ''}
         wf.add_transitions(from_states = 'private', to_states = '*')
-        self.assertEqual(len(wf.transitions), 3)
+        self.assertEqual(len(wf.transitions), 2)
 
     def test_add_tranistions_all2(self):
         wf = self._mk_dummy_wf()
         wf.states = {'private': '', 'published': '', 'pending': ''}
         wf.add_transitions(from_states = '*', to_states = '*')
-        self.assertEqual(len(wf.transitions), 9)
+        self.assertEqual(len(wf.transitions), 6)
 
     def test_add_transitions_create(self):
         wf = self._mk_dummy_wf()
