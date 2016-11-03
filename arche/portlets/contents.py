@@ -45,6 +45,12 @@ class ContentsPortletSchema(colander.Schema):
         title = _("Title"),
         default = contents_title,
     )
+    limit_to_this_context = colander.SchemaNode(
+        colander.Bool(),
+        title = _("Only in this context"),
+        default = False,
+        missing = False
+    )
     limit_types = colander.SchemaNode(
         colander.Set(),
         title = _("Only show these content types"),
@@ -63,8 +69,9 @@ class ContentsPortlet(PortletType):
     title = _(u"Contents")
 
     def render(self, context, request, view, **kwargs):
-        if context != self.context:
-            return
+        if self.portlet.settings.get('limit_to_this_context', False):
+            if context != self.context:
+                return
         #FIXME: Implement batching on really large folders
         contents = []
         limit_types = self.portlet.settings.get('limit_types', ())
