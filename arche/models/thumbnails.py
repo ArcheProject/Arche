@@ -7,7 +7,7 @@ from repoze.lru import LRUCache
 from pyramid.threadlocal import get_current_registry
 from PIL.Image import core as pilcore
 
-from arche.interfaces import IBlobs
+from arche.interfaces import IBlobs, IThumbnailsCache
 from arche.interfaces import IThumbnailedContent
 from arche.interfaces import IThumbnails
 from arche.interfaces import IObjectUpdatedEvent
@@ -22,13 +22,17 @@ class Thumbnails(object):
     def __init__(self, context):
         self.context = context
 
-    def get_thumb(self, scale, key = "image", direction = "thumb"):
+    def get_thumb(self, scale, key = None, direction = "thumb"):
         """ Return data from plone scale or None"""
         #Make cache optional
-        cachekey = (self.context.uid, scale, key)
-        cached = thumb_cache.get(cachekey)
+        if key is None:
+            key = getattr(self.context, 'blob_key', 'image')
+        cachekey = (self.context.uid, scale, key, direction)
+        cached = self.thumb_cache.get(cachekey)
         if cached:
             return cached
+        if direction not in _ALLOWED_SCALE_DIRECTIONS:
+            return
         scales = get_image_scales()
         maxwidth, maxheight = scales[scale]
         blobs = IBlobs(self.context)
@@ -37,21 +41,28 @@ class Thumbnails(object):
             if blobs[key].mimetype in registry.settings['supported_thumbnail_mimetypes']:
                 with blobs[key].blob.open() as f:
                     try:
-                        thumb_data, image_type, size = scaleImage(f, width = maxwidth, height = maxheight, direction = direction)
+                        thumb_data, image_type, size = scaleImage(
+                            f, width = maxwidth, height = maxheight, direction = direction
+                        )
                     except IOError:
                         #FIXME: Logging?
                         return
                 thumb = Thumbnail(thumb_data, image_type = image_type, size = size)
-                thumb_cache.put(cachekey, thumb)
+                self.thumb_cache.put(cachekey, thumb)
                 return thumb
 
     def invalidate_context_cache(self):
         invalidate_keys = set()
-        for k in thumb_cache.data.keys():
+        for k in self.thumb_cache.data.keys():
             if self.context.uid in k:
                 invalidate_keys.add(k)
         for k in invalidate_keys:
-            thumb_cache.invalidate(k)
+            self.thumb_cache.invalidate(k)
+
+    @property
+    def thumb_cache(self):
+        reg = get_current_registry()
+        return reg.queryUtility(IThumbnailsCache)
 
 
 class Thumbnail(object):
@@ -73,10 +84,6 @@ class Thumbnail(object):
         return "image/%s" % self.image_type
 
 
-#This will be moved
-#FIXME: Make caching a choice
-thumb_cache = LRUCache(100)
-
 def invalidate_thumbs_in_context(context, event):
     IThumbnails(context).invalidate_context_cache()
 
@@ -86,6 +93,11 @@ _pil_codecs_to_mimetypes = {
     'zip_encoder': ('image/png',),
     'gif_encoder': ('image/gif',),
 }
+_ALLOWED_SCALE_DIRECTIONS = (
+    'thumb',
+    'down',
+    'up'
+)
 
 
 def _check_supported_thumbnail_mimetypes():
@@ -102,7 +114,8 @@ def thumb_url(request, context, scale, key = None, direction = 'thumb'):
         key = getattr(context, 'blob_key', 'image')
     scales = get_image_scales(request.registry)
     if scale in scales and IThumbnailedContent.providedBy(context):
-            return request.resource_url(context, 'thumbnail', key, scale, query = {'direction': direction})
+        return request.resource_url(context, 'thumbnail', key, scale, direction)
+
 
 def thumb_tag(request, context, scale_name, default = u"", extra_cls = '', direction = "thumb", key = None, **kw):
     #FIXME: Default?
@@ -129,9 +142,16 @@ def thumb_tag(request, context, scale_name, default = u"", extra_cls = '', direc
     return default
 
 
+@implementer(IThumbnailsCache)
+class ThumbCache(LRUCache):
+    __doc__ = LRUCache.__doc__
+
+
 def includeme(config):
     config.add_subscriber(invalidate_thumbs_in_context, [IThumbnailedContent, IObjectUpdatedEvent])
     config.registry.registerAdapter(Thumbnails)
     config.registry.settings['supported_thumbnail_mimetypes'] = _check_supported_thumbnail_mimetypes()
     config.add_request_method(thumb_url, name = 'thumb_url')
     config.add_request_method(thumb_tag, name = 'thumb_tag')
+    thumb_cache = ThumbCache(100)
+    config.registry.registerUtility(thumb_cache)

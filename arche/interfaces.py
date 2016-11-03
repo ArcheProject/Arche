@@ -314,7 +314,18 @@ class IEvolver(IContextAdapter):
 
 
 class IThumbnails(IContextAdapter):
-    pass
+    thumb_cache = Attribute("Property that returns the IThumbnailsCache utility")
+
+    def get_thumb(scale, key=None, direction="thumb"):
+        """ Return the arche.models.thumbnails.Thumbnail object.
+            If it doesn't exist, it will be created first.
+
+            key will default to the context.blob_key attribute if it's None
+        """
+
+    def invalidate_context_cache():
+        """ Invalidate the cache relevat to the context that the adapter wrapped.
+        """
 
 
 class IDateTimeHandler(IContextAdapter):
@@ -365,6 +376,29 @@ class ICatalogIndexes(Interface):
     def __call__():
         """ Return a dict where index names are keys and values are the catalog
             index objects that should be stored in the catalog.
+        """
+
+
+class IThumbnailsCache(Interface):
+    """ Caches created thumbnails.
+        By default this is an instance of repoze.lru.LRUCache
+
+        Value will be arche.models.thumbnails.Thumbnail objects
+    """
+    def clear():
+        """ Empty the cache
+        """
+
+    def get(key, default=None):
+        """ Get thumbnail
+        """
+
+    def put(key, val):
+        """ Store thumbnail
+        """
+
+    def invalidate(key):
+        """ Invalidate a specific key
         """
 
 #/Utils
