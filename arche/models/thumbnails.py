@@ -113,7 +113,7 @@ def thumb_url(request, context, scale, key = None, direction = 'thumb'):
     if key is None:
         key = getattr(context, 'blob_key', 'image')
     scales = get_image_scales(request.registry)
-    if scale in scales and IThumbnailedContent.providedBy(context):
+    if scale in scales and IThumbnailedContent.providedBy(context) and key in IBlobs(context, ()):
         return request.resource_url(context, 'thumbnail', key, scale, direction)
 
 
