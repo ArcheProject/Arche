@@ -15,6 +15,7 @@ from arche.utils import image_mime_to_title
 
 
 NEW_USERID_PATTERN = re.compile(r'^[a-z]{1}[a-z0-9\-\_]{2,29}$')
+RENAME_PATTERN = re.compile(r'^[a-zA-Z0-9\-\_\.]{1,50}$')
 
 
 @colander.deferred
@@ -42,8 +43,11 @@ class _BaseValidator(object):
 
 class UniqueContextNameValidator(_BaseValidator):
     def __call__(self, node, value):
+        if not RENAME_PATTERN.match(value):
+            msg = _("Names can only contain charracters: A-Z, a-z, 0-9, '.', '-' or '_'")
+            raise colander.Invalid(node, msg = msg)
         if not check_unique_name(self.context, self.request, value):
-            raise colander.Invalid(node, msg = _(u"Already used within this context"))
+            raise colander.Invalid(node, msg = _("Already used within this context"))
 
 
 class NewUserIDValidator(_BaseValidator):
