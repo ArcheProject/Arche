@@ -485,20 +485,47 @@ def default_blob_key(node, kw):
     return getattr(context, 'blob_key', 'file')
 
 
-class AddFileSchema(BaseSchema, DCMetadataSchema):
+class FileSchema(BaseSchema, DCMetadataSchema):
     title = colander.SchemaNode(colander.String(),
                                 title = _("Title"),
                                 description = _("Filename will be used if you leave this blank"),
-                                missing = u"")
+                                missing = "")
     file_data = colander.SchemaNode(deform.FileData(),
-                                    title = _(u"Upload file"),
+                                    title = _("Upload file"),
                                     blob_key = default_blob_key,
                                     widget = FileAttachmentWidget())
 
 
-class EditFileSchema(AddFileSchema, DCMetadataSchema):
+class AddFileSchema(FileSchema):
+    pass
+
+
+class EditFileSchema(FileSchema):
     file_data = colander.SchemaNode(deform.FileData(),
-                                    title = _(u"Change file"),
+                                    title = _("Change file"),
+                                    missing = colander.null,
+                                    blob_key = default_blob_key,
+                                    widget = FileAttachmentWidget())
+
+
+class ImageSchema(BaseSchema, DCMetadataSchema):
+    title = colander.SchemaNode(colander.String(),
+                                title = _("Title"),
+                                description = _("Filename will be used if you leave this blank"),
+                                missing = "")
+    file_data = colander.SchemaNode(deform.FileData(),
+                                    title = _("Upload image"),
+                                    blob_key = default_blob_key,
+                                    widget = FileAttachmentWidget())
+
+
+class AddImageSchema(FileSchema):
+    pass
+
+
+class EditImageSchema(FileSchema):
+    file_data = colander.SchemaNode(deform.FileData(),
+                                    title = _("Change image"),
                                     missing = colander.null,
                                     blob_key = default_blob_key,
                                     widget = FileAttachmentWidget())
@@ -586,8 +613,8 @@ def includeme(config):
     config.add_content_schema('Group', GroupSchema, ('add', 'view', 'edit'))
     config.add_content_schema('File', AddFileSchema, 'add')
     config.add_content_schema('File', EditFileSchema, 'edit')
-    config.add_content_schema('Image', AddFileSchema, 'add') #Specific schema?
-    config.add_content_schema('Image', EditFileSchema, 'edit')
+    config.add_content_schema('Image', AddImageSchema, 'add') #Specific schema?
+    config.add_content_schema('Image', EditImageSchema, 'edit')
     config.add_content_schema('Root', RootSchema, 'edit')
     config.add_content_schema('Root', SiteSettingsSchema, 'site_settings')
     config.add_content_schema('Link', AddLinkSchema, 'add')
