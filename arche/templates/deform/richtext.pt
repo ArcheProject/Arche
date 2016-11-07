@@ -42,6 +42,7 @@
             theme_advanced_toolbar_location : 'top',
             relative_urls: false,
             image_advtab: true,
+            image_list : 'contained_image_list.json',
           });
           jqoid_preload.unbind('click');
         });
