@@ -9,6 +9,7 @@ from arche import _
 class BylinePortlet(PortletType):
     name = "byline"
     title = _("Byline")
+    tpl = "arche:templates/portlets/byline.pt"
 
     def render(self, context, request, view, **kwargs):
         if not getattr(context, 'show_byline', False):
@@ -18,7 +19,7 @@ class BylinePortlet(PortletType):
         for userid in creator:
             #Catalog search returns a generator
             for profile in view.catalog_search(resolve = True, userid = userid):
-                out += render("arche:templates/portlets/byline.pt",
+                out += render(self.tpl,
                               {'profile': profile, 'portlet': self.portlet, 'view': view},
                               request = request)
         return out

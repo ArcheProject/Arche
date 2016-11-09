@@ -67,6 +67,7 @@ class ContentsPortlet(PortletType):
     name = "contents"
     schema_factory = ContentsPortletSchema
     title = _(u"Contents")
+    tpl = "arche:templates/portlets/contents.pt"
 
     def render(self, context, request, view, **kwargs):
         if self.portlet.settings.get('limit_to_this_context', False):
@@ -91,7 +92,7 @@ class ContentsPortlet(PortletType):
             values = {'title': self.portlet.settings.get('title', self.title),
                       'contents': contents,
                       'portlet': self.portlet}
-            return render("arche:templates/portlets/contents.pt",
+            return render(self.tpl,
                           values,
                           request = request)
 

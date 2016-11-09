@@ -45,6 +45,7 @@ class RichtextPortlet(PortletType):
     name = "richtext"
     schema_factory = RichtextPortletSchema
     title = _("Richtext")
+    tpl = "arche:templates/portlets/richtext.pt"
 
     def render(self, context, request, view, **kwargs):
         settings = self.portlet.settings
@@ -54,7 +55,7 @@ class RichtextPortlet(PortletType):
                   'body': settings.get('body',''),
                   'show_container': settings.get('show_container', True),
                   'portlet': self.portlet}
-        return render("arche:templates/portlets/richtext.pt",
+        return render(self.tpl,
                       values,
                       request = request)
 

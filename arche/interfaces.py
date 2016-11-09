@@ -407,17 +407,35 @@ class IThumbnailsCache(Interface):
 class IPortlet(Interface):
     pass
 
+
 class IPortletType(Interface):
-    pass
+    name = Attribute("Unique name for portlet, works like an ID.")
+    schema_factory = Attribute("colander.Schema for this type, or None")
+    title = Attribute("Title")
+    tpl = Attribute("Template to use")
+    portlet = Attribute("IPortlet object to render")
+    context = Attribute("""
+        The context this portlet was originaly created at.
+        (I.e. the place where the PortletFolders will be)
+        It doesn't have to be the same context as the current request.
+    """)
+
+    def render(context, request, view, **kwargs):
+        """ Render portlet
+        """
+
 
 class IPortletManager(Interface):
     pass
 
+
 class IFileUploadTempStore(Interface):
     pass
 
+
 class IRegistrationTokens(Interface):
     pass
+
 
 class IEmailValidationTokens(Interface):
     pass
