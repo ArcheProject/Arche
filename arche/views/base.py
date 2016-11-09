@@ -84,7 +84,13 @@ class BaseView(object):
             manager = get_portlet_manager(context, self.request.registry)
             if manager:
                 #Use the view context when calling the portlets!
-                results.extend(manager.render_slot(slot, self.context, self.request, self, **kw))
+                try:
+                    results.extend(manager.render_slot(slot, self.context, self.request, self, **kw))
+                except Exception as exc:
+                    if self.request.registry.settings['arche.debug']:
+                        results.append(str(exc))
+                    else:
+                        warnings.warn(str(exc))
             context = getattr(context, '__parent__', None)
         return results
 
