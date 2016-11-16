@@ -85,8 +85,12 @@ def has_permission(request, permission, context=None):
         but it calls the callback (in our case 'groupfinder') without the correct
         context. This methods hacks in the correct context. Keep it here until
         this has been fixed in Pyramid."""
-    if context is None:
-        context = request.context
+    try:
+        if context is None:
+            context = request.context
+    except AttributeError:
+        #Special cases like exceptions and similar
+        return DENY_ALL
     reg = request.registry
     authn_policy = reg.queryUtility(IAuthenticationPolicy)
     if authn_policy is None:
