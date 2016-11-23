@@ -232,6 +232,8 @@ def add_image_scale(config, name, width, height):
         scales = config.registry._image_scales
     except AttributeError:
         scales = config.registry._image_scales = {}
+    for v in [width, height]:
+        assert isinstance(v, int), "Height and with of image scales must be integers"
     scales[name] = (width, height)
 
 def get_image_scales(registry = None):

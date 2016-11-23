@@ -27,7 +27,7 @@ def thumb_view(context, request, subpath = None):
         direction = subpath[2]
     except IndexError:
         #Old API - keep this around
-        direction = request.GET.get('direction', 'thumb')
+        direction = request.GET.get('direction', 'thumbnail')
     scales = get_image_scales()
     if scale_name not in scales:
         return HTTPNotFound()

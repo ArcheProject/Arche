@@ -22,7 +22,7 @@ class Thumbnails(object):
     def __init__(self, context):
         self.context = context
 
-    def get_thumb(self, scale, key = None, direction = "thumb"):
+    def get_thumb(self, scale, key = None, direction = "thumbnail"):
         """ Return data from plone scale or None"""
         #Make cache optional
         if key is None:
@@ -94,7 +94,7 @@ _pil_codecs_to_mimetypes = {
     'gif_encoder': ('image/gif',),
 }
 _ALLOWED_SCALE_DIRECTIONS = (
-    'thumb',
+    'thumbnail',
     'down',
     'up'
 )
@@ -109,7 +109,7 @@ def _check_supported_thumbnail_mimetypes():
     return results
 
 
-def thumb_url(request, context, scale, key = None, direction = 'thumb'):
+def thumb_url(request, context, scale, key = None, direction = 'thumbnail'):
     if key is None:
         key = getattr(context, 'blob_key', 'image')
     scales = get_image_scales(request.registry)
@@ -117,7 +117,7 @@ def thumb_url(request, context, scale, key = None, direction = 'thumb'):
         return request.resource_url(context, 'thumbnail', key, scale, direction)
 
 
-def thumb_tag(request, context, scale_name, default = u"", extra_cls = '', direction = "thumb", key = None, **kw):
+def thumb_tag(request, context, scale_name, default = u"", extra_cls = '', direction = "thumbnail", key = None, **kw):
     #FIXME: Default?
     if key is None:
         key = getattr(context, 'blob_key', 'image')

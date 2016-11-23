@@ -316,7 +316,7 @@ class IEvolver(IContextAdapter):
 class IThumbnails(IContextAdapter):
     thumb_cache = Attribute("Property that returns the IThumbnailsCache utility")
 
-    def get_thumb(scale, key=None, direction="thumb"):
+    def get_thumb(scale, key=None, direction="thumbnail"):
         """ Return the arche.models.thumbnails.Thumbnail object.
             If it doesn't exist, it will be created first.
 
