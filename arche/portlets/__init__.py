@@ -25,9 +25,10 @@ from arche.utils import get_content_factories
 @adapter(IPortlet)
 @implementer(IPortletType)
 class PortletType(object):
-    name = u""
+    name = ""
     schema_factory = None
-    title = u""
+    title = ""
+    tpl = ""
     
     def __init__(self, portlet):
         self.portlet = portlet

@@ -59,11 +59,11 @@ class JSONContents(BaseView):
 def includeme(config):
     config.add_view(ContentsView,
                     name = 'contents',
-                    permission = security.PERM_VIEW,
+                    permission = security.PERM_EDIT,
                     renderer = "arche:templates/contents.pt",
                     context = 'arche.interfaces.IContent')
     config.add_view(JSONContents,
                     name = 'contents.json',
-                    permission = security.PERM_VIEW,
+                    permission = security.PERM_EDIT,
                     renderer = "json",
                     context = 'arche.interfaces.IContent')

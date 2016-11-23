@@ -13,6 +13,7 @@ class NavigationPortlet(PortletType):
     name = u"navigation"
     schema_factory = NavSchema
     title = _(u"Navigation")
+    tpl = "arche:templates/portlets/navigation.pt"
 
     def render(self, context, request, view, **kwargs):
         if context is view.root:
@@ -20,7 +21,7 @@ class NavigationPortlet(PortletType):
         contents = tuple(view.get_local_nav_objects(context))
         if not contents:
             return
-        return render("arche:templates/portlets/navigation.pt",
+        return render(self.tpl,
                       {'title': self.title, 'contents': contents, 'portlet': self.portlet},
                       request = request)
 

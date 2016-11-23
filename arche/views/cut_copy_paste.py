@@ -14,8 +14,6 @@ from arche.views.base import BaseForm
 from arche.views.base import BaseView
 
 
-#FIXME: Check cut, copy and paste functionality.
-
 def can_paste(context, request, view):
     paste_data = request.session.get('__paste_data__')
     if not paste_data:
@@ -72,8 +70,6 @@ class PasteContext(BaseView):
         return HTTPFound(location = self.request.resource_url(self.context[use_name]))
 
 
-
-
 class RenameContext(BaseForm):
 
     def get_schema(self):
@@ -101,16 +97,16 @@ def includeme(config):
     config.add_view(CutContext,
                     name = '__cut_context__',
                     permission = security.PERM_DELETE,
-                    context = 'arche.interfaces.IContent')
+                    context = 'arche.interfaces.IBase')
     config.add_view(CopyContext,
                     permission = security.PERM_VIEW,
                     name = '__copy_context__',
-                    context = 'arche.interfaces.IContent')
+                    context = 'arche.interfaces.IBase')
     config.add_view(PasteContext,
                     name = '__paste_context__',
-                    context = 'arche.interfaces.IContent')
+                    context = 'arche.interfaces.IBase')
     config.add_view(RenameContext,
                     renderer = 'arche:templates/form.pt',
                     name = '__rename_context__',
                     permission = security.PERM_MANAGE_SYSTEM,
-                    context = 'arche.interfaces.IContent')
+                    context = 'arche.interfaces.IBase')

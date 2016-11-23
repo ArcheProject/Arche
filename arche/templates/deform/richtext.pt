@@ -31,7 +31,7 @@
             <tal:block condition="tinymce_options">${tinymce_options},</tal:block>
             elements: oid,
             mode : 'exact',
-            plugins : "code,link,paste,image,media,advlist,textcolor,contextmenu",
+            plugins : "code,link,paste,image,media,textcolor,contextmenu",
             strict_loading_mode : true,
             height: '${field.widget.height | None}',
             width: '${field.widget.width | None}',
@@ -42,6 +42,7 @@
             theme_advanced_toolbar_location : 'top',
             relative_urls: false,
             image_advtab: true,
+            image_list : 'contained_image_list.json',
           });
           jqoid_preload.unbind('click');
         });

@@ -1,6 +1,8 @@
 
 
 def includeme(config):
+    config.include('.tinymce')
+
     config.include('arche.views.actions')
     config.include('arche.views.auth')
     config.include('arche.views.base')

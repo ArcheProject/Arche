@@ -17,13 +17,11 @@ class JSONData(object):
     def __init__(self, context):
         self.context = context
 
-    def __call__(self, request, dt_formater = None, attrs = (), dt_atts = ()):
+    def __call__(self, request, dt_formater = None, attrs = (), dt_attrs = ['created', 'modified', 'date']):
         normal_attrs = ['description', 'type_name',
                         'type_title', 'uid',
                         '__name__', 'size', 'mimetype']
         normal_attrs.extend(attrs)
-        dt_attrs = ['created', 'modified']
-        dt_attrs.extend(dt_attrs)
         #wf_state and name?
         results = {}
         if IContextACL.providedBy(self.context) and self.context.workflow != None:
