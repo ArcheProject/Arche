@@ -26,15 +26,15 @@
     </div>
   </div>
 
-  <span tal:condition="query" i18n:translate="">
-    Found <i18n:c name="count">${len(results)}</i18n:c> items for
-    <i18n:q name="query">'${query}'</i18n:q>
-    <a tal:condition="'*' not in query"
-       href="${request.resource_url(request.root, 'search', query = {'query': '*%s*' % query})}"
-       i18n:translate="">
-      Search for anything that contains ${query}.
-    </a>
+  <span tal:condition="query" i18n:translate="found_search_results">
+    Found <i18n:c name="count" tal:content="len(results)">11</i18n:c> items for
+    '<i18n:q name="query" tal:content="query">Query</i18n:q>'
   </span>
+  <a tal:condition="'*' not in query"
+     href="${request.resource_url(request.root, 'search', query = {'query': '*%s*' % query})}"
+     i18n:translate="">
+    Search for anything that contains '<i18n:q name="query" tal:content="query">query</i18n:q>'.
+  </a>
 
   <div class="list-group">
     <div class="list-group-item"

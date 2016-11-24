@@ -17,6 +17,7 @@ parts
 Data.fs*
 .tmp*
 *.egg-info
+*~
 .salt.txt
 
 local
