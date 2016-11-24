@@ -30,7 +30,7 @@
     Found <i18n:c name="count" tal:content="len(results)">11</i18n:c> items for
     '<i18n:q name="query" tal:content="query">Query</i18n:q>'
   </span>
-  <a tal:condition="'*' not in query"
+  <a tal:condition="query and '*' not in query"
      href="${request.resource_url(request.root, 'search', query = {'query': '*%s*' % query})}"
      i18n:translate="">
     Search for anything that contains '<i18n:q name="query" tal:content="query">query</i18n:q>'.
