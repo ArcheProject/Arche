@@ -6,6 +6,7 @@ from js.bootstrap import bootstrap_css
 from js.bootstrap import bootstrap_js
 from js.jquery import jquery
 from js.jqueryui import jqueryui
+from js.jqueryui import ui_widget
 from js.jqueryui import ui_sortable
 
 #Note: A lot of the code here is under developent and review. Don't depend too much on this.
@@ -17,7 +18,7 @@ dropzonejs = Resource(library, 'dropzone.js', depends=(jquery,))
 dropzonecss = Resource(library, 'css/dropzone.css', depends=(dropzonejs,))
 dropzonebootstrapcss = Resource(library, 'css/dropzone-bootstrap.css', depends=(dropzonejs,))
 dropzonebasiccss = Resource(library, 'css/basic.css', depends=(dropzonejs,))
-jquery_file_upload = Resource(library, 'third_party/jquery.fileupload.js', depends=(jquery,))
+jquery_file_upload = Resource(library, 'third_party/jquery.fileupload.js', depends=(jquery, ui_widget))
 
 common_js = Resource(library, 'common.js', depends = (jquery,))
 touchpunch_js = Resource(library, 'jquery.ui.touch-punch.min.js', depends = (jquery, jqueryui))
