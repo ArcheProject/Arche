@@ -95,7 +95,12 @@
         <span class="btn btn-success fileinput-button" tal:condition="show_upload">
             <span class="glyphicon glyphicon-plus"></span>
             <span i18n:translate="">Drag and drop or click to upload...</span>
-            <input id="fileupload" type="file" name="upload" data-url="./upload" multiple />
+            <input id="fileupload"
+                   type="file"
+                   name="upload"
+                   data-url="./upload"
+                   data-sequential-uploads="true"
+                   multiple />
         </span>
 
       </div>
