@@ -61,6 +61,7 @@ def includeme(config):
     config.include('arche.portlets.navigation')
     config.include('arche.portlets.contents')
     config.include('arche.portlets.richtext')
+    config.include('arche.portlets.workflow_history')
     #Translations
     config.add_translation_dirs('arche:locale/')
 
