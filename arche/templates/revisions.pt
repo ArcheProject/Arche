@@ -25,7 +25,6 @@
         <th i18n:translate="">ID</th>
         <th i18n:translate="">Timestamp</th>
         <th i18n:translate="">User</th>
-        <th i18n:translate="">Data</th>
       </tr>
     </thead>
     <tbody>
@@ -34,7 +33,13 @@
         <td>${rev.id}</td>
         <td>${request.dt_handler.format_relative(rev.timestamp)}</td>
         <td>${rev.userid}</td>
-        <td>${rev.data[review_attr]}</td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <pre>
+            ${rev.data[review_attr]}
+          </pre>
+        </td>
       </tr>
       </tal:iterate>
     </tbody>
