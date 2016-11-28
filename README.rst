@@ -78,3 +78,19 @@ arche.auth.default_max_valid (default: 60)
 
 arche.auth.max_keep_days (default: 30)
   Keep activity logs for this amount of days. Relevant for 'arche.plugins.auth_sessions'.
+
+
+Optional settings
+-----------------
+
+arche.versioning.<TypeName> = <attribute> <..>
+  Switch on versioning for a specific type. Attributes to store needs to be specified.
+
+  Example, add versioning for 'body' and 'description' for any 'Document':
+
+  arche.versioning.Document = body description
+
+
+arche.workflows = <TypeName> <WorkflowName>
+  Set workflow.
+  Example: Document simple_workflow
