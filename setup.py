@@ -68,5 +68,6 @@ setup(name='Arche',
       evolver = arche.scripts:evolve_packages_script
       [pyramid.scaffold]
       arche_buildout=arche.scaffolds:BuildoutTemplate
+      arche_plugin=arche.scaffolds:PluginTemplate
       """,
       )
