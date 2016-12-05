@@ -275,7 +275,7 @@ class BaseForm(BaseView, FormView):
         pass
 
     def get_schema_factory(self, type_name, schema_name):
-        """ Return a schema registered with the add_content_schema configuratior.
+        """ Return a schema registered with the add_schema configuratior.
             Use either this or get_schema to create a form.
         """
         try:

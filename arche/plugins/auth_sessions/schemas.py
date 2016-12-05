@@ -54,5 +54,5 @@ def update_login_schema(schema, event):
                                       "Don't use this on a public computer!")))
 
 def includeme(config):
-    config.add_content_schema('Auth', AuthSessionSchema, ('add', 'edit'))
+    config.add_schema('Auth', AuthSessionSchema, ('add', 'edit'))
 #    config.add_subscriber(update_login_schema, [LoginSchema, ISchemaCreatedEvent])

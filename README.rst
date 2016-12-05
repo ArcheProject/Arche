@@ -99,7 +99,7 @@ arche.workflows = <TypeName> <WorkflowName>
 Config directives
 =================
 
-config.add_script(callable, name=None, **kw)
+config.add_script(<callable>, name=None, **kw)
   Add a script executable with the arche-command.
   Callable is the script, which must accept bootstrap 'env' dict and the
   result of argparse as another positional argument.
@@ -107,3 +107,56 @@ config.add_script(callable, name=None, **kw)
   See arche.scrips for examples
 
 
+config.add_workflow(<workflow class>)
+  Register a workflow.
+
+
+config.set_content_workflow(<type_name: str>, <wf_name: str>)
+  Set a content type to a specific workflow. Workflow name should be the same as the
+  'name'-attribute on the workflow class.
+
+
+config.register_roles(<Role instance>, ...)
+  Register one or many roles so it's possible to assign permissions to them.
+
+
+config.add_portlet(<portlet>)
+  Add a PorletType class as an addable portlet.
+
+
+config.add_portlet_slot(name, title = "", layout = "")
+  Create a slot where portlets can be assigned. Layout is an optional keyword.
+  Currently we use 'horizontal' and 'vertical' in Arche.
+
+
+config.add_versioning(<iface_or_ctype>, attributes = ())
+  Enable versioning for something that has either the specific type_name,
+  or implements an interface. Attribute(s) must be specified too. Whenever
+  the value changes, the new value is stored along with a timestamp and the person who changed it.
+
+
+config.add_content_factory(<ctype>, addable_to = (), addable_in = ())
+  Add content factory. (I.e. a class for a resource)
+
+  addable_to: Where this content is addable. (List or string)
+
+  addable_in: Other content that's addable within this. (List or string)
+
+
+config.add_addable_content(ctype, addable_to)
+  Set that a type is addable within another type within the resource tree.
+  (I.e. shows up in the add menu)
+
+
+config.add_schema(<type_name: str>, <schema>, <names>)
+  Add a schema to the schema registry. Schemas have a type name association and a
+  function name.
+  Usually something like:
+
+  config.add_schema('Page', PageSchema, 'edit')
+
+
+config.add_content_view(type_name, name, view_cls)
+  Add a selectable view for a specific content type. The view class must implement IContentView.
+
+  Example: config.add_content_view('Blog', 'chronological_order', ChronologicalOrderView)

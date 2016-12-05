@@ -1,3 +1,4 @@
+import warnings
 from collections import deque
 from datetime import datetime
 import inspect
@@ -43,9 +44,10 @@ from arche.security import PERM_VIEW
 
 
 def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
-    """ Add a class as a content factory. It will be addable through the add menu
+    """ Add a class as a content factory/resource.
+        It will be addable through the add menu
         for anyone with the correct add permission, in a context where it's marked
-        as addable. You may set an addable context here as well.
+        as addable.
 
         Example:
             config.add_content_factory(MyClass, addable_to = ('Root', 'Document',), addable_in = 'Image')
@@ -72,13 +74,16 @@ def add_content_factory(config, ctype, addable_to = (), addable_in = ()):
         for ctype_name in addable_in:
             config.add_addable_content(ctype_name, ctype.type_name)
 
+
 def get_content_factories(registry = None):
     if registry is None:
         registry = get_current_registry()
     return getattr(registry, '_content_factories', {})
 
+
 def content_factories(request):
     return get_content_factories(request.registry)
+
 
 def add_addable_content(config, ctype, addable_to):
     try:
@@ -91,12 +96,14 @@ def add_addable_content(config, ctype, addable_to):
     else:
         addable.update(addable_to)
 
+
 def get_addable_content(registry = None):
     if registry is None:
         registry = get_current_registry()
     return getattr(registry, '_addable_content', {})
 
-def add_content_schema(config, type_name, schema, names):
+
+def add_schema(config, type_name, schema, names):
     assert inspect.isclass(schema)
     if inspect.isclass(type_name):
         type_name = type_name.__name__
@@ -110,10 +117,21 @@ def add_content_schema(config, type_name, schema, names):
     for name in names:
         ctype_schemas[name] = schema
 
+
+def add_content_schema(config, type_name, schema, names):
+    #Backwards compat
+    warnings.warn(
+        'add_content_schema is deprecated, use add_schema instead',
+        DeprecationWarning,
+    )
+    config.add_schema(type_name, schema, names)
+
+
 def get_content_schemas(registry = None):
     if registry is None:
         registry = get_current_registry()
     return getattr(registry, '_content_schemas', {})
+
 
 def add_content_view(config, type_name, name, view_cls):
     """ Register a view as selectable for a content type.
@@ -134,10 +152,12 @@ def add_content_view(config, type_name, name, view_cls):
     ctype_views = views.setdefault(type_name, {})
     ctype_views[name] = view_cls
 
+
 def get_content_views(registry = None):
     if registry is None:
         registry = get_current_registry()
     return getattr(registry, '_content_views', {})
+
 
 def generate_slug(parent, text, limit=40):
     """ Suggest a name for content that will be added.
@@ -162,12 +182,14 @@ def generate_slug(parent, text, limit=40):
         return suggestion
     raise KeyError("No unique id could be found")
 
+
 def get_context_view_names(context, request):
     provides = [IViewClassifier] + map_(
         providedBy,
         (request, context)
     )
     return [x for (x, y) in request.registry.adapters.lookupAll(provides, IView)]
+
 
 def check_unique_name(context, request, name):
     """ Check if there's an object with the same name or a registered view with the same name.
@@ -178,6 +200,7 @@ def check_unique_name(context, request, name):
     if get_view(context, request, view_name = name) is None:
         return True
     return False
+
 
 def get_view(context, request, view_name = ''):
     """ Returns view callable if a view is registered.
@@ -195,6 +218,7 @@ def get_flash_messages(request):
     except ComponentLookupError:
         from arche.models.flash_messages import FlashMessages
         return FlashMessages(request)
+
 
 def hash_method(value, registry = None, hashed = None):
     if registry is None:
@@ -227,6 +251,7 @@ image_scales = {
     'col-12': [1160, 2320],
     }
 
+
 def add_image_scale(config, name, width, height):
     try:
         scales = config.registry._image_scales
@@ -235,6 +260,7 @@ def add_image_scale(config, name, width, height):
     for v in [width, height]:
         assert isinstance(v, int), "Height and with of image scales must be integers"
     scales[name] = (width, height)
+
 
 def get_image_scales(registry = None):
     if registry is None:
@@ -390,9 +416,11 @@ image_mime_to_title = {'image/jpeg': "JPEG",
 def get_root(request):
     return find_root(getattr(request, 'context', None))
 
+
 def get_profile(request):
     if request.authenticated_userid:
         return request.root.get('users', {}).get(request.authenticated_userid, None)
+
 
 def resolve_docids(request, docids, perm = PERM_VIEW):
     if isinstance(docids, int):
@@ -405,10 +433,12 @@ def resolve_docids(request, docids, perm = PERM_VIEW):
             continue
         yield obj
 
+
 def resolve_uid(request, uid, perm = PERM_VIEW):
     docids = request.root.catalog.query("uid == '%s'" % uid)[1]
     for obj in resolve_docids(request, docids, perm = perm):
         return obj
+
 
 class _FailMarker(object):
     def __contains__(self, other):
@@ -417,7 +447,9 @@ class _FailMarker(object):
         return False
     __hash__ = None
 
+
 fail_marker = _FailMarker()
+
 
 def prep_html_for_search_indexing(html):
     html2text = HTML2Text()
@@ -427,6 +459,7 @@ def prep_html_for_search_indexing(html):
     html2text.unicode_snob = 1
     html2text.ignore_emphasis = 1
     return html2text.handle(html).strip()
+
 
 def replace_fanstatic_resource(config, to_remove, to_inject):
     """ Use this to remove 'to_remove' from fanstatic, and replace
@@ -455,6 +488,7 @@ def replace_fanstatic_resource(config, to_remove, to_inject):
                 resource.resources.remove(to_remove)
                 resource.resources.add(to_inject)
 
+
 def validate_appstruct(request, schema, appstruct, **kw):
     """
     Args:
@@ -473,6 +507,7 @@ def validate_appstruct(request, schema, appstruct, **kw):
         schema = schema.bind(**kw)
     return schema.deserialize(schema.serialize(appstruct))
 
+
 def get_schema(request, context, type_name, schema_name, bind = None, event = True):
     schema = get_content_schemas(request.registry)[type_name][schema_name]()
     if event:
@@ -485,12 +520,14 @@ def get_schema(request, context, type_name, schema_name, bind = None, event = Tr
         schema = schema.bind(**bind)
     return schema
 
+
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)
     config.registry.registerAdapter(EmailValidationTokens)
     config.add_directive('add_content_factory', add_content_factory)
     config.add_directive('add_addable_content', add_addable_content)
-    config.add_directive('add_content_schema', add_content_schema)
+    config.add_directive('add_schema', add_schema)
+    config.add_directive('add_content_schema', add_content_schema) #b/c
     config.add_directive('add_content_view', add_content_view)
     config.add_directive('add_image_scale', add_image_scale)
     config.add_directive('replace_fanstatic_resource', replace_fanstatic_resource)
