@@ -33,6 +33,7 @@ requires = ('Babel',
             'repoze.folder',
             'repoze.lru',
             'six',
+            'zc.lockfile',
             'zope.component',
             'zope.interface',)
 
@@ -64,8 +65,7 @@ setup(name='Arche',
       [fanstatic.libraries]
       arche = arche.fanstatic_lib:library
       [console_scripts]
-      arche = arche.scripts:arche_console_script
-      evolver = arche.scripts:evolve_packages_script
+      arche = arche.scripting:run_arche_script
       [pyramid.scaffold]
       arche_buildout=arche.scaffolds:BuildoutTemplate
       arche_plugin=arche.scaffolds:PluginTemplate

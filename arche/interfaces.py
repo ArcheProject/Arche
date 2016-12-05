@@ -401,6 +401,37 @@ class IThumbnailsCache(Interface):
         """ Invalidate a specific key
         """
 
+
+class IScript(Interface):
+    name = Attribute("Name, must be unique.")
+    title = Attribute("Human-readable name")
+    description = Attribute("Human-readable description")
+    callable = Attribute("The script to actually execute. "
+                         "It must accept env and parsed_ns as arguments.")
+    can_commit = Attribute("Can this script commit to database?")
+    argparser = Attribute("A custom argparser instance for this script. See the help-script for an example.")
+
+    def __init__(_callable, **kw):
+        """ callable is a must, noticable keywords is argparser
+        which stores a custom version of the argparser for this script.
+        Always make that argparser inherit the default values, by using:
+
+        argparse.ArgumentParser(parents=[default_parser])
+    """
+
+    def __call__(env, script_args):
+        """ Scripts are called with the env dict, containing bootstrapped Pyramid instance.
+            It's basically what's returned by running pyramid.paster.bootstrap
+
+            The script_args var is a list of command line args that will be parsed.
+        """
+
+    def start(env, parsed_ns):
+        """ Called right before the script callable is called. """
+
+    def cleanup(env, parsed_ns):
+        """ Called after the script has completed or failed. """
+
 #/Utils
 
 

@@ -94,3 +94,16 @@ arche.versioning.<TypeName> = <attribute> <..>
 arche.workflows = <TypeName> <WorkflowName>
   Set workflow.
   Example: Document simple_workflow
+
+
+Config directives
+=================
+
+config.add_script(callable, name=None, **kw)
+  Add a script executable with the arche-command.
+  Callable is the script, which must accept bootstrap 'env' dict and the
+  result of argparse as another positional argument.
+
+  See arche.scrips for examples
+
+

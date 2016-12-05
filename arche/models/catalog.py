@@ -456,6 +456,7 @@ def _unregister_index_utils(registry):
     for util in registry.getAllUtilitiesRegisteredFor(ICatalogIndexes):
         registry.unregisterUtility(util)
 
+
 def includeme(config):
     """ Initialise catalog systems.
     """
@@ -499,5 +500,4 @@ def includeme(config):
         'first_name': CatalogFieldIndex('first_name'),
         'last_name': CatalogFieldIndex('last_name'),
         }
-
     config.add_catalog_indexes(__name__, default_indexes)

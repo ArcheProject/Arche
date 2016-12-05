@@ -48,6 +48,7 @@ def setup_defaults(settings):
 def includeme(config):
     setup_defaults(config.registry.settings) #This will run twice...
     config.include('arche.utils')
+    config.include('arche.scripting')
     config.include('arche.subscribers')
     config.include('arche.resources')
     config.include('arche.security')
@@ -56,6 +57,7 @@ def includeme(config):
     config.include('arche.views')
     config.include('arche.portlets')
     config.include('arche.populators')
+    config.include('arche.scripts')
     #Portlets
     config.include('arche.portlets.byline')
     config.include('arche.portlets.navigation')
