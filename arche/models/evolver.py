@@ -105,7 +105,7 @@ def check_sw_versions(event = None, env = None):
             needed.add(evolver.name)
     if needed:
         msg = "The following packages aren't up to date: '%s'\n" % "', '".join(needed)
-        msg += "Run 'bin/evolver <your paster ini> <package name>' to upgrade"
+        msg += "Run 'bin/arche <your paster ini> evolve <package name>' to upgrade"
         raise EvolverVersionError(msg)
     env['closer']()
 

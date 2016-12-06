@@ -403,7 +403,7 @@ def check_catalog_on_startup(event = None, env = None):
     from sys import argv
     #FIXME: This makes arche unusable on windows, or if someone types
     #"./bin/arche" this won't work.
-    script_names = ['bin/arche', 'bin/evolver', 'bin/pshell']
+    script_names = ['bin/arche', 'bin/pshell']
     if argv[0] in script_names:
         return
     if env is None:
