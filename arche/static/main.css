@@ -65,3 +65,17 @@
   height: 100%;
   fill:#fff;
 }
+
+/* Use this for images that needs fixed ratio */
+.stretchy-wrapper {
+    width: 100%;
+    padding-bottom: 50%; /* <- Override to change */
+    position: relative;
+    display: inline-block;
+}
+.stretchy-wrapper > .force-ratio {
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    background-size: cover;
+    background-position: 50% 50%;
+}

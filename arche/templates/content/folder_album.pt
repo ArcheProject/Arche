@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/base_view.pt', 'arche:templates/inline.pt')"
+      tal:define="contents contents|tuple(context.values())|()"
+      i18n:domain="Arche">
+<body>
+<tal:main metal:fill-slot="main-content">
+
+    <h1>${context.title}</h1>
+
+    <p class="description lead"
+         tal:define="description context.description|None"
+         tal:condition="description"
+         tal:content="structure description">Description text</p>
+
+    <div class="row">
+      <div class="col-sm-3" tal:repeat="obj contents">
+        <a href="${request.resource_url(obj)}" >
+          <span class="stretchy-wrapper" tal:define="bg_url request.thumb_url(obj, 'col-3')">
+            <span tal:condition="bg_url"
+                  class="force-ratio"
+                  style="border: 1px solid #ccc; background-image: url(${bg_url});"></span>
+            <span tal:condition="not bg_url"
+                class="force-ratio text-center"
+                style="border: 1px solid #ccc;">
+              <h1 class="${obj.css_icon|'glyphicon glyphicon-file'}"></h1>
+            </span>
+          </span>
+          <p>${obj.title}</p>
+
+        </a>
+
+
+
+
+      </div>
+    </div>
+
+
+
+    <div class="clearfix"><!-- --></div>
+</tal:main>
+</body>
+</html>

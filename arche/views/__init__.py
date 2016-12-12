@@ -2,7 +2,6 @@
 
 def includeme(config):
     config.include('.tinymce')
-
     config.include('arche.views.actions')
     config.include('arche.views.auth')
     config.include('arche.views.base')
@@ -10,6 +9,7 @@ def includeme(config):
     config.include('arche.views.cut_copy_paste')
     config.include('arche.views.file')
     config.include('arche.views.flash_messages')
+    config.include('.folderish')
     config.include('arche.views.groups')
     config.include('arche.views.ie_compat_header')
     config.include('arche.views.image')
