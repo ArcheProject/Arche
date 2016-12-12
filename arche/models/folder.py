@@ -20,5 +20,5 @@ class ArcheFolder(Content, DCMetadataMixin, LocalRolesMixin, ContextACLMixin):
 
 def includeme(config):
     config.add_content_factory(ArcheFolder,
-                               addable_in = ['Folder', 'Document', 'Link', 'Image'],
+                               addable_in = ['Folder', 'Document', 'Link', 'Image', 'File'],
                                addable_to = ['Root'])
