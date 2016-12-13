@@ -1,3 +1,4 @@
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPForbidden
 
@@ -32,7 +33,7 @@ class EditUserForm(DefaultEditForm):
             email = appstruct.pop('email')
             val_tokens = IEmailValidationTokens(self.context)
             token = val_tokens.new(email)
-            url = self.request.resource_url(self.context, 'change_email', query = {'t': token, 'e': email})
+            url = self.request.resource_url(self.context, '_ve', query = {'t': token, 'e': email})
             html = self.render_template("arche:templates/emails/email_change.pt", user = self.context, url = url)
             self.request.send_email(_(u"Email change validation"),
                                     [email],
@@ -52,9 +53,9 @@ class EditUserForm(DefaultEditForm):
 
 
 class ChangeEmailView(BaseView):
+    """ Change or validate an address. """
 
     def __call__(self):
-        
         rtoken = self.request.GET.get('t', fail_marker)
         email = self.request.GET.get('e', fail_marker)
         val_tokens = IEmailValidationTokens(self.context)
@@ -63,14 +64,37 @@ class ChangeEmailView(BaseView):
         except KeyError:
             raise HTTPForbidden(_("No such token"))
         if not token.valid:
-            raise HTTPForbidden(_("The email change request has expired."))
+            raise HTTPForbidden(_("Expired."))
         if token == rtoken:
             #FIXME: Email old address?
             del val_tokens[email]
-            self.context.update(email = email, email_validated = True) #So events fire
-            self.flash_messages.add(_("Email changed"))
+            if self.context.email != email:
+                self.context.update(email = email, email_validated = True) #So events fire
+                self.flash_messages.add(_("Email changed"))
+            else:
+                self.context.update(email_validated = True)
+                self.flash_messages.add(_("Email validated"))
             return HTTPFound(location = self.request.resource_url(self.context))
-        raise HTTPForbidden(_("This link is invalid. Unable to change email."))
+        raise HTTPForbidden(_("This link is invalid."))
+
+
+class RequestEmailValidationView(BaseView):
+
+    def __call__(self):
+        if not self.context.email:
+            raise HTTPBadRequest(_("No email set"))
+        if not self.context.email_validated:
+            val_tokens = IEmailValidationTokens(self.context)
+            token = val_tokens.new(self.context.email)
+            url = self.request.resource_url(self.context, '_ve', query = {'t': token, 'e': self.context.email})
+            html = self.render_template("arche:templates/emails/email_validate.pt", user = self.context, url = url)
+            self.request.send_email(_("Email validation"),
+                                    [self.context.email],
+                                    html)
+            self.flash_messages.add(_("We sent you an email with a link to confirm your address."))
+        else:
+            self.flash_messages.add(_("Your address is already validated."))
+        return HTTPFound(location=self.request.resource_url(self.context))
 
 
 class UserView(DynamicView):
@@ -91,7 +115,11 @@ def includeme(config):
                     renderer = 'arche:templates/form.pt')
     config.add_view(ChangeEmailView,
                     context = 'arche.interfaces.IUser',
-                    name = 'change_email',
+                    name = '_ve',
+                    permission = security.PERM_EDIT)
+    config.add_view(RequestEmailValidationView,
+                    context = 'arche.interfaces.IUser',
+                    name = 'validate_email',
                     permission = security.PERM_EDIT)
     config.add_view(UserView,
                     permission = security.PERM_VIEW,

@@ -207,6 +207,18 @@ def generic_profile_items(context, request, va, **kw):
         return generic_submenu_items(context, request, va, url=url, **kw)
 
 
+@view_action('user_menu', 'validate_email',
+             title=_("Validate email"),
+             priority=25,
+             view_name='validate_email')
+def validate_email_action(context, request, va, **kw):
+    try:
+        if not request.profile.email_validated and request.profile.email:
+            return generic_profile_items(context, request, va, **kw)
+    except AttributeError:
+        pass
+
+
 @view_action('actions_menu', 'delete',
              title=_("Delete"),
              priority=20,

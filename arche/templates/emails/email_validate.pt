@@ -1,0 +1,17 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Arche">
+<h3 i18n:translate="">Verify email</h3>
+<p i18n:translate="request_email_validation_description">
+  We got a request to validate the email address for the UserID
+  <b tal:content="user.userid" i18n:name="userid"></b>.
+  You need to be logged in to that account to verify that you're the owner of this email address.
+  Click the link below to verify your address.
+</p>
+<p>
+  <a href="${url}">${url}</a>
+</p>
+<tal:footer replace="structure view.render_template('arche:templates/emails/footer.pt')"></tal:footer>
+</tal:main>
