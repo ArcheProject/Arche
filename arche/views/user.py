@@ -94,7 +94,12 @@ class RequestEmailValidationView(BaseView):
             self.flash_messages.add(_("We sent you an email with a link to confirm your address."))
         else:
             self.flash_messages.add(_("Your address is already validated."))
-        return HTTPFound(location=self.request.resource_url(self.context))
+        came_from = self.request.GET.get('came_from', None)
+        if came_from:
+            url = came_from
+        else:
+            url = self.request.resource_url(self.context)
+        return HTTPFound(location=url)
 
 
 class UserView(DynamicView):
