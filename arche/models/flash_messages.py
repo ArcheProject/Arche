@@ -48,10 +48,10 @@ class FlashMessages(object):
         if require_commit:
             def hook(success):
                 if success:
-                    self.request.session.flash(flash)
+                    self.request.session.flash(flash, allow_duplicate=False)
             transaction.get().addAfterCommitHook(hook)
         else:
-            self.request.session.flash(flash)
+            self.request.session.flash(flash, allow_duplicate=False)
 
     def get_messages(self):
         for message in self.request.session.pop_flash():
