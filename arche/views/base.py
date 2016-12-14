@@ -117,7 +117,11 @@ class BaseView(object):
             return obj
 
     def breadcrumbs(self):
-        return reversed(list(lineage(self.context)))
+        items = []
+        for obj in lineage(self.context):
+            if self.request.has_permission(security.PERM_VIEW, obj):
+                items.append(obj)
+        return reversed(items)
 
     def get_content_factory(self, name):
         return self.request.content_factories.get(name)
