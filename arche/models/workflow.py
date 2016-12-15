@@ -55,7 +55,7 @@ class Workflow(object):
 
     @classmethod
     def add_transitions(cls, from_states = '', to_states = '',
-                       permission = "__NOT_ALLOWED__", title = '',
+                       permission = "__NOT_ALLOWED__", title = None,
                        message = '', create_states = False):
         """
         :param from_states: '*' for all current states, or state name, or an iterator with state names.
@@ -77,7 +77,7 @@ class Workflow(object):
                 transition = Transition(from_state = fstate,
                                         to_state = tstate,
                                         permission=permission,
-                                        title=title,
+                                        title=title != None and title or cls.states[tstate],
                                         message=message)
                 if transition.name in cls.transitions:
                     logger.warn("Overriding tranistion %r in workflow %r", transition.name, cls.name)
