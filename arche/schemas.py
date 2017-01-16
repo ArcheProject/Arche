@@ -556,6 +556,31 @@ class SiteSettingsSchema(colander.Schema):
                                                 title = _("Skip email validation"),
                                                 description = _("This will allow users to register with a fake email address. Generally not recommended."))
 
+
+@colander.deferred
+def default_addable_content_widget(node, kw):
+    request = kw['request']
+    context = kw['context']
+    values = []
+    for factory in request.addable_content(context, restrict=False, check_perm=False):
+        values.append((factory.type_name, factory.type_title))
+    return deform.widget.CheckboxChoiceWidget(values=values)
+
+
+class CustomizeAddableContentSchema(colander.Schema):
+    custom_addable = colander.SchemaNode(
+        colander.Bool(),
+        title = _("Customization active?"),
+        description = _("Unselect to use default values"),
+    )
+    custom_addable_types = colander.SchemaNode(
+        colander.Set(),
+        title=_("Allowed types"),
+        widget=default_addable_content_widget,
+        default=(),
+    )
+
+
 @colander.deferred
 def allow_login_title(node, kw):
     request = kw['request']
@@ -619,4 +644,5 @@ def includeme(config):
     config.add_schema('Root', SiteSettingsSchema, 'site_settings')
     config.add_schema('Link', AddLinkSchema, 'add')
     config.add_schema('Link', LinkSchema, 'edit')
+    config.add_schema('Content', CustomizeAddableContentSchema, 'customize_addable_content')
     config.add_subscriber(user_schema_admin_changes, [EditUserSchema, ISchemaCreatedEvent])

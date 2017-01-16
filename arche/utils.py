@@ -521,6 +521,28 @@ def get_schema(request, context, type_name, schema_name, bind = None, event = Tr
     return schema
 
 
+def addable_content(request, context, restrict=True, check_perm=True):
+    """ Return a generator with content factories addable in this context.
+        If restrict is True, also check custom limitations within this context.
+    """
+    _marker = object()
+    context_type = getattr(context, 'type_name', None)
+    if not context_type:
+        raise StopIteration()
+    factories = request.content_factories
+    for (name, addable) in get_addable_content(request.registry).items():
+        if context_type not in addable:
+            continue
+        if restrict and getattr(context, 'custom_addable', None) and name not in context.custom_addable_types:
+            continue
+        factory = factories.get(name, None)
+        if factory is not None:
+            add_perm = getattr(factory, 'add_permission', _marker)
+            if check_perm and not request.has_permission(add_perm, context):
+                continue
+            yield factory
+
+
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)
     config.registry.registerAdapter(EmailValidationTokens)
@@ -541,6 +563,7 @@ def includeme(config):
     config.add_request_method(content_factories, property = True)
     config.add_request_method(validate_appstruct)
     config.add_request_method(get_schema)
+    config.add_request_method(addable_content)
     #Init default scales
     for (name, scale) in image_scales.items():
         config.add_image_scale(name, *scale)
