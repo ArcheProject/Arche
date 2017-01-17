@@ -100,8 +100,10 @@ def edit_actionbar(context, request, va, **kw):
              priority=50)
 def add_menu(context, request, va, **kw):
     view = kw['view']
-    can_customize_addable = IContent.providedBy(context) and request.has_permission(PERM_MANAGE_SYSTEM, context)
-    is_customized = can_customize_addable and context.custom_addable or False
+    can_customize_addable = IContent.providedBy(context) and \
+                            request.has_permission(PERM_MANAGE_SYSTEM, context) and \
+                            tuple(request.addable_content(context, restrict=False, check_perm=False))
+    is_customized = can_customize_addable and getattr(context, 'custom_addable', False) or False
     addable_content = tuple(request.addable_content(context))
     if addable_content or can_customize_addable:
         return view.render_template('arche:templates/menus/add_content.pt',
