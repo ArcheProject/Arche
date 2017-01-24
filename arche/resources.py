@@ -62,7 +62,6 @@ class DCMetadataMixin(object):
     date = None
     publisher = u""
     subject = u"" #FIXME: Same as tags?
-    relation = u"" #Probably a  relation field here
     rights = u"" #FIXME: global default is a good idea
     
     #type = u"" #FIXME?
@@ -180,7 +179,6 @@ class LocalRolesMixin(object):
 
     @local_roles.setter
     def local_roles(self, value):
-        #Note that you can also set roles via the property, like self.local_roles['admin'] = ['role:Admin']
         local_roles = IRoles(self)
         local_roles.set_from_appstruct(value)
 
