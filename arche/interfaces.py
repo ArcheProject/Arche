@@ -196,8 +196,23 @@ class IInitialSetup(Interface):
 class IGroup(Interface):
     pass
 
+
 class IGroups(Interface):
-    pass
+    """ Groups container"""
+
+    def get_users_group_principals(userid):
+        """ Get principal name (I.e. what a permission will be attached to)
+            Will always start with 'group:'
+        """
+
+    def get_users_groups(userid):
+        """ Return a generator with all the groups where userid is a member.
+        """
+
+    def get_group_principals(self):
+        """ Return a set with all the principal names of the registered groups.
+        """
+
 
 class IRole(Interface):
     pass

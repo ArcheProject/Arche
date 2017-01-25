@@ -541,12 +541,16 @@ class Groups(Content, LocalRolesMixin, ContextACLMixin):
     add_permission = "Add %s" % type_name
 
     def get_users_group_principals(self, userid):
-        #Cache memberships? Needed on sites with many groups
         groups = set()
+        for group in self.get_users_groups(userid):
+            groups.add(group.principal_name)
+        return groups
+
+    def get_users_groups(self, userid):
+        #Cache memberships? Needed on sites with many groups
         for group in self.values():
             if userid in group.members:
-                groups.add(group.principal_name)
-        return groups
+                yield group
 
     def get_group_principals(self):
         for group in self.values():
