@@ -15,6 +15,11 @@ def find_local_roles_for_user(request, context):
     return request.root.catalog.query(query)
 
 
+def find_groups_for_user(request, context):
+    if 'groups' in request.root:
+        return list(request.root['groups'].get_users_groups(context.userid))
+
+
 def find_content_related(request, context):
     query = Any('relation', [context.uid]) & NotEq('uid', context.uid)
     return request.root.catalog.query(query)
@@ -32,6 +37,12 @@ def includeme(config):
         requires=(IUser,),
         catalog_result=True,
         title=_("User has permissions set"),
+    )
+    config.add_ref_guard(
+        find_groups_for_user,
+        requires=(IUser,),
+        catalog_result=False,
+        title=_("User has set permission(s) in group(s)"),
     )
     config.add_ref_guard(
         find_content_related,
