@@ -7,6 +7,7 @@ from pyramid.httpexceptions import HTTPFound
 from arche import _
 from arche import security
 from arche.utils import copy_recursive
+from arche.utils import find_all_db_objects
 from arche.utils import generate_slug
 from arche.utils import get_addable_content
 from arche.validators import unique_parent_context_name_validator
@@ -58,6 +59,8 @@ class PasteContext(BaseView):
         parent = action_obj.__parent__
         use_name = generate_slug(self.context, action_obj.__name__)
         if paste_data.get('move', False):
+            for obj in find_all_db_objects(action_obj):
+                self.request.reference_guards.moving(obj.uid)
             del parent[action_obj.__name__]
             self.flash_messages.add(_("Moved here"))
         else:
@@ -88,6 +91,8 @@ class RenameContext(BaseForm):
         self.flash_messages.add(self.default_success, type="success")
         name = appstruct['name']
         parent = self.context.__parent__
+        for obj in find_all_db_objects(self.context):
+            self.request.reference_guards.moving(obj.uid)
         del parent[self.context.__name__]
         parent[name] = self.context
         return HTTPFound(location = self.request.resource_url(self.context))

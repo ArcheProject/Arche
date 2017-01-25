@@ -7,6 +7,7 @@ from pyramid.i18n import TranslationString
 from pyramid.location import lineage
 from pyramid.response import Response
 
+from arche.exceptions import ReferenceGuarded
 from arche.security import NO_PERMISSION_REQUIRED
 from arche.security import PERM_VIEW
 from arche.views.base import BaseView
@@ -69,6 +70,20 @@ class NotFoundExceptionView(ExceptionView):
         return {}
 
 
+class ReferenceGuardedException(ExceptionView):
+
+    def __call__(self):
+        if self.request.is_xhr:
+            transl = self.request.localizer.translate
+            msg = transl(_("Reference guard exception: "))
+            msg += transl(self.exc.ref_guard.title)
+            return Response(msg, status=self.request.response.status)
+        exc_context = None
+        if self.request.has_permission(PERM_VIEW, self.exc.context):
+            exc_context = self.exc.context
+        return {'exc_context': exc_context, 'context': self.context, 'exc': self.exc}
+
+
 class ForbiddenExceptionView(ExceptionView):
 
     def __call__(self):
@@ -99,6 +114,10 @@ def includeme(config):
     config.add_view(ExceptionView,
                     context = HTTPClientError,
                     renderer = "arche:templates/exceptions/400.pt",
+                    permission = NO_PERMISSION_REQUIRED)
+    config.add_view(ReferenceGuardedException,
+                    context = ReferenceGuarded,
+                    renderer = "arche:templates/exceptions/reference_guarded.pt",
                     permission = NO_PERMISSION_REQUIRED)
     config.add_view(ExceptionView,
                     context = Exception,

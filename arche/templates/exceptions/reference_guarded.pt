@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/master.pt')"
+      i18n:domain="Arche">
+<tal:blank metal:fill-slot="heading"></tal:blank>
+<tal:blank metal:fill-slot="actionbar"></tal:blank>
+<div metal:fill-slot="content">
+  <div class="row">
+    <div class="col-sm-12">
+      <h1>
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <span i18n:translate="">Action blocked</span>
+      </h1>
+      <p class="lead">${exc.ref_guard.title}</p>
+      <p i18n:translate="reference_guard_fired_error">
+        Your action would have caused references within this site to break.
+        This usually happens when you try to delete a container with content that's
+        required by other content.
+      </p>
+
+      <div tal:condition="exc_context">
+        <p i18n:translate="exc_context_link">
+          Context that caused the exception:
+          <a i18n:name="link" href="${request.resource_url(exc_context)}">
+            ${exc_context.title|exc_context.__name__}
+          </a>
+        </p>
+      </div>
+
+      <p>
+        <a href="${request.resource_url(context)}"
+           class="btn btn-default"
+           i18n:translate="">Back</a>
+      </p>
+
+    </div>
+  </div>
+</div><!-- content -->
+</html>

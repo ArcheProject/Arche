@@ -360,6 +360,30 @@ class IPopulator(Interface):
     """
     def populate(self, **kw):
         """ Populate context with the following arguments. """
+
+
+class IReferenceGuards(Interface):
+    """ Request adapter to interact with the reference guards.
+        Use the request attribute 'reference_guards' to interact with it.
+    """
+    request = Attribute("Wrapped request instance")
+
+    def __init__(request):
+        pass
+
+    def get_valid(context):
+        """ Return a generator with valid reference guards for this context.
+        """
+
+    def check(context):
+        """ Check before actually allowing delete.
+            Will raise ReferenceGuarded exception if something goes wrong.
+        """
+
+    def get_vetoing(context):
+        """ Get all reference guards that would veto the removal of this context.
+        """
+
 #/Adapters
 
 

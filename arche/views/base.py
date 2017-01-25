@@ -395,6 +395,8 @@ class DefaultDeleteForm(BaseForm):
         type_title = getattr(self.context, 'type_title', _("<Unknown Type>"))
         if isinstance(type_title, TranslationString):
             type_title = self.request.localizer.translate(type_title)
+        if self.vetoing_guards:
+            return ""
         return _("Delete ${title} (${type_title}) ?",
                  mapping = {'title': title, 'type_title': type_title})
 
@@ -404,7 +406,14 @@ class DefaultDeleteForm(BaseForm):
 
     @property
     def buttons(self):
-        return (self.button_delete, self.button_cancel,)
+        buttons = [self.button_cancel]
+        if not self.vetoing_guards:
+            buttons.insert(0, self.button_delete)
+        return buttons
+
+    @reify
+    def vetoing_guards(self):
+        return tuple(self.request.reference_guards.get_vetoing(self.context))
 
     def get_schema_factory(self, type_name, schema_name):
         """ Allow custom delete schemas here, otherwise just use the default one. """
@@ -522,7 +531,7 @@ def includeme(config):
                     context = 'arche.interfaces.IBase',
                     name = 'delete',
                     permission = security.PERM_DELETE,
-                    renderer = 'arche:templates/form.pt')
+                    renderer = 'arche:templates/protected_delete.pt')
     config.add_view(DefaultView,
                     name = 'view',
                     context = 'arche.interfaces.IContent',
