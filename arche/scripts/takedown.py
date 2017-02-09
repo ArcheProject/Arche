@@ -62,6 +62,7 @@ def takedown_app(env, parsed_ns):
         kwargs['listen'] = parsed_ns.listen
     else:
         kwargs['unix_socket'] = parsed_ns.listen
+        kwargs['unix_socket_perms'] = '666'
     serve(app, **kwargs)
 
 
