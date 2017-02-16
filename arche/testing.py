@@ -2,6 +2,7 @@ from pyramid.authentication import CallbackAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.interfaces import IRequestExtensions
 from pyramid_mailer.interfaces import IMailer
+from pyramid_mailer.mailer import DebugMailer
 from zope.interface import implementer
 
 
@@ -38,14 +39,24 @@ def printing_mailer(config):
     mailer = PrintingMailer()
     config.registry.registerUtility(mailer)
 
+
 @implementer(IMailer)
-class PrintingMailer(object):
+class PrintingMailer(DebugMailer):
     """
     Dummy mailing instance. Simply prints all messages directly instead of handling them.
     Good for avoiding mailing users when you want to test things locally.
     """
 
-    def send(self, message):
+    def __init__(self):
+        pass
+
+    @classmethod
+    def from_settings(cls, settings, prefix='mail.'):
+        """API compat, but doesn't do anything with settings.
+        """
+        return cls()
+
+    def send(self, message, fail_silently=False):
         """
         Print message content instead of sending it
         """
@@ -58,7 +69,12 @@ class PrintingMailer(object):
         print ( message.body)
         print ( "---")
 
-    send_to_queue = send_immediately = send
+    #Override debug mailer
+    send_immediately = send
+    send_to_queue = send
+    send_sendmail = send
+    send_immediately_sendmail = send
+
 
     @classmethod
     def from_settings(cls, settings):

@@ -16,6 +16,16 @@
                 ${factory.type_title}
             </a></li>
         </tal:iterate>
+        <tal:custom condition="can_customize_addable">
+            <li role="separator" class="divider"></li>
+            <li class="disabled" tal:condition="is_customized">
+                <a href="#" i18n:translate="">Add customization active</a>
+            </li>
+            <li><a href="${request.resource_url(context, 'customize_addable_content')}">
+                <span class="glyphicon glyphicon-cog"></span>
+                <tal:ts i18n:translate="">Customize addable...</tal:ts>
+            </a></li>
+        </tal:custom>
       </ul>
     </li>
 </tal:main>

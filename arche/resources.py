@@ -222,6 +222,7 @@ class Content(Base, Folder):
     listing_visible = True
     search_visible = True
     show_byline = False
+    custom_addable = False
 
     def __init__(self, **kw):
         #To set that this should keep track of ordering. See Folder
@@ -247,6 +248,21 @@ class Content(Base, Folder):
         else:
             if hasattr(self, '__tags__'):
                 delattr(self, '__tags__')
+
+    @property
+    def custom_addable_types(self):
+        return frozenset(getattr(self, '_custom_addable_types', ()))
+    @custom_addable_types.setter
+    def custom_addable_types(self, value):
+        if not hasattr(self, '_custom_addable_types'):
+            self._custom_addable_types = OOSet(value)
+        if set(value) != set(self._custom_addable_types):
+            self._custom_addable_types.clear()
+            self._custom_addable_types.update(value)
+    @custom_addable_types.deleter
+    def custom_addable_types(self):
+        if hasattr(self, '_custom_addable_types'):
+            delattr(self, '_custom_addable_types')
 
 
 @implementer(ILink)

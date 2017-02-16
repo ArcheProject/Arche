@@ -1,11 +1,11 @@
 """ Things like navigation, action menu etc. """
-
 from betahaus.viewcomponent import view_action
 from deform_autoneed import need_lib
 from repoze.folder.interfaces import IFolder
 
 from arche import _
 from arche import security
+from arche.interfaces import IContent
 from arche.interfaces import IContentView
 from arche.interfaces import IContextACL
 from arche.interfaces import ILocalRoles
@@ -13,8 +13,9 @@ from arche.interfaces import IRoot
 from arche.interfaces import ITrackRevisions
 from arche.models.workflow import get_context_wf
 from arche.portlets import get_portlet_slots
-from arche.utils import get_content_views
+from arche.security import PERM_MANAGE_SYSTEM
 from arche.utils import get_content_schemas
+from arche.utils import get_content_views
 from arche.views.cut_copy_paste import can_paste
 
 
@@ -99,9 +100,16 @@ def edit_actionbar(context, request, va, **kw):
              priority=50)
 def add_menu(context, request, va, **kw):
     view = kw['view']
-    addable_content = tuple(view.addable_content(context))
-    if addable_content:
-        return view.render_template('arche:templates/menus/add_content.pt', addable_content=addable_content)
+    can_customize_addable = IContent.providedBy(context) and \
+                            request.has_permission(PERM_MANAGE_SYSTEM, context) and \
+                            tuple(request.addable_content(context, restrict=False, check_perm=False))
+    is_customized = can_customize_addable and getattr(context, 'custom_addable', False) or False
+    addable_content = tuple(request.addable_content(context))
+    if addable_content or can_customize_addable:
+        return view.render_template('arche:templates/menus/add_content.pt',
+                                    addable_content=addable_content,
+                                    can_customize_addable=can_customize_addable,
+                                    is_customized=is_customized)
 
 
 @view_action('actionbar_main', 'actions',
