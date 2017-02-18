@@ -403,6 +403,45 @@ class IReferenceGuards(Interface):
 
 
 #Utils or settings
+class IRefGuard(Interface):
+    callable = Attribute("Callable that returns referenced objects.")
+    name = Attribute("Utility name, must be unique.")
+    title = Attribute("Translation string with human-readable title")
+    requires = Attribute("Tuple of interfaces required by the guarded context. "
+                         "If it's not provided, the context won't be guarded.")
+    catalog_result = Attribute("Does the callable return a catalog result "
+                               "rather than a list of objects? "
+                               "Catalog results are always tuples with a result "
+                               "object and a docids IFSet")
+    allow_move = Attribute("Bool - does this guard allow objects to be moved? "
+                           "(I.e. not URL-dependant) Anything referencing a UID for instance, "
+                           "should always be allowed to move.")
+
+    def __init__(_callable,
+                 name=None,
+                 requires=(IBase,),
+                 title=None,
+                 catalog_result=False,
+                 allow_move=True):
+        """ Init with defaults """
+
+    def __call__(request, context):
+        """ Check the context. """
+
+    def valid_context(context):
+        """ Is this context valid/relevant to this guard? """
+
+    def get_guarded_count(self, request, context):
+        """ Return the exact count of objects that would veto.
+            Always return the exact count regardless of the users permission.
+        """
+
+    def get_guarded_objects(request, context, perm=None, limit=5):
+        """ Returns iterator with guarded objects.
+            These are ment to be shown to the user who's action was blocked,
+            so respecting view permission is a good idea.
+        """
+
 
 class IACLRegistry(Interface):
     pass

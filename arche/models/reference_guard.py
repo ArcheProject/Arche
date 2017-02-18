@@ -7,10 +7,9 @@ from zope.component import adapter
 from zope.interface.declarations import implementer
 
 from arche import _
-from arche import logger
-from arche.compat import IterableUserDict
 from arche.exceptions import ReferenceGuarded
 from arche.interfaces import IBase
+from arche.interfaces import IRefGuard
 from arche.interfaces import IReferenceGuards
 from arche.interfaces import IObjectWillBeRemovedEvent
 from arche.security import PERM_VIEW
@@ -22,11 +21,10 @@ class ReferenceGuards(object):
 
     def __init__(self, request):
         self.request = request
-        self._gregistry = request.registry._ref_guards
         self._moving_uids = set()
 
     def get_valid(self, context):
-        for ref_guard in self._gregistry.values():
+        for (name, ref_guard) in self.request.registry.getUtilitiesFor(IRefGuard):
             if ref_guard.valid_context(context):
                 yield ref_guard
 
@@ -51,6 +49,7 @@ class ReferenceGuards(object):
         self._moving_uids.add(uid)
 
 
+@implementer(IRefGuard)
 class RefGuard(object):
     callable = None
     name = ''
@@ -112,15 +111,6 @@ class RefGuard(object):
         return iter([])
 
 
-class _ReferenceGuardsRegistry(IterableUserDict):
-
-    def add(self, ref_guard):
-        assert isinstance(ref_guard, RefGuard)
-        if ref_guard.name in self:
-            logger.warn('Replacing reference guard %r', ref_guard.name)
-        self[ref_guard.name] = ref_guard
-
-
 def _generator_with_guard(callable, request, context, perm=PERM_VIEW):
     for obj in callable(request, context):
         if request.has_permission(perm, obj):
@@ -141,9 +131,7 @@ def add_ref_guard(config, _callable,
         title=title,
         allow_move=allow_move,
     )
-    guards_reg = config.registry._ref_guards
-    # FIXME: Implement pyramids config commit structure with conflict checks?
-    guards_reg.add(ref_guard)
+    config.registry.registerUtility(ref_guard, name=ref_guard.name)
 
 
 def reference_guards(request):
@@ -156,7 +144,6 @@ def _protect_guarded_from_delete(context, event):
 
 
 def includeme(config):
-    config.registry._ref_guards = _ReferenceGuardsRegistry()
     config.registry.registerAdapter(ReferenceGuards)
     config.add_directive('add_ref_guard', add_ref_guard)
     config.add_request_method(reference_guards, reify=True)
