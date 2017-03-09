@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
-import logging
-
 from fanstatic.config import convert_config
 from fanstatic.publisher import Publisher
 import fanstatic
 import wsgiref.util
 from pyramid.settings import asbool
-
-log = logging.getLogger(__name__)
 
 
 def fanstatic_config(config, prefix='fanstatic.'):
