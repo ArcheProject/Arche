@@ -95,10 +95,10 @@ arche.destroy_modal = destroy_modal;
 function modal_from_event(event) {
   event.preventDefault();
   var elem = $(event.currentTarget);
-  if (elem.hasAttribute('data-url')) {
-    var url = elem.data('url');
-  } else {
+  if (typeof elem.attr('data-url') == 'undefined') {
     var url = elem.attr('href');
+  } else {
+    var url = elem.data('url');
   }
   var params = {};
   params['modal-dialog-class'] = elem.data('modal-dialog-class');
