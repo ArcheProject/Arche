@@ -128,10 +128,14 @@ def groupfinder(name, request):
         return ()
     inherited_roles = get_roles(registry = request.registry, inheritable = True)
     if not name.startswith('group:'):
-        root = find_root(context)
+        try:
+            root = find_root(context)
+        except AttributeError:
+            #For instance broken objects doesn't have __parent__
+            root = None
         groups = ()
         #FIXME: We may want to add the groups to the catalog instead for easier lookup
-        if 'groups' in root:
+        if root and 'groups' in root:
             groups = root['groups'].get_users_group_principals(name)
             result.update(groups)
         #Fetch any local roles for group
@@ -146,7 +150,11 @@ def groupfinder(name, request):
                 result.update([x for x in context.local_roles.get(name, ()) if x in inherited_roles])
         except AttributeError:
             pass
-        context = context.__parent__
+        try:
+            context = context.__parent__
+        except AttributeError:
+            #For instance broken objects
+            context = None
     return result
 
 def get_acl_registry(registry = None):
