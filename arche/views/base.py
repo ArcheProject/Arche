@@ -207,10 +207,11 @@ class ContentView(BaseView):
         self.context.__view_settings__ = OOBTree(value)
 
 
-button_delete = deform.Button('delete', title = _("Delete"), css_class = 'btn btn-danger')
-button_cancel = deform.Button('cancel', title = _("Cancel"), css_class = 'btn btn-default')
-button_save = deform.Button('save', title = _("Save"), css_class = 'btn btn-primary')
-button_add = deform.Button('add', title = _("Add"), css_class = 'btn btn-primary')
+button_delete = deform.Button('delete', title = _("Delete"), css_class = 'btn-danger')
+button_cancel = deform.Button('cancel', title = _("Cancel"))
+button_save = deform.Button('save', title = _("Save"))
+button_add = deform.Button('add', title = _("Add"))
+button_close = deform.Button('close', title = _("Close"))
 
 
 class BaseForm(BaseView, FormView):
@@ -226,6 +227,7 @@ class BaseForm(BaseView, FormView):
     button_cancel = button_cancel
     button_save = button_save
     button_add = button_add
+    button_close = button_close
 
     buttons = (button_save, button_cancel,)
 
