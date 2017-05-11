@@ -15,7 +15,7 @@
       <span tal:condition="context.default_view == 'view'" class="glyphicon glyphicon-ok pull-right"></span>
     </a></li>
     <li class="divider"></li>
-    <tal:iter repeat="(name, view_cls) views.get(context.type_name, {}).items()">
+    <tal:iter repeat="(name, view_cls) views">
       <li><a href="${request.resource_url(context, 'set_view', query = {'name': name})}">
         ${view_cls.title}
         <span tal:condition="context.default_view == name" class="glyphicon glyphicon-ok pull-right"></span>

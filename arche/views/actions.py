@@ -133,8 +133,10 @@ def template_menu(context, request, va, **kw):
     rcontext = getattr(request, 'context', None)
     if getattr(rcontext, 'delegate_view', None):
         return
-    view = kw['view']
-    return view.render_template('arche:templates/menus/templates.pt', views=get_content_views(request.registry))
+    views = get_content_views(request.registry).get(context.type_name, {}).items()
+    if views:
+        view = kw['view']
+        return view.render_template('arche:templates/menus/templates.pt', views=views)
 
 
 @view_action('nav_right', 'user',
