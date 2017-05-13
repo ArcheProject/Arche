@@ -7,7 +7,6 @@ README = open(os.path.join(here, 'README.rst')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
 requires = ('Babel',
-            'Pillow',
             'ZODB3',
             'awesome-slugify',
             'betahaus.viewcomponent>=0.4.1',
@@ -19,7 +18,6 @@ requires = ('Babel',
             'js.bootstrap>=3.3.4',
             'js.jqueryui',
             'peppercorn',
-            'plone.scale',
             'pyramid',
             'pyramid_beaker',
             'pyramid_chameleon',
@@ -36,6 +34,15 @@ requires = ('Babel',
             'zc.lockfile',
             'zope.component',
             'zope.interface',)
+
+extras_require = {
+    'thumbnails': (
+        'Pillow',
+        'plone.scale',
+    ),
+}
+
+tests_require = requires + extras_require['thumbnails']
 
 
 setup(name='Arche',
@@ -57,7 +64,8 @@ setup(name='Arche',
       include_package_data=True,
       zip_safe=False,
       install_requires=requires,
-      tests_require=requires,
+      tests_require=tests_require,
+      extras_require=extras_require,
       test_suite="arche",
       entry_points = """\
       [paste.app_factory]

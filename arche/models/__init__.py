@@ -9,6 +9,5 @@ def includeme(config):
     config.include('.folder')
     config.include('.jsondata')
     config.include('.mimetype_views')
-    config.include('.thumbnails')
     config.include('.versioning')
     config.include('.workflow')

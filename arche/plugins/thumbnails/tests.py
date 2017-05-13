@@ -20,7 +20,7 @@ class ThumbnailsTests(TestCase):
 
     @property
     def _cut(self):
-        from arche.models.thumbnails import Thumbnails
+        from .models import Thumbnails
         return Thumbnails
 
     def test_verify_class(self):
@@ -30,7 +30,9 @@ class ThumbnailsTests(TestCase):
         self.failUnless(verifyObject(IThumbnails, self._cut(testing.DummyModel())))
 
     def test_integration(self):
-        self.config.include('arche.models.thumbnails')
+        self.config.include('arche.testing')
+        self.config.include('arche.models.folder')
+        self.config.include('arche.plugins.thumbnails')
         @implementer(IThumbnailedContent)
         class _Dummy(testing.DummyModel):
             pass
@@ -45,7 +47,9 @@ class ThumbnailsCacheTests(TestCase):
 
     def setUp(self):
         self.config = testing.setUp()
-        self.config.include('arche.models.thumbnails')
+        self.config.include('arche.testing')
+        self.config.include('arche.models.folder')
+        self.config.include('arche.plugins.thumbnails')
 
     def tearDown(self):
         testing.tearDown()

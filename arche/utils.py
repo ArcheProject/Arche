@@ -27,7 +27,6 @@ from zope.interface import providedBy
 from zope.interface.interfaces import ComponentLookupError
 import pytz
 
-from arche import _
 from arche import logger
 from arche.compat import IterableUserDict
 from arche.interfaces import IContentView
@@ -137,9 +136,13 @@ def add_content_view(config, type_name, name, view_cls):
     """ Register a view as selectable for a content type.
         view_cls must implement IContentView.
     """
-    assert IContentView.implementedBy(view_cls), "view_cls argument must be a class that implements arche.interfaces.IContentView"
+    assert IContentView.implementedBy(view_cls), "view_cls argument must be a " \
+                                                 "class that implements " \
+                                                 "arche.interfaces.IContentView"
     if not name:
-        raise ValueError("Name must be specified and can't be an empty string. Specify 'view' to override the default view.")
+        raise ValueError("Name must be specified and can't be an "
+                         "empty string. Specify 'view' to override the "
+                         "default view.")
     if inspect.isclass(type_name):
         type_name = type_name.type_name
     content_factories = get_content_factories(config.registry)
@@ -407,10 +410,11 @@ class EmailValidationTokens(AttributeAnnotations):
         for email in expired:
             del self[email]
 
+#FIXME: Add more codecs that work for web!
+#FIXME: This should be a proper util instead
 image_mime_to_title = {'image/jpeg': "JPEG",
                        'image/png': "PNG",
                        'image/gif': "GIF"}
-#FIXME: Add more codecs that work for web!
 
 
 def get_root(request):
