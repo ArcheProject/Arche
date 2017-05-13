@@ -169,7 +169,10 @@ class BaseView(object):
 
     def thumb_tag(self, context, scale_name, **kw):
         #b/c
-        return self.request.thumb_tag(context, scale_name, **kw)
+        try:
+            return self.request.thumb_tag(context, scale_name, **kw)
+        except AttributeError:
+            return ''
 
     def relocate_response(self, url, msg = '', **kw):
         if not url:
@@ -459,7 +462,7 @@ def delegate_content_view(context, request):
     if response is None:  # pragma: no coverage
         warnings.warn("Failed to look up view called %r for %r." %
                       (view_name, context))
-        raise HTTPNotFound()
+        response = render_view_to_response(context, request, name='view')
     return response
 
 def set_view(context, request, name = None):
@@ -481,7 +484,8 @@ def set_view(context, request, name = None):
     fm = get_flash_messages(request)
     fm.add(_("View set to '${title}'",
              mapping = {'title': title}))
-    #Remove settings. Should this be a subscriber instead? It's a bit destructive too, especially if clearing this isn't needed
+    #Remove settings. Should this be a subscriber instead?
+    # It's a bit destructive too, especially if clearing this isn't needed
     if hasattr(context, '__view_settings__'):
         delattr(context, '__view_settings__')
     return HTTPFound(location = request.resource_url(context))
