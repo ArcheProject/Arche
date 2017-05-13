@@ -2,16 +2,16 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      metal:use-macro="view.macro('arche:templates/base_view.pt')"
+      metal:use-macro="view.macro('arche:templates/master.pt')"
       i18n:domain="Arche">
 <body>
+<tal:main-column metal:fill-slot="content">
 
 <div class="col-sm-3 portlets-left dashed-border"
      metal:fill-slot="portlets-left"
      tal:content="structure view.render_template('arche:templates/portlets/manager_slot.pt', slotname = 'left', portlet_manager = portlet_manager)">
 </div>
 
-<tal:main-column metal:fill-slot="main-column">
   <div class="col-sm-6">
   
     <div class="portlets-top dashed-border"
@@ -51,12 +51,12 @@
     </div>
   
   </div>
-</tal:main-column>
 
 <div class="col-sm-3 portlets-right dashed-border"
      metal:fill-slot="portlets-right"
      tal:content="structure view.render_template('arche:templates/portlets/manager_slot.pt', slotname = 'right', portlet_manager = portlet_manager)">
 </div>
+</tal:main-column>
 
 </body>
 </html>

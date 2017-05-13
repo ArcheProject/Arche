@@ -4,8 +4,9 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
 
-  <div tal:condition="slotname in view.slots"
-    tal:define="portlets portlet_manager.get(slotname, {})">
+  <div class="portlet-manager"
+       tal:condition="slotname in view.slots"
+       tal:define="portlets portlet_manager.get(slotname, {})">
 
     <h4>${view.slots[slotname].title} (${slotname})</h4>
 
@@ -21,7 +22,8 @@
           ${portlet.title}
         </a>
         <span class="label label-default">${portlet.portlet_type}</span>
-        <a href="${request.resource_url(context, 'delete_portlet', query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
+        <a class="pull-right"
+           href="${request.resource_url(context, 'delete_portlet', query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
           <span class="glyphicon glyphicon-remove text-danger"></span>
         </a>
       </li>

@@ -12,11 +12,9 @@ from arche.interfaces import IFlashMessages
 from arche.portlets import get_available_portlets
 from arche.portlets import get_portlet_manager
 from arche.portlets import get_portlet_slots
+from arche.views.base import button_add
 from arche.views.base import BaseForm
 from arche.views.base import BaseView
-
-
-button_add = deform.Button('add', title = _(u"Add"), css_class = 'btn btn-primary')
 
 
 class ManagePortlets(BaseView):
@@ -25,16 +23,19 @@ class ManagePortlets(BaseView):
     def slots(self):
         return get_portlet_slots(self.request.registry)
 
-    def get_form(self, name, slotinfo):
+    def get_form(self, slot_name, slotinfo):
         values = [('', _('<Select>'))]
-        values.extend(get_available_portlets(self.request.registry))
+        translate = self.request.localizer.translate
+        for (name, title) in get_available_portlets(self.request.registry):
+            full_title = u"%s (%s)" % (translate(title), name)
+            values.append((name, full_title))
 
         class AddPortlet(colander.Schema):
             portlet_type = colander.SchemaNode(colander.String(),
                                                title = _(u"Type"),
                                                widget = deform.widget.SelectWidget(values = values))
         schema = AddPortlet()
-        add_url = self.request.resource_url(self.context, 'add_portlet', query = {'slot': name})
+        add_url = self.request.resource_url(self.context, 'add_portlet', query = {'slot': slot_name})
         return deform.Form(schema, buttons = (button_add,), action = add_url)
 
     @property
@@ -72,7 +73,6 @@ class SavePortletSlotOrder(BaseView):
         return {}
 
 
-
 def add_portlet(context, request):
     slot = request.GET['slot']
     portlet_type = request.POST['portlet_type']
@@ -86,7 +86,8 @@ def add_portlet(context, request):
         fm.add(_("Added"))
         url = request.resource_url(context, 'manage_portlets')
     return HTTPFound(location = url)
-    
+
+
 def delete_portlet(context, request):
     slot = request.GET['slot']
     portlet_uid = request.GET['portlet']
@@ -123,7 +124,6 @@ class EditPortlet(BaseForm):
 
     def appstruct(self):
         return dict(self.portlet.settings)
-
 
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")

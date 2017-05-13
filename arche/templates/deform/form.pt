@@ -36,15 +36,13 @@
         <h2 tal:condition="field.heading|None">${field.heading}</h2>
 
         <!-- Nav tabs -->
-        <p tal:condition="len(tabbed_fields) > 1">
-          <ul class="nav nav-pills">
-            <tal:iterate repeat="name tabbed_fields">
-            <li class="${repeat['name'].start and 'active' or None}">
-              <a href="#${name}_tab" data-toggle="tab">${tab_titles.get(name, name.title())}</a>
-            </li>
-            </tal:iterate>
-          </ul>
-        </p>
+        <ul class="nav nav-tabs" tal:condition="len(tabbed_fields) > 1" style="margin-bottom:30px;">
+          <tal:iterate repeat="name tabbed_fields">
+          <li class="${repeat['name'].start and 'active' or None}">
+            <a href="#${name}_tab" data-toggle="tab">${tab_titles.get(name, name.title())}</a>
+          </li>
+          </tal:iterate>
+        </ul>
 
         <div class="alert alert-danger" tal:condition="field.error">
           <div class="errorMsgLbl" i18n:translate=""

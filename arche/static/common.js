@@ -95,11 +95,15 @@ arche.destroy_modal = destroy_modal;
 function modal_from_event(event) {
   event.preventDefault();
   var elem = $(event.currentTarget);
-  var url = elem.attr('href');
+  if (typeof elem.attr('data-url') == 'undefined') {
+    var url = elem.attr('href');
+  } else {
+    var url = elem.data('url');
+  }
   var params = {};
   params['modal-dialog-class'] = elem.data('modal-dialog-class');
   if (typeof(url) == 'undefined') {
-    throw "couldn't find any href attribute to load a modal window from on " + elem;
+    throw "couldn't find any href or data-url attribute to load a modal window from on " + elem;
   }
   arche.actionmarker_feedback(elem, true);
   var request = arche.create_modal(url, params);

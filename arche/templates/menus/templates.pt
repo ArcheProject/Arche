@@ -1,0 +1,27 @@
+<tal:main xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="Arche">
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    <tal:ts i18n:translate="">Template</tal:ts>
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+    <li><a href="${request.resource_url(context, 'set_view', query = {'name': 'view'})}"
+      i18n:translate="">
+      Default
+      <span tal:condition="context.default_view == 'view'" class="glyphicon glyphicon-ok pull-right"></span>
+    </a></li>
+    <li class="divider"></li>
+    <tal:iter repeat="(name, view_cls) views">
+      <li><a href="${request.resource_url(context, 'set_view', query = {'name': name})}">
+        ${view_cls.title}
+        <span tal:condition="context.default_view == name" class="glyphicon glyphicon-ok pull-right"></span>
+      </a></li>
+    </tal:iter>
+  </ul>
+</li>
+</tal:main>
+
