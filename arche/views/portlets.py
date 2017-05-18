@@ -1,6 +1,7 @@
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound
 import colander
 import deform
 
@@ -97,6 +98,20 @@ def delete_portlet(context, request):
     return HTTPFound(location = url)
 
 
+def enable_portlet_toggle(context, request):
+    slot = request.GET['slot']
+    portlet_uid = request.GET['portlet']
+    manager = get_portlet_manager(context)
+    try:
+        portlet = manager[slot][portlet_uid]
+    except KeyError:
+        raise HTTPNotFound()
+    #Toggle
+    portlet.enabled = not portlet.enabled
+    url = request.resource_url(context, 'manage_portlets')
+    return HTTPFound(location = url)
+
+
 class EditPortlet(BaseForm):
 
     @property
@@ -153,6 +168,10 @@ def includeme(config):
     config.add_view(delete_portlet,
                     context = IContent,
                     name = 'delete_portlet',
+                    permission = security.PERM_MANAGE_SYSTEM)
+    config.add_view(enable_portlet_toggle,
+                    context = IContent,
+                    name = 'enable_portlet_toggle',
                     permission = security.PERM_MANAGE_SYSTEM)
     config.add_view(EditPortlet,
                     context = IContent,

@@ -65,6 +65,7 @@ class Portlet(Persistent):
     type_description = _(u"A mini view within another view")
     portlet_type = u""
     add_permission = "Add %s" % type_name
+    enabled = True
 
     def __init__(self, portlet_type, **kw):
         self.uid = text_type(uuid4())
@@ -184,9 +185,10 @@ class PortletManager(IterableUserDict):
     def render_slot(self, slot, context, request, view, **kw):
         results = []
         for portlet in self.get(slot, {}).values():
-            output = portlet.render(context, request, view, **kw)
-            if output:
-                results.append(output)
+            if portlet.enabled:
+                output = portlet.render(context, request, view, **kw)
+                if output:
+                    results.append(output)
         return results
 
     def __repr__(self):

@@ -17,8 +17,16 @@
         data-uid="${portlet.uid}"
         tal:repeat="portlet portlets.values()">
         <span class="glyphicon glyphicon-move sortable-drag"></span>
+        <a href="${request.resource_url(context, 'enable_portlet_toggle',
+                   query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
+          <span tal:condition="not portlet.enabled"
+                class="glyphicon glyphicon-eye-close text-danger"></span>
+          <span tal:condition="portlet.enabled"
+                class="glyphicon glyphicon-eye-open text-success"></span>
+        </a>
         <a tal:omit-tag="portlet.schema_factory is None"
-          href="${request.resource_url(context, 'edit_portlet', query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
+          href="${request.resource_url(context, 'edit_portlet',
+                  query = {'slot': portlet.slot, 'portlet': portlet.uid})}">
           ${portlet.title}
         </a>
         <span class="label label-default">${portlet.portlet_type}</span>
