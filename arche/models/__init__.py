@@ -10,6 +10,5 @@ def includeme(config):
     config.include('.jsondata')
     config.include('.mimetype_views')
     config.include('.reference_guard')
-    config.include('.thumbnails')
     config.include('.versioning')
     config.include('.workflow')

@@ -14,7 +14,8 @@ def evolve_packages(env, parsed_ns):
         print("No evolver registered for package %r" % parsed_ns.package)
         exit(2)
     if evolver.needs_upgrade:
-        print ("Upgrade needed")
+        print ("Upgrade needed. DB at version %s, "
+               "will migrate to %s" % (evolver.db_version, evolver.sw_version))
         evolver.evolve()
     else:
         print ("No upgrade required")

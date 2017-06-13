@@ -65,6 +65,7 @@ class Portlet(Persistent):
     type_description = _(u"A mini view within another view")
     portlet_type = u""
     add_permission = "Add %s" % type_name
+    enabled = True
 
     def __init__(self, portlet_type, **kw):
         self.uid = text_type(uuid4())
@@ -171,7 +172,6 @@ class PortletManager(IterableUserDict):
         return portlet
 
     def get_portlets(self, slot, portlet_type = None):
-       # [x.portlet_type for x in manager.get('agenda_item', {}).values()]
         results = []
         for portlet in self.get(slot, {}).values():
             if portlet_type and portlet_type != portlet.portlet_type:
@@ -185,9 +185,10 @@ class PortletManager(IterableUserDict):
     def render_slot(self, slot, context, request, view, **kw):
         results = []
         for portlet in self.get(slot, {}).values():
-            output = portlet.render(context, request, view, **kw)
-            if output:
-                results.append(output)
+            if portlet.enabled:
+                output = portlet.render(context, request, view, **kw)
+                if output:
+                    results.append(output)
         return results
 
     def __repr__(self):
@@ -208,17 +209,21 @@ def get_portlet_manager(context, registry = None):
         registry = get_current_registry()
     return registry.queryAdapter(context, IPortletManager)    
 
+
 def get_available_portlets(registry = None):
     if registry is None:
         registry = get_current_registry()
-    return [(x.name, x.name) for x in registry.registeredAdapters() if x.provided == IPortletType]
+    return [(x.name, x.factory.title) for x in registry.registeredAdapters() if x.provided == IPortletType]
+
 
 def add_portlet(config, portlet):
     verifyClass(IPortletType, portlet)
     config.registry.registerAdapter(portlet, name = portlet.name)
 
+
 def add_portlet_slot(config, name, title = "", layout = ""):
     config.registry.portlet_slots[name] = PortletSlotInfo(name, title = title, layout = layout)
+
 
 def includeme(config):
     config.add_content_factory(Portlet)
@@ -231,4 +236,3 @@ def includeme(config):
     config.add_portlet_slot('right', title = _("Right"), layout = 'vertical')
     config.add_portlet_slot('top', title = _("Top"), layout = 'horizontal')
     config.add_portlet_slot('bottom', title = _("Bottom"), layout = 'horizontal')
-    

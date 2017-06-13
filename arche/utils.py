@@ -27,7 +27,6 @@ from zope.interface import providedBy
 from zope.interface.interfaces import ComponentLookupError
 import pytz
 
-from arche import _
 from arche import logger
 from arche.compat import IterableUserDict
 from arche.interfaces import IContentView
@@ -137,9 +136,13 @@ def add_content_view(config, type_name, name, view_cls):
     """ Register a view as selectable for a content type.
         view_cls must implement IContentView.
     """
-    assert IContentView.implementedBy(view_cls), "view_cls argument must be a class that implements arche.interfaces.IContentView"
+    assert IContentView.implementedBy(view_cls), "view_cls argument must be a " \
+                                                 "class that implements " \
+                                                 "arche.interfaces.IContentView"
     if not name:
-        raise ValueError("Name must be specified and can't be an empty string. Specify 'view' to override the default view.")
+        raise ValueError("Name must be specified and can't be an "
+                         "empty string. Specify 'view' to override the "
+                         "default view.")
     if inspect.isclass(type_name):
         type_name = type_name.type_name
     content_factories = get_content_factories(config.registry)
@@ -422,10 +425,11 @@ class EmailValidationTokens(AttributeAnnotations):
         for email in expired:
             del self[email]
 
+#FIXME: Add more codecs that work for web!
+#FIXME: This should be a proper util instead
 image_mime_to_title = {'image/jpeg': "JPEG",
                        'image/png': "PNG",
                        'image/gif': "GIF"}
-#FIXME: Add more codecs that work for web!
 
 
 def get_root(request):
@@ -556,6 +560,18 @@ def addable_content(request, context, restrict=True, check_perm=True):
             if check_perm and not request.has_permission(add_perm, context):
                 continue
             yield factory
+
+
+def format_traceback():
+    import sys
+    import traceback
+    exception_list = traceback.format_stack()
+    exception_list = exception_list[:-2]
+    exception_list.extend(traceback.format_tb(sys.exc_info()[2]))
+    exception_list.extend(traceback.format_exception_only(sys.exc_info()[0], sys.exc_info()[1]))
+    exception_str = "Traceback (most recent call last):\n"
+    exception_str += "".join(exception_list)
+    return exception_str
 
 
 def includeme(config):

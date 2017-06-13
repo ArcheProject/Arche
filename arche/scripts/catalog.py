@@ -12,8 +12,7 @@ def reindex_catalog_script(env, *args):
 def create_catalog_script(env, *args):
     print ( "-- Clearing/Creating catalog")
     create_catalog(env['root'])
-    print ( "-- Process complete. Running reindex now.")
-    reindex_catalog(env['root'])
+    print ( "-- Process complete. You should run reindex now.")
 
 
 def includeme(config):

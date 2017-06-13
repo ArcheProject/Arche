@@ -55,6 +55,7 @@ class FlashMessages(object):
 
     def get_messages(self):
         for message in self.request.session.pop_flash():
+            self.request.session.changed()
             message['id'] = text_type(uuid4())
             yield message
 

@@ -3,6 +3,7 @@ from sys import argv
 from sys import exc_info
 import traceback
 
+from arche.utils import format_traceback
 from transaction import commit
 from transaction import abort
 from pyramid.paster import bootstrap
@@ -71,7 +72,7 @@ class Script(object):
                 print ("-- ERROR: Script caused an exception - aborting commit")
                 print (_format_traceback())
             abort()
-            print (exc)
+            print (format_traceback())
         finally:
             self.cleanup(env, parsed_ns)
             if lock:

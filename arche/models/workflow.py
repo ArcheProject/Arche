@@ -312,7 +312,9 @@ def get_context_wf(context, registry = None):
     wfs = get_workflows(registry)
     if wfs != None:
         wf_name = wfs.get_wf(getattr(context, 'type_name', None))
-        return registry.queryAdapter(context, IWorkflow, name = wf_name)
+        if wf_name:
+            return registry.queryAdapter(context, IWorkflow, name = wf_name)
+
 
 def get_workflows(registry = None):
     """ Returns the workflow registry. """

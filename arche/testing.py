@@ -76,6 +76,11 @@ class PrintingMailer(DebugMailer):
     send_immediately_sendmail = send
 
 
+    @classmethod
+    def from_settings(cls, settings):
+        return cls()
+
+
 def includeme(config):
     """ Setup minimal basics for running tests. """
     config.include('betahaus.viewcomponent')

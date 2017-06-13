@@ -8,7 +8,7 @@
 <body>
 <div metal:fill-slot="main-content">
   <tal:default_contents condition="not contents">
-    <img tal:replace="structure view.thumb_tag(context, 'col-2', extra_cls = 'pull-right')" />
+    <img tal:replace="structure view.thumb_tag(context, 'col-2', extra_cls = 'pull-right')|''" />
 	
     <h1>${context.title}</h1>
 

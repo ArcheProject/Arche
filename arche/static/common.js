@@ -95,11 +95,15 @@ arche.destroy_modal = destroy_modal;
 function modal_from_event(event) {
   event.preventDefault();
   var elem = $(event.currentTarget);
-  var url = elem.attr('href');
+  if (typeof elem.attr('data-url') == 'undefined') {
+    var url = elem.attr('href');
+  } else {
+    var url = elem.data('url');
+  }
   var params = {};
   params['modal-dialog-class'] = elem.data('modal-dialog-class');
   if (typeof(url) == 'undefined') {
-    throw "couldn't find any href attribute to load a modal window from on " + elem;
+    throw "couldn't find any href or data-url attribute to load a modal window from on " + elem;
   }
   arche.actionmarker_feedback(elem, true);
   var request = arche.create_modal(url, params);
@@ -193,8 +197,13 @@ arche.load_flash_messages = load_flash_messages;
 //Attach this to .fail on deferred objects
 function flash_error(jqXHR) {
   //Connection problems will have a status == 0 and no text so this function should be updated.
-  arche.create_flash_message('<h4>' + jqXHR.status + ' ' + jqXHR.statusText + '</h4>' + jqXHR.responseText,
-      {type: 'danger', auto_destruct: true});
+  //FIXME: Translation
+  if (jqXHR.status == 0) {
+    if ($('#offline-warning').length == 0) arche.create_flash_message("Offline", {type: 'warning', id: 'offline-warning'});
+  } else {
+      arche.create_flash_message('<h4>' + jqXHR.status + ' ' + jqXHR.statusText + '</h4>' + jqXHR.responseText,
+          {type: 'danger', auto_destruct: true});
+  }
 }
 arche.flash_error = flash_error;
 
@@ -205,7 +214,9 @@ arche.flash_error = flash_error;
  * The data-actionmarker values will be added as classes to the span
  */
 arche.actionmarker_feedback = function(elem, active) {
-  $(elem).find('[data-actionmarker]').each(function() {
+  var elems = $(elem).find('[data-actionmarker]');
+  if (elem.data('actionmarker')) elems.push(elem);
+  $.each(elems, function() {
     if (active == true) {
       $(this).addClass($(this).data('actionmarker'));
     } else {

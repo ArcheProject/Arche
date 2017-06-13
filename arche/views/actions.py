@@ -123,6 +123,22 @@ def action_menu(context, request, va, **kw):
             return view.render_template('arche:templates/menus/actions.pt', actions_output=actions_output)
 
 
+@view_action('actionbar_main', 'selectable_templates',
+             title=_("Templates"),
+             permission=security.PERM_MANAGE_SYSTEM,
+             priority=70)
+def template_menu(context, request, va, **kw):
+    if not hasattr(context, 'default_view'):
+        return
+    rcontext = getattr(request, 'context', None)
+    if getattr(rcontext, 'delegate_view', None):
+        return
+    views = get_content_views(request.registry).get(context.type_name, {}).items()
+    if views:
+        view = kw['view']
+        return view.render_template('arche:templates/menus/templates.pt', views=views)
+
+
 @view_action('nav_right', 'user',
              title=_("User menu"),
              priority=10)
@@ -304,33 +320,6 @@ def revisions_context(context, request, va, **kw):
             'title': request.localizer.translate(va.title)}
 
 
-@view_action('actions_menu', 'selectable_views',
-             priority=100,
-             permission=security.PERM_MANAGE_SYSTEM)
-def selectable_views(context, request, va, **kw):
-    # FIXME: Do a proper template. This is silly
-    if not hasattr(context, 'default_view'):
-        return
-    rcontext = getattr(request, 'context', None)
-    if getattr(rcontext, 'delegate_view', None):
-        return
-    type_name = getattr(context, 'type_name', None)
-    selectable_views = {'view': request.localizer.translate(_(u"Default"))}
-    views = get_content_views(request.registry)
-    for (name, view_cls) in views.get(type_name, {}).items():
-        selectable_views[name] = request.localizer.translate(view_cls.title)
-    out = """<li role="presentation" class="dropdown-header">%s</li>\n""" % _("View selection")
-    for (name, title) in selectable_views.items():
-        selected = ""
-        if context.default_view == name:
-            selected = """<span class="glyphicon glyphicon-ok pull-right"></span>"""
-        out += """<li><a href="%(url)s">%(title)s %(selected)s</a></li>""" % \
-               {'url': request.resource_url(context, 'set_view', query={'name': name}),
-                'title': request.localizer.translate(title),
-                'selected': selected}
-    return out
-
-
 @view_action('actions_menu', 'delegate_view',
              priority=35,
              permission=security.PERM_MANAGE_SYSTEM)
@@ -351,6 +340,7 @@ def delegate_view(context, request, va, **kw):
              title=_(u"View settings"),
              permission=security.PERM_MANAGE_SYSTEM)
 def view_settings(context, request, va, **kw):
+    #FIXME: We should probably remove this, it isn't used and was never a good feature...
     view = kw['view']
     if not IContentView.providedBy(view):
         return

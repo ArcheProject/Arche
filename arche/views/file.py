@@ -9,6 +9,7 @@ from arche import security
 from arche.interfaces import IBlobs
 from arche.schemas import AddFileSchema
 from arche.utils import generate_slug
+from arche.utils import image_mime_to_title
 from arche.utils import get_mimetype_views
 from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultView
@@ -74,7 +75,7 @@ class BatchFileUploadView(JSONContents):
             raise HTTPForbidden("Validation error")
         addable_factories = dict([(x.type_name, x) for x in self.addable_content(self.context)])
         factory = None
-        if appstruct['file_data']['mimetype'] in self.request.registry.settings['supported_thumbnail_mimetypes']:
+        if appstruct['file_data']['mimetype'] in image_mime_to_title:
             factory = addable_factories.get('Image', None)
         else:
             factory = addable_factories.get('File', None)

@@ -1,6 +1,7 @@
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPNotFound
 import colander
 import deform
 
@@ -12,11 +13,9 @@ from arche.interfaces import IFlashMessages
 from arche.portlets import get_available_portlets
 from arche.portlets import get_portlet_manager
 from arche.portlets import get_portlet_slots
+from arche.views.base import button_add
 from arche.views.base import BaseForm
 from arche.views.base import BaseView
-
-
-button_add = deform.Button('add', title = _(u"Add"), css_class = 'btn btn-primary')
 
 
 class ManagePortlets(BaseView):
@@ -25,16 +24,19 @@ class ManagePortlets(BaseView):
     def slots(self):
         return get_portlet_slots(self.request.registry)
 
-    def get_form(self, name, slotinfo):
+    def get_form(self, slot_name, slotinfo):
         values = [('', _('<Select>'))]
-        values.extend(get_available_portlets(self.request.registry))
+        translate = self.request.localizer.translate
+        for (name, title) in get_available_portlets(self.request.registry):
+            full_title = u"%s (%s)" % (translate(title), name)
+            values.append((name, full_title))
 
         class AddPortlet(colander.Schema):
             portlet_type = colander.SchemaNode(colander.String(),
                                                title = _(u"Type"),
                                                widget = deform.widget.SelectWidget(values = values))
         schema = AddPortlet()
-        add_url = self.request.resource_url(self.context, 'add_portlet', query = {'slot': name})
+        add_url = self.request.resource_url(self.context, 'add_portlet', query = {'slot': slot_name})
         return deform.Form(schema, buttons = (button_add,), action = add_url)
 
     @property
@@ -72,7 +74,6 @@ class SavePortletSlotOrder(BaseView):
         return {}
 
 
-
 def add_portlet(context, request):
     slot = request.GET['slot']
     portlet_type = request.POST['portlet_type']
@@ -86,12 +87,27 @@ def add_portlet(context, request):
         fm.add(_("Added"))
         url = request.resource_url(context, 'manage_portlets')
     return HTTPFound(location = url)
-    
+
+
 def delete_portlet(context, request):
     slot = request.GET['slot']
     portlet_uid = request.GET['portlet']
     manager = get_portlet_manager(context)
     manager.remove(slot, portlet_uid)
+    url = request.resource_url(context, 'manage_portlets')
+    return HTTPFound(location = url)
+
+
+def enable_portlet_toggle(context, request):
+    slot = request.GET['slot']
+    portlet_uid = request.GET['portlet']
+    manager = get_portlet_manager(context)
+    try:
+        portlet = manager[slot][portlet_uid]
+    except KeyError:
+        raise HTTPNotFound()
+    #Toggle
+    portlet.enabled = not portlet.enabled
     url = request.resource_url(context, 'manage_portlets')
     return HTTPFound(location = url)
 
@@ -124,7 +140,6 @@ class EditPortlet(BaseForm):
     def appstruct(self):
         return dict(self.portlet.settings)
 
-
     def save_success(self, appstruct):
         self.flash_messages.add(self.default_success, type="success")
         self.portlet.settings = appstruct
@@ -153,6 +168,10 @@ def includeme(config):
     config.add_view(delete_portlet,
                     context = IContent,
                     name = 'delete_portlet',
+                    permission = security.PERM_MANAGE_SYSTEM)
+    config.add_view(enable_portlet_toggle,
+                    context = IContent,
+                    name = 'enable_portlet_toggle',
                     permission = security.PERM_MANAGE_SYSTEM)
     config.add_view(EditPortlet,
                     context = IContent,
