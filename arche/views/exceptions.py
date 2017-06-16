@@ -104,8 +104,7 @@ def includeme(config):
             ReferenceGuardedException,
             context=ReferenceGuarded,
             xhr=False,
-            renderer="arche:templates/exceptions/reference_guarded.pt",
-            permission=NO_PERMISSION_REQUIRED)
+            renderer="arche:templates/exceptions/reference_guarded.pt")
         config.add_exception_view(
             ExceptionView,
             xhr=False,
