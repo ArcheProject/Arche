@@ -7,6 +7,7 @@ from pyramid.i18n import TranslationString
 from pyramid.location import lineage
 from pyramid.response import Response
 
+from arche.exceptions import ReferenceGuarded
 from arche.security import NO_PERMISSION_REQUIRED
 from arche.security import PERM_VIEW
 from arche.views.base import BaseView
@@ -56,6 +57,15 @@ class NotFoundExceptionView(ExceptionView):
         return {}
 
 
+class ReferenceGuardedException(ExceptionView):
+
+    def __call__(self):
+        exc_context = None
+        if self.request.has_permission(PERM_VIEW, self.exc.context):
+            exc_context = self.exc.context
+        return {'exc_context': exc_context, 'context': self.context, 'exc': self.exc}
+
+
 class ForbiddenExceptionView(ExceptionView):
 
     def __call__(self):
@@ -87,9 +97,15 @@ def includeme(config):
     if hasattr(config, 'add_exception_view'):
         config.add_exception_view(
             ExceptionView,
-            context = HTTPClientError,
+            context=HTTPClientError,
             xhr=False,
             renderer = "arche:templates/exceptions/400.pt",)
+        config.add_exception_view(
+            ReferenceGuardedException,
+            context=ReferenceGuarded,
+            xhr=False,
+            renderer="arche:templates/exceptions/reference_guarded.pt",
+            permission=NO_PERMISSION_REQUIRED)
         config.add_exception_view(
             ExceptionView,
             xhr=False,
@@ -100,6 +116,11 @@ def includeme(config):
                         xhr=False,
                         renderer="arche:templates/exceptions/400.pt",
                         permission = NO_PERMISSION_REQUIRED)
+        config.add_view(ReferenceGuardedException,
+                        context=ReferenceGuarded,
+                        xhr=False,
+                        renderer="arche:templates/exceptions/reference_guarded.pt",
+                        permission=NO_PERMISSION_REQUIRED)
         config.add_view(ExceptionView,
                         context = Exception,
                         xhr=False,

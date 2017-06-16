@@ -196,8 +196,23 @@ class IInitialSetup(Interface):
 class IGroup(Interface):
     pass
 
+
 class IGroups(Interface):
-    pass
+    """ Groups container"""
+
+    def get_users_group_principals(userid):
+        """ Get principal name (I.e. what a permission will be attached to)
+            Will always start with 'group:'
+        """
+
+    def get_users_groups(userid):
+        """ Return a generator with all the groups where userid is a member.
+        """
+
+    def get_group_principals(self):
+        """ Return a set with all the principal names of the registered groups.
+        """
+
 
 class IRole(Interface):
     pass
@@ -360,10 +375,73 @@ class IPopulator(Interface):
     """
     def populate(self, **kw):
         """ Populate context with the following arguments. """
+
+
+class IReferenceGuards(Interface):
+    """ Request adapter to interact with the reference guards.
+        Use the request attribute 'reference_guards' to interact with it.
+    """
+    request = Attribute("Wrapped request instance")
+
+    def __init__(request):
+        pass
+
+    def get_valid(context):
+        """ Return a generator with valid reference guards for this context.
+        """
+
+    def check(context):
+        """ Check before actually allowing delete.
+            Will raise ReferenceGuarded exception if something goes wrong.
+        """
+
+    def get_vetoing(context):
+        """ Get all reference guards that would veto the removal of this context.
+        """
+
 #/Adapters
 
 
 #Utils or settings
+class IRefGuard(Interface):
+    callable = Attribute("Callable that returns referenced objects.")
+    name = Attribute("Utility name, must be unique.")
+    title = Attribute("Translation string with human-readable title")
+    requires = Attribute("Tuple of interfaces required by the guarded context. "
+                         "If it's not provided, the context won't be guarded.")
+    catalog_result = Attribute("Does the callable return a catalog result "
+                               "rather than a list of objects? "
+                               "Catalog results are always tuples with a result "
+                               "object and a docids IFSet")
+    allow_move = Attribute("Bool - does this guard allow objects to be moved? "
+                           "(I.e. not URL-dependant) Anything referencing a UID for instance, "
+                           "should always be allowed to move.")
+
+    def __init__(_callable,
+                 name=None,
+                 requires=(IBase,),
+                 title=None,
+                 catalog_result=False,
+                 allow_move=True):
+        """ Init with defaults """
+
+    def __call__(request, context):
+        """ Check the context. """
+
+    def valid_context(context):
+        """ Is this context valid/relevant to this guard? """
+
+    def get_guarded_count(self, request, context):
+        """ Return the exact count of objects that would veto.
+            Always return the exact count regardless of the users permission.
+        """
+
+    def get_guarded_objects(request, context, perm=None, limit=5):
+        """ Returns iterator with guarded objects.
+            These are ment to be shown to the user who's action was blocked,
+            so respecting view permission is a good idea.
+        """
+
 
 class IACLRegistry(Interface):
     pass

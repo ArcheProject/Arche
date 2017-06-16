@@ -39,8 +39,9 @@ class CatalogIntegrationTests(TestCase):
      
     def setUp(self):
         self.config = testing.setUp()
-        self.config.include('arche.models.catalog')
- 
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
+
     def tearDown(self):
         testing.tearDown()
 
@@ -262,12 +263,14 @@ class MetadataTests(TestCase):
         self.failUnless(verifyObject(IMetadata, obj))
 
     def test_integration_add(self):
-        self.config.include('arche.models.catalog')
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
         self.config.add_metadata_field(self._dummy_metadata)
         context = self._mk_context()
         self.failUnless(self.config.registry.queryAdapter(context, IMetadata, name = 'dummy'))
 
     def test_integration_get_metadata(self):
+        self.config.include('arche.testing')
         self.config.include('arche.models.catalog')
         self.config.add_metadata_field(self._dummy_metadata)
         from arche.api import Root
@@ -277,7 +280,8 @@ class MetadataTests(TestCase):
         self.assertEqual(cataloger.get_metadata(), {'dummy': 'Hello'})
 
     def test_metadata_added_on_index(self):
-        self.config.include('arche.models.catalog')
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
         self.config.add_metadata_field(self._dummy_metadata)
         from arche.api import Root
         root = Root()
@@ -289,7 +293,8 @@ class MetadataTests(TestCase):
         self.assertEqual(result, {'dummy': 'Hello'})
 
     def test_integration_create_metadata_field(self):
-        self.config.include('arche.models.catalog')
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
         def _callable(self, default = None):
             return 'Hello world'
         self.config.create_metadata_field(_callable, 'dummy')
@@ -303,13 +308,15 @@ class MetadataTests(TestCase):
         self.assertEqual(result, {'dummy': 'Hello world'})
 
     def test_integration_create_metadata_field_bad_callable(self):
-        self.config.include('arche.models.catalog')
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
         def _callable():
             return 'Hello world'
         self.assertRaises(BrokenMethodImplementation, self.config.create_metadata_field, _callable, 'dummy')
 
     def test_integration_create_metadata_field_attribute(self):
-        self.config.include('arche.models.catalog')
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
         self.config.create_metadata_field('title', 'dummy')
         from arche.api import Root
         root = Root(title = 'Hello world')
@@ -325,8 +332,9 @@ class CheckCatalogOnStartupTests(TestCase):
      
     def setUp(self):
         self.config = testing.setUp()
-        self.config.include('arche.models.catalog')
- 
+        self.config.include('arche.testing')
+        self.config.include('arche.testing.catalog')
+
     def tearDown(self):
         testing.tearDown()
 

@@ -2,8 +2,10 @@ from __future__ import unicode_literals
 
 from BTrees.OOBTree import OOBTree
 from BTrees.OOBTree import OOSet
+from arche.events import ObjectUpdatedEvent
 from pyramid.threadlocal import get_current_registry
 from zope.component import adapter
+from zope.component.event import objectEventNotify
 from zope.interface import implementer
 from zope.interface import Interface
 from six import string_types
@@ -88,15 +90,17 @@ class Roles(IterableUserDict):
             if role not in roles_principals:
                 logger.warn("The role %r doesn't exist. Permissions assigned at %r might not work" % (role, self.context))
 
-    def add(self, key, value):
+    def add(self, key, value, event=True):
         value = self._adjust_to_set(value)
         current = set()
         if key in self:
             current.update(self[key])
         roles = value | current
         self[key] = roles
+        if event:
+            self._send_event()
 
-    def remove(self, key, value):
+    def remove(self, key, value, event=True):
         value = self._adjust_to_set(value)
         current = set()
         if key in self:
@@ -106,8 +110,10 @@ class Roles(IterableUserDict):
             self[key] = roles
         elif key in self:
             del self[key]
+        if event:
+            self._send_event()
 
-    def set_from_appstruct(self, value):
+    def set_from_appstruct(self, value, event=False):
         marker = object()
         removed_principals = set()
         [removed_principals.add(x) for x in self if x not in value]
@@ -115,6 +121,8 @@ class Roles(IterableUserDict):
         for (k, v) in value.items():
             if self.get(k, marker) != v:
                 self[k] = v
+        if event:
+            self._send_event()
 
     def get_any_local_with(self, role):
         assert isinstance(role, string_types) or IRole.providedBy(role)
@@ -146,6 +154,10 @@ class Roles(IterableUserDict):
         klass = self.__class__
         classname = '%s.%s' % (klass.__module__, klass.__name__)
         return '<%s object at %#x>' % (classname, id(self))
+
+    def _send_event(self):
+        event_obj = ObjectUpdatedEvent(self.context, changed=['local_roles'])
+        objectEventNotify(event_obj)
 
 
 def register_roles(config, *roles):

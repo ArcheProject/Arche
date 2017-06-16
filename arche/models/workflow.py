@@ -271,9 +271,10 @@ class InheritWorkflow(Workflow):
 class WorkflowRegistry(IterableUserDict):
     """ Registry for workflow information, and set workflow for different content types. """
 
-    def __init__(self):
+    def __init__(self, registry):
         self.data = {}
         self.content_type_mapping = {}
+        self.registry = registry
 
     def set_wf(self, type_name, wf_name):
         """ Set workflow for a specific content type.
@@ -295,8 +296,7 @@ class WorkflowRegistry(IterableUserDict):
         return self.content_type_mapping.get(type_name, None)
 
     def get_wf_adapter(self, wf_name, default = None):
-        registry = get_current_registry()
-        for ar in registry.registeredAdapters():
+        for ar in self.registry.registeredAdapters():
             if ar.name == wf_name and ar.provided == IWorkflow:
                 return ar.factory
         return default
@@ -401,7 +401,7 @@ def includeme(config):
     if hasattr(config.registry, 'workflows'):
         logger.warn("arche.models.workflow has already been loaded. Aborting")
         return
-    config.registry.workflows = WorkflowRegistry()
+    config.registry.workflows = WorkflowRegistry(config.registry)
     config.add_directive('add_workflow', add_workflow)
     config.add_workflow(SimpleWorkflow)
     config.add_workflow(ReviewWorkflow)

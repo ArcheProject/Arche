@@ -57,10 +57,3 @@ arche_google_analytics = git https://github.com/ArcheProject/arche_google_analyt
 #You may want to check these
 deform = 2.0a2
 js.bootstrap = 3.3.4
-pyramid = 1.7
-repoze.sendmail = 4.1
-ZEO = 4.3.0
-ZODB = 4.4.3
-colander = 1.2
-transaction = 1.5.0
-persistent = 4.2.0
