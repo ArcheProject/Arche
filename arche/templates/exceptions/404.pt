@@ -8,11 +8,7 @@
 <tal:blank metal:fill-slot="heading"></tal:blank>
 <tal:blank metal:fill-slot="actionbar"></tal:blank>
 <div metal:fill-slot="content">
-  <div class="row">
-    <div class="col-sm-12">
-      <h1 i18n:translate="">Not found</h1>
-      <p class="lead" i18n:translate="">There's nothing here with that name.</p>
-    </div>
-  </div>
+  <h1 i18n:translate="">Not found</h1>
+  <p class="lead" i18n:translate="">There's nothing here with that name.</p>
 </div><!-- content -->
 </html>

@@ -7,18 +7,14 @@
       i18n:domain="Arche">
 <tal:blank metal:fill-slot="heading"></tal:blank>
 <tal:blank metal:fill-slot="actionbar"></tal:blank>
-<div metal:fill-slot="content">
-  <div class="row">
-    <div class="col-sm-12" tal:define="msg getattr(view.exc, 'message', False)">
-      <h1 i18n:translate="">Forbidden</h1>
-      <p class="lead" tal:condition="not msg" i18n:translate="">You don't have correct permission to do that.</p>
-      <p class="lead" tal:condition="msg" tal:content="msg"></p>
-      <tal:ok_context condition="ok_context">
-        <a href="${request.resource_url(ok_context)}" class="btn btn-primary" i18n:translate="">
-          Back to <tal:ts i18n:name="title">${ok_context.title|ok_context.__name__}</tal:ts>
-        </a>
-      </tal:ok_context>
-    </div>
-  </div>
+<div metal:fill-slot="content" tal:define="msg getattr(view.exc, 'message', False)">
+  <h1 i18n:translate="">Forbidden</h1>
+  <p class="lead" tal:condition="not msg" i18n:translate="">You don't have correct permission to do that.</p>
+  <p class="lead" tal:condition="msg" tal:content="msg"></p>
+  <tal:ok_context condition="ok_context">
+    <a href="${request.resource_url(ok_context)}" class="btn btn-primary" i18n:translate="">
+      Back to <tal:ts i18n:name="title">${ok_context.title|ok_context.__name__}</tal:ts>
+    </a>
+  </tal:ok_context>
 </div><!-- content -->
 </html>

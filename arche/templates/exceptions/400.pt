@@ -8,11 +8,7 @@
 <tal:blank metal:fill-slot="heading"></tal:blank>
 <tal:blank metal:fill-slot="actionbar"></tal:blank>
 <div metal:fill-slot="content">
-  <div class="row">
-    <div class="col-sm-12">
-      <h1><tal:ts i18n:translate="">Error</tal:ts> ${view.exc.code}</h1>
-      <p class="lead">${exc_msg}</p>
-    </div>
-  </div>
+  <h1><tal:ts i18n:translate="">Error</tal:ts> ${view.exc.code|''}</h1>
+  <p class="lead">${exc_msg|'Generic critical error'}</p>
 </div><!-- content -->
 </html>

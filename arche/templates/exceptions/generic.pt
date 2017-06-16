@@ -8,20 +8,16 @@
 <tal:blank metal:fill-slot="heading"></tal:blank>
 <tal:blank metal:fill-slot="actionbar"></tal:blank>
 <div metal:fill-slot="content">
-  <div class="row">
-    <div class="col-sm-12">
-      <h1>
-        <span class="glyphicon glyphicon-fire"></span>
-        <span i18n:translate="">There's a problem...</span>
-      </h1>
-      <p tal:condition="not debug" class="lead">${exc_msg}</p>
-      <tal:show_error condition="debug">
-        <p class="lead" i18n:translate="">arche.debug is set to True, so this error will be printed instead of logged.</p>
-        <pre tal:content="structure exception_str">
-            (error)
-        </pre>
-      </tal:show_error>
-    </div>
-  </div>
+  <h1>
+    <span class="glyphicon glyphicon-fire"></span>
+    <span i18n:translate="">There's a problem...</span>
+  </h1>
+  <p tal:condition="not debug" class="lead">${exc_msg}</p>
+  <tal:show_error condition="debug">
+    <p class="lead" i18n:translate="">arche.debug is set to True, so this error will be printed instead of logged.</p>
+    <pre tal:content="structure exception_str">
+        (error)
+    </pre>
+  </tal:show_error>
 </div><!-- content -->
 </html>
