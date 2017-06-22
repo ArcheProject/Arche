@@ -363,7 +363,7 @@ def _searchable_html_body(context, default):
 
 
 def _savepoint_callback(current):
-    logger.info("Reindexing-progress: ", current)
+    logger.info("Reindexing-progress: %s", current)
 
 
 def reindex_catalog(root, savepoint_limit = 1000, savepoint_callback=_savepoint_callback):
