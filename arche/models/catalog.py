@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 from calendar import timegm
 from copy import copy
 from datetime import datetime
@@ -23,23 +24,22 @@ from zope.interface.verify import verifyClass
 
 from arche import logger
 from arche.compat import IterableUserDict
-from arche.exceptions import CatalogError
 from arche.exceptions import CatalogConfigError
+from arche.exceptions import CatalogError
 from arche.interfaces import ICatalogIndexes
 from arche.interfaces import ICataloger
 from arche.interfaces import IIndexedContent
+from arche.interfaces import ILocalRoles
 from arche.interfaces import IMetadata
 from arche.interfaces import IObjectAddedEvent
 from arche.interfaces import IObjectUpdatedEvent
 from arche.interfaces import IObjectWillBeRemovedEvent
 from arche.interfaces import IRoot
-from arche.interfaces import IUser
 from arche.interfaces import IWorkflowAfterTransition
 from arche.models.workflow import WorkflowException
 from arche.models.workflow import get_context_wf
 from arche.utils import find_all_db_objects
 from arche.utils import prep_html_for_search_indexing
-
 
 @implementer(ICataloger)
 @adapter(IIndexedContent)
@@ -292,6 +292,22 @@ def get_creator(context, default):
     return creator and tuple(creator) or default
 
 
+def get_local_roles(context, default):
+    """ Return userids of anyone having a local role within context.
+        Not the actual roles!
+    """
+    if ILocalRoles.providedBy(context):
+        return tuple(context.local_roles.keys())
+    return default
+
+
+def get_relation(context, default):
+    """ Attribute with a list of relations. """
+    if hasattr(context, 'relation'):
+        return tuple(context.relation)
+    return default
+
+
 def create_catalog(root):
     root.catalog = Catalog()
     root.document_map = DocumentMap()
@@ -499,5 +515,7 @@ def includeme(config):
         'email': CatalogFieldIndex('email'),
         'first_name': CatalogFieldIndex('first_name'),
         'last_name': CatalogFieldIndex('last_name'),
+        'local_roles': CatalogKeywordIndex(get_local_roles),
+        'relation': CatalogKeywordIndex(get_relation),
         }
     config.add_catalog_indexes(__name__, default_indexes)

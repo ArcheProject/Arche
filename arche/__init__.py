@@ -58,6 +58,8 @@ def includeme(config):
     config.include('arche.portlets')
     config.include('arche.populators')
     config.include('arche.scripts')
+    #Include all applications
+    config.include('arche.app')
     #Portlets
     config.include('arche.portlets.byline')
     config.include('arche.portlets.navigation')

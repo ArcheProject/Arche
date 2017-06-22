@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  metal:use-macro="view.macro('arche:templates/master.pt', 'arche:templates/inline.pt')"
+  i18n:domain="Arche">
+<tal:main metal:fill-slot="content">
+
+<tal:vetoing condition="view.vetoing_guards">
+
+    <h1>
+        <tal:ts i18n:translate="">Delete veto</tal:ts>
+    </h1>
+
+    <p i18n:translate="delete_veto_explanation">
+        The content you want to delete is referenced by other content.
+        Note that you might not have the correct permission to change or
+        even view the referenced content.
+    </p>
+
+    <div class="list-group">
+        <div tal:repeat="guard view.vetoing_guards"
+             class="list-group-item">
+            <tal:def define="guard_count guard.get_guarded_count(request, context)">
+            <h3>${guard.title}</h3>
+
+            <p>
+                Total objects: ${guard_count}
+            </p>
+
+            <ul tal:define="limit 5;
+                            referenced tuple(guard.get_guarded_objects(request, context, limit=limit))">
+                <li tal:repeat="obj referenced">
+                    <a href="${request.resource_url(obj)}">
+                        ${obj.title}
+                    </a>
+                </li>
+                <li tal:condition="len(referenced) < guard_count">
+                    <span class="text-muted" i18n:translate="">
+                        <tal:ts i18n:name="count">${guard_count - limit}</tal:ts>
+                        more item(s) not shown
+                    </span>
+                </li>
+            </ul>
+            </tal:def>
+        </div>
+    </div>
+
+
+</tal:vetoing>
+
+<form tal:replace="structure form" />
+
+</tal:main>
+</html>

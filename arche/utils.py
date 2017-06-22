@@ -285,6 +285,21 @@ def find_all_db_objects(root):
         yield obj
 
 
+def move_resources(request, to_move, new_parent, name=None):
+    """ Move one resource an everything contained in it to another location (or name)"""
+    old_parent = to_move.__parent__
+    if old_parent is None:
+        raise TypeError("The object you're trying to move doesn't have a parent.")
+    if name is None:
+        name = to_move.__name__
+    name = generate_slug(new_parent, name)
+    #Notify reference guards of attempted move
+    for obj in find_all_db_objects(to_move):
+        request.reference_guards.moving(obj.uid)
+    del old_parent[to_move.__name__]
+    new_parent[name] = to_move
+
+
 def copy_recursive(original_contex, change_uids = True):
     """ Note that a copy should always have changed UIDs if the original is kept
         in the resource tree.

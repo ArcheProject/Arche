@@ -62,7 +62,6 @@ class DCMetadataMixin(object):
     date = None
     publisher = u""
     subject = u"" #FIXME: Same as tags?
-    relation = u"" #Probably a  relation field here
     rights = u"" #FIXME: global default is a good idea
     
     #type = u"" #FIXME?
@@ -180,7 +179,6 @@ class LocalRolesMixin(object):
 
     @local_roles.setter
     def local_roles(self, value):
-        #Note that you can also set roles via the property, like self.local_roles['admin'] = ['role:Admin']
         local_roles = IRoles(self)
         local_roles.set_from_appstruct(value)
 
@@ -543,12 +541,16 @@ class Groups(Content, LocalRolesMixin, ContextACLMixin):
     add_permission = "Add %s" % type_name
 
     def get_users_group_principals(self, userid):
-        #Cache memberships? Needed on sites with many groups
         groups = set()
+        for group in self.get_users_groups(userid):
+            groups.add(group.principal_name)
+        return groups
+
+    def get_users_groups(self, userid):
+        #Cache memberships? Needed on sites with many groups
         for group in self.values():
             if userid in group.members:
-                groups.add(group.principal_name)
-        return groups
+                yield group
 
     def get_group_principals(self):
         for group in self.values():

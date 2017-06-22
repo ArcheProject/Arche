@@ -1,5 +1,4 @@
 
-
 class WorkflowException(Exception):
     """ Workflow errors.
     """
@@ -23,3 +22,22 @@ class CatalogConfigError(Exception):
 class EvolverVersionError(Exception):
     """ The version requirement wasn't met.
     """
+
+
+class ReferenceGuarded(Exception):
+    msg = ""
+    guarded = ()
+    context = None
+
+    def __init__(self, context,  ref_guard, msg="", guarded=()):
+        if not msg:
+            msg += "Attempt to delete %r\n" % context
+            msg += "The following objects (or docids) will stop working as expected:\n"
+            msg += "\n".join([str(x) for x in guarded])
+        self.context = context
+        self.msg = msg
+        self.guarded = guarded
+        self.ref_guard = ref_guard
+
+    def __str__(self):
+        return self.msg

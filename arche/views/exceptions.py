@@ -7,6 +7,7 @@ from pyramid.i18n import TranslationString
 from pyramid.location import lineage
 from pyramid.response import Response
 
+from arche.exceptions import ReferenceGuarded
 from arche.security import NO_PERMISSION_REQUIRED
 from arche.security import PERM_VIEW
 from arche.views.base import BaseView
@@ -42,8 +43,6 @@ class ExceptionView(BaseView):
             response['exception_str'] = exception_str
         else:
             logger.critical(exception_str)
-        if self.request.is_xhr:
-            return self.xhr_response()
         if self.request.response.status == 500:
             response['exc_msg'] = _generic_exc_msg
         else:
@@ -51,29 +50,25 @@ class ExceptionView(BaseView):
             response['exc_msg'] = self.request.localizer.translate(msg)
         return response
 
-    def xhr_response(self):
-        if self.request.response.status_code == 500:
-            msg = _generic_exc_msg
-        else:
-            msg = self.exc.message
-        if isinstance(msg, TranslationString):
-            msg = self.request.localizer.translate(msg)
-        return Response(msg, status = self.request.response.status)
-
 
 class NotFoundExceptionView(ExceptionView):
 
     def __call__(self):
-        if self.request.is_xhr:
-            return self.xhr_response()
         return {}
+
+
+class ReferenceGuardedException(ExceptionView):
+
+    def __call__(self):
+        exc_context = None
+        if self.request.has_permission(PERM_VIEW, self.exc.context):
+            exc_context = self.exc.context
+        return {'exc_context': exc_context, 'context': self.context, 'exc': self.exc}
 
 
 class ForbiddenExceptionView(ExceptionView):
 
     def __call__(self):
-        if self.request.is_xhr:
-            return self.xhr_response()
         msg = getattr(self.exc, 'message', '')
         if isinstance(msg, TranslationString):
             msg = self.request.localizer.translate(msg)
@@ -93,14 +88,40 @@ class ForbiddenExceptionView(ExceptionView):
 
 def includeme(config):
     config.add_forbidden_view(ForbiddenExceptionView,
+                              xhr=False,
                               renderer = "arche:templates/exceptions/403.pt")
     config.add_notfound_view(NotFoundExceptionView,
+                             xhr=False,
                              renderer = "arche:templates/exceptions/404.pt")
-    config.add_view(ExceptionView,
-                    context = HTTPClientError,
-                    renderer = "arche:templates/exceptions/400.pt",
-                    permission = NO_PERMISSION_REQUIRED)
-    config.add_view(ExceptionView,
-                    context = Exception,
-                    renderer = "arche:templates/exceptions/generic.pt",
-                    permission = NO_PERMISSION_REQUIRED)
+    #Added in pyramid 1.8, remove when 1.7 isn't supported.
+    if hasattr(config, 'add_exception_view'):
+        config.add_exception_view(
+            ExceptionView,
+            context=HTTPClientError,
+            xhr=False,
+            renderer = "arche:templates/exceptions/400.pt",)
+        config.add_exception_view(
+            ReferenceGuardedException,
+            context=ReferenceGuarded,
+            xhr=False,
+            renderer="arche:templates/exceptions/reference_guarded.pt")
+        config.add_exception_view(
+            ExceptionView,
+            xhr=False,
+            renderer = "arche:templates/exceptions/generic.pt",)
+    else:
+        config.add_view(ExceptionView,
+                        context=HTTPClientError,
+                        xhr=False,
+                        renderer="arche:templates/exceptions/400.pt",
+                        permission = NO_PERMISSION_REQUIRED)
+        config.add_view(ReferenceGuardedException,
+                        context=ReferenceGuarded,
+                        xhr=False,
+                        renderer="arche:templates/exceptions/reference_guarded.pt",
+                        permission=NO_PERMISSION_REQUIRED)
+        config.add_view(ExceptionView,
+                        context = Exception,
+                        xhr=False,
+                        renderer = "arche:templates/exceptions/generic.pt",
+                        permission = NO_PERMISSION_REQUIRED)

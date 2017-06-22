@@ -1,5 +1,7 @@
 import argparse
 from sys import argv
+from sys import exc_info
+import traceback
 
 from arche.utils import format_traceback
 from transaction import commit
@@ -68,6 +70,7 @@ class Script(object):
         except Exception as exc:
             if self.can_commit:
                 print ("-- ERROR: Script caused an exception - aborting commit")
+                print (_format_traceback())
             abort()
             print (format_traceback())
         finally:
@@ -104,6 +107,16 @@ def run_arche_script(args=()):
         _print_registered(scripts)
         exit(2)
     scripts[base_ns.command](env, args)
+
+
+def _format_traceback():
+    exception_list = traceback.format_stack()
+    exception_list = exception_list[:-2]
+    exception_list.extend(traceback.format_tb(exc_info()[2]))
+    exception_list.extend(traceback.format_exception_only(exc_info()[0], exc_info()[1]))
+    exception_str = "-- Traceback (most recent call last):\n"
+    exception_str += "".join(exception_list)
+    return exception_str
 
 
 def _print_registered(scripts):
