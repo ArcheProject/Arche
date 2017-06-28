@@ -214,6 +214,7 @@ arche.flash_error = flash_error;
  * The data-actionmarker values will be added as classes to the span
  */
 arche.actionmarker_feedback = function(elem, active) {
+  var elem = $(elem);
   var elems = $(elem).find('[data-actionmarker]');
   if (elem.data('actionmarker')) elems.push(elem);
   $.each(elems, function() {
