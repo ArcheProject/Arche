@@ -79,13 +79,11 @@ class ReferenceWidget(Select2Widget):
     multiple = True
     #Make query view configurable?
 
-    def _preload_data(self, field, cstruct):
-        results = []
-        for obj in self._fetch_referenced_objects(field, cstruct):
-            results.append({'id': obj.uid, 'text': obj.title})
-        if not self.multiple and results:
-            return dumps(results[0])
-        return dumps(results)
+    # def _preload_data(self, field, cstruct):
+    #     results = []
+    #     for obj in self._fetch_referenced_objects(field, cstruct):
+    #         results.append({'id': obj.uid, 'text': obj.title})
+    #     return results
 
     def _fetch_referenced_objects(self, field, cstruct):
         if cstruct in (colander.null, None, ''):
@@ -106,34 +104,30 @@ class ReferenceWidget(Select2Widget):
         return results
 
     def serialize(self, field, cstruct, **kw):
+        if cstruct in (colander.null, None):
+            cstruct = self.null_value
         readonly = kw.get('readonly', self.readonly)
-        view = field.schema.bindings['view']
         kw['placeholder'] = kw.get('placeholder', self.placeholder)
         kw['minimumInputLength'] = kw.get('minimumInputLength', self.minimumInputLength)
-        kw['show_thumbs'] = str(kw.get('show_thumbs', self.show_thumbs)).lower() #true or false in js
-        query_params = self.default_query_params.copy()
-        query_params.update(self.query_params)
-        query_url = view.request.resource_url(view.root, 'search.json', query = query_params)
-        #FIXME: Support all kinds of keywords that the select2 widget supports?
+        kw['show_thumbs'] = str(kw.get('show_thumbs', self.show_thumbs)).lower()  # true or false in js
+        view = field.schema.bindings['view']
+        # FIXME: Support all kinds of keywords that the select2 widget supports?
         template = readonly and self.readonly_template or self.template
         kw.setdefault('request', view.request)
         tmpl_values = self.get_template_values(field, cstruct, kw)
-        if readonly:
-            tmpl_values['referenced_objects'] = self._fetch_referenced_objects(field, cstruct)
-        else:
-            preload_data = self.multiple and "[]" or "''"
-            if cstruct in (colander.null, None):
-                cstruct = self.null_value
-            else:
-                preload_data = self._preload_data(field, cstruct)
-            tmpl_values.update(preload_data = preload_data, query_url = query_url)
+        tmpl_values['values'] = self._fetch_referenced_objects(field, cstruct)
+        if not readonly:
+            query_params = self.default_query_params.copy()
+            query_params.update(self.query_params)
+            query_url = view.request.resource_url(view.root, 'search.json', query=query_params)
+            tmpl_values['query_url'] = query_url
         return field.renderer(template, **tmpl_values)
 
-    def deserialize(self, field, pstruct):
-        #Make sure pstruct follows query params?
-        if pstruct in (colander.null, self.null_value):
-            return colander.null
-        return self.multiple and tuple(pstruct.split(',')) or pstruct
+        # def deserialize(self, field, pstruct):
+        #     #Make sure pstruct follows query params?
+        #     if pstruct in (colander.null, self.null_value):
+        #         return colander.null
+        #     return self.multiple and tuple(pstruct.split(',')) or pstruct
 
 
 class DropzoneWidget(FileUploadWidget):

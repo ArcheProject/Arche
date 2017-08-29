@@ -3,7 +3,8 @@
      style field.widget.style;
      oid oid|field.oid;
      css_class css_class|field.widget.css_class;
-     optgroup_class optgroup_class|field.widget.optgroup_class;">
+     optgroup_class optgroup_class|field.widget.optgroup_class;
+     multiple multiple|field.widget.multiple;">
 
    <style>
     .form-control .select2-choice {
@@ -35,12 +36,21 @@
     }
    </style>
 
-    <input type="hidden"
-      multiple="true"
+    <input type="hidden" name="__start__" value="${name}:sequence" tal:condition="multiple" />
+    <select
       tal:attributes="
         name name;
         id oid;
-        class string: form-control ${css_class};">
+        data-placeholder field.widget.placeholder|None;
+        class string: form-control ${css_class};" multiple>
+
+    <tal:loop tal:repeat="item values">
+      <option tal:attributes="
+              class css_class;
+              value item.uid;" selected>${item.title}</option>
+    </tal:loop>
+
+    </select>
 
     <tal:comment condition="False">This is a structural item that will be used as a template</tal:comment>
     <div id="${field.oid}-struct" class="media" style="display: none;">
@@ -55,6 +65,7 @@
     </div>
 
   <script type="text/javascript">
+   console.log('Registering callback for ${field.oid}');
    deform.addCallback(
      '${field.oid}',
      function(oid) {
@@ -63,33 +74,34 @@
            containerCssClass: 'form-control',
            minimumInputLength: ${field.widget.minimumInputLength},
            multiple: ${str(bool(field.widget.multiple)).lower()},
-           formatResult: function (object, container, query) {
-               if (${show_thumbs} == true) {
-                   var out = $('#${field.oid}-struct').clone();
-                   out.removeAttr('id');
-                   out.find('.img-container').html(object['img_tag']);
-                   out.find('.heading-text').html( object['text'] );
-                   out.find('.heading-type').html( object['type_title'] );
-                   out.show();
-                   container.html(out);
-               } else {
-                   container.html( object['text'] + ' (' + object['type_title'] + ')');
-               }
-           },
            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
                url: "${query_url}",
                dataType: 'json',
-               data: function (term, page) {
+               delay: 250,
+               data: function (params) {
                     return {
-                        query: term, // search term
+                        query: params.term, // search term
                         page_limit: 10,
                     };
-                },
-                results: function (data, page) { return data }
+               },
+               processResult: function (object, container, query) {
+                   if (${show_thumbs} == true) {
+                       var out = $('#${field.oid}-struct').clone();
+                       out.removeAttr('id');
+                       out.find('.img-container').html(object['img_tag']);
+                       out.find('.heading-text').html( object['text'] );
+                       out.find('.heading-type').html( object['type_title'] );
+                       out.show();
+                       container.html(out);
+                   } else {
+                       container.html( object['text'] + ' (' + object['type_title'] + ')');
+                   }
+               },
            },
     });
-    $('#' + oid).select2('data', ${preload_data} );
+    $('#' + oid).select2('data');
 });
   </script>
 
+  <input type="hidden" name="__end__" value="${name}:sequence" tal:condition="multiple" />
 </tal:widget>
