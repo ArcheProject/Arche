@@ -33,30 +33,29 @@ class TaggingWidget(Select2Widget):
             Predefined tags that will show up as suggestions
     """
     template = 'select2_tags'
-    readonly_template = 'select2_tags' #XXX
+    readonly_template = 'select2_tags'
     null_value = ''
     placeholder = _("Tags")
     minimumInputLength = 2
     tags = ()
+    multiple = True
 
     def serialize(self, field, cstruct, **kw):
         if cstruct in (colander.null, None):
             cstruct = self.null_value
         readonly = kw.get('readonly', self.readonly)
         template = readonly and self.readonly_template or self.template
-        #This formatting is kind of silly. Is there no smarter way to load old data into select2?
-        current_data = dumps([{'text': x, 'id': x} for x in cstruct])
-        available_tags = dumps(self.tags)
         tmpl_values = self.get_template_values(field, cstruct, kw)
-        return field.renderer(template, available_tags = available_tags, current_data = current_data, **tmpl_values)
+        tmpl_values['values'] = self.tags
+        return field.renderer(template, **tmpl_values)
 
-    def deserialize(self, field, pstruct):
-        if pstruct in (colander.null, self.null_value):
-            return colander.null
-        return tuple(pstruct.split(','))
+    # def deserialize(self, field, pstruct):
+    #     if pstruct in (colander.null, self.null_value):
+    #         return colander.null
+    #     return tuple(pstruct.split(','))
 
 
-#FIXME: Needs cleanup and documentation
+# FIXME: Needs cleanup and documentation
 class ReferenceWidget(Select2Widget):
     """ A reference widget that searches for content to reference.
         It returns a list.
@@ -78,12 +77,6 @@ class ReferenceWidget(Select2Widget):
     query_params = {}
     multiple = True
     #Make query view configurable?
-
-    # def _preload_data(self, field, cstruct):
-    #     results = []
-    #     for obj in self._fetch_referenced_objects(field, cstruct):
-    #         results.append({'id': obj.uid, 'text': obj.title})
-    #     return results
 
     def _fetch_referenced_objects(self, field, cstruct):
         if cstruct in (colander.null, None, ''):

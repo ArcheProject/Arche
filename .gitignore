@@ -22,3 +22,5 @@ Data.fs*
 
 local
 .idea
+dist
+share

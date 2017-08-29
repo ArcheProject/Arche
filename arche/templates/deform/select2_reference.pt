@@ -7,12 +7,12 @@
      multiple multiple|field.widget.multiple;">
 
    <style>
-    .form-control .select2-choice {
+    .form-control .select2-selection--choice {
         border: 0;
         border-radius: 2px;
     }
 
-    .form-control .select2-choice .select2-arrow {
+    .form-control .select2-selection--choice .select2-arrow {
         border-radius: 0 2px 2px 0;   
     }
 
@@ -21,16 +21,16 @@
         padding: 0px;
     }
 
-    .form-control.select2-container.select2-dropdown-open {
+    .select2-container.select2-dropdown-open {
         border-color: #5897FB;
         border-radius: 3px 3px 0 0;
     }
 
-    .form-control .select2-container.select2-dropdown-open .select2-choices {
+    .select2-container.select2-dropdown-open .select2-results {
         border-radius: 3px 3px 0 0;
     }
 
-    .form-control.select2-container .select2-choices {
+    .form-control.select2-container .select2-selection--rendered {
         border: 0 !important;
         border-radius: 3px;
     }
@@ -65,7 +65,6 @@
     </div>
 
   <script type="text/javascript">
-   console.log('Registering callback for ${field.oid}');
    deform.addCallback(
      '${field.oid}',
      function(oid) {
