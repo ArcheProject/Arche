@@ -16,7 +16,7 @@
         border-radius: 0 2px 2px 0;   
     }
 
-    .form-control.select2-container {
+    .form-control.select2-selection {
         height: auto !important;
         padding: 0px;
     }
@@ -73,6 +73,7 @@
            containerCssClass: 'form-control',
            minimumInputLength: ${field.widget.minimumInputLength},
            multiple: ${str(bool(field.widget.multiple)).lower()},
+           width: "100%",
            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
                url: "${query_url}",
                dataType: 'json',
@@ -98,7 +99,6 @@
                },
            },
     });
-    $('#' + oid).select2('data');
 });
   </script>
 

@@ -17,7 +17,7 @@
         border-radius: 0 2px 2px 0;
     }
 
-    .form-control.select2-container {
+    .form-control.select2-selection {
         height: auto !important;
         padding: 0px;
     }
@@ -66,8 +66,8 @@
            containerCssClass: 'form-control',
            minimumInputLength: ${field.widget.minimumInputLength},
            multiple: true,
+           width: "100%",
         });
-      $('#' + oid).select2('data');
 
     });
   </script>
