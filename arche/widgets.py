@@ -37,8 +37,12 @@ class TaggingWidget(Select2Widget):
     null_value = ''
     placeholder = _("Tags")
     minimumInputLength = 2
-    tags = ()
+    values = ()
     multiple = True
+
+    @property
+    def tags_str(self):
+        return str(self.__dict__.get('tags', True)).lower()
 
     def serialize(self, field, cstruct, **kw):
         if cstruct in (colander.null, None):
@@ -46,7 +50,7 @@ class TaggingWidget(Select2Widget):
         readonly = kw.get('readonly', self.readonly)
         template = readonly and self.readonly_template or self.template
         tmpl_values = self.get_template_values(field, cstruct, kw)
-        tmpl_values['values'] = self.tags
+        tmpl_values['values'] = self.values
         return field.renderer(template, **tmpl_values)
 
     # def deserialize(self, field, pstruct):

@@ -4,7 +4,7 @@
      oid oid|field.oid;
      css_class css_class|field.widget.css_class;
      optgroup_class optgroup_class|field.widget.optgroup_class;
-     tags field.widget.tags;
+     tags field.widget.tags_str;
      multiple multiple|field.widget.multiple;">
 
    <style>
@@ -67,6 +67,7 @@
            minimumInputLength: ${field.widget.minimumInputLength},
            multiple: true,
            width: "100%",
+           tags: ${tags},
         });
 
     });
