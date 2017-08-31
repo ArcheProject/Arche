@@ -226,7 +226,7 @@ class BaseSchema(colander.Schema):
 
 class DocumentSchema(BaseSchema, DCMetadataSchema):
     body = colander.SchemaNode(colander.String(),
-                               widget = deform.widget.RichTextWidget(height = 300),
+                               widget = QuillWidget(height = 300),
                                missing = u"")
     image_data = colander.SchemaNode(deform.FileData(),
                                          missing = None,
