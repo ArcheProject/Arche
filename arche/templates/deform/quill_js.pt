@@ -1,5 +1,4 @@
 <div tal:define="oid oid|field.oid;
-                 placeholder placeholder|field.widget.placeholder;
                  name name|field.name;"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n"
     i18n:domain="Arche"
@@ -26,8 +25,8 @@
       var options = {
         modules: { toolbar: toolbarOptions },
         theme: '${field.widget.theme}',
-        placeholder: '${placeholder}',
-        readOnly: '${field.widget.readonly and "true" or "false"}',
+        placeholder: '${field.widget.placeholder}',
+        readOnly: ${field.widget.readonly and "true" or "false"},
       };
       editor = new Quill('#ql-editor-${oid}', options);
       editor.on('text-change', function() {

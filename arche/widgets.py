@@ -283,11 +283,13 @@ class QuillWidget(TextInputWidget):
     readonly_template = 'quill_js'
     placeholder = _('Compose a text...')
     theme = 'snow'
+    null_value = ''
 
     def serialize(self, field, cstruct, **kw):
         # TODO Build support for restricting tags and different toolbar configurations
         # TODO Look at image and video support
         quill_js.need()
+        if cstruct in (colander.null, None):
+            cstruct = self.null_value
         tmpl_values = self.get_template_values(field, cstruct, kw)
-        tmpl_values['value'] = ''
         return field.renderer(self.template, **tmpl_values)
