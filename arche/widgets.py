@@ -25,10 +25,10 @@ from arche.interfaces import IFileUploadTempStore
 class TaggingWidget(Select2Widget):
     """ A very liberal widget that allows the user to pretty much enter anything.
         It will also display any existing values.
-        
+
         placeholder
             Text to display when nothing is entered
-        
+
         tags
             Predefined tags that will show up as suggestions
 
@@ -67,9 +67,9 @@ class TaggingWidget(Select2Widget):
 class ReferenceWidget(Select2Widget):
     """ A reference widget that searches for content to reference.
         It returns a list.
-        
+
         Note! Any default values for this must return an iterator with uids.
-        
+
         query_params
             Things to send to search.json page
             glob: 1 is always a good idea, since it enables search with glob
@@ -147,7 +147,7 @@ class DropzoneWidget(FileUploadWidget):
     maxFilesize = 100 # in Mb
     maxFiles = 1 # 'null' for infinite
     acceptedFiles = "image/png,image/*" #What's a sane default here? Where should it be configured?
-    
+
     dropzoneDefaultMessage = u'Drag and drop your files here'
     dropzoneFallbackMessage = u'dropzoneFallbackMessage'
     dropzoneFallbackText = u'dropzoneFallbackText'
@@ -285,6 +285,7 @@ class QuillWidget(TextInputWidget):
 
     def serialize(self, field, cstruct, **kw):
         # TODO Build support for restricting tags and different toolbar configurations
+        # TODO Look at image and video support
         quill_js.need()
         tmpl_values = self.get_template_values(field, cstruct, kw)
         tmpl_values['value'] = ''
