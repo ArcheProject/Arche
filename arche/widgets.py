@@ -70,6 +70,12 @@ class ReferenceWidget(Select2Widget):
             Things to send to search.json page
             glob: 1 is always a good idea, since it enables search with glob
             type_name: Limit to these content types only. Either a list or a single name as a string.
+
+        multiple
+            Disable multiple selection by setting to False
+
+        sortable
+            Enable sorting by setting to True. Does not work on sets, obviously.
     """
     template = 'select2_reference'
     readonly_template = 'readonly/select2_reference'
@@ -80,6 +86,7 @@ class ReferenceWidget(Select2Widget):
     default_query_params = {'glob': 1, 'show_hidden': 1}
     query_params = {}
     multiple = True
+    sortable = False
     #Make query view configurable?
 
     def _fetch_referenced_objects(self, field, cstruct):
@@ -101,8 +108,9 @@ class ReferenceWidget(Select2Widget):
         return results
 
     def serialize(self, field, cstruct, **kw):
-        from js.jqueryui import ui_sortable
-        ui_sortable.need()
+        if self.sortable:
+            from js.jqueryui import ui_sortable
+            ui_sortable.need()
 
         if cstruct in (colander.null, None):
             cstruct = self.null_value

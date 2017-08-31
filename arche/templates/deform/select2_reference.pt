@@ -4,7 +4,8 @@
      oid oid|field.oid;
      css_class css_class|field.widget.css_class;
      optgroup_class optgroup_class|field.widget.optgroup_class;
-     multiple multiple|field.widget.multiple;">
+     multiple multiple|field.widget.multiple;
+     sortable sortable|field.widget.sortable;">
 
    <style>
     .form-control .select2-selection--choice {
@@ -97,6 +98,7 @@
                },
            },
        });
+<tal:if condition="sortable">
        var $sortable = $selector.data('select2').$container.find("ul.select2-selection__rendered");
        $sortable.sortable({
            items: ".select2-selection__choice",
@@ -117,6 +119,7 @@
                }
            },
        });
+</tal:if>
    });
   </script>
 
