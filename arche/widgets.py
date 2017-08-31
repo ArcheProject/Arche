@@ -33,7 +33,7 @@ class TaggingWidget(Select2Widget):
             Predefined tags that will show up as suggestions
 
         custom_tags
-            Set to False to
+            Set to False to disable creating new tags
     """
     template = 'select2_tags'
     readonly_template = 'select2_tags'
