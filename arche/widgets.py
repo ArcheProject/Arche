@@ -278,6 +278,7 @@ class QuillWidget(TextInputWidget):
     template = 'quill_js'
     readonly_template = 'quill_js'
     placeholder = _('Compose a text...')
+    theme = 'snow'
 
     def serialize(self, field, cstruct, **kw):
         # TODO Build support for restricting tags and different toolbar configurations
