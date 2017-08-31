@@ -23,7 +23,7 @@ from arche.validators import login_password_validator
 from arche.validators import new_userid_validator
 from arche.validators import supported_thumbnail_mimetype
 from arche.validators import unique_email_validator
-from arche.widgets import DropzoneWidget
+from arche.widgets import DropzoneWidget, QuillWidget
 from arche.widgets import FileAttachmentWidget
 from arche.widgets import ReferenceWidget
 from arche.widgets import TaggingWidget
@@ -475,7 +475,8 @@ class RootSchema(BaseSchema, DCMetadataSchema):
         colander.String(),
         title = _("Footer"),
         missing = "",
-        widget = deform.widget.RichTextWidget(height = 200),
+        # widget = deform.widget.RichTextWidget(height = 200),
+        widget = QuillWidget(),
     )
 
 

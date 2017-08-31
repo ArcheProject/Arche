@@ -2,7 +2,7 @@ from json import dumps
 import string
 import random
 
-from deform.widget import AutocompleteInputWidget
+from deform.widget import AutocompleteInputWidget, TextInputWidget
 from deform.widget import FileUploadWidget
 from deform.widget import Select2Widget
 from deform.widget import Widget
@@ -15,7 +15,7 @@ from repoze.catalog.query import Eq
 import colander
 
 from arche import _
-from arche.fanstatic_lib import dropzonebasiccss
+from arche.fanstatic_lib import dropzonebasiccss, quill_js
 from arche.fanstatic_lib import dropzonebootstrapcss
 from arche.fanstatic_lib import dropzonecss
 from arche.fanstatic_lib import dropzonejs
@@ -272,3 +272,16 @@ def deferred_autocompleting_userid_widget(node, kw):
     return AutocompleteInputWidget(size = 15,
                                    values = choices,
                                    min_length = 2)
+
+
+class QuillWidget(TextInputWidget):
+    template = 'quill_js'
+    readonly_template = 'quill_js'
+    placeholder = _('Compose a text...')
+
+    def serialize(self, field, cstruct, **kw):
+        # TODO Build support for restricting tags and different toolbar configurations
+        quill_js.need()
+        tmpl_values = self.get_template_values(field, cstruct, kw)
+        tmpl_values['value'] = ''
+        return field.renderer(self.template, **tmpl_values)

@@ -28,6 +28,9 @@ pure_js = Resource(library, 'pure.js', minified = 'pure.min.js', depends = (jque
 folderish_contents_js = Resource(library, 'folderish_contents.js',
                                  depends = (pure_js, common_js, ui_sortable, jquery_file_upload))
 
+quill_css = Resource(library, 'quill-1.3.1.snow.css')
+quill_js = Resource(library, 'quill-1.3.1.js', depends=(quill_css,))
+
 #IE8 fixes for Twitter Bootstrap
 def render_conditional_comment_js(url, condition = 'lt', version = '9'):
     return '<!--[if %s IE %s]>%s<![endif]-->' % (condition, version, render_js(url))

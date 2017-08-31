@@ -1,0 +1,39 @@
+<div tal:define="oid oid|field.oid;
+                 placeholder placeholder|field.widget.placeholder;
+                 name name|field.name;"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    i18n:domain="Arche"
+    tal:omit-tag="">
+
+<div id="ql-editor-${oid}" name="${name}" tal:content="structure cstruct"/>
+<textarea class="hidden" id="ql-result-${oid}" name="${name}" tal:content="structure cstruct"/>
+<script>
+  (function($){
+    var editor,
+        $result = $('#ql-result-${oid}');
+    deform.addCallback('${oid}', function (oid) {
+      var toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+        ['blockquote', 'code-block'],
+
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+        [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+        [{ 'direction': 'rtl' }],                         // text direction
+
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ]
+      var options = {
+        modules: { toolbar: toolbarOptions },
+        theme: 'snow',
+        placeholder: '${placeholder}',
+      };
+      editor = new Quill('#ql-editor-${oid}', options);
+      editor.on('text-change', function() {
+        $result.html(editor.root.innerHTML);
+      });
+    });
+  })(jQuery);
+</script>
+
+</div>
