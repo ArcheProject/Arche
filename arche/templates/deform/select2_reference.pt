@@ -65,10 +65,8 @@
     </div>
 
   <script type="text/javascript">
-   deform.addCallback(
-     '${field.oid}',
-     function(oid) {
-       $('#' + oid).select2({
+   deform.addCallback('${field.oid}', function(oid) {
+       var $selector = $('#' + oid).select2({
            placeholder: "${field.widget.placeholder}",
            containerCssClass: 'form-control',
            minimumInputLength: ${field.widget.minimumInputLength},
@@ -98,8 +96,28 @@
                    }
                },
            },
-    });
-});
+       });
+       var $sortable = $selector.data('select2').$container.find("ul.select2-selection__rendered");
+       $sortable.sortable({
+           items: ".select2-selection__choice",
+           start: function(event, ui) {
+               ui.item.data('old_position', $sortable.children().index(ui.item));
+           },
+           update: function(event, ui) {
+               var $selected = $selector.children(':selected'),
+                   old_pos = ui.item.data('old_position'),
+                   pos = $sortable.children().index(ui.item),
+                   $current = $selected.eq(old_pos),
+                   $relativeTo = $selected.eq(pos)
+
+               if (pos < old_pos) {
+                   $current.insertBefore($relativeTo);
+               } else {
+                   $current.insertAfter($relativeTo);
+               }
+           },
+       });
+   });
   </script>
 
   <input type="hidden" name="__end__" value="${name}:sequence" tal:condition="multiple" />

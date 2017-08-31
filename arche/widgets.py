@@ -7,7 +7,7 @@ from deform.widget import FileUploadWidget
 from deform.widget import Select2Widget
 from deform.widget import Widget
 from deform.widget import filedict
-from pyramid.threadlocal import get_current_request 
+from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
 from pyramid.traversal import find_root
 from repoze.catalog.query import Any
@@ -101,6 +101,9 @@ class ReferenceWidget(Select2Widget):
         return results
 
     def serialize(self, field, cstruct, **kw):
+        from js.jqueryui import ui_sortable
+        ui_sortable.need()
+
         if cstruct in (colander.null, None):
             cstruct = self.null_value
         readonly = kw.get('readonly', self.readonly)
@@ -108,7 +111,6 @@ class ReferenceWidget(Select2Widget):
         kw['minimumInputLength'] = kw.get('minimumInputLength', self.minimumInputLength)
         kw['show_thumbs'] = str(kw.get('show_thumbs', self.show_thumbs)).lower()  # true or false in js
         view = field.schema.bindings['view']
-        # FIXME: Support all kinds of keywords that the select2 widget supports?
         template = readonly and self.readonly_template or self.template
         kw.setdefault('request', view.request)
         tmpl_values = self.get_template_values(field, cstruct, kw)
@@ -120,11 +122,11 @@ class ReferenceWidget(Select2Widget):
             tmpl_values['query_url'] = query_url
         return field.renderer(template, **tmpl_values)
 
-        # def deserialize(self, field, pstruct):
-        #     #Make sure pstruct follows query params?
-        #     if pstruct in (colander.null, self.null_value):
-        #         return colander.null
-        #     return self.multiple and tuple(pstruct.split(',')) or pstruct
+    # def deserialize(self, field, pstruct):
+    #     #Make sure pstruct follows query params?
+    #     if pstruct in (colander.null, self.null_value):
+    #         return colander.null
+    #     return self.multiple and tuple(pstruct.split(',')) or pstruct
 
 
 class DropzoneWidget(FileUploadWidget):
