@@ -31,18 +31,22 @@ class TaggingWidget(Select2Widget):
         
         tags
             Predefined tags that will show up as suggestions
+
+        custom_tags
+            Set to False to
     """
     template = 'select2_tags'
     readonly_template = 'select2_tags'
     null_value = ''
     placeholder = _("Tags")
     minimumInputLength = 2
-    values = ()
+    tags = ()
+    custom_tags = True
     multiple = True
 
     @property
-    def tags_str(self):
-        return str(self.__dict__.get('tags', True)).lower()
+    def custom_tags_js(self):
+        return self.custom_tags and 'true' or 'false'
 
     def serialize(self, field, cstruct, **kw):
         if cstruct in (colander.null, None):
@@ -50,7 +54,7 @@ class TaggingWidget(Select2Widget):
         readonly = kw.get('readonly', self.readonly)
         template = readonly and self.readonly_template or self.template
         tmpl_values = self.get_template_values(field, cstruct, kw)
-        tmpl_values['values'] = self.values
+        tmpl_values['values'] = self.tags
         return field.renderer(template, **tmpl_values)
 
     # def deserialize(self, field, pstruct):

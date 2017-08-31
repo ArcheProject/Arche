@@ -112,14 +112,14 @@ def populators_choice(node, kw):
 def tagging_widget(node, kw):
     view = kw['view']
     #This might be a very dumb way to get unique values...
-    values = tuple(view.root.catalog['tags']._fwd_index.keys())
-    return TaggingWidget(values=values)
+    tags = tuple(view.root.catalog['tags']._fwd_index.keys())
+    return TaggingWidget(tags=tags)
 
 @colander.deferred
 def tagging_userids_widget(node, kw):
     view = kw['view']
     userids = tuple(view.root['users'].keys())
-    return TaggingWidget(values=userids, placeholder=_("Type to search for UserIDs"), tags=False)
+    return TaggingWidget(tags=userids, placeholder=_("Type to search for UserIDs"), custom_tags=False)
     
 
 @colander.deferred

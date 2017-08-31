@@ -4,7 +4,7 @@
      oid oid|field.oid;
      css_class css_class|field.widget.css_class;
      optgroup_class optgroup_class|field.widget.optgroup_class;
-     tags field.widget.tags_str;
+     tags field.widget.custom_tags_js;
      multiple multiple|field.widget.multiple;">
 
    <style>
