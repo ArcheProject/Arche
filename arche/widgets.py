@@ -1,4 +1,4 @@
-from json import dumps
+import json
 import string
 import random
 
@@ -284,6 +284,36 @@ class QuillWidget(TextInputWidget):
     placeholder = _('Compose a text...')
     theme = 'snow'
     null_value = ''
+    toolbar_options = [
+        ['bold', 'italic', 'underline', 'strike'],  # toggled buttons
+        ['blockquote', 'code-block'],
+        # ['image', 'video'],
+        [{'list': 'ordered'}, {'list': 'bullet'}],
+        [{'script': 'sub'}, {'script': 'super'}],  # superscript / subscript
+        [{'header': [1, 2, 3, 4, 5, 6, False]}],
+        ['clean'],
+    ]
+
+    @property
+    def toolbar_options_json(self):
+        return json.dumps(self.toolbar_options)
+
+    @property
+    def formats_json(self):
+        def flat_set(l):
+            out = set()
+            for item in l:
+                if isinstance(item, (list, tuple)):
+                    out.update(flat_set(item))
+                elif isinstance(item, dict):
+                    out.update(flat_set(item.keys()))
+                else:
+                    out.add(item)
+            return out
+        formats = flat_set(self.toolbar_options)
+        formats.discard('clean')
+        return json.dumps(list(formats))
+
 
     def serialize(self, field, cstruct, **kw):
         # TODO Build support for restricting tags and different toolbar configurations
