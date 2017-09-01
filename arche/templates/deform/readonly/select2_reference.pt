@@ -2,6 +2,5 @@
 <div>
     <span tal:repeat="obj values">
         <a href="${request.resource_url(obj)}">${obj.title}</a>${not repeat.obj.end and ', ' or None}
-
     </span>
 </div>

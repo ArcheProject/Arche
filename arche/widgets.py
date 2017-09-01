@@ -1,4 +1,3 @@
-from json import dumps
 import string
 import random
 
@@ -36,17 +35,21 @@ class TaggingWidget(Select2Widget):
             Set to False to disable creating new tags
     """
     template = 'select2_tags'
-    readonly_template = 'select2_tags'
+    readonly_template = 'readonly/select2_tags'
     null_value = ''
     placeholder = _("Tags")
     minimumInputLength = 2
     tags = ()
     custom_tags = True
-    multiple = True
 
     @property
     def custom_tags_js(self):
         return self.custom_tags and 'true' or 'false'
+
+    @property
+    def multiple(self):
+        #Can't be singular for tagging widget
+        return True
 
     def serialize(self, field, cstruct, **kw):
         if cstruct in (colander.null, None):
@@ -56,11 +59,6 @@ class TaggingWidget(Select2Widget):
         tmpl_values = self.get_template_values(field, cstruct, kw)
         tmpl_values['values'] = self.tags
         return field.renderer(template, **tmpl_values)
-
-    # def deserialize(self, field, pstruct):
-    #     if pstruct in (colander.null, self.null_value):
-    #         return colander.null
-    #     return tuple(pstruct.split(','))
 
 
 # FIXME: Needs cleanup and documentation

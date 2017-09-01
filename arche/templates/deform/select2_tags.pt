@@ -4,8 +4,7 @@
      oid oid|field.oid;
      css_class css_class|field.widget.css_class;
      optgroup_class optgroup_class|field.widget.optgroup_class;
-     tags field.widget.custom_tags_js;
-     multiple multiple|field.widget.multiple;">
+     tags field.widget.custom_tags_js;">
 
    <style>
     .form-control .select2-selection--choice {
@@ -37,15 +36,15 @@
     }
    </style>
 
-  <input type="hidden" name="__start__" value="${name}:sequence"
-         tal:condition="multiple" />
+  <input type="hidden" name="__start__" value="${name}:sequence" />
 
-    <select tal:attributes="
+    <select
+          multiple="true"
+          tal:attributes="
           name name;
           id oid;
           class string: form-control ${css_class or ''};
           data-placeholder field.widget.placeholder|None;
-          multiple multiple;
           style style;">
     <tal:loop tal:repeat="item values">
       <option tal:attributes="
@@ -54,8 +53,7 @@
               value item">${item}</option>
     </tal:loop>
 
-  <input type="hidden" name="__end__" value="${name}:sequence"
-         tal:condition="multiple" />
+  <input type="hidden" name="__end__" value="${name}:sequence" />
 
   <script type="text/javascript">
    deform.addCallback(
@@ -69,7 +67,6 @@
            width: "100%",
            tags: ${tags},
         });
-
     });
   </script>
 
