@@ -1,11 +1,5 @@
-<tal:widget tal:define="
-     name name|field.name;
-     style field.widget.style;
-     oid oid|field.oid;
-     css_class css_class|field.widget.css_class;
-     optgroup_class optgroup_class|field.widget.optgroup_class;
-     tags field.widget.custom_tags_js;">
-<p class="form-control-static" id="${oid}">
+<tal:widget tal:define="oid oid|field.oid;">
+<p class="form-control-static" id="${field.oid}">
     <tal:loop tal:repeat="item values">
       <span>${item}</span><tal:c condition="not repeat['item'].end">, </tal:c>
     </tal:loop>
