@@ -113,13 +113,12 @@ class ReferenceWidget(Select2Widget):
         if self.sortable:
             from js.jqueryui import ui_sortable
             ui_sortable.need()
-
         if cstruct in (colander.null, None):
             cstruct = self.null_value
         readonly = kw.get('readonly', self.readonly)
         kw['placeholder'] = kw.get('placeholder', self.placeholder)
         kw['minimumInputLength'] = kw.get('minimumInputLength', self.minimumInputLength)
-        kw['show_thumbs'] = str(kw.get('show_thumbs', self.show_thumbs)).lower()  # true or false in js
+        kw['show_thumbs'] = str(bool(kw.get('show_thumbs', self.show_thumbs))).lower()  # true or false in js
         view = field.schema.bindings['view']
         template = readonly and self.readonly_template or self.template
         kw.setdefault('request', view.request)
