@@ -9,7 +9,6 @@ from deform.widget import filedict
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
 from pyramid.traversal import find_root
-from repoze.catalog.query import Any
 from repoze.catalog.query import Eq
 import colander
 
@@ -113,6 +112,7 @@ class ReferenceWidget(Select2Widget):
 
     def serialize(self, field, cstruct, **kw):
         if self.sortable:
+            #FIXME: Deform doesn't use fanstatic. Include some other way?
             from js.jqueryui import ui_sortable
             ui_sortable.need()
         if cstruct in (colander.null, None):
@@ -132,12 +132,6 @@ class ReferenceWidget(Select2Widget):
             query_url = view.request.resource_url(view.root, 'search.json', query=query_params)
             tmpl_values['query_url'] = query_url
         return field.renderer(template, **tmpl_values)
-
-    # def deserialize(self, field, pstruct):
-    #     #Make sure pstruct follows query params?
-    #     if pstruct in (colander.null, self.null_value):
-    #         return colander.null
-    #     return self.multiple and tuple(pstruct.split(',')) or pstruct
 
 
 class DropzoneWidget(FileUploadWidget):
