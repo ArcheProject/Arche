@@ -59,7 +59,7 @@
       <div class="media-body">
         <h4 class="media-heading">
             <span class="heading-text"></span>
-            (<span class="heading-type"></span>)
+            <span class="heading-type"></span>
         </h4>
         <div class="description"></div>
       </div>
@@ -73,7 +73,9 @@
                 out.removeAttr('id');
                 out.find('.img-container').html(data['img_tag']);
                 out.find('.heading-text').html(data['text']);
-                out.find('.heading-type').html(data['type_title']);
+                if (data['type_title']) {
+                    out.find('.heading-type').html("(" + data['type_title'] + ")");
+                }
                 out.show();
                 return out;
             } else {
