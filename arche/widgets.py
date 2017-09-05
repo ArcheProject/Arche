@@ -100,7 +100,9 @@ class ReferenceWidget(Select2Widget):
         address_for_docid = root.document_map.address_for_docid
         results = []
         if self.multiple:
-            docids = query(Any('uid', cstruct))[1]
+            docids = []
+            for uid in cstruct:
+                docids.extend(query(Eq('uid', uid))[1])
         else:
             docids = query(Eq('uid', cstruct))[1]
         for docid in docids:
