@@ -60,7 +60,6 @@ class TaggingWidget(Select2Widget):
         return field.renderer(template, **tmpl_values)
 
 
-# FIXME: Needs cleanup and documentation
 class ReferenceWidget(Select2Widget):
     """ A reference widget that searches for content to reference.
         It returns a list.
