@@ -232,7 +232,7 @@ class FileAttachmentWidget(Widget):
             filename = filename[filename.rfind('\\')+1:].strip()
             data['filename'] = filename
             data['mimetype'] = upload.type
-            data['size']  = upload.length
+            data['size'] = upload.length
             if uid is None:
                 # no previous file exists
                 while 1:
@@ -250,7 +250,7 @@ class FileAttachmentWidget(Widget):
                 preview_url = self.tmpstore.preview_url(uid)
                 self.tmpstore[uid]['preview_url'] = preview_url
         elif pstruct.get('delete') == 'delete':
-            data = filedict(delete = 'delete')
+            data = filedict(delete='delete')
         else:
             # the upload control had no file selected
             if uid is None:
@@ -270,6 +270,6 @@ def deferred_autocompleting_userid_widget(node, kw):
     context = kw['context']
     root = find_root(context)
     choices = tuple(root.users.keys())
-    return AutocompleteInputWidget(size = 15,
-                                   values = choices,
-                                   min_length = 2)
+    return AutocompleteInputWidget(size=15,
+                                   values=choices,
+                                   min_length=2)
