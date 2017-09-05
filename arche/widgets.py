@@ -2,7 +2,6 @@ import string
 import random
 
 from deform.widget import AutocompleteInputWidget
-from deform.widget import FileUploadWidget
 from deform.widget import Select2Widget
 from deform.widget import Widget
 from deform.widget import filedict
@@ -13,10 +12,6 @@ from repoze.catalog.query import Eq
 import colander
 
 from arche import _
-from arche.fanstatic_lib import dropzonebasiccss
-from arche.fanstatic_lib import dropzonebootstrapcss
-from arche.fanstatic_lib import dropzonecss
-from arche.fanstatic_lib import dropzonejs
 from arche.interfaces import IFileUploadTempStore
 
 
@@ -131,53 +126,6 @@ class ReferenceWidget(Select2Widget):
             query_url = view.request.resource_url(view.root, 'search.json', query=query_params)
             tmpl_values['query_url'] = query_url
         return field.renderer(template, **tmpl_values)
-
-
-class DropzoneWidget(FileUploadWidget):
-    """ All of the class attributes can be overridden in the widget.
-    """
-    maxFilesize = 100 # in Mb
-    maxFiles = 1 # 'null' for infinite
-    acceptedFiles = "image/png,image/*" #What's a sane default here? Where should it be configured?
-    
-    dropzoneDefaultMessage = u'Drag and drop your files here'
-    dropzoneFallbackMessage = u'dropzoneFallbackMessage'
-    dropzoneFallbackText = u'dropzoneFallbackText'
-    dropzoneInvalidFileType = u'dropzoneInvalidFileType'
-    dropzoneFileTooBig = u'dropzoneFileTooBig'
-    dropzoneResponseError = u'dropzoneResponseError'
-    dropzoneCancelUpload = u'dropzoneCancelUpload'
-    dropzoneCancelUploadConfirmation = u'dropzoneCancelUploadConfirmation'
-    dropzoneRemoveFile = u'dropzoneRemoveFile'
-    dropzoneMaxFilesExceeded = u'dropzoneMaxFilesExceeded'
-
-    @property
-    def acceptedMimetypes(self):
-        """ Deprecated property in Dropzone js, but used here to figure out mimetype. """
-        return string.split(self.acceptedFiles, ',')
-
-    def serialize(self, field, cstruct=None, readonly=False):
-        dropzonejs.need()
-        #dropzonecss.need()
-        dropzonebootstrapcss.need()
-        dropzonebasiccss.need()
-        field.request = get_current_request()
-        field.hasfile = 'false'
-        field.filename = ''
-        field.filesize = 0
-        if hasattr(field.request.context, '__blobs__') and field.request.context.__blobs__.has_key('file'):
-            field.hasfile = 'true'
-            field.filename = field.request.context.__blobs__.get('file').filename
-            field.filesize = field.request.context.__blobs__.get('file').size
-        return super(DropzoneWidget, self).serialize(field, cstruct=cstruct, readonly=readonly)
-
-    def deserialize(self, field, pstruct=None):
-        if pstruct is colander.null:
-            return colander.null
-        mimetype = self.tmpstore[pstruct]['mimetype']
-        if mimetype in self.acceptedMimetypes or string.split(mimetype, '/')[0]+'/*' in self.acceptedMimetypes:
-            return self.tmpstore[pstruct]
-        return colander.null
 
 
 class FileAttachmentWidget(Widget):
