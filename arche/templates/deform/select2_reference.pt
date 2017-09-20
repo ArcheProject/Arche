@@ -59,69 +59,72 @@
       <div class="media-body">
         <h4 class="media-heading">
             <span class="heading-text"></span>
-            (<span class="heading-type"></span>)
+            <span class="heading-type"></span>
         </h4>
         <div class="description"></div>
       </div>
     </div>
 
-  <script type="text/javascript">
-   deform.addCallback('${field.oid}', function(oid) {
-       var $selector = $('#' + oid).select2({
-           placeholder: "${field.widget.placeholder}",
-           containerCssClass: 'form-control',
-           minimumInputLength: ${field.widget.minimumInputLength},
-           multiple: ${str(bool(field.widget.multiple)).lower()},
-           width: "100%",
-           ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-               url: "${query_url}",
-               dataType: 'json',
-               delay: 250,
-               data: function (params) {
-                    return {
-                        query: params.term, // search term
-                        page_limit: 10,
-                    };
-               },
-               processResult: function (object, container, query) {
-                   if (${show_thumbs} == true) {
-                       var out = $('#${field.oid}-struct').clone();
-                       out.removeAttr('id');
-                       out.find('.img-container').html(object['img_tag']);
-                       out.find('.heading-text').html( object['text'] );
-                       out.find('.heading-type').html( object['type_title'] );
-                       out.show();
-                       container.html(out);
-                   } else {
-                       container.html( object['text'] + ' (' + object['type_title'] + ')');
-                   }
-               },
-           },
-       });
-<tal:if condition="sortable">
-       var $sortable = $selector.data('select2').$container.find("ul.select2-selection__rendered");
-       $sortable.sortable({
-           items: ".select2-selection__choice",
-           start: function(event, ui) {
-               ui.item.data('old_position', $sortable.children().index(ui.item));
-           },
-           update: function(event, ui) {
-               var $selected = $selector.children(':selected'),
-                   old_pos = ui.item.data('old_position'),
-                   pos = $sortable.children().index(ui.item),
-                   $current = $selected.eq(old_pos),
-                   $relativeTo = $selected.eq(pos)
+    <script type="text/javascript">
+    deform.addCallback('${field.oid}', function(oid) {
+        var template = function(data, container) {
+            if (${show_thumbs} == true) {
+                var out = $('#${field.oid}-struct').clone();
+                out.removeAttr('id');
+                out.find('.img-container').html(data['img_tag']);
+                out.find('.heading-text').html(data['text']);
+                if (data['type_title']) {
+                    out.find('.heading-type').html("(" + data['type_title'] + ")");
+                }
+                out.show();
+                return out;
+            } else {
+                return object['text'] + ' (' + object['type_title'] + ')';
+            }
+        };
+        var $selector = $('#' + oid).select2({
+            placeholder: "${field.widget.placeholder}",
+            containerCssClass: 'form-control',
+            minimumInputLength: ${field.widget.minimumInputLength},
+            multiple: ${str(bool(field.widget.multiple)).lower()},
+            width: "100%",
+            templateResult: template,
+            ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                url: "${query_url}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                     return {
+                         query: params.term, // search term
+                         page_limit: 10,
+                     };
+                },
+            },
+        });
+    <tal:if condition="sortable">
+        var $sortable = $selector.data('select2').$container.find("ul.select2-selection__rendered");
+        $sortable.sortable({
+            items: ".select2-selection__choice",
+            start: function(event, ui) {
+                ui.item.data('old_position', $sortable.children().index(ui.item));
+            },
+            update: function(event, ui) {
+                var $selected = $selector.children(':selected'),
+                    old_pos = ui.item.data('old_position'),
+                    pos = $sortable.children().index(ui.item),
+                    $current = $selected.eq(old_pos),
+                    $relativeTo = $selected.eq(pos)
 
-               if (pos < old_pos) {
-                   $current.insertBefore($relativeTo);
-               } else {
-                   $current.insertAfter($relativeTo);
-               }
-           },
-       });
-</tal:if>
-   });
-  </script>
+                if (pos < old_pos) {
+                    $current.insertBefore($relativeTo);
+                } else {
+                    $current.insertAfter($relativeTo);
+                }
+            },
+        });
+    </tal:if>
+    });
+    </script>
 
   <input type="hidden" name="__end__" value="${name}:sequence" tal:condition="multiple" />
 </tal:widget>
