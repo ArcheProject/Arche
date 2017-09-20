@@ -1,7 +1,7 @@
-
-<div>
-    <span tal:repeat="obj referenced_objects">
-        <a href="${request.resource_url(obj)}">${obj.title}</a>${not repeat.obj.end and ', ' or None}
-
-    </span>
-</div>
+<tal:widget tal:define="oid oid|field.oid;">
+<p class="form-control-static" id="${field.oid}">
+    <tal:loop tal:repeat="obj values">
+        <a href="${request.resource_url(obj)}">${obj.title|obj.__name__}</a>${not repeat.obj.end and ', ' or None}
+    </tal:loop>
+</p>
+</tal:widget>

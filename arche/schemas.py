@@ -23,7 +23,6 @@ from arche.validators import login_password_validator
 from arche.validators import new_userid_validator
 from arche.validators import supported_thumbnail_mimetype
 from arche.validators import unique_email_validator
-from arche.widgets import DropzoneWidget
 from arche.widgets import FileAttachmentWidget
 from arche.widgets import ReferenceWidget
 from arche.widgets import TaggingWidget
@@ -113,13 +112,13 @@ def tagging_widget(node, kw):
     view = kw['view']
     #This might be a very dumb way to get unique values...
     tags = tuple(view.root.catalog['tags']._fwd_index.keys())
-    return TaggingWidget(tags = tags)
+    return TaggingWidget(tags=tags)
 
 @colander.deferred
 def tagging_userids_widget(node, kw):
     view = kw['view']
     userids = tuple(view.root['users'].keys())
-    return TaggingWidget(tags = userids, placeholder = _("Type to search for UserIDs"))
+    return TaggingWidget(tags=userids, placeholder=_("Type to search for UserIDs"), custom_tags=False)
     
 
 @colander.deferred

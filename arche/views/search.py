@@ -1,3 +1,4 @@
+from pyramid.i18n import TranslationString
 from pyramid.view import view_config
 from pyramid.view import view_defaults
 from repoze.catalog.query import Any
@@ -63,11 +64,14 @@ class SearchView(BaseView):
         self._mk_query()
         output = []
         for obj in self.resolve_docids(self.docids):
+            type_title = getattr(obj, 'type_title', obj.type_name)
+            if isinstance(type_title, TranslationString):
+                type_title = self.request.localizer.translate(type_title)
             output.append({'text': obj.title,
                            'id': obj.uid,
                            'type_name': obj.type_name,
                            'img_tag': self.thumb_tag(obj, 'mini'),
-                           'type_title': getattr(obj, 'type_title', obj.type_name)})
+                           'type_title': type_title})
         return {'results': output}
 
 
