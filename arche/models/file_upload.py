@@ -31,7 +31,7 @@ class FileUploadTempStore(object):
         return key in self.keys() and self.storage[key] or default
 
     def clear(self):
-        self.request.session.pop('upload_tmp')
+        self.request.session.pop('upload_tmp', None)
 
     def __setitem__(self, name, value):
         value = value.copy()
