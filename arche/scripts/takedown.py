@@ -6,11 +6,6 @@ from pyramid.config import Configurator
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.renderers import render
 from pyramid.response import Response
-try:
-    from waitress import serve
-except ImportError:
-    print "Waitress needed to run this script"
-    raise
 
 from arche.scripting import default_parser
 
@@ -39,6 +34,11 @@ def _waitress_console_logging():
 
 
 def takedown_app(env, parsed_ns):
+    try:
+        from waitress import serve
+    except ImportError:
+        print "Waitress needed to run this script"
+        raise
     _waitress_console_logging()
     config = Configurator()
     config.include('pyramid_chameleon')
