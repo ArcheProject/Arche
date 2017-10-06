@@ -61,7 +61,8 @@ class NewUserIDValidator(_BaseValidator):
             raise colander.Invalid(node, msg=msg)
         if not NEW_USERID_PATTERN.match(value):
             msg = _('userid_char_error',
-                    default="UserID must be 3-30 chars, start with lowercase a-z and only contain lowercase a-z, numbers, minus and underscore.")
+                    default="UserID must be 3-30 chars, start with lowercase a-z "
+                            "and only contain lowercase a-z, numbers, minus and underscore.")
             raise colander.Invalid(node, msg=msg)
 
 
@@ -195,12 +196,15 @@ class UniqueEmail(object):
         if user:
             # There's no usecase where this is okay
             if not IUser.providedBy(self.context):
-                raise colander.Invalid(node, _("already_registered_email_error",
-                                               default="Already registered. You may recover your password if you've lost it."))
+                raise colander.Invalid(
+                    node, _("already_registered_email_error",
+                            default="Already registered. You may recover"
+                                    "your password if you've lost it."))
             # Could be users own profile showing up
             if user.email != self.context.email:
-                raise colander.Invalid(node, _("already_used_email_error",
-                                               default="This address is already used."))
+                raise colander.Invalid(
+                    node, _("already_used_email_error",
+                            default="This address is already used."))
 
 
 @colander.deferred
@@ -261,5 +265,6 @@ class CurrentPasswordValidator(object):
 
     def __call__(self, node, value):
         if not hash_method(value, hashed=self.context.password) == self.context.password:
-            raise colander.Invalid(node,
-                                   _("Wrong password. Remember that passwords are case sensitive."))
+            raise colander.Invalid(
+                node,
+                _("Wrong password. Remember that passwords are case sensitive."))
