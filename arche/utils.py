@@ -561,6 +561,8 @@ def addable_content(request, context, restrict=True, check_perm=True):
                 continue
             yield factory
 
+def is_modal(request):
+    return bool(request.params.get('modal', None) == '1')
 
 def format_traceback():
     import sys
@@ -595,6 +597,7 @@ def includeme(config):
     config.add_request_method(validate_appstruct)
     config.add_request_method(get_schema)
     config.add_request_method(addable_content)
+    config.add_request_method(is_modal, reify=True)
     #Init default scales
     for (name, scale) in image_scales.items():
         config.add_image_scale(name, *scale)

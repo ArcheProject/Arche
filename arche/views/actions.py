@@ -166,7 +166,7 @@ def login_link(context, request, va, **kw):
             request.root.site_settings.get('show_login_link', True):
         need_lib('deform')
         data = {'href': request.resource_url(request.root, 'login')}
-        return """<li><a %s>%s</a></li>""" % \
+        return """<li><a data-open-modal %s>%s</a></li>""" % \
                (' '.join(['%s="%s"' % (k, v) for (k, v) in data.items()]),
                 request.localizer.translate(va.title))
 
@@ -177,7 +177,7 @@ def login_link(context, request, va, **kw):
 def register_link(context, request, va, **kw):
     # FIXME: Check registration form.
     if request.authenticated_userid is None and request.has_permission(security.PERM_REGISTER, request.root):
-        return """<li><a href="%s">%s</a></li>""" % \
+        return """<li><a data-open-modal href="%s">%s</a></li>""" % \
                (request.resource_url(request.root, 'register'),
                 request.localizer.translate(va.title))
 

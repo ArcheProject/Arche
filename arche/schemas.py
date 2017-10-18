@@ -114,6 +114,7 @@ def tagging_widget(node, kw):
     tags = tuple(view.root.catalog['tags']._fwd_index.keys())
     return TaggingWidget(tags=tags)
 
+
 @colander.deferred
 def tagging_userids_widget(node, kw):
     view = kw['view']
@@ -126,10 +127,12 @@ def default_now(node, kw):
     request = kw['request']
     return request.dt_handler.localnow()
 
+
 def to_lowercase(value):
     if isinstance(value, string_types):
         return value.lower()
     return value
+
 
 class DCMetadataSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
@@ -256,6 +259,7 @@ def deferred_timezone_widget(node, kw):
                                                  values = list(common_timezones), #It's a lazy list
                                                  min_length=1)
 
+
 @colander.deferred
 def admin_allowed_empty(node, kw):
     request = kw['request']
@@ -263,6 +267,7 @@ def admin_allowed_empty(node, kw):
     if request.has_permission(security.PERM_MANAGE_USERS, context):
         return ""
     return colander.required
+
 
 class UserSchema(colander.Schema):
     first_name = colander.SchemaNode(colander.String(),
@@ -376,8 +381,20 @@ def deferred_referer(node, kw):
     return unquote(request.GET.get('came_from', '/'))
 
 
+@colander.deferred
+def maybe_modal_form(node, kw):
+    params = {}
+    if kw['request'].is_modal:
+        params.update(
+            template='form_modal',
+            readonly_template='readonly/form_modal'
+        )
+    return deform.widget.FormWidget(**params)
+
+
 class LoginSchema(colander.Schema):
     validator = login_password_validator
+    widget = maybe_modal_form
     email_or_userid = colander.SchemaNode(colander.String(),
                                           preparer = to_lowercase,
                                           validator = allow_login_userid_or_email,
@@ -406,6 +423,7 @@ def deferred_email_registration_description(node, kw):
 
 
 class RegistrationSchema(colander.Schema):
+    widget = maybe_modal_form
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Email"),
                                 description = deferred_email_registration_description,
@@ -414,6 +432,7 @@ class RegistrationSchema(colander.Schema):
 
 
 class FinishRegistrationSchema(colander.Schema):
+    widget = maybe_modal_form
     first_name = colander.SchemaNode(colander.String(),
                                      title = _("First name"),
                                      missing = "")
@@ -445,6 +464,7 @@ class FinishRegistrationSchema(colander.Schema):
 
 
 class CombinedRegistrationSchema(FinishRegistrationSchema, RegistrationSchema):
+    widget = maybe_modal_form
     """ For when email isn't validated. """
 
 

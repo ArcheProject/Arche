@@ -55,7 +55,7 @@ function create_modal(url, params) {
   arche.destroy_modal();
   var out = '<div class="modal fade" id="modal-area" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">';
   out += '<div class="modal-dialog ' + modal_dialog_cls + '"><div class="modal-content"></div></div></div>';
-  var request = arche.do_request(url);
+  var request = arche.do_request(url, {data: {modal: 1}});
   request.done(function(response) {
     $('body').prepend(out);
     $('.modal-content').append(response);
