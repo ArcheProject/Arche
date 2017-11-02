@@ -4,6 +4,7 @@ from inspect import isclass
 
 from BTrees.OOBTree import OOBTree
 from betahaus.viewcomponent import render_view_group
+from betahaus.viewcomponent import render_view_action
 from deform_autoneed import need_lib
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPForbidden
@@ -146,6 +147,11 @@ class BaseView(object):
         if context is None:
             context = self.context
         return render_view_group(context, self.request, group, view = self, **kw)
+
+    def render_view_action(self, group, name, context = None, **kw):
+        if context is None:
+            context = self.context
+        return render_view_action(context, self.request, group, name, view = self, **kw)
 
     def get_local_nav_objects(self, context):
         #FIXME: Conditions for navigation!

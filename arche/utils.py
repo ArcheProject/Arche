@@ -425,6 +425,7 @@ class EmailValidationTokens(AttributeAnnotations):
         for email in expired:
             del self[email]
 
+
 #FIXME: Add more codecs that work for web!
 #FIXME: This should be a proper util instead
 image_mime_to_title = {'image/jpeg': "JPEG",
