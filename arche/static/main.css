@@ -90,3 +90,10 @@
 .portlet-manager {
     padding: 10px;
 }
+
+.text-overflow {
+    /* element must be block or inline-block for this to work */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
