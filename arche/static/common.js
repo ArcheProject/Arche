@@ -95,6 +95,8 @@ arche.destroy_modal = destroy_modal;
 function modal_from_event(event) {
   event.preventDefault();
   var elem = $(event.currentTarget);
+  if (elem.data('opening') == true) return;
+  elem.data('opening', true);
   if (typeof elem.attr('data-url') == 'undefined') {
     var url = elem.attr('href');
   } else {
@@ -109,6 +111,7 @@ function modal_from_event(event) {
   var request = arche.create_modal(url, params);
   request.always(function() {
     arche.actionmarker_feedback(elem, false);
+    elem.removeData('opening');
   });
 }
 arche.modal_from_event = modal_from_event;
