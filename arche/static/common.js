@@ -2,6 +2,7 @@
 arche = {};
 arche.flash_slot_order = ['modal', 'main'];
 arche.default_flash_timer = 3000;
+arche.online_status = true;
 
 // Disable cache functionality. To enable this we need proper cache headers on responses
 $.ajaxSetup ({
@@ -9,7 +10,7 @@ $.ajaxSetup ({
 });
 
 function do_request(url, options) {
-    var settings = {url: url, async: true};
+    var settings = {url: url, async: true, timeout: 30000};
     if (typeof(options) !== 'undefined') $.extend(settings, options);
     var request = $.ajax(settings);
     request.fail(function(jqXHR) {
@@ -200,9 +201,22 @@ arche.load_flash_messages = load_flash_messages;
 //Attach this to .fail on deferred objects
 function flash_error(jqXHR) {
   //Connection problems will have a status == 0 and no text so this function should be updated.
-  //FIXME: Translation
   if (jqXHR.status == 0) {
-    if ($('#offline-warning').length == 0) arche.create_flash_message("Offline", {type: 'warning', id: 'offline-warning'});
+    if ($('#connection-warning').length == 0) {
+        //FIXME: Translation
+        switch(jqXHR.statusText) {
+            case 'timeout':
+                var msg = "Timeout"
+                break;
+            default:
+                if (arche.online_status) {
+                    var msg = "Connection error";
+                } else {
+                    var msg = "Conenction error - you seem to be offline"
+                }
+        }
+        arche.create_flash_message(msg, {type: 'warning', id: 'connection-warning'});
+    }
   } else {
       arche.create_flash_message('<h4>' + jqXHR.status + ' ' + jqXHR.statusText + '</h4>' + jqXHR.responseText,
           {type: 'danger', auto_destruct: true});
@@ -244,4 +258,14 @@ $(document).ready(function() {
   $('body').on('click', "[data-open-modal]", arche.modal_from_event);
   $('body').on('click', '[data-mselect-for]', arche.multi_select)
   arche.load_flash_messages();
+});
+
+window.addEventListener('offline', function(event) {
+    arche.online_status = false;
+    console.log('offline');
+});
+
+window.addEventListener('online', function(event) {
+    arche.online_status = true;
+    console.log('online');
 });
