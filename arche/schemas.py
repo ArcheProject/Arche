@@ -14,7 +14,10 @@ from arche.interfaces import IPopulator
 from arche.interfaces import ISchemaCreatedEvent
 from arche.interfaces import IUser
 from arche.utils import get_content_factories
-from arche.validators import allow_login_userid_or_email, ascii_encodable_validator
+from arche.validators import allow_login_userid_or_email
+from arche.validators import ascii_encodable_validator
+from arche.validators import ShortNameValidator
+from arche.validators import URLOrExistingPathValidator
 from arche.validators import deferred_current_password_validator
 from arche.validators import deferred_current_pw_or_manager_validator
 from arche.validators import existing_userid_or_email_with_set_email
@@ -551,17 +554,25 @@ class EditImageSchema(ImageSchema):
 
 
 class LinkSchema(BaseSchema):
-    target = colander.SchemaNode(colander.String(),
-                                 validator = colander.url)
-    title = colander.SchemaNode(colander.String(),
-                                missing = u"")
-    description = colander.SchemaNode(colander.String(),
-                                      missing = u"")
+    target = colander.SchemaNode(
+        colander.String(),
+         validator = URLOrExistingPathValidator,
+    )
+    title = colander.SchemaNode(
+        colander.String(),
+        missing = u""
+    )
+    description = colander.SchemaNode(
+        colander.String(),
+        missing = u""
+    )
 
 
 class AddLinkSchema(LinkSchema):
-    name = colander.SchemaNode(colander.String(), #Special validator based on permission?
-                           )
+    name = colander.SchemaNode(
+        colander.String(), #Special validator based on permission?
+        validator = ShortNameValidator,
+    )
 
 
 class SiteSettingsSchema(colander.Schema):

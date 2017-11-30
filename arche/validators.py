@@ -2,6 +2,7 @@ import re
 
 import colander
 from pyramid.threadlocal import get_current_request
+from pyramid.traversal import find_resource
 from pyramid.traversal import find_root
 from six import string_types
 
@@ -10,6 +11,7 @@ from arche import security
 from arche.interfaces import IUser
 from arche.interfaces import IUsers
 from arche.utils import check_unique_name
+from arche.utils import get_context_view_names
 from arche.utils import hash_method
 from arche.utils import image_mime_to_title
 
@@ -268,3 +270,51 @@ class CurrentPasswordValidator(object):
             raise colander.Invalid(
                 node,
                 _("Wrong password. Remember that passwords are case sensitive."))
+
+
+@colander.deferred
+class ExistingPathValidator(object):
+
+    def __init__(self, node, kw):
+        self.context = kw['context']
+
+    def __call__(self, node, value):
+        root = find_root(self.context)
+        try:
+            find_resource(root, value)
+        except KeyError:
+            raise colander.Invalid(
+                node, _("Not an existing valid path."))
+
+
+@colander.deferred
+class URLOrExistingPathValidator(object):
+    """ Current implementation of this will only use path validator
+        if it starts with a slash.
+    """
+
+    def __init__(self, node, kw):
+        self.context = kw['context']
+
+    def __call__(self, node, value):
+        if value.startswith('/'):
+            validator = ExistingPathValidator(node, {'context': self.context})
+            validator(node, value)
+        else:
+            colander.url(node, value)
+
+
+@colander.deferred
+class ShortNameValidator(object):
+
+    def __init__(self, node, kw):
+        self.context = kw['context']
+        self.request = kw['request']
+
+    def __call__(self, node, value):
+        used_names = set(self.context.keys())
+        if value in used_names:
+            raise colander.Invalid(node, _("An object with that name already exists here."))
+        used_names.update(get_context_view_names(self.context, self.request))
+        if value in used_names:
+            raise colander.Invalid(node, _("This name is already reserved by a view."))
