@@ -123,7 +123,7 @@ class ReferenceWidget(Select2Widget):
         if not readonly:
             query_params = self.default_query_params.copy()
             query_params.update(self.query_params)
-            query_url = view.request.resource_url(view.root, 'search.json', query=query_params)
+            query_url = view.request.resource_url(view.root, 'search_select2.json', query=query_params)
             tmpl_values['query_url'] = query_url
         return field.renderer(template, **tmpl_values)
 

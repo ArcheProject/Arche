@@ -97,3 +97,18 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+#popover-res {
+    position: absolute;
+    background: #fff;
+    left: 0px;
+    max-width: 100%;
+    min-width: 200px;
+    padding: 20px;
+    z-index: 100000;
+    transition: all 500ms ease;
+    opacity: 0;
+}
+#popover-res li { line-height: 30px; }
+#popover-res  img { display: inline-block; }
+#popover-res.active { opacity: .9; }

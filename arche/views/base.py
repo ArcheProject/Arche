@@ -28,6 +28,7 @@ from arche import security
 from arche.events import SchemaCreatedEvent
 from arche.events import ViewInitializedEvent
 from arche.fanstatic_lib import common_js
+from arche.fanstatic_lib import search_js
 from arche.fanstatic_lib import html5shiv_js
 from arche.fanstatic_lib import main_css
 from arche.interfaces import IAPIKeyView
@@ -53,6 +54,7 @@ class BaseView(object):
         need_lib('basic')
         main_css.need()
         common_js.need()
+        search_js.need()
         html5shiv_js.need()
         view_event = ViewInitializedEvent(self)
         objectEventNotify(view_event)

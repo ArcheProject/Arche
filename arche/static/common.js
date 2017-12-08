@@ -260,10 +260,12 @@ $(document).ready(function() {
   arche.load_flash_messages();
 });
 
+
 window.addEventListener('offline', function(event) {
     arche.online_status = false;
     console.log('offline');
 });
+
 
 window.addEventListener('online', function(event) {
     arche.online_status = true;
