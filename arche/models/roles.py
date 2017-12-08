@@ -98,7 +98,7 @@ class Roles(IterableUserDict):
         roles = value | current
         self[key] = roles
         if event:
-            self._send_event()
+            self.send_event()
 
     def remove(self, key, value, event=True):
         value = self._adjust_to_set(value)
@@ -111,7 +111,7 @@ class Roles(IterableUserDict):
         elif key in self:
             del self[key]
         if event:
-            self._send_event()
+            self.send_event()
 
     def set_from_appstruct(self, value, event=False):
         marker = object()
@@ -122,7 +122,7 @@ class Roles(IterableUserDict):
             if self.get(k, marker) != v:
                 self[k] = v
         if event:
-            self._send_event()
+            self.send_event()
 
     def get_any_local_with(self, role):
         assert isinstance(role, string_types) or IRole.providedBy(role)
@@ -155,7 +155,7 @@ class Roles(IterableUserDict):
         classname = '%s.%s' % (klass.__module__, klass.__name__)
         return '<%s object at %#x>' % (classname, id(self))
 
-    def _send_event(self):
+    def send_event(self):
         event_obj = ObjectUpdatedEvent(self.context, changed=['local_roles'])
         objectEventNotify(event_obj)
 
