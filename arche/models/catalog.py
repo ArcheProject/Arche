@@ -158,10 +158,10 @@ class Metadata(object):
 
 def add_metadata_field(config, metadata_cls):
     verifyClass(IMetadata, metadata_cls)
-    #assert IMetadata.implementedBy(metadata_cls), "%r must be a class that implements %r" % (metadata_cls, IMetadata)
     for ar in config.registry.registeredAdapters():
         if ar.provided == IMetadata and ar.name == metadata_cls.name: #pragma : no coverage
-            logger.warn("Metadata adapter %r already registered with name %r. Registering %r might override it." % (ar.factory, ar.name, metadata_cls))
+            logger.warn("Metadata adapter %r already registered with name %r. "
+                        "Registering %r might override it." % (ar.factory, ar.name, metadata_cls))
     config.registry.registerAdapter(metadata_cls, name = metadata_cls.name)
 
 
@@ -439,7 +439,8 @@ def check_catalog_on_startup(event = None, env = None):
         for util in reg.getAllUtilitiesRegisteredFor(ICatalogIndexes):
             for (key, index) in util.items():
                 if key in registered_keys:
-                    raise CatalogConfigError("Both %r and %r tried to add the same key %r" % (util.name, registered_keys[key], key))
+                    raise CatalogConfigError("Both %r and %r tried to add the same key %r"
+                                             % (util.name, registered_keys[key], key))
                 registered_keys[key] = util.name
                 if key not in catalog:
                     raise CatalogError("%r requires %r to exist in the catalog." % (util.name, key))
@@ -447,7 +448,8 @@ def check_catalog_on_startup(event = None, env = None):
                     raise CatalogError("Catalog index stored at %r has a missmatching discriminator. \n"
                                            "Current: %r \n"
                                            "Required: %r \n"
-                                           "Required by: %r" % (key, catalog[key].discriminator, index.discriminator, util.name))
+                                           "Required by: %r" % (key, catalog[key].discriminator,
+                                                                index.discriminator, util.name))
     except CatalogError:
         if auto_recreate:
             print ( "-- Auto-recreate catalog is set to true and the catalog needs to be recreated.")
