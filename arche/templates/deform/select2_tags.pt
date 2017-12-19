@@ -4,7 +4,8 @@
      oid oid|field.oid;
      css_class css_class|field.widget.css_class;
      optgroup_class optgroup_class|field.widget.optgroup_class;
-     tags field.widget.custom_tags_js;">
+     tags field.widget.custom_tags_js;
+     sortable sortable|field.widget.sortable;">
 
    <style>
     .form-control .select2-selection--choice {
@@ -46,9 +47,15 @@
           class string: form-control ${css_class or ''};
           data-placeholder field.widget.placeholder|None;
           style style;">
-    <tal:loop tal:repeat="item values">
+    <tal:loop tal:repeat="item cstruct">
       <option tal:attributes="
-              selected python:field.widget.get_select_value(cstruct, item);
+              selected True;
+              class css_class;
+              value item">${item}</option>
+    </tal:loop>
+    <tal:loop tal:repeat="item values">
+      <option tal:condition="not field.widget.get_select_value(cstruct, item)"
+              tal:attributes="
               class css_class;
               value item">${item}</option>
     </tal:loop>
@@ -59,7 +66,7 @@
    deform.addCallback(
      '${field.oid}',
      function(oid) {
-       $('#' + oid).select2({
+       var $selector = $('#' + oid).select2({
            placeholder: "${field.widget.placeholder}",
            containerCssClass: 'form-control',
            minimumInputLength: ${field.widget.minimumInputLength},
@@ -67,6 +74,27 @@
            width: "100%",
            tags: ${tags},
         });
+    <tal:if condition="sortable">
+        var $sortable = $selector.data('select2').$container.find("ul.select2-selection__rendered");
+        $sortable.sortable({
+            items: ".select2-selection__choice",
+            start: function(event, ui) {
+                ui.item.data('old_position', $sortable.children().index(ui.item));
+            },
+            update: function(event, ui) {
+                var $selected = $selector.children(':selected'),
+                    old_pos = ui.item.data('old_position'),
+                    pos = $sortable.children().index(ui.item),
+                    $current = $selected.eq(old_pos),
+                    $relativeTo = $selected.eq(pos)
+                if (pos < old_pos) {
+                    $current.insertBefore($relativeTo);
+                } else {
+                    $current.insertAfter($relativeTo);
+                }
+            },
+        });
+    </tal:if>
     });
   </script>
 

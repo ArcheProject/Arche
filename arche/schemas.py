@@ -122,7 +122,7 @@ def tagging_widget(node, kw):
 def tagging_userids_widget(node, kw):
     view = kw['view']
     userids = tuple(view.root['users'].keys())
-    return TaggingWidget(tags=userids, placeholder=_("Type to search for UserIDs"), custom_tags=False)
+    return TaggingWidget(tags=userids, placeholder=_("Type to search for UserIDs"), custom_tags=False, sortable=True)
     
 
 @colander.deferred
