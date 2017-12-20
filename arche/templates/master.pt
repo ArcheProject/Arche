@@ -51,7 +51,7 @@
               <span class="input-group-btn">
                 <button type="submit" class="btn btn-default">
                 <span data-actionmarker="rotate-me glyphicon-refresh"
-                      class="glyphicon glyphicon-search"></span>
+                      class="glyphicon glyphicon-search"></span>&nbsp;
                 </button>
               </span>
             </div>
