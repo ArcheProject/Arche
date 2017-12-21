@@ -169,7 +169,7 @@ class DCMetadataSchema(colander.Schema):
                                    description = _(u"Can be used to link to other content"),
                                    tab = 'metadata',
                                    missing = (),
-                                   widget = ReferenceWidget())
+                                   widget = ReferenceWidget(sortable=True))
     publisher = colander.SchemaNode(colander.String(),
                                     missing = "",
                                   tab = 'metadata')
