@@ -108,7 +108,7 @@ class SearchView(BaseView):
         self._mk_query()
         output = []
         for obj in self.resolve_docids(self.docids):
-            type_title = getattr(obj, 'type_title', getattr(obj, 'type_name', _("(Unknown)")))
+            type_title = getattr(obj, 'type_title', getattr(obj, 'type_name', "(Unknown)"))
             if isinstance(type_title, TranslationString):
                 type_title = self.request.localizer.translate(type_title)
             try:

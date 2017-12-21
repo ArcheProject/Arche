@@ -98,9 +98,12 @@
   white-space: nowrap;
 }
 
+#popover-res {
+    background: #fff;
+}
+
 .search-popover {
     position: absolute;
-    background: #fff;
     left: 0px;
     max-width: 100%;
     min-width: 200px;

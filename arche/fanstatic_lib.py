@@ -44,3 +44,7 @@ def includeme(config):
     bootstrap_js_path = 'deform:static/scripts/bootstrap.min.js'
     if resource_registry.find_resource(bootstrap_js_path):
         resource_registry.replace_resource(bootstrap_js_path, bootstrap_js)
+    #Replace sortable
+    jquery_sortable_path = 'deform:static/scripts/jquery-sortable.js'
+    if resource_registry.find_resource(jquery_sortable_path):
+        resource_registry.replace_resource(jquery_sortable_path, ui_sortable)
