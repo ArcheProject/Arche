@@ -38,7 +38,6 @@ class SearchWatcher {
     }
 
     search(search_field) {
-        console.log('will search');
         var form = search_field.parents('form')
         if (form.length == 1) {
             arche.actionmarker_feedback(form, true);
