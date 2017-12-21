@@ -23,6 +23,10 @@ class ReferenceGuards(object):
         self.request = request
         self._moving_uids = set()
 
+    @property
+    def moving_uids(self):
+        return frozenset(self._moving_uids)
+
     def get_valid(self, context):
         for (name, ref_guard) in self.request.registry.getUtilitiesFor(IRefGuard):
             if ref_guard.valid_context(context):
