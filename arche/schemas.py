@@ -14,7 +14,10 @@ from arche.interfaces import IPopulator
 from arche.interfaces import ISchemaCreatedEvent
 from arche.interfaces import IUser
 from arche.utils import get_content_factories
-from arche.validators import allow_login_userid_or_email, ascii_encodable_validator
+from arche.validators import allow_login_userid_or_email
+from arche.validators import ascii_encodable_validator
+from arche.validators import ShortNameValidator
+from arche.validators import URLOrExistingPathValidator
 from arche.validators import deferred_current_password_validator
 from arche.validators import deferred_current_pw_or_manager_validator
 from arche.validators import existing_userid_or_email_with_set_email
@@ -114,11 +117,12 @@ def tagging_widget(node, kw):
     tags = tuple(view.root.catalog['tags']._fwd_index.keys())
     return TaggingWidget(tags=tags)
 
+
 @colander.deferred
 def tagging_userids_widget(node, kw):
     view = kw['view']
     userids = tuple(view.root['users'].keys())
-    return TaggingWidget(tags=userids, placeholder=_("Type to search for UserIDs"), custom_tags=False)
+    return TaggingWidget(tags=userids, placeholder=_("Type to search for UserIDs"), custom_tags=False, sortable=True)
     
 
 @colander.deferred
@@ -126,10 +130,12 @@ def default_now(node, kw):
     request = kw['request']
     return request.dt_handler.localnow()
 
+
 def to_lowercase(value):
     if isinstance(value, string_types):
         return value.lower()
     return value
+
 
 class DCMetadataSchema(colander.Schema):
     title = colander.SchemaNode(colander.String(),
@@ -256,6 +262,7 @@ def deferred_timezone_widget(node, kw):
                                                  values = list(common_timezones), #It's a lazy list
                                                  min_length=1)
 
+
 @colander.deferred
 def admin_allowed_empty(node, kw):
     request = kw['request']
@@ -263,6 +270,7 @@ def admin_allowed_empty(node, kw):
     if request.has_permission(security.PERM_MANAGE_USERS, context):
         return ""
     return colander.required
+
 
 class UserSchema(colander.Schema):
     first_name = colander.SchemaNode(colander.String(),
@@ -376,8 +384,20 @@ def deferred_referer(node, kw):
     return unquote(request.GET.get('came_from', '/'))
 
 
+@colander.deferred
+def maybe_modal_form(node, kw):
+    params = {}
+    if kw['request'].is_modal:
+        params.update(
+            template='form_modal',
+            readonly_template='readonly/form_modal'
+        )
+    return deform.widget.FormWidget(**params)
+
+
 class LoginSchema(colander.Schema):
     validator = login_password_validator
+    widget = maybe_modal_form
     email_or_userid = colander.SchemaNode(colander.String(),
                                           preparer = to_lowercase,
                                           validator = allow_login_userid_or_email,
@@ -406,6 +426,7 @@ def deferred_email_registration_description(node, kw):
 
 
 class RegistrationSchema(colander.Schema):
+    widget = maybe_modal_form
     email = colander.SchemaNode(colander.String(),
                                 title = _(u"Email"),
                                 description = deferred_email_registration_description,
@@ -414,6 +435,7 @@ class RegistrationSchema(colander.Schema):
 
 
 class FinishRegistrationSchema(colander.Schema):
+    widget = maybe_modal_form
     first_name = colander.SchemaNode(colander.String(),
                                      title = _("First name"),
                                      missing = "")
@@ -445,6 +467,7 @@ class FinishRegistrationSchema(colander.Schema):
 
 
 class CombinedRegistrationSchema(FinishRegistrationSchema, RegistrationSchema):
+    widget = maybe_modal_form
     """ For when email isn't validated. """
 
 
@@ -531,17 +554,25 @@ class EditImageSchema(ImageSchema):
 
 
 class LinkSchema(BaseSchema):
-    target = colander.SchemaNode(colander.String(),
-                                 validator = colander.url)
-    title = colander.SchemaNode(colander.String(),
-                                missing = u"")
-    description = colander.SchemaNode(colander.String(),
-                                      missing = u"")
+    target = colander.SchemaNode(
+        colander.String(),
+         validator = URLOrExistingPathValidator,
+    )
+    title = colander.SchemaNode(
+        colander.String(),
+        missing = u""
+    )
+    description = colander.SchemaNode(
+        colander.String(),
+        missing = u""
+    )
 
 
 class AddLinkSchema(LinkSchema):
-    name = colander.SchemaNode(colander.String(), #Special validator based on permission?
-                           )
+    name = colander.SchemaNode(
+        colander.String(), #Special validator based on permission?
+        validator = ShortNameValidator,
+    )
 
 
 class SiteSettingsSchema(colander.Schema):

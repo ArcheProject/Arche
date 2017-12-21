@@ -4,6 +4,7 @@ from inspect import isclass
 
 from BTrees.OOBTree import OOBTree
 from betahaus.viewcomponent import render_view_group
+from betahaus.viewcomponent import render_view_action
 from deform_autoneed import need_lib
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPForbidden
@@ -27,6 +28,7 @@ from arche import security
 from arche.events import SchemaCreatedEvent
 from arche.events import ViewInitializedEvent
 from arche.fanstatic_lib import common_js
+from arche.fanstatic_lib import search_js
 from arche.fanstatic_lib import html5shiv_js
 from arche.fanstatic_lib import main_css
 from arche.interfaces import IAPIKeyView
@@ -52,6 +54,7 @@ class BaseView(object):
         need_lib('basic')
         main_css.need()
         common_js.need()
+        search_js.need()
         html5shiv_js.need()
         view_event = ViewInitializedEvent(self)
         objectEventNotify(view_event)
@@ -146,6 +149,11 @@ class BaseView(object):
         if context is None:
             context = self.context
         return render_view_group(context, self.request, group, view = self, **kw)
+
+    def render_view_action(self, group, name, context = None, **kw):
+        if context is None:
+            context = self.context
+        return render_view_action(context, self.request, group, name, view = self, **kw)
 
     def get_local_nav_objects(self, context):
         #FIXME: Conditions for navigation!

@@ -36,16 +36,41 @@
         </div>
         <div class="col-sm-6 col-md-4 hidden-print">
 
-          <form action="${request.resource_url(view.root,'search')}" class="search"
+          <form action="${request.resource_url(view.root,'search')}"
+                data-watch-url="/search.json"
+                id="search"
                 role="search" method="get">
             <div class="input-group">
-              <input name="query" type="text" class="form-control" placeholder="Search"
-                  i18n:attributes="placeholder" value="${request.GET.get('query', '')}"/>
+              <input name="query" type="text" class="form-control"
+                     placeholder="Search"
+                     autocomplete="off"
+                     id="livesearch"
+                     data-watch-search="#popover-res"
+                     i18n:attributes="placeholder"
+                     value="${request.GET.get('query', '')}"/>
               <span class="input-group-btn">
                 <button type="submit" class="btn btn-default">
-                <span class="glyphicon glyphicon-search"></span>&nbsp;
+                <span data-actionmarker="rotate-me glyphicon-refresh"
+                      class="glyphicon glyphicon-search"></span>&nbsp;
                 </button>
               </span>
+            </div>
+            <div id="popover-res" class="search-popover">
+              <p class="text-center">
+                <a data-close-results="#popover-res"
+                   href="#"
+                   i18n:translate="">Close</a>
+              </p>
+              <ul  class="list-unstyled">
+                <li>
+                  <a class="text-overflow" href="">
+                    <span data-css-icon></span>
+                    <span data-title></span>
+                    <img class="popover-img" data-img />
+                  </a>
+                </li>
+              </ul>
+              <span data-search-msg></span>
             </div>
           </form>
         </div>

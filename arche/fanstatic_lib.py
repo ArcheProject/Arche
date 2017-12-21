@@ -16,12 +16,13 @@ library = Library('arche', 'static')
 main_css = Resource(library, 'main.css', depends = (bootstrap_css,))
 jquery_file_upload = Resource(library, 'third_party/jquery.fileupload.js', depends=(jquery, ui_widget))
 
+pure_js = Resource(library, 'pure.js', minified = 'pure.min.js', depends = (jquery,))
 common_js = Resource(library, 'common.js', depends = (jquery,))
 touchpunch_js = Resource(library, 'jquery.ui.touch-punch.min.js', depends = (jquery, jqueryui))
 manage_portlets_js = Resource(library, 'manage_portlets.js', depends = (common_js,ui_sortable,))
-pure_js = Resource(library, 'pure.js', minified = 'pure.min.js', depends = (jquery,))
 folderish_contents_js = Resource(library, 'folderish_contents.js',
                                  depends = (pure_js, common_js, ui_sortable, jquery_file_upload))
+search_js = Resource(library, 'search.js', depends=(pure_js, common_js))
 
 #IE8 fixes for Twitter Bootstrap
 def render_conditional_comment_js(url, condition = 'lt', version = '9'):

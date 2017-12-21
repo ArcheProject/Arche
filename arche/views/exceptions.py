@@ -2,10 +2,10 @@ import sys
 import traceback
 
 from pyramid.httpexceptions import HTTPClientError
+from pyramid.httpexceptions import HTTPException
 from pyramid.httpexceptions import HTTPFound
 from pyramid.i18n import TranslationString
 from pyramid.location import lineage
-from pyramid.response import Response
 
 from arche.exceptions import ReferenceGuarded
 from arche.security import NO_PERMISSION_REQUIRED
@@ -28,7 +28,11 @@ class ExceptionView(BaseView):
         super(ExceptionView, self).__init__(context, request)
         self.exc = context
         self.context = getattr(request, 'context', None)
-        self.request.response.status = getattr(self.exc, 'status', 500)
+        #self.request.response.status = getattr(self.exc, 'status', 500)
+        if isinstance(self.exc, HTTPException):
+            self.request.response.status_int = self.exc.code
+        else:
+            self.request.response.status_int = 500
 
     def __call__(self):
         response = {}
