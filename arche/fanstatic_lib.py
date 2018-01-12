@@ -16,12 +16,13 @@ library = Library('arche', 'static')
 main_css = Resource(library, 'main.css', depends = (bootstrap_css,))
 jquery_file_upload = Resource(library, 'third_party/jquery.fileupload.js', depends=(jquery, ui_widget))
 
+pure_js = Resource(library, 'pure.js', minified = 'pure.min.js', depends = (jquery,))
 common_js = Resource(library, 'common.js', depends = (jquery,))
 touchpunch_js = Resource(library, 'jquery.ui.touch-punch.min.js', depends = (jquery, jqueryui))
 manage_portlets_js = Resource(library, 'manage_portlets.js', depends = (common_js,ui_sortable,))
-pure_js = Resource(library, 'pure.js', minified = 'pure.min.js', depends = (jquery,))
 folderish_contents_js = Resource(library, 'folderish_contents.js',
                                  depends = (pure_js, common_js, ui_sortable, jquery_file_upload))
+search_js = Resource(library, 'search.js', depends=(pure_js, common_js))
 
 #IE8 fixes for Twitter Bootstrap
 def render_conditional_comment_js(url, condition = 'lt', version = '9'):
@@ -43,3 +44,7 @@ def includeme(config):
     bootstrap_js_path = 'deform:static/scripts/bootstrap.min.js'
     if resource_registry.find_resource(bootstrap_js_path):
         resource_registry.replace_resource(bootstrap_js_path, bootstrap_js)
+    #Replace sortable
+    jquery_sortable_path = 'deform:static/scripts/jquery-sortable.js'
+    if resource_registry.find_resource(jquery_sortable_path):
+        resource_registry.replace_resource(jquery_sortable_path, ui_sortable)

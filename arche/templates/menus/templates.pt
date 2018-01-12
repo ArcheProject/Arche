@@ -9,9 +9,8 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu">
-    <li><a href="${request.resource_url(context, 'set_view', query = {'name': 'view'})}"
-      i18n:translate="">
-      Default
+    <li><a href="${request.resource_url(context, 'set_view', query = {'name': 'view'})}">
+      <tal:ts i18n:translate="">Default</tal:ts>
       <span tal:condition="context.default_view == 'view'" class="glyphicon glyphicon-ok pull-right"></span>
     </a></li>
     <li class="divider"></li>
@@ -24,4 +23,3 @@
   </ul>
 </li>
 </tal:main>
-

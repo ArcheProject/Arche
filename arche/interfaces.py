@@ -382,6 +382,7 @@ class IReferenceGuards(Interface):
         Use the request attribute 'reference_guards' to interact with it.
     """
     request = Attribute("Wrapped request instance")
+    moving_uids = Attribute("Any UIDs that are marked as currently moving")
 
     def __init__(request):
         pass
@@ -398,6 +399,10 @@ class IReferenceGuards(Interface):
     def get_vetoing(context):
         """ Get all reference guards that would veto the removal of this context.
         """
+
+    def moving(uid):
+        """ Mark the current UID as moving, so allow it to be removed. """
+
 
 #/Adapters
 

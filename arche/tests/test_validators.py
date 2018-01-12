@@ -233,3 +233,104 @@ class ExistingUserIDOrEmailTests(TestCase):
         self.assertRaises(Invalid, obj, None, 'no_one@archeproject.org')
         self.assertRaises(Invalid, obj, None, 'hello @ jeff')
         self.assertRaises(Invalid, obj, None, 'åäö@archeproject.org')
+
+
+class ExistingPathValidatorTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.validators import ExistingPathValidator
+        return ExistingPathValidator
+
+    def test_404(self):
+        root = testing.DummyResource()
+        obj = self._cut(None, {'context': root})
+        self.assertRaises(Invalid, obj, None, '/hello404')
+
+    def test_root(self):
+        root = testing.DummyResource()
+        obj = self._cut(None, {'context': root})
+        obj(None, '')
+        obj(None, '/')
+
+    def test_existing_path(self):
+        root = testing.DummyResource()
+        root['mystuff'] = testing.DummyResource()
+        obj = self._cut(None, {'context': root})
+        obj(None, 'mystuff')
+        obj(None, '/mystuff')
+        obj(None, '/mystuff/')
+
+
+
+class URLOrExistingPathValidatorTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.validators import URLOrExistingPathValidator
+        return URLOrExistingPathValidator
+
+    def test_404(self):
+        root = testing.DummyResource()
+        obj = self._cut(None, {'context': root})
+        self.assertRaises(Invalid, obj, None, '/hello404')
+
+    def test_root(self):
+        root = testing.DummyResource()
+        obj = self._cut(None, {'context': root})
+        obj(None, '/')
+
+    def test_url(self):
+        root = testing.DummyResource()
+        obj = self._cut(None, {'context': root})
+        obj(None, 'http://www.betahaus.net')
+
+
+
+class ShortNameValidatorTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.validators import ShortNameValidator
+        return ShortNameValidator
+
+    def test_traversal_object(self):
+        root = testing.DummyResource()
+        root['hello'] = testing.DummyResource()
+        request = testing.DummyRequest()
+        obj = self._cut(None, {'context': root, 'request': request})
+        self.assertRaises(Invalid, obj, None, 'hello')
+
+    def test_traversal_view(self):
+        def _dummy(*args):
+            pass
+        self.config.add_view(_dummy, name='a_view', context = testing.DummyResource)
+        root = testing.DummyResource()
+        request = testing.DummyRequest()
+        obj = self._cut(None, {'context': root, 'request': request})
+        self.assertRaises(Invalid, obj, None, 'a_view')
+
+    def test_ok(self):
+        root = testing.DummyResource()
+        root['hello'] = testing.DummyResource()
+        request = testing.DummyRequest()
+        obj = self._cut(None, {'context': root, 'request': request})
+        obj(None, 'world')

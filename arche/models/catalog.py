@@ -41,6 +41,7 @@ from arche.models.workflow import get_context_wf
 from arche.utils import find_all_db_objects
 from arche.utils import prep_html_for_search_indexing
 
+
 @implementer(ICataloger)
 @adapter(IIndexedContent)
 class Cataloger(object):

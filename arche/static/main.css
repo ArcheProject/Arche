@@ -90,3 +90,45 @@
 .portlet-manager {
     padding: 10px;
 }
+
+.text-overflow {
+    /* element must be block or inline-block for this to work */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#popover-res {
+    background: #fff;
+}
+
+.search-popover {
+    position: absolute;
+    left: 0px;
+    max-width: 100%;
+    min-width: 200px;
+    padding: 20px;
+    z-index: 100000;
+    transition: all 500ms ease;
+    opacity: 0;
+}
+.search-popover span {
+    display: inline-block;
+}
+.search-popover li a {
+    display: block;
+    padding: 3px 0;
+}
+.search-popover li {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    padding:  0 50px 0 0;
+}
+.search-popover .popover-img {
+    display: inline-block;
+    position: absolute;
+    right: 0px;
+}
+.search-popover.active { opacity: .9; }
