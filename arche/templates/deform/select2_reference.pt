@@ -113,7 +113,7 @@
                     old_pos = ui.item.data('old_position'),
                     pos = $sortable.children().index(ui.item),
                     $current = $selected.eq(old_pos),
-                    $relativeTo = $selected.eq(pos)
+                    $relativeTo = $selected.eq(pos);
 
                 if (pos < old_pos) {
                     $current.insertBefore($relativeTo);
