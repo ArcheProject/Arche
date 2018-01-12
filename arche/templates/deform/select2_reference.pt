@@ -79,7 +79,7 @@
                 out.show();
                 return out;
             } else {
-                return object['text'] + ' (' + object['type_title'] + ')';
+                return data['text'] + ' (' + data['type_title'] + ')';
             }
         };
         var $selector = $('#' + oid).select2({

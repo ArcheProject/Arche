@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import os
 import argparse
@@ -44,13 +45,16 @@ def takedown_app(env, parsed_ns):
     config.include('pyramid_chameleon')
     msg = "We'll be back shortly. Sorry for the inconvenience!"
     if parsed_ns.message:
-        msg = parsed_ns.message
+        msg = parsed_ns.message.decode('utf-8')
     #Figure out template path
     if ':' in parsed_ns.template or parsed_ns.template.startswith('/'):
         tpl = parsed_ns.template
     else:
         #Expect relative path
         tpl = os.path.join(os.getcwd(), parsed_ns.template)
+        view = TakedownView(msg, tpl)
+        #Test rendering to cause exception early
+        view(env['request'])
         print ("Serving template from: %s" % tpl)
     takedown_view = TakedownView(msg, tpl)
     config.add_view(takedown_view, context=HTTPNotFound)
