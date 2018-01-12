@@ -25,6 +25,7 @@ folderish_contents_js = Resource(library, 'folderish_contents.js',
 
 quill_css = Resource(library, 'quill-1.3.1.snow.css')
 quill_js = Resource(library, 'quill-1.3.1.js', depends=(quill_css,))
+arche_quill = Resource(library, 'arche-quill.js', depends=(quill_css, quill_js))
 
 #IE8 fixes for Twitter Bootstrap
 def render_conditional_comment_js(url, condition = 'lt', version = '9'):

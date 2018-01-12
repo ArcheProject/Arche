@@ -1,7 +1,8 @@
+import json
 import string
 import random
 
-from deform.widget import AutocompleteInputWidget
+from deform.widget import AutocompleteInputWidget, TextInputWidget
 from deform.widget import Select2Widget
 from deform.widget import Widget
 from deform.widget import filedict
@@ -12,10 +13,7 @@ from repoze.catalog.query import Eq
 import colander
 
 from arche import _
-from arche.fanstatic_lib import dropzonebasiccss, quill_js
-from arche.fanstatic_lib import dropzonebootstrapcss
-from arche.fanstatic_lib import dropzonecss
-from arche.fanstatic_lib import dropzonejs
+from arche.fanstatic_lib import arche_quill
 from arche.interfaces import IFileUploadTempStore
 
 
@@ -237,6 +235,7 @@ class QuillWidget(TextInputWidget):
         [{'script': 'sub'}, {'script': 'super'}],  # superscript / subscript
         [{'header': [1, 2, 3, 4, 5, 6, False]}],
         ['clean'],
+        ['custom'],
     ]
 
     @property
@@ -263,7 +262,7 @@ class QuillWidget(TextInputWidget):
     def serialize(self, field, cstruct, **kw):
         # TODO Build support for restricting tags and different toolbar configurations
         # TODO Look at image and video support
-        quill_js.need()
+        arche_quill.need()
         if cstruct in (colander.null, None):
             cstruct = self.null_value
         tmpl_values = self.get_template_values(field, cstruct, kw)

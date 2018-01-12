@@ -4,26 +4,22 @@
     i18n:domain="Arche"
     tal:omit-tag="">
 
-<div id="ql-editor-${oid}" name="${name}" tal:content="structure cstruct"/>
-<textarea class="hidden" id="ql-result-${oid}" name="${name}" tal:content="structure cstruct"/>
+<div id="ql-editor-${oid}" tal:content="structure cstruct"/>
+<textarea class="hidden arche-ql-storage" name="${name}" tal:content="structure cstruct"/>
 <script>
-  (function($){
-    var editor,
-        $result = $('#ql-result-${oid}');
-    deform.addCallback('${oid}', function (oid) {
-      var options = {
-        modules: { toolbar: ${field.widget.toolbar_options_json} },
-        formats: ${field.widget.formats_json},
-        theme: '${field.widget.theme}',
-        placeholder: '${field.widget.placeholder}',
-        readOnly: ${field.widget.readonly and "true" or "false"},
-      };
-      editor = new Quill('#ql-editor-${oid}', options);
-      editor.on('text-change', function() {
-        $result.html(editor.root.innerHTML);
-      });
-    });
-  })(jQuery);
+(function($){
+    createArcheQuill(
+        '#ql-editor-${oid}',
+        {
+            modules: {
+                toolbar: ${field.widget.toolbar_options_json}
+            },
+            // formats: ${field.widget.formats_json},
+            theme: '${field.widget.theme}',
+            placeholder: '${field.widget.placeholder}',
+            readOnly: ${field.widget.readonly and "true" or "false"},
+        },
+    );
+})(jQuery);
 </script>
-
 </div>
