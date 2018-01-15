@@ -35,6 +35,7 @@ class TaggingWidget(Select2Widget):
     minimumInputLength = 2
     tags = ()
     custom_tags = True
+    sortable = False
 
     @property
     def custom_tags_js(self):
@@ -46,6 +47,10 @@ class TaggingWidget(Select2Widget):
         return True
 
     def serialize(self, field, cstruct, **kw):
+        if self.sortable:
+            #FIXME: Deform doesn't use fanstatic. Include some other way?
+            from js.jqueryui import ui_sortable
+            ui_sortable.need()
         if cstruct in (colander.null, None):
             cstruct = self.null_value
         readonly = kw.get('readonly', self.readonly)

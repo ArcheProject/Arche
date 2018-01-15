@@ -78,7 +78,7 @@ class RenameContext(BaseForm):
     def get_schema(self):
         class _RenameSchema(colander.Schema):
             name = colander.SchemaNode(colander.String(),
-                                       title = _("Name, this will be part of the url"),
+                                       title = _("Name, this will be part of the URL"),
                                        default = self.context.__name__,
                                        validator = unique_parent_context_name_validator,)
         return _RenameSchema()

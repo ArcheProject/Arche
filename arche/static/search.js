@@ -1,29 +1,9 @@
 'use strict';
 
 /*
-<form
-    action="${request.resource_url(request.root,'search')}"
-    data-watch-url="${request.resource_url(request.root,'search.json')}"
-    id="search">
-
-<input
-    id="example"
-    data-watch-search="#popup-results">
-
-<div id="popup-results">
-    <p class="text-right"><a data-close-results="#popup-results" href="#">Close</a></p>
-    <span data-no-results="No results"></span>
-    <ul  class="list-unstyled">
-        <li>
-            <a class="text-overflow" href="">
-                <span data-title></span>
-                <span class="pull-right" data-img></span>
-            </a>
-        </li>
-    </ul>
-</div>
+See templates/master.pt for example structure of livesearch.
+The #search form implements it.
 */
-
 
 class SearchWatcher {
 
@@ -58,7 +38,6 @@ class SearchWatcher {
     }
 
     search(search_field) {
-        console.log('will search');
         var form = search_field.parents('form')
         if (form.length == 1) {
             arche.actionmarker_feedback(form, true);
@@ -96,9 +75,6 @@ class SearchWatcher {
             $(this.target_name).render(response, this.directive);
         } else {
             this.has_results = false;
-
-            //var no_res_elem = $(this.target_name).children('[data-no-results]');
-            //if (no_res_elem.length == 1) no_res_elem.html(no_res_elem.data('no-results'));
         }
         var msg_elem = $(this.target_name).children('[data-search-msg]');
         if (response.msg) {

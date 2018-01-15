@@ -51,11 +51,11 @@
               <span class="input-group-btn">
                 <button type="submit" class="btn btn-default">
                 <span data-actionmarker="rotate-me glyphicon-refresh"
-                      class="glyphicon glyphicon-search"></span>
+                      class="glyphicon glyphicon-search"></span>&nbsp;
                 </button>
               </span>
             </div>
-            <div id="popover-res">
+            <div id="popover-res" class="search-popover">
               <p class="text-center">
                 <a data-close-results="#popover-res"
                    href="#"
@@ -63,12 +63,10 @@
               </p>
               <ul  class="list-unstyled">
                 <li>
-                  <span data-css-icon></span>
                   <a class="text-overflow" href="">
+                    <span data-css-icon></span>
                     <span data-title></span>
-                    <span class="pull-right">
-                      <img data-img />
-                    </span>
+                    <img class="popover-img" data-img />
                   </a>
                 </li>
               </ul>

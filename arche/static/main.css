@@ -99,8 +99,11 @@
 }
 
 #popover-res {
-    position: absolute;
     background: #fff;
+}
+
+.search-popover {
+    position: absolute;
     left: 0px;
     max-width: 100%;
     min-width: 200px;
@@ -109,6 +112,23 @@
     transition: all 500ms ease;
     opacity: 0;
 }
-#popover-res li { line-height: 30px; }
-#popover-res  img { display: inline-block; }
-#popover-res.active { opacity: .9; }
+.search-popover span {
+    display: inline-block;
+}
+.search-popover li a {
+    display: block;
+    padding: 3px 0;
+}
+.search-popover li {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    padding:  0 50px 0 0;
+}
+.search-popover .popover-img {
+    display: inline-block;
+    position: absolute;
+    right: 0px;
+}
+.search-popover.active { opacity: .9; }
