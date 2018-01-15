@@ -149,7 +149,11 @@ class ExistingUserIDOrEmail(object):
             email_validator(node, value)
         user = self.context['users'].get_user(value)
         if not user:
-            raise colander.Invalid(node, _("Invalid email or UserID"))
+            if '@' in value:
+                msg = _("No such email registered. Perhaps you haven't registered here?")
+            else:
+                msg = _("No such UserID registered. You may wish to try your email address.")
+            raise colander.Invalid(node, msg)
         if self.require_email and not user.email:
             raise colander.Invalid(node, _("User doesn't have a valid email address"))
 
