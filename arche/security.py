@@ -191,7 +191,7 @@ def get_roles(registry = None, **filterkw):
     return results
 
 def sha512_hash_method(value, hashed = None):
-    return sha512(value).hexdigest()
+    return sha512(value.encode('utf-8')).hexdigest()
 
 def bcrypt_hash_method(value, hashed = None):
     #Package seems broken right now.

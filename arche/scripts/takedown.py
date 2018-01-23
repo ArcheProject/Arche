@@ -38,7 +38,7 @@ def takedown_app(env, parsed_ns):
     try:
         from waitress import serve
     except ImportError:
-        print "Waitress needed to run this script"
+        print("Waitress needed to run this script")
         raise
     _waitress_console_logging()
     config = Configurator()
