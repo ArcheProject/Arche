@@ -11,7 +11,7 @@ before_install:
 
 install:
   - pip install zc.buildout
-  - travis_retry bin/buildout
+  - travis_retry buildout
 
 script:
   - travis_retry bin/py setup.py test -q
