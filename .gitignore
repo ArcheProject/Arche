@@ -24,3 +24,17 @@ local
 .idea
 dist
 share
+Skulle ta bort .gitignore
+Skulle ta bort repoze.catalog/.gitignore
+Skulle ta bort repoze.catalog/CHANGES.txt
+Skulle ta bort repoze.catalog/CONTRIBUTORS.txt
+Skulle ta bort repoze.catalog/COPYRIGHT.txt
+Skulle ta bort repoze.catalog/LICENSE.txt
+Skulle ta bort repoze.catalog/README.rst
+Skulle ta bort repoze.catalog/TODO.txt
+Skulle ta bort repoze.catalog/benchmark/
+Skulle ta bort repoze.catalog/docs/
+Skulle ta bort repoze.catalog/repoze/
+Skulle ta bort repoze.catalog/setup.cfg
+Skulle ta bort repoze.catalog/setup.py
+Skulle ta bort repoze.catalog/tox.ini

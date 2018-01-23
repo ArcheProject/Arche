@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from datetime import datetime
 from datetime import timedelta
 from calendar import timegm
 from unittest import TestCase
 
-from pyramid.i18n import get_localizer
 from pyramid import testing
 
 
@@ -75,48 +75,48 @@ class DateTimeHandlerTests(TestCase):
 
     def test_format_relative(self):
         request = testing.DummyRequest()
-        locale = get_localizer(request)
+        locale = request.localizer
         trans = locale.translate
         obj = self._cut()
         now = obj.utcnow()
         fut = obj.format_relative
         #Just now
-        self.assertEqual(fut(now), u"Just now")
+        self.assertEqual(fut(now), "Just now")
 
         #30 seconds ago - is this really a smart test? :)
         now = obj.utcnow()
         out = fut(now - timedelta(seconds=30))
-        self.assertEqual(trans(out), u"30 seconds ago")
+        self.assertEqual(trans(out), "30 seconds ago")
 
         #90 seconds ago - I.e. after 1 minute
         out = fut(now - timedelta(seconds=90))
-        self.assertEqual(trans(out), u"1 minute ago")
+        self.assertEqual(trans(out), "1 minute ago")
 
         #5 minutes ago
         out = fut(now - timedelta(minutes=5))
-        self.assertEqual(trans(out), u"5 minutes ago")
+        self.assertEqual(trans(out), "5 minutes ago")
 
         #1 hour ago
         out = fut(now - timedelta(hours=1, seconds=1))
-        self.assertEqual(trans(out), u"1 hour ago")
+        self.assertEqual(trans(out), "1 hour ago")
 
         #5 hours ago
         out = fut(now - timedelta(hours=6, seconds=1))
-        self.assertEqual(trans(out), u"6 hours ago")
+        self.assertEqual(trans(out), "6 hours ago")
         
         #After about 1 day, return regular date time format
         date = obj.timezone.localize( datetime.strptime('1999-08-14 18:12', "%Y-%m-%d %H:%M") )
-        self.assertEqual(fut(date), u'8/14/99, 6:12 PM')
+        self.assertEqual(fut(date), '8/14/99, 6:12 PM')
 
     def test_format_relative_from_timestamp(self):
         request = testing.DummyRequest()
-        locale = get_localizer(request)
+        locale = request.localizer
         trans = locale.translate
         obj = self._cut()
         time = obj.utcnow() - timedelta(minutes=5)
         timestamp = timegm(time.timetuple())
         out = obj.format_relative(timestamp)
-        self.assertEqual(trans(out), u"5 minutes ago")
+        self.assertEqual(trans(out), "5 minutes ago")
 
     def test_relative_time_format_no_tz_set(self):
         obj = self._cut()

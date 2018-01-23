@@ -598,14 +598,15 @@ class Token(Persistent):
     add_permission = "Add %s" % type_name
 
     def __init__(self, size = 40, hours = 3):
-        self.token = ''.join([choice(string.letters + string.digits) for x in range(size)])
+        self.token = ''.join([choice(string.ascii_letters + string.digits) for x in range(size)])
         self.created = utcnow()
         if hours:
             self.expires = self.created + timedelta(hours = hours)
 
     def __str__(self): return str(self.token)
     def __repr__(self): return repr(self.token)
-    def __cmp__(self, txt): return cmp(self.token, txt)
+#    def __cmp__(self, txt): return cmp(self.token, txt)
+    def __eq__(self, other): return self.token == other.token
 
     @property
     def valid(self):

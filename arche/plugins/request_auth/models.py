@@ -28,7 +28,7 @@ class RequestSession(AttributeAnnotations):
             link_valid = 20,
             redirect_url = ''):
         link_valid = utcnow() + timedelta(seconds = link_valid)
-        token = ''.join([choice(string.letters + string.digits) for x in range(50)])
+        token = ''.join([choice(string.ascii_letters + string.digits) for x in range(50)])
         if not redirect_url:
             # I.e. Root
             redirect_url = request.resource_url(self.context)
@@ -85,7 +85,7 @@ class RequestSession(AttributeAnnotations):
             assert token == data['token'] #Is this even needed since it wouldn't be found otherwise?
             assert ip_addr == data['client_ip'], _("IP address doesn't match")
         except AssertionError as exc:
-            raise ConsumeTokenError(exc.message)
+            raise ConsumeTokenError(exc)
 
 
 def includeme(config):

@@ -147,7 +147,7 @@ class FileAttachmentWidget(Widget):
 
     def random_id(self):
         return ''.join(
-            [random.choice(string.letters) for i in range(10)])
+            [random.choice(string.ascii_letters) for i in range(10)])
 
     def serialize(self, field, cstruct, **kw):
         if cstruct in (colander.null, None):

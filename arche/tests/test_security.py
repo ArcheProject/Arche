@@ -96,22 +96,22 @@ class GetRolesTests(TestCase):
 
     def test_get_roles(self):
         self._fixture()
-        self.assertEqual(self._fut().keys(), ['role:nothing_set', 'role:Inherit', 'role:Assignable', 'role:Both'])
+        self.assertEqual(set(self._fut()), {'role:nothing_set', 'role:Inherit', 'role:Assignable', 'role:Both'})
 
     def test_get_roles_assignable(self):
         self._fixture()
-        self.assertEqual(self._fut(assignable = True).keys(), ['role:Assignable', 'role:Both'])
-        self.assertEqual(self._fut(assignable = False).keys(), ['role:nothing_set', 'role:Inherit'])
+        self.assertEqual(set(self._fut(assignable=True)), {'role:Assignable', 'role:Both'})
+        self.assertEqual(set(self._fut(assignable=False)), {'role:nothing_set', 'role:Inherit'})
 
     def test_get_roles_inheritable(self):
         self._fixture()
-        self.assertEqual(self._fut(inheritable = True).keys(), ['role:Inherit', 'role:Both'])
-        self.assertEqual(self._fut(inheritable = False).keys(), ['role:nothing_set', 'role:Assignable'])
+        self.assertEqual(set(self._fut(inheritable=True)), {'role:Inherit', 'role:Both'})
+        self.assertEqual(set(self._fut(inheritable=False)), {'role:nothing_set', 'role:Assignable'})
 
     def test_get_roles_both(self):
         self._fixture()
-        self.assertEqual(self._fut(assignable = True, inheritable = True).keys(), ['role:Both'])
-        self.assertEqual(self._fut(assignable = False, inheritable = False).keys(), ['role:nothing_set'])
+        self.assertEqual(list(self._fut(assignable=True, inheritable=True)), ['role:Both'])
+        self.assertEqual(list(self._fut(assignable=False, inheritable=False)), ['role:nothing_set'])
 
 #     def test_get_roles_assignable(self):
 #         obj = self._cut()
