@@ -2,7 +2,6 @@ import string
 from datetime import timedelta
 from random import choice
 
-import six
 from BTrees.OOBTree import OOBTree
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember
@@ -86,7 +85,7 @@ class RequestSession(AttributeAnnotations):
             assert token == data['token'] #Is this even needed since it wouldn't be found otherwise?
             assert ip_addr == data['client_ip'], _("IP address doesn't match")
         except AssertionError as exc:
-            raise ConsumeTokenError(six.u(exc))
+            raise ConsumeTokenError(str(exc))
 
 
 def includeme(config):
