@@ -218,18 +218,18 @@ def auth_tkt_factory(settings):
         from os.path import isfile
         filename = settings.get('arche.salt_file', None)
         if filename is None:
-            print ( "\nUsing random salt which means that all users must reauthenticate on restart.")
-            print ( "Please specify a salt file by adding the parameter:\n")
-            print ( "arche.salt_file = <path to file>\n")
-            print ( "in paster ini config and add the salt as the sole contents of the file.\n")
+            print("\nUsing random salt which means that all users must reauthenticate on restart.")
+            print("Please specify a salt file by adding the parameter:\n")
+            print("arche.salt_file = <path to file>\n")
+            print("in paster ini config and add the salt as the sole contents of the file.\n")
             return str(uuid4())
         if not isfile(filename):
-            print ( "\nCan't find salt file specified in paster ini. Trying to create one...")
+            print("\nCan't find salt file specified in paster ini. Trying to create one...")
             f = open(filename, 'w')
             salt = str(uuid4())
             f.write(salt)
             f.close()
-            print ( "Wrote new salt in: %s") % filename
+            print("Wrote new salt in: %s" % filename)
             return salt
         else:
             f = open(filename, 'r')
