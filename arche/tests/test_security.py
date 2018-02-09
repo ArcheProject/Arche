@@ -48,14 +48,14 @@ class ContextPermIntegrationTests(TestCase):
         self.assertEqual(groupfinder('tester', request), set([security.ROLE_ADMIN]))
         self.assertEqual(groupfinder('admin', request), set([security.ROLE_ADMIN, 'group:administrators']))
 
-    def test_request_context_not_used_for_another_context(self):
+    def test_for_other_userid(self):
         root = self._fixture()
         request = testing.DummyRequest(context = root['a'])
         self.assertEqual(request.authenticated_userid, 'tester') #Just to make sure
-        self.failUnless(security.has_permission(request, security.PERM_EDIT))
-        self.failUnless(security.has_permission(request, security.PERM_EDIT, root['a']))
-        self.failIf(security.has_permission(request, security.PERM_EDIT, root))
-        self.failIf(security.has_permission(request, security.PERM_EDIT, root['b']))
+        root['a'].local_roles['other'] = 'role:Administrator'
+        self.failUnless(security.has_permission(request, security.PERM_EDIT, context=root['a'], for_userid='other'))
+        self.failUnless(security.has_permission(request, security.PERM_EDIT, context=root['a'], for_userid='tester'))
+        self.failIf(security.has_permission(request, security.PERM_EDIT, context=root, for_userid='xxx'))
 
     def test_context_effective_principals(self):
         root = self._fixture()
@@ -68,6 +68,14 @@ class ContextPermIntegrationTests(TestCase):
                          set([security.ROLE_ADMIN, 'system.Everyone', 'system.Authenticated', 'tester']))
         self.assertEqual(set(security.context_effective_principals(request, root['b'])),
                          set(['system.Everyone', 'system.Authenticated', 'tester']))
+
+    def test_has_permission_other_userid(self):
+        root = self._fixture()
+        request = testing.DummyRequest(context = root['a'])
+        self.failUnless(security.has_permission(request, security.PERM_EDIT))
+        self.failUnless(security.has_permission(request, security.PERM_EDIT, root['a']))
+        self.failIf(security.has_permission(request, security.PERM_EDIT, root))
+        self.failIf(security.has_permission(request, security.PERM_EDIT, root['b']))
 
 
 class GetRolesTests(TestCase):

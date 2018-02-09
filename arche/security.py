@@ -69,6 +69,7 @@ ROLE_AUTHENTICATED = Role(Authenticated,
 class ACLException(Exception):
     """ When ACL isn't registered, or something else goes wrong. """
 
+
 @contextmanager
 def authz_context(context, request):
     before = request.environ.pop('authz_context', None)
@@ -80,11 +81,15 @@ def authz_context(context, request):
         if before is not None:
             request.environ['authz_context'] = before
 
-def has_permission(request, permission, context=None):
+
+def has_permission(request, permission, context=None, for_userid=None):
     """ The default has_permission does care about the context,
         but it calls the callback (in our case 'groupfinder') without the correct
         context. This methods hacks in the correct context. Keep it here until
-        this has been fixed in Pyramid."""
+        this has been fixed in Pyramid.
+
+        The option for_userid overrides check for current user and checks for that user instead.
+    """
     try:
         if context is None:
             context = request.context
@@ -100,8 +105,12 @@ def has_permission(request, permission, context=None):
         raise ValueError('Authentication policy registered without '
                          'authorization policy') # should never happen
     with authz_context(context, request):
-        principals = authn_policy.effective_principals(request)
+        if for_userid:
+            principals = groupfinder(for_userid, request)
+        else:
+            principals = authn_policy.effective_principals(request)
         return authz_policy.permits(context, principals, permission)
+
 
 def context_effective_principals(request, context = None):
     if context is None:
@@ -111,6 +120,7 @@ def context_effective_principals(request, context = None):
         return [Everyone]
     with authz_context(context, request):
         return authn_policy.effective_principals(request)
+
 
 def groupfinder(name, request):
     """ This method is called on each request to determine which
@@ -157,6 +167,7 @@ def groupfinder(name, request):
             context = None
     return result
 
+
 def get_acl_registry(registry = None):
     """ Get ACL registry"""
     if registry is None:
@@ -166,11 +177,13 @@ def get_acl_registry(registry = None):
     except AttributeError:
         raise ACLException("ACL not initialized, include arche.security")
 
+
 def get_local_roles(context, registry = None):
     #FIXME: Deprecated, remove this
     if registry is None:
         registry = get_current_registry()
     return registry.getAdapter(context, IRoles)
+
 
 def get_roles(registry = None, **filterkw):
     if registry is None:
@@ -190,8 +203,10 @@ def get_roles(registry = None, **filterkw):
             results[role.principal] = role
     return results
 
+
 def sha512_hash_method(value, hashed = None):
     return sha512(value.encode('utf-8')).hexdigest()
+
 
 def bcrypt_hash_method(value, hashed = None):
     #Package seems broken right now.
