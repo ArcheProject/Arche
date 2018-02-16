@@ -1,0 +1,16 @@
+language: python
+sudo: false
+bundler_args: --retry 8
+
+python:
+  - 2.7
+
+before_install:
+  - pip install --upgrade pip
+
+install:
+  - pip install zc.buildout
+  - travis_retry buildout -c testing.cfg
+
+script:
+  - travis_retry bin/py setup.py test -q
