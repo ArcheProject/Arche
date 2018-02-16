@@ -69,6 +69,8 @@ function create_modal(url, params) {
       }
     }
     $('#modal-area').modal();
+    $('#modal-area').one('hidden.bs.modal', arche.destroy_modal);
+
   });
   request.fail(function(jqXHR) {
     arche.flash_error(jqXHR);
