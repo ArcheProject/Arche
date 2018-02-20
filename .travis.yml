@@ -5,6 +5,9 @@ bundler_args: --retry 8
 python:
   - 2.7
 
+#FIXME: As soon as repoze catalog works with python 3
+#  - 3.5
+
 before_install:
   - pip install --upgrade pip
 

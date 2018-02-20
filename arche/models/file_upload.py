@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from pyramid.interfaces import IRequest
 from zope.component import adapter
 from zope.interface import implementer
@@ -10,7 +13,7 @@ from arche.interfaces import IFileUploadTempStore
 @implementer(IFileUploadTempStore)
 class FileUploadTempStore(object):
     """
-    A temporary storage for file file uploads
+    A temporary storage for file uploads
 
     File uploads are stored in the session so that you don't need
     to upload your file again if validation of another schema node
@@ -42,7 +45,7 @@ class FileUploadTempStore(object):
 
     def __getitem__(self, name):
         value = self.storage[name].copy()
-        value['fp'] = six.StringIO(value.get('file_contents'))
+        value['fp'] = six.BytesIO(value.get('file_contents'))
         return value
 
     def __delitem__(self, name):

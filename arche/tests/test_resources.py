@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from unittest import TestCase
 
 from pyramid import testing
@@ -196,7 +198,8 @@ class ContextACLTests(TestCase):
         _attach_dummy_acl(self.config)
         _attach_dummy_acl(self.config, name = 'Dummy')
         self.config.set_content_workflow('Dummy', 'simple_workflow')
-        #A bit too specific but at least not the same as other set workflows
+        # A bit too specific but at least not the same as other set workflows
+        # FIXME Robin: py3(only?) gives 'role:Administrator'
         self.assertEqual(context.__acl__[0][0:2], ('Allow', 'role:Owner',))
 
 

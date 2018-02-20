@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from unittest import TestCase
+import collections
 
 from pyramid import testing
 from pyramid.request import apply_request_extensions
@@ -82,7 +84,7 @@ class RefGuardTests(TestCase):
 
         obj = self._cut(_checker)
         self.assertEqual(tuple(obj.get_guarded_objects(request, root)), (1, 2))
-        self.assertTrue(hasattr(obj.get_guarded_objects(request, root), 'next'))
+        self.assertIsInstance(obj.get_guarded_objects(request, root), collections.Iterable)
 
     def test_get_guarded_objects_catalog_result(self):
         from arche.resources import Document
@@ -99,7 +101,7 @@ class RefGuardTests(TestCase):
         obj = self._cut(_checker, catalog_result=True)
         self.assertEqual(set(obj.get_guarded_objects(request, root)),
                          set([doc1, doc2]))
-        self.assertTrue(hasattr(obj.get_guarded_objects(request, root), 'next'))
+        self.assertIsInstance(obj.get_guarded_objects(request, root), collections.Iterable)
 
     def test_get_guarded_objects_with_limit(self):
         root = self._fixture()
@@ -111,7 +113,7 @@ class RefGuardTests(TestCase):
         obj = self._cut(_checker)
         self.assertEqual(set(obj.get_guarded_objects(request, root, limit=5)),
                          set(range(5)))
-        self.assertTrue(hasattr(obj.get_guarded_objects(request, root), 'next'))
+        self.assertIsInstance(obj.get_guarded_objects(request, root), collections.Iterable)
 
     def test_get_guarded_objects_with_no_limit(self):
         root = self._fixture()
@@ -123,7 +125,7 @@ class RefGuardTests(TestCase):
         obj = self._cut(_checker)
         self.assertEqual(set(obj.get_guarded_objects(request, root, limit=0)),
                          set(range(10)))
-        self.assertTrue(hasattr(obj.get_guarded_objects(request, root), 'next'))
+        self.assertIsInstance(obj.get_guarded_objects(request, root), collections.Iterable)
 
     def test_get_guarded_objects_with_no_result(self):
         root = self._fixture()
@@ -135,9 +137,9 @@ class RefGuardTests(TestCase):
         obj = self._cut(_checker)
         self.assertEqual(set(obj.get_guarded_objects(request, root)),
                          set([]))
-        self.assertTrue(hasattr(obj.get_guarded_objects(request, root), 'next'))
+        self.assertIsInstance(obj.get_guarded_objects(request, root), collections.Iterable)
         empty_gen = obj.get_guarded_objects(request, root)
-        self.assertRaises(StopIteration, empty_gen.next)
+        self.assertRaises(StopIteration, lambda: next(empty_gen))
 
     def test_get_wrong_context_has_same_behaviour(self):
         root = self._fixture()
@@ -148,10 +150,10 @@ class RefGuardTests(TestCase):
 
         obj = self._cut(_checker, requires=[IUser])
         self.assertEqual(set(obj.get_guarded_objects(request, root)),
-                         set([]))
-        self.assertTrue(hasattr(obj.get_guarded_objects(request, root), 'next'))
+                         set())
+        self.assertIsInstance(obj.get_guarded_objects(request, root), collections.Iterable)
         empty_gen = obj.get_guarded_objects(request, root)
-        self.assertRaises(StopIteration, empty_gen.next)
+        self.assertRaises(StopIteration, lambda: next(empty_gen))
 
 
 class ReferenceGuardsTests(TestCase):
