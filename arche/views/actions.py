@@ -351,5 +351,19 @@ def view_settings(context, request, va, **kw):
                 'title': request.localizer.translate(va.title)}
 
 
+@view_action('nav_right', 'set_language',
+             priority = 1)
+def set_language_action(context, request, va, **kw):
+    view = kw['view']
+    try:
+        show_menu = request.root.site_settings.get('show_lang_menu', None)
+    except AttributeError:
+        return
+    if show_menu:
+        languages = request.root.site_settings.get('languages', ())
+        if languages and len(languages) > 1:
+            return view.render_template('arche:templates/menus/language.pt', languages=languages)
+
+
 def includeme(config):
     config.scan('arche.views.actions')

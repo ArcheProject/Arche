@@ -708,6 +708,23 @@ class SiteSettingsSchema(colander.Schema):
         description=_(
             "This will allow users to register with a fake email address. Generally not recommended.")
     )
+    show_lang_menu = colander.SchemaNode(
+        colander.Bool(),
+        title=_("Show language switcher menu?"),
+        description=_("show_lang_menu_description",
+                      default="If more than one language is available and no "
+                      "other means of setting language is provided."),
+        default=False,
+    )
+    languages = colander.SchemaNode(
+        colander.Sequence(),
+        colander.SchemaNode(
+            colander.String(),
+            name='not-used',
+            title=_("Language")
+        ),
+        title = _("Available languages"),
+    )
 
 
 @colander.deferred

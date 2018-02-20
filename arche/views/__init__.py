@@ -14,6 +14,7 @@ def includeme(config):
     config.include('arche.views.ie_compat_header')
     config.include('arche.views.image')
     config.include('arche.views.initial_setup')
+    config.include('.languages')
     config.include('arche.views.link')
     config.include('arche.views.listing')
     config.include('arche.views.permissions')
