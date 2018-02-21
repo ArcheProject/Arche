@@ -1,6 +1,5 @@
 from logging import getLogger
 
-from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.i18n import TranslationStringFactory
 from pyramid.util import DottedNameResolver
@@ -100,6 +99,7 @@ def root_factory(request):
     return appmaker(conn.root())
 
 def base_config(**settings):
+    from pyramid.authorization import ACLAuthorizationPolicy
     resolver = DottedNameResolver()
     setup_defaults(settings)
     authn_policy = resolver.maybe_resolve(settings['arche.authn_factory'])(settings)
