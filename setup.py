@@ -33,7 +33,8 @@ requires = ('Babel',
             'six',
             'zc.lockfile',
             'zope.component',
-            'zope.interface',)
+            'zope.interface',
+            'zope.copy',)
 
 extras_require = {
     'thumbnails': (

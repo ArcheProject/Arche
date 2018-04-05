@@ -1,16 +1,18 @@
+import inspect
 import warnings
 from collections import deque
 from datetime import datetime
-import inspect
-from copy import deepcopy
 from uuid import uuid4
 
+import pytz
 from BTrees.OOBTree import OOBTree
 from html2text import HTML2Text
+from persistent import IPersistent
 from pyramid.compat import map_
 from pyramid.i18n import TranslationString
 from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
+from pyramid.location import inside
 from pyramid.threadlocal import get_current_registry
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
@@ -18,14 +20,15 @@ from pyramid.traversal import find_root
 from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 from six import string_types
-from six import text_type
 from slugify import UniqueSlugify
 from zope.component import adapter
 from zope.component.event import objectEventNotify
+from zope.copy import copy
+from zope.copy.interfaces import ICopyHook
+from zope.copy.interfaces import ResumeCopy
 from zope.interface import implementer
 from zope.interface import providedBy
 from zope.interface.interfaces import ComponentLookupError
-import pytz
 
 from arche import logger
 from arche.compat import IterableUserDict
@@ -35,7 +38,6 @@ from arche.interfaces import IEmailValidationTokens
 from arche.interfaces import IFlashMessages
 from arche.interfaces import IRegistrationTokens
 from arche.interfaces import IRoot
-from arche.interfaces import IThumbnailedContent
 from arche.interfaces import IUser
 from arche.models.blob import BlobFile #Keep untill db changed
 from arche.models.mimetype_views import get_mimetype_views #b/c
@@ -304,9 +306,9 @@ def copy_recursive(original_contex, change_uids = True):
     """ Note that a copy should always have changed UIDs if the original is kept
         in the resource tree.
     """
-    new_context = deepcopy(original_contex)
-    if change_uids:
-        for obj in find_all_db_objects(new_context):
+    new_context = copy(original_contex)
+    for obj in find_all_db_objects(new_context):
+        if change_uids and hasattr(obj, 'uid'):
             obj.uid = unicode(uuid4())
     return new_context
 
@@ -562,8 +564,10 @@ def addable_content(request, context, restrict=True, check_perm=True):
                 continue
             yield factory
 
+
 def is_modal(request):
     return bool(request.params.get('modal', None) == '1')
+
 
 def format_traceback():
     import sys
@@ -575,6 +579,32 @@ def format_traceback():
     exception_str = "Traceback (most recent call last):\n"
     exception_str += "".join(exception_list)
     return exception_str
+
+
+class CopyHook(object):
+    """ Taken from Substance D - thanks :)"""
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, toplevel, register):
+        context = self.context
+        # We can't register for a more specific interface than IPersistent so
+        # we have to check for __parent__ here (signifiying that the object is
+        # located) and do something special rather than just registering a copy
+        # hook for things that are guaranteed to have a __parent__ (such as
+        # Zope's ILocation)
+        if hasattr(context, '__parent__'):
+            if not inside(self.context, toplevel):
+                # Return the object if we *don't* want it copied.  I don't
+                # really quite understand why we return it instead of returning
+                # None, and why we raise an exception if we *do* want it copied
+                # but mine is not to wonder why.
+                return context
+        # Otherwise, it's a persistent object that does live inside the object
+        # we're copying or a nonpersistent object.  In such cases, we
+        # definitely want to copy them and we signify this desire by raising
+        # ResumeCopy.
+        raise ResumeCopy
 
 
 def includeme(config):
@@ -602,3 +632,8 @@ def includeme(config):
     #Init default scales
     for (name, scale) in image_scales.items():
         config.add_image_scale(name, *scale)
+    # The ICopyHook adapter avoids dumping referenced objects that are not
+    # located inside an object containment-wise when that object is copied.  If
+    # it is not registered, every copy winds up dumping all the objects in the
+    # database due to __parent__ pointers.
+    config.registry.registerAdapter(CopyHook, (IPersistent,), ICopyHook)

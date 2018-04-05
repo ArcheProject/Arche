@@ -11,6 +11,7 @@ from pyramid import testing
 import colander
 
 from arche.testing import barebone_fixture
+from pyramid.request import apply_request_extensions
 
 
 def _dummy_view(*args):
@@ -214,6 +215,47 @@ class FailMarkerTests(TestCase):
         self.assertNotEqual(None, obj)
         self.assertNotEqual(True, obj)
         self.failIf(0 == obj)
+
+
+class CopyRecursiveTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('arche.testing')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _fut(self):
+        from arche.utils import copy_recursive
+        return copy_recursive
+
+    def _fixture(self):
+        from arche.resources import Document
+        root = barebone_fixture(self.config)
+        root['source'] = source = Document()
+        source['a'] = Document()
+        source['a']['b'] = Document()
+        root['target'] = Document()
+        request = testing.DummyRequest()
+        request.root = root
+        apply_request_extensions(request)
+        self.config.begin(request)
+        return root, request
+
+    def test_parent_is_not_a_copy(self):
+        root, request = self._fixture()
+        target = root['target']
+        target['a'] = self._fut(root['source']['a'])
+        self.assertEqual(target['a'], target['a']['b'].__parent__)
+        self.assertEqual(id(target['a']), id(target['a']['b'].__parent__))
+
+    def test_uids_changed(self):
+        root, request = self._fixture()
+        target = root['target']
+        target['a'] = self._fut(root['source']['a'])
+        self.assertNotEqual(target['a'].uid, root['source']['a'].uid)
 
 
 class PrepHTMLForSearchTests(TestCase):
