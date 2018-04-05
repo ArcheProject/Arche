@@ -1,4 +1,5 @@
 import deform
+from arche.models.mimetype_views import get_mimetype_views
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
@@ -10,7 +11,6 @@ from arche.interfaces import IBlobs
 from arche.schemas import AddFileSchema
 from arche.utils import generate_slug
 from arche.utils import image_mime_to_title
-from arche.utils import get_mimetype_views
 from arche.views.base import DefaultAddForm
 from arche.views.base import DefaultView
 from arche.views.contents import JSONContents
