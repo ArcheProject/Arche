@@ -156,6 +156,8 @@ class BaseView(object):
         output = render_view_action(context, self.request, group, name, view = self, **kw)
         if output:
             return output
+        #None will in some cases be changed to a string...
+        return ''
 
     def get_local_nav_objects(self, context):
         #FIXME: Conditions for navigation!
