@@ -169,13 +169,18 @@ function create_flash_message(message, params) {
   if (params['icon_class']) {
     out += '<span class="' + params['icon_class'] +'"></span>&nbsp;&nbsp;&nbsp;';
   }
-  out += message;
+  out += '<span class="msg-part">' + message + '</span>';
   out += '</div>';
 
   if (params['auto_destruct'] === true) {
     //FIXME: Create smarter timeouts here. Pop one message at a time for instance.
     setTimeout( function() { $('#' + params['id']).slideUp(400, function() {this.remove()}); }, arche.default_flash_timer );
   }
+  $('[data-flash-slot] .msg-part').each(function(index) {
+    if ($(this).text() == message) {
+        $(this).parents('[role="alert"]').remove();
+    }
+  })
   target.append(out);
   $('#' + params['id']).hide().slideDown();
 };
@@ -217,6 +222,7 @@ function flash_error(jqXHR) {
                     var msg = "Conenction error - you seem to be offline"
                 }
         }
+
         arche.create_flash_message(msg, {type: 'warning', id: 'connection-warning'});
     }
   } else {
