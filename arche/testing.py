@@ -33,6 +33,9 @@ def workflow(config):
 def portlets(config):
     config.include('arche.portlets')
 
+def evolver(config):
+    config.include('arche.models.evolver')
+
 def printing_mailer(config):
     """ Temporary: This is only while waiting for the release of pyramid_mailer's debug mode. """
     print ("\nWARNING! Using printing mailer - no mail will be sent!\n")
