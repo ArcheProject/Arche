@@ -66,7 +66,15 @@ class Roles(IterableUserDict):
         if value:
             value = self._adjust_to_set(value)
             self._check_roles(value)
-            self.data[key] = OOSet(value)
+            try:
+                current = self.data[key]
+            except KeyError:
+                self.data[key] = OOSet(value)
+                return
+            # Check difference
+            if set(current) != value:
+                current.clear()
+                current.update(value)
         elif key in self.data:
             del self.data[key]
 
