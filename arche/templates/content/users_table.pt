@@ -25,7 +25,6 @@
                return '/users/' + arg.item['__name__'];
              },
              '[data-email-validated]@class': function(arg) {
-               console.log(arg.item['email_validated'])
                if (arg.item['email_validated'] == true) return 'glyphicon glyphicon-ok-sign text-success';
                return 'glyphicon glyphicon-question-sign text-warning';
              }
