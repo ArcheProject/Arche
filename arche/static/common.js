@@ -226,8 +226,18 @@ function flash_error(jqXHR) {
         arche.create_flash_message(msg, {type: 'warning', id: 'connection-warning'});
     }
   } else {
-      arche.create_flash_message('<h4>' + jqXHR.status + ' ' + jqXHR.statusText + '</h4>' + jqXHR.responseText,
-          {type: 'danger', auto_destruct: true});
+      if (jqXHR.getResponseHeader('content-type') === "application/json" && typeof(jqXHR.responseText) == 'string') {
+          var parsed = $.parseJSON(jqXHR.responseText);
+          var msg = '<h4>' + parsed.title + '</h4>';
+          if (parsed.body && parsed.body != parsed.title) {
+              msg += parsed.body;
+          } else if (parsed.message != parsed.title) {
+              msg += parsed.message;
+          }
+      } else {
+          var msg = '<h4>' + jqXHR.status + ' ' + jqXHR.statusText + '</h4>' + jqXHR.responseText
+      }
+      arche.create_flash_message(msg, {type: 'danger', auto_destruct: true});
   }
 }
 arche.flash_error = flash_error;
