@@ -1,6 +1,8 @@
-import string
+import datetime
 import random
+import string
 
+import colander
 from deform.widget import AutocompleteInputWidget
 from deform.widget import Select2Widget
 from deform.widget import Widget
@@ -8,12 +10,56 @@ from deform.widget import filedict
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
 from pyramid.traversal import find_root
+from pytz import UTC
 from repoze.catalog.query import Eq
-import colander
 
 from arche import _
 from arche.interfaces import IFileUploadTempStore
 
+
+colander_ts = colander._
+
+
+class LocalDateTime(colander.DateTime):
+    """ Override datetime to be able to handle local timezones and DST.
+        - Fetches timezone from dt_handler.timezone
+        - Converts deserialized value to UTC
+    """
+
+    def _get_tz(self):
+        request = get_current_request()
+        return request.dt_handler.timezone
+
+    def serialize(self, node, appstruct):
+        if not appstruct:
+            return colander.null
+        if type(appstruct) is datetime.date:  # cant use isinstance; dt subs date
+            appstruct = datetime.datetime.combine(appstruct, datetime.time())
+        if not isinstance(appstruct, datetime.datetime):
+            raise colander.Invalid(node,
+                                   colander_ts('"${val}" is not a datetime object',
+                                               mapping={'val': appstruct})
+                                   )
+        if appstruct.tzinfo is None:
+            appstruct = appstruct.replace(tzinfo=UTC)
+        appstruct = appstruct.astimezone(self._get_tz())
+        return appstruct.isoformat()
+
+    def deserialize(self, node, cstruct):
+        if not cstruct:
+            return colander.null
+        try:
+            # Note: Don't pass timezone to colander. It will simply attach it
+            # and not convert properly which messes up the DST.
+            result = colander.iso8601.parse_date(
+                cstruct, default_timezone=None)
+        except colander.iso8601.ParseError as e:
+            raise colander.Invalid(node, colander_ts(self.err_template,
+                                                     mapping={'val': cstruct, 'err': e}))
+        tzinfo = self._get_tz()
+        if getattr(result, 'tzinfo', None) is None:
+            result = tzinfo.localize(result)
+        return result.astimezone(UTC)  # ALWAYS save UTC!
 
 class TaggingWidget(Select2Widget):
     """ A very liberal widget that allows the user to pretty much enter anything.
