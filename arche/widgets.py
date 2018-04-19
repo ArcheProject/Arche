@@ -61,6 +61,7 @@ class LocalDateTime(colander.DateTime):
             result = tzinfo.localize(result)
         return result.astimezone(UTC)  # ALWAYS save UTC!
 
+
 class TaggingWidget(Select2Widget):
     """ A very liberal widget that allows the user to pretty much enter anything.
         It will also display any existing values.
