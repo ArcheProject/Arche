@@ -192,8 +192,8 @@ class UserChangePasswordForm(DefaultEditForm):
             rtoken = request.GET.get('t', object())
             if not token.valid:
                 raise HTTPForbidden(_("pw_token_expired",
-                                      default="Link expired, you have to request a new token if "
-                                              "you wish to change password."))
+                                      default="Link expired, you have to request "
+                                              "password reset again"))
             if token != rtoken:
                 raise HTTPForbidden(_("pw_token_invalid",
                                       default="Password reset link doesn't match. "))
