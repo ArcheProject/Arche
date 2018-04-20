@@ -190,16 +190,22 @@ class UserChangePasswordForm(DefaultEditForm):
         if request.authenticated_userid is None:
             token = getattr(context, 'pw_token', None)
             rtoken = request.GET.get('t', object())
-            if token == rtoken and token.valid:
-                #At this point the email address could be considered as validated too
-                if context.email_validated == False:
-                    context.email_validated = True
-                super(UserChangePasswordForm, self).__init__(context, request)
-                try:
-                    del self.schema['current_password']
-                except KeyError:
-                    pass
-                return
+            if not token.valid:
+                raise HTTPForbidden(_("pw_token_expired",
+                                      default="Link expired, you have to request a new token if "
+                                              "you wish to change password."))
+            if token != rtoken:
+                raise HTTPForbidden(_("pw_token_invalid",
+                                      default="Password reset link doesn't match. "))
+            #At this point the email address could be considered as validated too
+            if context.email_validated == False:
+                context.email_validated = True
+            super(UserChangePasswordForm, self).__init__(context, request)
+            try:
+                del self.schema['current_password']
+            except KeyError:
+                pass
+            return
         else:
             if request.has_permission(security.PERM_EDIT):
                 super(UserChangePasswordForm, self).__init__(context, request)
