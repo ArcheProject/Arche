@@ -103,6 +103,7 @@
 }
 
 .search-popover {
+    display: none;
     position: absolute;
     left: 0px;
     max-width: 100%;
@@ -112,6 +113,10 @@
     transition: all 500ms ease;
     opacity: 0;
 }
+.search-popover.active {
+    display: block;
+}
+
 .search-popover span {
     display: inline-block;
 }
