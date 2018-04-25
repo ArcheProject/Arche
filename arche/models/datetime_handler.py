@@ -3,6 +3,7 @@ from datetime import datetime, date
 from babel.dates import format_date
 from babel.dates import format_datetime
 from babel.dates import format_time
+from pyramid.decorator import reify
 from pyramid.interfaces import IRequest
 from pyramid.threadlocal import get_current_request
 from zope.component import adapter
@@ -30,10 +31,14 @@ class DateTimeHandler(object):
         if request is None:
             request = get_current_request()
         self.request = request
-        self.timezone = self.get_timezone(tz_name = tz_name)
+        self.tz_name = tz_name
         if locale is None:
             locale = request.locale_name
         self.locale = locale
+
+    @reify
+    def timezone(self):
+        return self.get_timezone(tz_name = self.tz_name)
 
     def get_timezone(self, tz_name = None):
         try:
@@ -47,7 +52,7 @@ class DateTimeHandler(object):
     def get_tzname(self):
         """ Fetch timezone from user profile, default settings or simply set utc. """
         if self.request.authenticated_userid:
-            user = self.request.root['users']. get(self.request.authenticated_userid)
+            user = self.request.root['users'].get(self.request.authenticated_userid)
             tz_name = getattr(user, 'timezone', None)
             if tz_name != None:
                 return tz_name

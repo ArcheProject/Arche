@@ -127,3 +127,10 @@ class DateTimeHandlerTests(TestCase):
         time = obj.utcnow() + timedelta(minutes = 10)
         out = obj.format_relative(time)
         self.assertEqual(out, obj.format_dt(time))
+
+    def test_reset_timezone(self):
+        obj = self._cut(locale = 'sv', tz_name = 'Europe/Stockholm')
+        self.assertEqual(str(obj.timezone), 'Europe/Stockholm')
+        obj.tz_name = 'UTC'
+        obj.reset_timezone()
+        self.assertEqual(str(obj.timezone), 'UTC')
