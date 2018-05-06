@@ -29,6 +29,7 @@ default_settings = {
     'arche.auth.activity_update': 60, #Seconds
     'arche.auth.default_max_valid': 60, #Minutes
     'arche.auth.max_keep_days': 30, #Days since last activity
+    'arche.log_roles': 'arche_jsonlog.security.roles', # Made-up namespace for roles adjustments - set to empty to disable
 }
 
 def setup_defaults(settings):
