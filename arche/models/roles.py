@@ -187,7 +187,12 @@ class Roles(IterableUserDict):
         if not getattr(self.context, 'uid', None):
             return
         request = get_current_request()
-        if not request.registry.settings.get('arche.log_roles', True):
+        try:
+            if not request.registry.settings.get('arche.log_roles', True):
+                return
+        except AttributeError:
+            # Catch this during unittests and similar.
+            # No reason to over-complicate.
             return
         rcl = IRolesCommitLogger(request, None)
         if rcl is None:
