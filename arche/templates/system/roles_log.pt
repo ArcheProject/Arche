@@ -11,27 +11,38 @@
 
     <tal:form condition="form|False" tal:content="structure form"></tal:form>
 
-    <div tal:condition="output_rows|False" class="panel panel-primary">
+    <div class="panel panel-primary" tal:condition="not form|True">
       <div class="panel-heading">
         <h3 class="panel-title" i18n:translate="">
-          Roles log
+          Local role changes
         </h3>
       </div>
 
+      <div class="panel-body">
+          <a href="${request.resource_url(context, 'local_roles_log')}" i18n:translate="">
+            New query
+          </a>
+      </div>
+
       <div class="list-group">
-        <div class="list-group-item">
+        <div class="list-group-item" tal:condition="output_rows|False">
           <div class="row">
             <div class="col-sm-4" i18n:translate="">By user</div>
             <div class="col-sm-4" i18n:translate="">URL</div>
             <div class="col-sm-4" i18n:translate="">Timestamp</div>
-            <div tal:condition="not only_context" class="col-sm-12" i18n:translate="">Context</div>
+            <div tal:condition="not only_context"
+                 class="col-sm-12" i18n:translate="">Context</div>
             <div class="col-sm-4" i18n:translate="">Principal</div>
             <div class="col-sm-4" i18n:translate="">Added</div>
             <div class="col-sm-4" i18n:translate="">Removed</div>
           </div>
         </div>
 
-        <div class="list-group-item" tal:repeat="data output_rows">
+        <div tal:condition="not output_rows|False" class="panel-body">
+          <span i18n:translate="">Nothing matched</span>
+        </div>
+
+        <div tal:condition="output_rows|False" class="list-group-item" tal:repeat="data output_rows">
           <div class="row">
             <div class="col-sm-4">${data['userid']}</div>
             <div class="col-sm-4">${data['url']}</div>
@@ -61,8 +72,6 @@
           </tal:contexts>
         </div>
       </div>
-
-
     </div>
 </div>
 </body>

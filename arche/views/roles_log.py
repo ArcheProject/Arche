@@ -30,6 +30,7 @@ class RolesLogView(BaseForm):
         "regarding_userid",
         "regarding_role",
     )
+    title = _("Parse local roles")
 
     def __call__(self):
         self._cached_uids = {}
@@ -125,8 +126,10 @@ class RolesLogView(BaseForm):
 
     def get_role_title(self, role):
         if isinstance(role, string_types):
-            return self.request.registry.roles[role].title
-        return role.title
+            title = self.request.registry.roles[role].title
+        else:
+            title = role.title
+        return self.request.localizer.translate(title)
 
 
 def parse_roles_logfile(fname, start=0, stop=None):
