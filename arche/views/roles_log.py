@@ -99,7 +99,9 @@ class RolesLogView(BaseForm):
         role = appstruct['regarding_role']
         for uid in tuple(data['contexts']):
             for (userid, roledata) in data['contexts'][uid].items():
-                roles = set(roledata.values())
+                roles = set()
+                for rdata in roledata.values():
+                    roles.extend(rdata)
                 if role not in roles:
                     data['contexts'][uid].pop(userid)
             if not data['contexts'][uid]:
