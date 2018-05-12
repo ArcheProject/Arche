@@ -763,6 +763,46 @@ def user_schema_admin_changes(schema, event):
         )
 
 
+@colander.deferred
+def regarding_role(node, kw):
+    request = kw['request']
+    context = kw['context']
+    results = [('', 'Any')]
+    for role in context.local_roles.get_assignable(registry=request.registry).values():
+        results.append((role.principal, request.localizer.translate(role.title)))
+    return deform.widget.SelectWidget(values=results)
+
+
+class RolesLogSchema(colander.Schema):
+    only_current_context = colander.SchemaNode(
+        colander.Bool(),
+        title = "Only in current context?",
+        default = True,
+    )
+    regarding_userid = colander.SchemaNode(
+        colander.String(),
+        title = "Regarding this userid",
+        missing=""
+    )
+    done_by_userid = colander.SchemaNode(
+        colander.String(),
+        title = "Done by this userid",
+        missing=""
+    )
+    regarding_role = colander.SchemaNode(
+        colander.String(),
+        title = "Regarding role",
+        missing="",
+        widget=regarding_role,
+
+    )
+    view_contains = colander.SchemaNode(
+        colander.String(),
+        title = "View contains this string",
+        missing=""
+    )
+
+
 def includeme(config):
     config.add_schema('Document', DocumentSchema, ('view', 'edit', 'add'))
     config.add_schema('User', EditUserSchema, ('view', 'edit'))
@@ -786,3 +826,4 @@ def includeme(config):
     config.add_schema('Link', LinkSchema, 'edit')
     config.add_schema('Content', CustomizeAddableContentSchema, 'customize_addable_content')
     config.add_subscriber(user_schema_admin_changes, [EditUserSchema, ISchemaCreatedEvent])
+    config.add_schema('Auth', RolesLogSchema, 'view_roles_log')
