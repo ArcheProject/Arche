@@ -101,7 +101,7 @@ class RolesLogView(BaseForm):
             for (userid, roledata) in data['contexts'][uid].items():
                 roles = set()
                 for rdata in roledata.values():
-                    roles.extend(rdata)
+                    roles.update(rdata)
                 if role not in roles:
                     data['contexts'][uid].pop(userid)
             if not data['contexts'][uid]:
