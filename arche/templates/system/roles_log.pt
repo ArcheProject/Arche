@@ -48,13 +48,12 @@
               <tal:iter repeat="(userid, entries) cdata.items()">
                 <tal:def define="aentries entries.get('+', ());
                                  rentries entries.get('-', ());">
-
                   <div class="col-sm-4">${userid}</div>
                   <div class="col-sm-4 ${aentries and 'bg-success' or None}">
-                    ${", ".join(view.get_role_title(x) for x in aentries)}
+                    ${", ".join(view.get_role_title(x) for x in aentries)}&nbsp;
                   </div>
                   <div class="col-sm-4 ${rentries and 'bg-danger' or None}">
-                    ${", ".join(view.get_role_title(x) for x in rentries)}
+                    ${", ".join(view.get_role_title(x) for x in rentries)}&nbsp;
                   </div>
                 </tal:def>
               </tal:iter>
