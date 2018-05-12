@@ -20,6 +20,7 @@ def includeme(config):
     config.include('.permissions')
     config.include('.portlets')
     config.include('.revisions')
+    config.include('.roles_log')
     config.include('.search')
     config.include('.selected_content')
     config.include('.site_settings')
