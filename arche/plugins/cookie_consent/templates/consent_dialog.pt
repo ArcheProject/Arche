@@ -1,0 +1,20 @@
+<tal:main
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    i18n:domain="Arche">
+
+    <nav id="cookie-consent-container" class="navbar navbar-default navbar-fixed-bottom alert alert-warning">
+        <div class="container">
+            <div class="navbar-inner">
+                <button class="pull-right cookie-close"><span class="glyphicon glyphicon-remove-circle"></span></button>
+                <p class="text-muted credit cookie-text">
+                    <tal:ts  i18n:translate="">This website uses cookies to keep track of your login and user session. By using the website you are accepting these cookies.</tal:ts>
+                    <a tal:condition="cookie_policy_path" href="${cookie_policy_path}" i18n:translate="">Cookie policy</a>
+                </p>
+            </div>
+        </div>
+    </nav>
+
+</tal:main>

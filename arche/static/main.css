@@ -137,3 +137,17 @@
     right: 0px;
 }
 .search-popover.active { opacity: .9; }
+
+#cookie-consent-container {
+    border-radius: 0;
+    margin-bottom: 0;
+}
+#cookie-consent-container button {
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    margin-left: 5px;
+}
+#cookie-consent-container p {
+    margin-bottom: 0;
+}
