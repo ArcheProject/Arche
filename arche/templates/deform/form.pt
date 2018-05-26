@@ -35,6 +35,8 @@
 
         <h2 tal:condition="field.heading|None">${field.heading}</h2>
 
+        <div tal:condition="before_fields|False" tal:content="structure before_fields" />
+
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" tal:condition="len(tabbed_fields) > 1" style="margin-bottom:30px;">
           <tal:iterate repeat="name tabbed_fields">
@@ -68,6 +70,8 @@
         <tal:fields condition="not tabbed_fields" repeat="child field">
           <tal:field replace="structure child.render_template(item_template)" />
         </tal:fields>
+
+        <div tal:condition="before_buttons|False" tal:content="structure before_buttons" />
 
         <div class="form-group well clearfix" tal:condition="buttons">
           <tal:loop tal:repeat="button buttons">
