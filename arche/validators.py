@@ -243,8 +243,8 @@ class FileUploadValidator(object):
 
 @colander.deferred
 def deferred_current_password_validator(node, kw):
-    context = kw['context']
-    return CurrentPasswordValidator(context)
+    request = kw['request']
+    return CurrentPasswordValidator(request.profile)
 
 
 @colander.deferred
