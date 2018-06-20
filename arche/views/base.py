@@ -310,7 +310,7 @@ class BaseForm(BaseView, FormView):
         from arche.schemas import tabs
         return tabs
 
-    @property
+    @reify
     def form_options(self):
         return {'action': self.request.url,
                 'heading': self.get_schema_heading(),
