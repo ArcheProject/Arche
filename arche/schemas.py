@@ -382,6 +382,20 @@ class ChangePasswordSchema(colander.Schema):
         widget=deform.widget.CheckedPasswordWidget()
     )
 
+    def after_bind(self, schema, kw):
+        request = kw['request']
+        def _remove_pw():
+            try:
+                del schema['current_password']
+            except KeyError:
+                pass
+        # Cases where the current password field shouldn't exist
+        if not request.authenticated_userid:
+            _remove_pw()
+        # Admins may change the password of other users, but admins might not have a pw
+        if request.authenticated_userid and not request.profile.password:
+            _remove_pw()
+
 
 class InitialSetup(colander.Schema):
     title = colander.SchemaNode(
