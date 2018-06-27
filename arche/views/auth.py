@@ -201,10 +201,6 @@ class UserChangePasswordForm(DefaultEditForm):
             if context.email_validated == False:
                 context.email_validated = True
             super(UserChangePasswordForm, self).__init__(context, request)
-            try:
-                del self.schema['current_password']
-            except KeyError:
-                pass
             return
         else:
             if request.has_permission(security.PERM_EDIT):
