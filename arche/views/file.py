@@ -47,10 +47,13 @@ def file_data_response(context, request, disposition = 'inline', blob_key = None
         ('Content-Disposition', '%s;filename="%s"' % (
             disposition, filename)),
         ('Content-Type', str(mimetype)),
+        # Might be a good idea to make this configurable
+        ('Cache-Control', 'private, max-age=%s' % (60*60)),
     ]
-    if blobfile.etag:
-        headerslist.append(('Etag', blobfile.etag))
-    return Response(headerlist=headerslist, body=body)
+    response = Response(headerlist=headerslist, body=body)
+    if response.etag is None:
+        response.md5_etag()
+    return response
 
 
 def download_view(context, request):

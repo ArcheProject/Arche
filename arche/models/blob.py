@@ -75,7 +75,6 @@ class BlobFile(Persistent):
     mimetype = ""
     filename = ""
     blob = None
-    etag = None
 
     def __init__(self, size = None, mimetype = "", filename = ""):
         super(BlobFile, self).__init__()
@@ -83,7 +82,6 @@ class BlobFile(Persistent):
         self.mimetype = mimetype
         self.filename = filename
         self.blob = Blob()
-        self.etag = str(uuid4())
 
 
 def upload_stream(stream, _file):
