@@ -48,6 +48,8 @@ def file_data_response(context, request, disposition = 'inline', blob_key = None
             disposition, filename)),
         ('Content-Type', str(mimetype)),
     ]
+    if blobfile.etag:
+        headerslist.append(('Etag', blobfile.etag))
     return Response(headerlist=headerslist, body=body)
 
 
