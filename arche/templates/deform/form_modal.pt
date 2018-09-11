@@ -41,7 +41,7 @@
 
         <div class="modal-body">
 
-          <div tal:condition="field.before_fields" tal:content="structure field.before_fields" />
+          <div tal:condition="field.before_fields|False" tal:content="structure field.before_fields" />
 
           <!-- Nav tabs -->
           <p tal:condition="len(tabbed_fields) > 1">

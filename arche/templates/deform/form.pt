@@ -35,7 +35,7 @@
 
         <h2 tal:condition="field.heading|None">${field.heading}</h2>
 
-        <div tal:condition="field.before_fields" tal:content="structure field.before_fields" />
+        <div tal:condition="field.before_fields|False" tal:content="structure field.before_fields" />
 
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" tal:condition="len(tabbed_fields) > 1" style="margin-bottom:30px;">
