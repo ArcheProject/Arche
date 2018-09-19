@@ -159,10 +159,19 @@ def includeme(config):
         xhr=True,
         renderer="json"
     )
-    # 401
+    # 401 xhr
     config.add_exception_view(
         UnauthorizedExceptionView,
-        context=HTTPUnauthorized)
+        context=HTTPUnauthorized,
+        xhr=True,
+        renderer="json"
+    )
+    # 401 regular, produces redirect
+    config.add_exception_view(
+        UnauthorizedExceptionView,
+        context=HTTPUnauthorized,
+        xhr=False
+    )
     # Other 400
     config.add_exception_view(
         ExceptionView,
