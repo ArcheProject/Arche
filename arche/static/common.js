@@ -227,25 +227,52 @@ function flash_error(jqXHR) {
                     var msg = "Conenction error - you seem to be offline"
                 }
         }
-
         arche.create_flash_message(msg, {type: 'warning', id: 'connection-warning'});
     }
   } else {
-      if (jqXHR.getResponseHeader('content-type') === "application/json" && typeof(jqXHR.responseText) == 'string') {
-          var parsed = $.parseJSON(jqXHR.responseText);
-          var msg = '<h4>' + parsed.title + '</h4>';
-          if (parsed.body && parsed.body != parsed.title) {
-              msg += parsed.body;
-          } else if (parsed.message != parsed.title) {
-              msg += parsed.message;
-          }
+      if (jqXHR.status == 401) {
+          // Handle 401 as need to login, so open login modal if nothing else is visible
+          arche.handle_401(jqXHR);
       } else {
-          var msg = '<h4>' + jqXHR.status + ' ' + jqXHR.statusText + '</h4>' + jqXHR.responseText
+          // Anything else than 401 should be "flashed"
+          if (jqXHR.getResponseHeader('content-type') === "application/json" && typeof(jqXHR.responseText) == 'string') {
+              var parsed = $.parseJSON(jqXHR.responseText);
+              var msg = '<h4>' + parsed.title + '</h4>';
+              if (parsed.body && parsed.body != parsed.title) {
+                  msg += parsed.body;
+              } else if (parsed.message != parsed.title) {
+                  msg += parsed.message;
+              }
+          } else {
+              var msg = '<h4>' + jqXHR.status + ' ' + jqXHR.statusText + '</h4>' + jqXHR.responseText
+          }
+          arche.create_flash_message(msg, {type: 'danger', auto_destruct: true});
       }
-      arche.create_flash_message(msg, {type: 'danger', auto_destruct: true});
   }
 }
 arche.flash_error = flash_error;
+
+
+/*
+    Handle HTTP 401 errors, interpreted as a need to login.
+    Any error can be sent to this, only 401s will be acted on.
+*/
+arche.handle_401 = function(jqXHR) {
+    if (jqXHR.status != 401) return;
+    if ($('.modal-open').length == 0) {
+        var request = arche.create_modal('/login');
+        request.done(function() {
+            try {
+                var parsed = $.parseJSON(jqXHR.responseText);
+            } catch(e) {
+                console.error(e);
+            }
+            var msg = parsed.message ? parsed.message : parsed.title;
+            arche.create_flash_message(msg, {type: 'danger', auto_destruct: true});
+        });
+    }
+}
+
 
 /* Things performing ajax actions can have this function showing status for them.
  * Add an element within the structure you pass to it. Example:
