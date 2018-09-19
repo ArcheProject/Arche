@@ -618,7 +618,11 @@ def authdebug_message(request):
     """
     if request.authenticated_userid:
         return request.localizer.translate(_("You're not allowed to access this"))
-    raise HTTPUnauthorized(request.localizer.translate(_("You might need to login to access this")))
+    raise HTTPUnauthorized(
+        request.localizer.translate(
+            _("You need to login")
+        )
+    )
 
 
 def includeme(config):
