@@ -236,12 +236,12 @@ def includeme(config):
                     context = IRoot,
                     name = 'login',
                     permission = security.NO_PERMISSION_REQUIRED,
-                    renderer = 'arche:templates/form.pt')
+                    renderer = 'arche:templates/system/login.pt')
     config.add_view(RegisterForm,
                     context = IRoot,
                     name = 'register',
                     permission = security.PERM_REGISTER,
-                    renderer = 'arche:templates/form.pt')
+                    renderer = 'arche:templates/system/register.pt')
     config.add_view(RegisterFinishForm,
                     context = IRoot,
                     name = 'register_finish',

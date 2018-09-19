@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  metal:use-macro="view.macro('arche:templates/master.pt', 'arche:templates/inline.pt')"
+  i18n:domain="Arche">
+<tal:content metal:fill-slot="content">
+    <form tal:replace="structure form" />
+    <div class="modal-footer" tal:condition="request.root.allow_self_registration|False">
+        <span i18n:translate="">Don't have an account?</span>
+        <a tal:attributes="data-open-modal request.is_xhr"
+           href="${request.resource_url(request.root, 'register')}"
+           i18n:translate="">Register here</a>
+    </div>
+</tal:content>
+</html>
