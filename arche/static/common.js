@@ -260,7 +260,13 @@ arche.flash_error = flash_error;
 arche.handle_401 = function(jqXHR) {
     if (jqXHR.status != 401) return;
     if ($('.modal-open').length == 0) {
-        var request = arche.create_modal('/login');
+        var url = '/login';
+        try {
+            url += '?' + $.param({came_from: document.location.href});
+        } catch(e) {
+            console.error(e);
+        }
+        var request = arche.create_modal(url);
         request.done(function() {
             try {
                 var parsed = $.parseJSON(jqXHR.responseText);
