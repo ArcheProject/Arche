@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-09-19 16:54+0200\n"
-"PO-Revision-Date: 2018-09-19 16:54+0200\n"
+"POT-Creation-Date: 2018-09-30 13:28+0200\n"
+"PO-Revision-Date: 2018-09-30 13:30+0200\n"
 "Last-Translator: Robin Harms Oredsson <robin@betahaus.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -561,14 +561,14 @@ msgstr "Du har inte tillgång till detta"
 msgid "You need to login"
 msgstr "Du behöver logga in"
 
-#: Arche/exceptions.py:35
+#: Arche/exceptions.py:25
 msgid "Reference guarded error"
 msgstr "Referensskydd-fel"
 
 #. Default: Refguard vetos delete of ${context}
 #. The following objects (or docids) would stop working as expected:
 #. ${ojbs}
-#: Arche/exceptions.py:37
+#: Arche/exceptions.py:27
 msgid "refguard_default_message"
 msgstr ""
 
@@ -1024,8 +1024,8 @@ msgid "found_search_results"
 msgstr "Hittade ${count} resultat för ’${query}’"
 
 #: Arche/templates/search.pt:36
-msgid "Search for anything that contains '${query}'."
-msgstr "Sök efter allt som innehåller ’${query}’."
+msgid "Search for anything that starts with '${query}'."
+msgstr "Sök efter allt som börjar med ’${query}’."
 
 #: Arche/templates/permissions.pt:49
 msgid "Saved"
@@ -1125,7 +1125,7 @@ msgstr "Laddar..."
 
 #: Arche/templates/contents.pt:97
 msgid "Drag and drop or click to upload..."
-msgstr ""
+msgstr "Dra och släpp eller klicka för att ladda upp…"
 
 #: Arche/templates/revisions.pt:11 Arche/views/actions.py:313
 msgid "Revisions"
@@ -1143,7 +1143,7 @@ msgstr "ID"
 
 #: Arche/templates/revisions.pt:27 Arche/templates/system/roles_log.pt:32
 msgid "Timestamp"
-msgstr ""
+msgstr "Tidsstämpel"
 
 #: Arche/templates/portlets/manager_slot.pt:42
 msgid "Add to"
@@ -1298,9 +1298,8 @@ msgid "Register here"
 msgstr "Registrera här"
 
 #: Arche/templates/system/roles_log.pt:16
-#, fuzzy
 msgid "Local role changes"
-msgstr "Lägg till lokala roller"
+msgstr "Ändra lokala roller"
 
 #: Arche/templates/system/roles_log.pt:22
 msgid "New query"
@@ -1312,7 +1311,7 @@ msgstr ""
 
 #: Arche/templates/system/roles_log.pt:31
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: Arche/templates/system/roles_log.pt:34
 msgid "Context"
@@ -1780,9 +1779,8 @@ msgid "Parse"
 msgstr ""
 
 #: Arche/views/roles_log.py:33
-#, fuzzy
 msgid "Parse local roles"
-msgstr "Lägg till lokala roller"
+msgstr ""
 
 #, fuzzy
 #~ msgid "(Unknown)"

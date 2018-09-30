@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-09-19 16:54+0200\n"
+"POT-Creation-Date: 2018-09-30 13:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -534,14 +534,14 @@ msgstr ""
 msgid "You need to login"
 msgstr ""
 
-#: ./Arche/exceptions.py:35
+#: ./Arche/exceptions.py:25
 msgid "Reference guarded error"
 msgstr ""
 
 #. Default: Refguard vetos delete of ${context}
 #. The following objects (or docids) would stop working as expected:
 #. ${ojbs}
-#: ./Arche/exceptions.py:37
+#: ./Arche/exceptions.py:27
 msgid "refguard_default_message"
 msgstr ""
 
@@ -994,7 +994,7 @@ msgid "found_search_results"
 msgstr ""
 
 #: ./Arche/templates/search.pt:36
-msgid "Search for anything that contains '${query}'."
+msgid "Search for anything that starts with '${query}'."
 msgstr ""
 
 #: ./Arche/templates/permissions.pt:49
