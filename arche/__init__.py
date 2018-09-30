@@ -20,7 +20,6 @@ default_settings = {
     'arche.cache_max_age': 24*60*60, #seconds
     'arche.new_userid_validator': 'arche.validators.NewUserIDValidator',
     'arche.actionbar': 'arche.views.actions.render_actionbar',
-    'arche.auto_recreate_catalog': False,
     'arche.favicon': '',
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',

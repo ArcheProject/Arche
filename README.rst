@@ -43,13 +43,6 @@ arche.actionbar (default: 'arche.views.actions.render_actionbar')
   What to render as the actionbar. It may be disabled here too.
 
 
-arche.auto_recreate_catalog (default: false)
-  Rebuild and reindex catalog whenever it's needed.
-  You may use this setting on production servers if:
-  1. You only have one instance. (If you rebuild 2 at once you'll get commit error on the second one)
-  2. You're aware that rebuilding the catalog may take a long time!
-
-
 arche.favicon (default: '')
   Path to favicon, including package.
   Example: 'arche:static/favicon.ico'

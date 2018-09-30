@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from unittest import TestCase
 
 from pyramid import testing
+from pyramid.request import apply_request_extensions
 from repoze.catalog.indexes.field import CatalogFieldIndex
 from repoze.catalog.query import Contains
 from zope.component import adapter
@@ -11,7 +12,6 @@ from zope.interface.exceptions import BrokenMethodImplementation
 from zope.interface.verify import verifyClass
 from zope.interface.verify import verifyObject
 
-from arche.exceptions import CatalogError
 from arche.exceptions import CatalogConfigError
 from arche.interfaces import ICataloger
 from arche.interfaces import IIndexedContent
@@ -185,14 +185,12 @@ class CatalogIntegrationTests(TestCase):
 
     def test_workflow_subscriber(self):
         from arche.models.workflow import get_context_wf
-
         root = self._fixture()
         root['a'] = context = _wf_fixture(self.config)
         obj = self._cut(context)
         obj.index_object()
         res = obj.catalog.query("wf_state == 'private'")
         self.assertEqual(res[0], 1)
-
         request = testing.DummyRequest()
         wf = get_context_wf(context)
         wf.do_transition('private:public', request)
@@ -345,7 +343,12 @@ class CheckCatalogOnStartupTests(TestCase):
 
     def _fixture(self):
         from arche.api import Root
-        return {'closer': object, 'root': Root(), 'registry': self.config.registry}
+        request = testing.DummyRequest()
+        apply_request_extensions(request)
+        request.root = root = Root()
+        self.config.begin(request)
+        return {'closer': object, 'root': root,
+                'registry': self.config.registry, 'request': request}
 
     def test_check_catalog_on_startup(self):
         env = self._fixture()
@@ -353,8 +356,10 @@ class CheckCatalogOnStartupTests(TestCase):
 
     def test_check_detects_missing(self):
         env = self._fixture()
-        del env['root'].catalog['title']
-        self.assertRaises(CatalogError, self._fut, env = env)
+        catalog = env['root'].catalog
+        del catalog['title']
+        self._fut(env=env)
+        self.assertIn('title', catalog)
 
     def test_check_detects_too_many(self):
         env = self._fixture()
@@ -369,10 +374,74 @@ class CheckCatalogOnStartupTests(TestCase):
 
     def test_check_detects_other_discriminator(self):
         env = self._fixture()
-        env['root'].catalog['title'].discriminator = 'hello!'
-        self.assertRaises(CatalogError, self._fut, env = env)
+        catalog = env['root'].catalog
+        catalog['title'].discriminator = 'hello!'
+        self._fut(env=env)
+        self.assertNotEqual(catalog['title'].discriminator, 'hello!')
 
     def test_other_than_root_aborts(self):
         env = self._fixture()
         env['root'] = testing.DummyResource()
         self._fut(env = env)
+
+
+class CatalogIndexHelperTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('arche.testing')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.models.catalog import CatalogIndexHelper
+        return CatalogIndexHelper
+
+    def test_defaults(self):
+        obj = self._cut()
+        obj.update('hello')
+        obj.update('world')
+        self.assertEqual(obj.get_limit_types(['hello', 'world']), None)
+        self.assertEqual(obj.get_required(['hello', 'world']), set(['hello', 'world']))
+        self.assertEqual(obj['hello'].linked, set(['hello']))
+        self.assertEqual(obj['hello'].type_names, None)
+
+    def test_get_limit_types(self):
+        obj = self._cut()
+        obj.update('hello', type_names='Greet')
+        obj.update('world')
+        self.assertEqual(obj.get_limit_types(['hello']), set(['Greet']))
+        self.assertEqual(obj.get_limit_types(['world']), None)
+        self.assertEqual(obj.get_limit_types(['hello', 'world']), None)
+
+    def test_get_required(self):
+        obj = self._cut()
+        obj.update('hello', linked=['niceness'])
+        obj.update('hello', linked='politeness')
+        obj.update('world')
+        self.assertEqual(obj.get_required(['niceness']), set(['hello', 'niceness']))
+        self.assertEqual(obj.get_required(['world']), set(['world']))
+        self.assertEqual(obj.get_required(['hello', 'niceness']), set(['hello', 'niceness']))
+
+    # def test_get_required_3_steps(self):
+    #     obj = self._cut()
+    #     obj.update('one', linked='two')
+    #     obj.update('two', linked='three')
+    #     self.assertEqual(obj.get_required(['one']), set(['one']))
+    #     self.assertEqual(obj.get_required(['two']), set(['one', 'two']))
+    #     self.assertEqual(obj.get_required(['three']), set(['one', 'two', 'three']))
+    #
+    # def test_get_required_circular(self):
+    #     obj = self._cut()
+    #     obj.update('one', linked='two')
+    #     obj.update('two', linked='three')
+    #     obj.update('three', linked='one')
+    #     self.assertEqual(obj.get_required(['one']), set(['one', 'two', 'three']))
+
+    def test_setting_none_as_marker_for_always(self):
+        obj = self._cut()
+        obj.update('hello', linked=None, type_names=None)
+        self.assertEqual(obj.get_limit_types(['404']), None)
+        self.assertEqual(obj.get_required(['world']), set(['hello', 'world']))
