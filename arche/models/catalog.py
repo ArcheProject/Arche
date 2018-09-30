@@ -538,7 +538,7 @@ def check_catalog_on_startup(event = None, env = None):
     #"./bin/arche" this won't work.
     script_names = ['bin/arche', 'bin/pshell']
     if argv[0] in script_names:
-        return _commit_and_cleanup(env['closer'], commit=False)
+        return _unregister_index_utils()
     if env is None:
         from pyramid.scripting import prepare
         env = prepare()
