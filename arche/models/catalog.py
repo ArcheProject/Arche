@@ -480,7 +480,7 @@ def add_searchable_text_discriminator(config, discriminator):
 
 
 def add_searchable_text_index(config, names):
-    """ Fetch the content of another index and add make it globally searchable.
+    """ Fetch the content of another index or attribute and add make it globally searchable.
         (From the index searchable_text)
     """
     if isinstance(names, string_types):
@@ -665,6 +665,7 @@ def includeme(config):
     config.add_searchable_text_index((
         'title',
         'description',
+        'body',
         'userid',
         'first_name',
         'last_name'
