@@ -313,6 +313,47 @@ class IRoles(IContextAdapter, IDict):
         """
 
 
+class IRolesCommitLogger(Interface):
+    """ Stores role changes that was actually committed to the database.
+        Saves in json format, so it's easier to parse and extract specific contexts.
+    """
+    request = Attribute("Webob request")
+    logger = Attribute(
+        "The logging facility. It will log to a namespace outside of arche to make sure "
+        "it doesn't propagate to the regular logger. "
+        "(Since it logs json, this would be a bad idea)")
+    loglvl = Attribute("Default level to send")
+    attached = Attribute("Is it hooked to the transaction?")
+
+    def __init__(request):
+        """ Initalize adapter. """
+
+    def add(uid, key, new, old):
+        """ Append to entries. This should be handled at the same time as
+        """
+
+    def prepare():
+        """ Prepare the entries for logging. This compacts the entries and checks that
+            there's really something to log.
+            (Like if something would be added and removed during the same requuest > don't log)
+        """
+
+    def format(payload):
+        """ Format payload as json.
+        """
+
+    def log(payload):
+        """ Send payload to the attached logger.
+        """
+
+    def commit_hook(status, *args, **kwargs):
+        """
+        :param status: (bool) Was the transaction successful?
+        :param args: Arguments passed from the transaction.
+        :param kwargs: Kwargs passed from the transaction.
+        """
+
+
 class ICataloger(IContextAdapter):
     """ Content catalog adapter. """
 

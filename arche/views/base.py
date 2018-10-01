@@ -310,14 +310,22 @@ class BaseForm(BaseView, FormView):
         from arche.schemas import tabs
         return tabs
 
-    @property
+    @reify
     def form_options(self):
         return {'action': self.request.url,
                 'heading': self.get_schema_heading(),
                 'tab_fields': self._tab_fields,
                 'tab_titles': self.tab_titles,
                 'formid': self.formid,
+                'before_fields': self.before_fields(),
+                'before_buttons': self.before_buttons(),
                 'request': self.request}
+
+    def before_fields(self):
+        pass
+
+    def before_buttons(self):
+        pass
 
     def get_schema_heading(self):
         if getattr(self, 'title', None) is not None:

@@ -190,16 +190,18 @@ class UserChangePasswordForm(DefaultEditForm):
         if request.authenticated_userid is None:
             token = getattr(context, 'pw_token', None)
             rtoken = request.GET.get('t', object())
-            if token == rtoken and token.valid:
-                #At this point the email address could be considered as validated too
-                if context.email_validated == False:
-                    context.email_validated = True
-                super(UserChangePasswordForm, self).__init__(context, request)
-                try:
-                    del self.schema['current_password']
-                except KeyError:
-                    pass
-                return
+            if not token.valid:
+                raise HTTPForbidden(_("pw_token_expired",
+                                      default="Link expired, you have to request "
+                                              "password reset again"))
+            if token != rtoken:
+                raise HTTPForbidden(_("pw_token_invalid",
+                                      default="Password reset link doesn't match. "))
+            #At this point the email address could be considered as validated too
+            if context.email_validated == False:
+                context.email_validated = True
+            super(UserChangePasswordForm, self).__init__(context, request)
+            return
         else:
             if request.has_permission(security.PERM_EDIT):
                 super(UserChangePasswordForm, self).__init__(context, request)
@@ -234,12 +236,12 @@ def includeme(config):
                     context = IRoot,
                     name = 'login',
                     permission = security.NO_PERMISSION_REQUIRED,
-                    renderer = 'arche:templates/form.pt')
+                    renderer = 'arche:templates/system/login.pt')
     config.add_view(RegisterForm,
                     context = IRoot,
                     name = 'register',
                     permission = security.PERM_REGISTER,
-                    renderer = 'arche:templates/form.pt')
+                    renderer = 'arche:templates/system/register.pt')
     config.add_view(RegisterFinishForm,
                     context = IRoot,
                     name = 'register_finish',

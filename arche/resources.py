@@ -613,6 +613,10 @@ class Token(Persistent):
         else:
             return self.token == other
 
+    def __ne__(self, other):
+        # Longing for Python 3...
+        return not self.__eq__(other)
+
     @property
     def valid(self):
         if self.expires is None:

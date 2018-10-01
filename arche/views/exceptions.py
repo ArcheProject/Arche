@@ -4,6 +4,7 @@ import traceback
 from pyramid.httpexceptions import HTTPClientError
 from pyramid.httpexceptions import HTTPException
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPUnauthorized
 from pyramid.i18n import TranslationString
 from pyramid.location import lineage
 
@@ -89,6 +90,22 @@ class ForbiddenExceptionView(ExceptionView):
         return {'ok_context': None}
 
 
+class UnauthorizedExceptionView(ExceptionView):
+
+    def __call__(self):
+        if self.request.is_xhr:
+            return json_format_exc(self.request, self.exc)
+        msg = getattr(self.exc, 'message', '')
+        if not msg:
+            msg = _("Not allowed, perhaps you need to log in?")
+        if isinstance(msg, TranslationString):
+            msg = self.request.localizer.translate(msg)
+        if msg:
+            self.flash_messages.add(msg, type='danger', require_commit=False, auto_destruct=True)
+        return HTTPFound(location=self.request.resource_url(self.root, 'login', query={
+            'came_from': self.request.url}))
+
+
 def json_format_exc(request, exc):
     """ Return a json representation of the exception.
         If the exception has a __json__ method, use that one as base
@@ -141,6 +158,19 @@ def includeme(config):
         ExceptionView,
         xhr=True,
         renderer="json"
+    )
+    # 401 xhr
+    config.add_exception_view(
+        UnauthorizedExceptionView,
+        context=HTTPUnauthorized,
+        xhr=True,
+        renderer="json"
+    )
+    # 401 regular, produces redirect
+    config.add_exception_view(
+        UnauthorizedExceptionView,
+        context=HTTPUnauthorized,
+        xhr=False
     )
     # Other 400
     config.add_exception_view(

@@ -1,3 +1,4 @@
+from uuid import uuid4
 
 from BTrees.OOBTree import OOBTree
 from ZODB.blob import Blob

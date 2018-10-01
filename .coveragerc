@@ -4,4 +4,3 @@
 show_missing = true
 omit =
   *test*py
-

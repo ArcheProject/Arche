@@ -200,7 +200,7 @@ def register_link(context, request, va, **kw):
              view_name='groups', )
 @view_action('user_menu', 'logout',
              title=_("Logout"),
-             priority=50,
+             priority=1000,
              divider=True,
              view_name='logout', )
 def generic_submenu_items(context, request, va, **kw):

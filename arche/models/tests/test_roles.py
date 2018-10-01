@@ -1,14 +1,18 @@
+from json import loads
 from unittest import TestCase
+import logging
 
-from pyramid import testing
-from zope.interface import implementer
-from zope.interface import Interface
-from zope.interface.verify import verifyClass
-from zope.interface.verify import verifyObject
-
-from arche.interfaces import IContent
+from arche.interfaces import IContent, IRolesCommitLogger
 from arche.interfaces import IRoles
 from arche.resources import LocalRolesMixin
+from arche.security import ROLE_VIEWER, ROLE_OWNER
+from pyramid import testing
+from pyramid.request import apply_request_extensions
+from six import StringIO
+from zope.interface import Interface
+from zope.interface import implementer
+from zope.interface.verify import verifyClass
+from zope.interface.verify import verifyObject
 
 
 @implementer(IContent)
@@ -20,8 +24,8 @@ class IOther(Interface):
     pass
 
 
-class RolesTests(TestCase):    
-    
+class RolesTests(TestCase):
+
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('arche.security')
@@ -135,3 +139,113 @@ class RolesTests(TestCase):
         self.assertNotIn(role_non_assignable, result)
         self.assertIn(role_content, result)
         self.assertNotIn(role_other, result)
+
+
+class CommitLoggerTests(TestCase):
+
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.testing_securitypolicy('jane')
+        self.config.include('arche.testing')
+        self.config.include('arche.models.datetime_handler')
+
+    def tearDown(self):
+        testing.tearDown()
+
+    @property
+    def _cut(self):
+        from arche.models.roles import RolesCommitLogger
+        return RolesCommitLogger
+
+    def test_verify_interface(self):
+        self.assertTrue(verifyClass(IRolesCommitLogger, self._cut))
+        request = testing.DummyRequest()
+        self.assertTrue(verifyObject(IRolesCommitLogger, self._cut(request)))
+
+    def test_add(self):
+        request = testing.DummyRequest()
+        apply_request_extensions(request)
+        self.assertTrue(request.authenticated_userid, 'jane')
+        obj = self._cut(request)
+        obj.add('uid', 'darth', ['Sith', 'Dark', ROLE_VIEWER], ['Puppies'])
+        expected = {
+            'uid': {
+                'darth': {'new': frozenset(['Dark', 'Sith', 'role:Viewer']),
+                          'old': frozenset(['Puppies'])},
+            }
+        }
+        self.assertEqual(obj.entries, expected)
+
+    def test_prepare_was_not_really_removed(self):
+        request = testing.DummyRequest()
+        apply_request_extensions(request)
+        self.assertTrue(request.authenticated_userid, 'jane')
+        obj = self._cut(request)
+        # Removing and adding (which shouldn't happen...) should not generate an entry.
+        obj.add('uid', 'darth', [ROLE_VIEWER], [])
+        obj.add('uid', 'darth', [], [ROLE_VIEWER])
+        self.assertEqual(obj.prepare(), {})
+
+    def test_prepare(self):
+        request = testing.DummyRequest()
+        apply_request_extensions(request)
+        self.assertTrue(request.authenticated_userid, 'jane')
+        obj = self._cut(request)
+        obj.add('uid', 'someone', ['Chef'], [])
+        obj.add('uid', 'darth', ['Sith', 'Dark', ROLE_VIEWER], ['Puppies'])
+        output = obj.prepare()
+        # Remove timestamp
+        self.assertIsInstance(output.pop('time'), int)
+        # Check structure
+        expected = {
+            'userid': 'jane',
+            'url': 'http://example.com',
+            'contexts':
+                {
+                    'uid':
+                        {'someone': {u'+': ['Chef']},
+                         'darth': {u'+': ['Sith', 'Dark', str(ROLE_VIEWER)], u'-': ['Puppies']},
+                         }
+                }
+        }
+        self.assertEqual(output, expected)
+
+    def test_format(self):
+        request = testing.DummyRequest()
+        apply_request_extensions(request)
+        self.assertTrue(request.authenticated_userid, 'jane')
+        obj = self._cut(request)
+        obj.add('uid', 'darth', ['Sith', 'Dark', ROLE_VIEWER], ['Puppies'])
+        payload = obj.prepare()
+        formatted = obj.format(payload)
+        self.assertIn('{"+": ["Sith", "Dark", "role:Viewer"]', formatted)
+
+    def test_log(self):
+        # Logger
+        logger = logging.getLogger(__name__)
+        logger.level = logging.INFO
+        stream = StringIO()
+        stream_handler = logging.StreamHandler(stream)
+        logger.addHandler(stream_handler)
+        # Actual test
+        request = testing.DummyRequest()
+        apply_request_extensions(request)
+        self.assertTrue(request.authenticated_userid, 'jane')
+        obj = self._cut(request)
+        # Patch logger
+        obj.logger = logger
+        obj.add('uid', 'darth', [ROLE_VIEWER], [ROLE_OWNER])
+        payload = obj.prepare()
+        formatted = obj.format(payload)
+        try:
+            obj.log(formatted)
+            stream.seek(0)
+            output = stream.read()
+        finally:
+            logger.removeHandler(stream_handler)
+        self.assertIn('"+": ["role:Viewer"]', output)
+        self.assertIn('"-": ["role:Owner"]', output)
+        self.assertIn('"jane"', output)
+        # Make sure json can read this
+        json_row = loads(output)
+        self.assertIn('contexts', json_row)

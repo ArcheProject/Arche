@@ -14,6 +14,7 @@ from repoze.catalog.indexes.field import CatalogFieldIndex
 from repoze.catalog.indexes.keyword import CatalogKeywordIndex
 from repoze.catalog.indexes.path import CatalogPathIndex
 from repoze.catalog.indexes.text import CatalogTextIndex
+from repoze.catalog.query import Any, Eq
 from six import string_types
 from zope.component import adapter
 from zope.index.text.lexicon import CaseNormalizer
@@ -25,7 +26,6 @@ from zope.interface.verify import verifyClass
 from arche import logger
 from arche.compat import IterableUserDict
 from arche.exceptions import CatalogConfigError
-from arche.exceptions import CatalogError
 from arche.interfaces import ICatalogIndexes
 from arche.interfaces import ICataloger
 from arche.interfaces import IIndexedContent
@@ -66,16 +66,16 @@ class Cataloger(object):
                 if index in self.catalog:
                     try:
                         self.catalog[index].index_doc(docid, self.context)
-                    except Exception as exc:
-                        logger.warn("Failing index: %s" % index)
+                    except Exception: # pragma: no coverage
+                        logger.warn("Failing index: %s", index)
                         raise
         else:
             for index in indexes:
                 if index in self.catalog:
                     try:
                         self.catalog[index].reindex_doc(docid, self.context)
-                    except Exception as exc:
-                        logger.warn("Failing index: %s" % index)
+                    except Exception: # pragma: no coverage
+                        logger.warn("Failing index: %s", index)
                         raise
         self.update_metadata(docid)
 
@@ -124,6 +124,134 @@ class CatalogIndexes(IterableUserDict):
 def add_catalog_indexes(config, package_name, indexes):
     util = CatalogIndexes(package_name, indexes)
     config.registry.registerUtility(util, name = package_name)
+    config.update_index_info(indexes)
+
+
+_default_marker = object()
+
+
+class CatalogIndexHelper(object):
+    """ Keeps track of which indexes relate to what content. See the update method."""
+
+    def __init__(self):
+        self.data = {}
+
+    def update(self, name, linked=_default_marker, type_names=_default_marker):
+        """ Update info for an index
+
+            name
+                Name of the index
+
+            linked
+                Which changed attributes or other indexes should this update for?
+                The name of the index is assumed here too.
+                Notable values:
+                    default is the name of the index
+                    None means everything
+                    Or specify a list of attributes. Searchable text should for instance
+                    update for anything searchable.
+
+            type_names
+                This index is only for specific content types. If specified as a list,
+                only reindex this index if the content type is listed here.
+                Mostly usable for quick reindex.
+        """
+        assert isinstance(name, string_types), "'name' must be a string"
+        if isinstance(linked, string_types):
+            linked = set([linked])
+        if isinstance(type_names, string_types):
+            type_names = set([type_names])
+        if name not in self:
+            self[name] = IndexInfo(name, linked, type_names)
+        else:
+            info = self[name]
+            if linked != _default_marker:
+                if linked is None:
+                    info.linked = None
+                else:
+                    if info.linked is None:
+                        info.linked = set()
+                    info.linked.update(linked)
+            if type_names != _default_marker:
+                if type_names is None:
+                    info.type_names = None
+                else:
+                    if info.type_names is None:
+                        info.type_names = set()
+                    info.type_names.update(type_names)
+
+    def get_limit_types(self, index_names):
+        """ Check if it's possible to reindex the indexes listed in
+            index names by only touching a few existing types.
+
+            Returns a set of type_names if it's possible, otherwise None
+        """
+        found_types = set()
+        for name in index_names:
+            try:
+                if self[name].type_names is None:
+                    return
+            except KeyError:
+                return
+            found_types.update(self[name].type_names)
+        return found_types
+
+    def get_required(self, names):
+        """ Returns a set of which indexes requires updates,
+            given the list of other index names or attributes.
+
+            For instance, searchable_text must always be updated when title updates."""
+        # FIXME This function must be able to recurse into other index names without crashing
+        found = set(names)
+        names = set(names)
+        for info in self.values():
+            if info.linked is None:
+                found.add(info.name)
+            elif info.linked & names:
+                found.add(info.name)
+        return found
+
+    def __setitem__(self, key, value):
+        assert isinstance(value, IndexInfo)
+        self.data[key] = value
+
+    def __getitem__(self, key):
+        return self.data[key]
+
+    def __contains__(self, key):
+        return key in self.data
+
+    def values(self):
+        return self.data.values()
+
+
+class IndexInfo(object):
+    """ Describes a catalog index that exists or should exist in the catalog.
+    """
+    name = ''
+    linked = None
+    type_names = None
+
+    def __init__(self, name, linked=_default_marker, type_names=None):
+        assert name and isinstance(name, string_types), "'name' param must be a string"
+        self.name = name
+        if linked == _default_marker:
+            linked = set([name])
+        if linked:
+            linked = set(linked)
+            if name not in linked:
+                linked.add(name)
+        self.linked = linked
+        if type_names == _default_marker:
+            type_names = None
+        self.type_names = type_names
+
+
+def update_index_info(config, names, linked=_default_marker, type_names=_default_marker):
+    if isinstance(names, string_types):
+        names = [names]
+    for name in names:
+        config.registry.catalog_indexhelper.update(name, linked=linked, type_names=type_names)
 
 
 @implementer(IMetadata)
@@ -248,9 +376,10 @@ def get_searchable_text(context, default):
     registry = get_current_registry()
     discriminators = list(getattr(registry, 'searchable_text_discriminators', ()))
     results = set()
-    for index in getattr(registry, 'searchable_text_indexes', ()):
+    registry = get_current_registry()
+    for index in registry.catalog_indexhelper['searchable_text'].linked:
         if index not in catalog: #pragma: no coverage
-            #FIXME: Take care of this during startup
+            # In case a bad name was linked in searchable_text, no reason to die because of it.
             continue
         disc = catalog[index].discriminator
         if isinstance(disc, string_types):
@@ -316,17 +445,16 @@ def create_catalog(root):
     for util in reg.getAllUtilitiesRegisteredFor(ICatalogIndexes):
         for (key, index) in util.items():
             root.catalog[key] = copy(index)
-    _unregister_index_utils(reg)
+    _unregister_index_utils(registry=reg)
+
 
 # Subscribers
 def index_object_subscriber(context, event):
-    #FIXME: There must be a possibility to link indexes to each other
     reg = get_current_registry()
     changed = getattr(event, 'changed', None)
     if changed is not None:
         changed = set(changed)
-        changed.add('searchable_text')
-        changed.add('tags') #temp fix until we can link indexes.
+        changed = reg.catalog_indexhelper.get_required(changed)
     cataloger = reg.queryAdapter(context, ICataloger)
     cataloger.index_object(indexes = changed)
 
@@ -351,25 +479,13 @@ def add_searchable_text_discriminator(config, discriminator):
     discriminators.add(discriminator)
 
 
-def add_searchable_text_index(config, name):
+def add_searchable_text_index(config, names):
     """ Fetch the content of another index and add make it globally searchable.
         (From the index searchable_text)
     """
-    assert isinstance(name, string_types), "%r is not a string" % name
-    try:
-        indexes = config.registry.searchable_text_indexes
-    except AttributeError:
-        indexes = config.registry.searchable_text_indexes = set()
-    indexes.add(name)
-
-
-_default_searchable_text_indexes = (
-    'title',
-    'description',
-    'userid',
-    'first_name',
-    'last_name',
-)
+    if isinstance(names, string_types):
+        names = [names]
+    config.update_index_info('searchable_text', names)
 
 
 def _searchable_html_body(context, default):
@@ -407,11 +523,11 @@ def check_catalog_on_startup(event = None, env = None):
     """ Check that the catalog has all required indexes and that they're up to date.
         Ment to be run by the IApplicationCreated event.
     """
-    def _commit_and_cleanup(closer, commit=False):
+    def _commit_and_cleanup(closer, commit=False, registry=None):
         if commit:
             import transaction
             transaction.commit()
-        _unregister_index_utils(reg)
+        _unregister_index_utils(registry)
         closer()
 
     #Split this into other functions?
@@ -422,45 +538,42 @@ def check_catalog_on_startup(event = None, env = None):
     #"./bin/arche" this won't work.
     script_names = ['bin/arche', 'bin/pshell']
     if argv[0] in script_names:
-        return
+        return _unregister_index_utils()
     if env is None:
         from pyramid.scripting import prepare
         env = prepare()
     root = env['root']
+    reg = env['registry']
     if not IRoot.providedBy(root):
         logger.info("Root object is %r, so check_catalog_on_startup won't run" % root)
-        env['closer']()
-        return
+        return _commit_and_cleanup(env['closer'], commit=False, registry=reg)
     catalog = root.catalog
-    reg = env['registry']
-    auto_recreate = reg.settings.get('arche.auto_recreate_catalog', False)
     registered_keys = {}
-    try:
-        for util in reg.getAllUtilitiesRegisteredFor(ICatalogIndexes):
-            for (key, index) in util.items():
-                if key in registered_keys:
-                    raise CatalogConfigError("Both %r and %r tried to add the same key %r"
-                                             % (util.name, registered_keys[key], key))
-                registered_keys[key] = util.name
-                if key not in catalog:
-                    raise CatalogError("%r requires %r to exist in the catalog." % (util.name, key))
-                if catalog[key].discriminator != index.discriminator:
-                    raise CatalogError("Catalog index stored at %r has a missmatching discriminator. \n"
-                                           "Current: %r \n"
-                                           "Required: %r \n"
-                                           "Required by: %r" % (key, catalog[key].discriminator,
-                                                                index.discriminator, util.name))
-    except CatalogError:
-        if auto_recreate:
-            print ( "-- Auto-recreate catalog is set to true and the catalog needs to be recreated.")
-            print ( "-- Recreating now")
-            create_catalog(root)
-            print ( "-- Process complete. Running reindex.")
-            reindex_catalog(root)
-            _commit_and_cleanup(env['closer'], commit=True)
-            return
-        else:
-            raise
+    index_needs_indexing = []
+    for util in reg.getAllUtilitiesRegisteredFor(ICatalogIndexes):
+        for (key, index) in util.items():
+            if key in registered_keys:
+                raise CatalogConfigError("Both %r and %r tried to add the same key %r"
+                                         % (util.name, registered_keys[key], key))
+            registered_keys[key] = util.name
+            if key not in catalog:
+                if key == 'type_name':
+                    raise CatalogConfigError(
+                        "'type_name' was missing in the catalog."
+                        "This shouldn't happen, so you need to to a full reindex with:\n"
+                        "arche <paster.ini> create_catalog && arche <paster.ini> reindex_catalog")
+                logger.warn("%r requires the index %r, will add it and run index operation", util.name, key)
+                index_needs_indexing.append(key)
+                catalog[key] = index
+                continue
+            if catalog[key].discriminator != index.discriminator:
+                logger.warn("%r exists, but the discriminator has changed. "
+                            "It will need to be readded and reindexed.", key)
+                del catalog[key]
+                index_needs_indexing.append(key)
+                catalog[key] = index
+    request = env['request']
+    # Clean up unused indexes
     indexes_to_remove = set()
     for key in catalog:
         if key not in registered_keys:
@@ -468,10 +581,35 @@ def check_catalog_on_startup(event = None, env = None):
     for key in indexes_to_remove:
         logger.warn("Removing catalog index '%s' since it's not registered anywhere.", key)
         del catalog[key]
-    _commit_and_cleanup(env['closer'], commit=bool(indexes_to_remove))
+    # Finally reindex any that needs reindexing
+    if index_needs_indexing:
+        quick_reindex(request, index_needs_indexing)
+    _commit_and_cleanup(env['closer'], commit=bool(index_needs_indexing or indexes_to_remove), registry=reg)
 
 
-def _unregister_index_utils(registry):
+def quick_reindex(request, indexes):
+    if not bool(len(request.root.document_map.docid_to_address)):
+        raise Exception("There's nothing in the catalog, so quick reindex won't work. "
+                        "Use reindex_catalog command instead.")
+    indexhelper = request.registry.catalog_indexhelper
+    limit_types = indexhelper.get_limit_types(indexes)
+    if limit_types:
+        query = Any('type_name', list(limit_types))
+        res, docids = request.root.catalog.query(query)
+        total = res.total
+    else:
+        total = len(request.root.document_map.docid_to_address)
+        docids = request.root.document_map.docid_to_address
+    required_indexes = list(indexhelper.get_required(indexes))
+    logger.info("Reindexing %s objects...", total)
+    for obj in request.resolve_docids(docids, perm=None):
+        cataloger = ICataloger(obj)
+        cataloger.index_object(indexes=required_indexes)
+
+
+def _unregister_index_utils(registry=None):
+    if registry is None:
+        registry = get_current_registry()
     for util in registry.getAllUtilitiesRegisteredFor(ICatalogIndexes):
         registry.unregisterUtility(util)
 
@@ -488,15 +626,13 @@ def includeme(config):
     config.add_subscriber(check_catalog_on_startup, IApplicationCreated)
 
     config.add_directive('add_catalog_indexes', add_catalog_indexes)
+    config.add_directive('update_index_info', update_index_info)
     config.add_directive('add_searchable_text_index', add_searchable_text_index)
     config.add_directive('add_searchable_text_discriminator', add_searchable_text_discriminator)
     config.add_directive('add_metadata_field', add_metadata_field)
     config.add_directive('create_metadata_field', create_metadata_field)
 
-    for index in _default_searchable_text_indexes:
-        config.add_searchable_text_index(index)
-
-    config.add_searchable_text_discriminator(_searchable_html_body)
+    config.registry.catalog_indexhelper = CatalogIndexHelper()
 
     default_indexes = {
         'title': CatalogFieldIndex('title'),
@@ -522,3 +658,15 @@ def includeme(config):
         'relation': CatalogKeywordIndex(get_relation),
         }
     config.add_catalog_indexes(__name__, default_indexes)
+    # Limit these indexes to the User type
+    config.update_index_info(('userid', 'email', 'first_name', 'last_name'), type_names = 'User')
+    # Force reindex of tags and searchable text every time
+    config.update_index_info(('tags', 'searchable_text'), linked=None)
+    config.add_searchable_text_index((
+        'title',
+        'description',
+        'userid',
+        'first_name',
+        'last_name'
+    ))
+    config.add_searchable_text_discriminator(_searchable_html_body)

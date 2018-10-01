@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="view.macro('arche:templates/master.pt')"
+      i18n:domain="Arche">
+<body>
+<tal:blank metal:fill-slot="heading"></tal:blank>
+<div metal:fill-slot="content" >
+
+    <tal:form condition="form|False" tal:content="structure form"></tal:form>
+
+    <div class="panel panel-primary" tal:condition="not form|True">
+      <div class="panel-heading">
+        <h3 class="panel-title" i18n:translate="">
+          Local role changes
+        </h3>
+      </div>
+
+      <div class="panel-body">
+          <a href="${request.resource_url(context, 'local_roles_log')}" i18n:translate="">
+            New query
+          </a>
+      </div>
+
+      <div class="list-group">
+        <div class="list-group-item" tal:condition="output_rows|False">
+          <div class="row">
+            <div class="col-sm-4" i18n:translate="">By user</div>
+            <div class="col-sm-4" i18n:translate="">URL</div>
+            <div class="col-sm-4" i18n:translate="">Timestamp</div>
+            <div tal:condition="not only_context"
+                 class="col-sm-12" i18n:translate="">Context</div>
+            <div class="col-sm-4" i18n:translate="">Principal</div>
+            <div class="col-sm-4" i18n:translate="">Added</div>
+            <div class="col-sm-4" i18n:translate="">Removed</div>
+          </div>
+        </div>
+
+        <div tal:condition="not output_rows|False" class="panel-body">
+          <span i18n:translate="">Nothing matched</span>
+        </div>
+
+        <div tal:condition="output_rows|False" class="list-group-item" tal:repeat="data output_rows">
+          <div class="row">
+            <div class="col-sm-4">${data['userid']}</div>
+            <div class="col-sm-4">${data['url']}</div>
+            <div class="col-sm-4">${request.dt_handler.format_dt(data['time'])}</div>
+          </div>
+          <tal:contexts repeat="(uid, cdata) data['contexts'].items()">
+            <div class="row">
+              <div tal:condition="not only_context" class="col-sm-12" tal:define="obj view.get_uid(uid)">
+                <a tal:condition="obj" href="${request.resource_url(context)}">
+                  ${obj.title|obj.__name__} (${obj.type_name|'Unknown type'})
+                </a>
+                <span tal:condition="obj is None" i18n:translate="">(Context removed)</span>
+              </div>
+              <tal:iter repeat="(userid, entries) cdata.items()">
+                <tal:def define="aentries entries.get('+', ());
+                                 rentries entries.get('-', ());">
+                  <div class="col-sm-4">${userid}</div>
+                  <div class="col-sm-4 ${aentries and 'bg-success' or None}">
+                    ${", ".join(view.get_role_title(x) for x in aentries)}&nbsp;
+                  </div>
+                  <div class="col-sm-4 ${rentries and 'bg-danger' or None}">
+                    ${", ".join(view.get_role_title(x) for x in rentries)}&nbsp;
+                  </div>
+                </tal:def>
+              </tal:iter>
+            </div>
+          </tal:contexts>
+        </div>
+      </div>
+    </div>
+</div>
+</body>
+</html>

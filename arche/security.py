@@ -82,14 +82,25 @@ def authz_context(context, request):
             request.environ['authz_context'] = before
 
 
-def has_permission(request, permission, context=None, for_userid=None):
+def has_permission(request, permission, context=None):
     """ The default has_permission does care about the context,
         but it calls the callback (in our case 'groupfinder') without the correct
         context. This methods hacks in the correct context. Keep it here until
         this has been fixed in Pyramid.
-
-        The option for_userid overrides check for current user and checks for that user instead.
     """
+    return _has_permission(request, permission, context=context)
+
+
+def principal_has_permisson(request, principal, permission, context=None):
+    """ Check permissions for another principal. (For instance a userid)
+    """
+    return _has_permission(request, permission, context=context, principal=principal)
+
+
+_marker = object()
+
+
+def _has_permission(request, permission, context=None, principal=_marker):
     try:
         if context is None:
             context = request.context
@@ -105,10 +116,10 @@ def has_permission(request, permission, context=None, for_userid=None):
         raise ValueError('Authentication policy registered without '
                          'authorization policy') # should never happen
     with authz_context(context, request):
-        if for_userid:
-            principals = groupfinder(for_userid, request)
-        else:
+        if principal is _marker:
             principals = authn_policy.effective_principals(request)
+        else:
+            principals = groupfinder(principal, request)
         return authz_policy.permits(context, principals, permission)
 
 

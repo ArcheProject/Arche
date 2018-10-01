@@ -228,3 +228,15 @@ class TokenTests(TestCase):
         self.assertNotEqual(obj1, obj2)
         obj2.token = obj1.token = '1'
         self.assertEqual(obj1, obj2)
+        self.assertEqual(obj1, '1')
+        self.assertTrue(obj1 == '1')
+
+    def test_ne(self):
+        obj1 = self._cut()
+        obj2 = self._cut()
+        self.assertNotEqual(obj1, obj2)
+        obj2.token = obj1.token = '1'
+        self.assertEqual(obj1, obj2)
+        self.assertNotEqual(obj1, '2')
+        self.assertFalse(obj1 != '1')
+        self.assertTrue(obj1 != '2')

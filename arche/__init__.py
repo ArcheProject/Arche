@@ -20,7 +20,6 @@ default_settings = {
     'arche.cache_max_age': 24*60*60, #seconds
     'arche.new_userid_validator': 'arche.validators.NewUserIDValidator',
     'arche.actionbar': 'arche.views.actions.render_actionbar',
-    'arche.auto_recreate_catalog': False,
     'arche.favicon': '',
     #Set template dir for deform overrides
     'pyramid_deform.template_search_path': 'arche:templates/deform/',
@@ -29,6 +28,7 @@ default_settings = {
     'arche.auth.activity_update': 60, #Seconds
     'arche.auth.default_max_valid': 60, #Minutes
     'arche.auth.max_keep_days': 30, #Days since last activity
+    'arche.log_roles': 'arche_jsonlog.security.roles', # Made-up namespace for roles adjustments - set to empty to disable
 }
 
 def setup_defaults(settings):
