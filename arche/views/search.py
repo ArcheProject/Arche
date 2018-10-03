@@ -48,7 +48,10 @@ class SearchView(BaseView):
             if v and k in self.root.catalog:
                 perform_query = True
                 if isinstance(v, string_types):
-                    query_objs.append(Eq(k, v))
+                    if v.isdigit():
+                        query_objs.append(Eq(k, int(v)) | Eq(k, v))
+                    else:
+                        query_objs.append(Eq(k, v))
                 else:
                     query_objs.append(Any(k, v))
         query_obj = None
