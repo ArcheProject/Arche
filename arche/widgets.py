@@ -181,6 +181,8 @@ class ReferenceWidget(Select2Widget):
         return field.renderer(template, **tmpl_values)
 
 
+# DO NOT use this in colander.Sequence fields. Will not work.
+# Use without kw multiple=False instead.
 class UserReferenceWidget(ReferenceWidget):
     default_query_params = {'glob': 1,
                             'show_hidden': 1,
