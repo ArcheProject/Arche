@@ -72,6 +72,8 @@ class IViewInitializedEvent(IObjectEvent):
 class ISchemaCreatedEvent(IObjectEvent):
     pass
 
+class IFormSuccessEvent(IObjectEvent):
+    pass
 #/ObjectEvents
 
 
@@ -259,6 +261,12 @@ class ITrackRevisions(Interface):
 class IBaseView(Interface):
     """ Marker for more advanced views that inherit BaseView, which should be all view classes.
     """
+
+
+class IBaseForm(IBaseView):
+    """ Marker for base form views.
+    """
+
 
 class IAPIKeyView(Interface):
     """ Marker indicates that this view can be accessed remotely by using API keys.

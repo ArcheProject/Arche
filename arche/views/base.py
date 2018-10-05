@@ -15,7 +15,6 @@ from pyramid.renderers import render
 from pyramid.response import Response
 from pyramid.traversal import lineage
 from pyramid.view import render_view_to_response
-from pyramid_deform import FormView
 from zope.component.event import objectEventNotify
 from zope.interface import implementer
 import colander
@@ -25,6 +24,7 @@ from pyramid.i18n import TranslationString
 
 from arche import _
 from arche import security
+from arche.events import FormSuccessEvent
 from arche.events import SchemaCreatedEvent
 from arche.events import ViewInitializedEvent
 from arche.fanstatic_lib import common_js
@@ -32,6 +32,7 @@ from arche.fanstatic_lib import search_js
 from arche.fanstatic_lib import html5shiv_js
 from arche.fanstatic_lib import main_css
 from arche.interfaces import IAPIKeyView
+from arche.interfaces import IBaseForm
 from arche.interfaces import IBaseView
 from arche.interfaces import IContentView
 from arche.interfaces import IFolder
@@ -229,14 +230,27 @@ button_add = deform.Button('add', title = _("Add"))
 button_close = deform.Button('close', title = _("Close"))
 
 
-class BaseForm(BaseView, FormView):
-    default_success = _(u"Done")
-    default_cancel = _(u"Canceled")
+@implementer(IBaseForm)
+class BaseForm(BaseView):
+    """
+    Helper view for Deform forms for use with the Pyramid framework.
+
+    Taken from pyramid_deform, but with some addons to handle statuses for errors,
+    events and simimlar.
+    """
+    # Class object of the type of form to be created.
+    # Defaults to using the standard :class:`deform.form.Form` class.
+    form_class = deform.form.Form
+
+    schema = None
     schema_name = ""
     type_name = ""
+    default_success = _(u"Done")
+    default_cancel = _(u"Canceled")
     title = None
     formid = 'deform'
     use_ajax = False
+    initial = True  # Initial form load?
 
     button_delete = button_delete
     button_cancel = button_cancel
@@ -258,9 +272,11 @@ class BaseForm(BaseView, FormView):
            }
         }
     """
-    def __init__(self, context, request):
+
+    def __init__(self, context, request, schema=None):
         super(BaseForm, self).__init__(context, request)
-        schema = self.get_schema()
+        if schema is None:  # To allow testing injection
+            schema = self.get_schema()
         if not schema:
             schema_factory = self.get_schema_factory(self.type_name, self.schema_name)
             if not schema_factory:
@@ -280,6 +296,102 @@ class BaseForm(BaseView, FormView):
         self.schema = schema
         event = SchemaCreatedEvent(self.schema, view = self, context = context, request = request)
         objectEventNotify(event)
+
+    def __call__(self):
+        """
+        Prepares and render the form according to provided options.
+
+        Upon receiving a ``POST`` request, this method will validate
+        the request against the form instance. After validation,
+        this calls a method based upon the name of the button used for
+        form submission and whether the validation succeeded or failed.
+        If the button was named ``save``, then :meth:`save_success` will be
+        called on successful validation or :meth:`save_failure` will
+        be called upon failure. An exception to this is when no such
+        ``save_failure`` method is present; in this case, the fallback
+        is :meth:`failure``.
+
+        Returns a ``dict`` structure suitable for provision tog the given
+        view. By default, this is the page template specified
+        """
+        self.schema = self.schema.bind(**self.get_bind_data())
+        form = self.form_class(self.schema, buttons=self.buttons,
+                               use_ajax=self.use_ajax, ajax_options=self.ajax_options,
+                               **dict(self.form_options))
+        self.before(form)
+        result = None
+        for button in form.buttons:
+            if button.name in self.request.POST:
+                success_method = getattr(self, '%s_success' % button.name)
+                try:
+                    controls = self.request.POST.items()
+                    validated = form.validate(controls)
+                    event = FormSuccessEvent(self, appstruct=validated, form=form)
+                    objectEventNotify(event)
+                    result = success_method(validated)
+                except deform.exception.ValidationFailure as e:
+                    self.initial = False
+                    fail = getattr(self, '%s_failure' % button.name, None)
+                    if fail is None:
+                        fail = self.failure
+                    result = fail(e)
+                break
+        if result is None:
+            result = self.show(form)
+        return result
+
+    def before(self, form):
+        """
+        Performs some processing on the ``form`` prior to rendering.
+
+        By default, this method does nothing. Override this method
+        in your derived class to modify the ``form``. Your function
+        will be executed immediately after instantiating the form
+        instance in :meth:`__call__` (thus before obtaining widget resources,
+        considering buttons, or rendering).
+        """
+        pass
+
+    def appstruct(self):
+        """
+        Returns an ``appstruct`` for form default values when rendered.
+
+        By default, this method does nothing. Override this method in
+        your derived class and return a suitable entity that can be
+        used as an ``appstruct`` and passed to the
+        :meth:`deform.Field.render` of an instance of
+        :attr:`form_class`.
+        """
+        return None
+
+    def failure(self, exc):
+        """
+        Default action upon form validation failure.
+
+        Returns the result of :meth:`render` of the given ``exc`` object
+        (an instance of :class:`deform.exception.ValidationFailure`) as the
+        ``form`` key in a ``dict`` structure.
+        """
+        return {
+            'form': exc.render(),
+        }
+
+    def show(self, form):
+        """
+        Render the given form, with or without an ``appstruct`` context.
+
+        The given ``form`` argument will be rendered with an ``appstruct``
+        if :meth:`appstruct` provides one.  Otherwise, it is rendered without.
+        Returns the rendered form as the ``form`` key in a ``dict`` structure.
+        """
+        appstruct = self.appstruct()
+        if appstruct is None:
+            rendered = form.render()
+        else:
+            rendered = form.render(appstruct)
+        return {
+            'form': rendered,
+        }
 
     def get_schema(self):
         """ Return either an instantiated schema or a schema class.
