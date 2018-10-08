@@ -101,7 +101,7 @@ class UnauthorizedExceptionView(ExceptionView):
         if isinstance(msg, TranslationString):
             msg = self.request.localizer.translate(msg)
         if msg:
-            self.flash_messages.add(msg, type='danger', require_commit=False, auto_destruct=True)
+            self.flash_messages.add(msg, type='danger', require_commit=False)
         return HTTPFound(location=self.request.resource_url(self.root, 'login', query={
             'came_from': self.request.url}))
 
