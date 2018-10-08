@@ -78,7 +78,7 @@
       <tal:actionbar metal:define-slot="actionbar" replace="structure view.render_actionbar()" />
       <div metal:define-slot="mainflash" style="position: relative;">
         <div data-spy="affix" data-offset-top="150" class="mainflash">
-          <div class="" data-flash-slot="main"></div>
+          <div data-flash-slot="main"></div>
         </div>
       </div>
       <div id="content">
