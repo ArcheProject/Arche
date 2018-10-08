@@ -25,7 +25,7 @@
           Order by <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-          <li tal:repeat="(value, desc) fields"><a v-on:click="setOrder('${value}')"><span v-if="orderBy == '${value}'" class="glyphicon glyphicon-ok-sign"></span> ${desc}</a></li>
+          <li tal:repeat="(value, desc) fields"><a v-on:click="setOrder('${value}')">${desc} <span v-if="orderBy == '${value}'" class="glyphicon glyphicon-ok"></span></a></li>
         </ul>
       </span>
     </div>
@@ -85,6 +85,14 @@
         this.getPage(0);
       },
       methods: {
+        setTotal: function(total) {
+          var perPage = 25;
+          if (total >= 200) perPage = 50;
+          if (total >= 1000) perPage = 100;
+          if (total >= 4000) perPage = 200;
+          this.itemsPerPage = perPage;
+          this.total = total;
+        },
         getRange: function(start) {
           var params = {
             start: start,
@@ -98,7 +106,7 @@
             for (i=0; i<response.items.length; i++) {
               this.users[start + i] = response.items[i];
             }
-            this.total = response.total;
+            this.setTotal(response.total);
           }.bind(this));
         },
         getPage: function(page) {
