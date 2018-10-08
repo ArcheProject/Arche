@@ -9,6 +9,7 @@ from BTrees.OOBTree import OOBTree
 from html2text import HTML2Text
 from persistent import IPersistent
 from pyramid.compat import map_
+from pyramid.httpexceptions import HTTPUnauthorized
 from pyramid.i18n import TranslationString
 from pyramid.interfaces import IView
 from pyramid.interfaces import IViewClassifier
@@ -30,6 +31,7 @@ from zope.interface import implementer
 from zope.interface import providedBy
 from zope.interface.interfaces import ComponentLookupError
 
+from arche import _
 from arche import logger
 from arche.compat import IterableUserDict
 from arche.interfaces import IContentView
@@ -607,6 +609,22 @@ class CopyHook(object):
         raise ResumeCopy
 
 
+def authdebug_message(request):
+    """ This method is read by the Pyramid viewderivers to produce an error
+        message when a view isn't allowed to be accessed.
+
+        We'll add a small hack here to raise HTTP 401s when unauthenticated.
+        It makes a lot more sense.
+    """
+    if request.authenticated_userid:
+        return request.localizer.translate(_("You're not allowed to access this"))
+    raise HTTPUnauthorized(
+        request.localizer.translate(
+            _("You need to login")
+        )
+    )
+
+
 def includeme(config):
     config.registry.registerAdapter(RegistrationTokens)
     config.registry.registerAdapter(EmailValidationTokens)
@@ -629,6 +647,7 @@ def includeme(config):
     config.add_request_method(get_schema)
     config.add_request_method(addable_content)
     config.add_request_method(is_modal, reify=True)
+    config.add_request_method(authdebug_message, reify=True)
     #Init default scales
     for (name, scale) in image_scales.items():
         config.add_image_scale(name, *scale)

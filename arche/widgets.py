@@ -61,6 +61,7 @@ class LocalDateTime(colander.DateTime):
             result = tzinfo.localize(result)
         return result.astimezone(UTC)  # ALWAYS save UTC!
 
+
 class TaggingWidget(Select2Widget):
     """ A very liberal widget that allows the user to pretty much enter anything.
         It will also display any existing values.
@@ -133,6 +134,7 @@ class ReferenceWidget(Select2Widget):
     query_params = {}
     multiple = True
     sortable = False
+    id_attr = 'uid'
     #Make query view configurable?
 
     def _fetch_referenced_objects(self, field, cstruct):
@@ -146,9 +148,9 @@ class ReferenceWidget(Select2Widget):
         if self.multiple:
             docids = []
             for uid in cstruct:
-                docids.extend(query(Eq('uid', uid))[1])
+                docids.extend(query(Eq(self.id_attr, uid))[1])
         else:
-            docids = query(Eq('uid', cstruct))[1]
+            docids = query(Eq(self.id_attr, cstruct))[1]
         for docid in docids:
             path = address_for_docid(docid)
             obj = find_resource(root, path)
@@ -177,6 +179,16 @@ class ReferenceWidget(Select2Widget):
             query_url = view.request.resource_url(view.root, 'search_select2.json', query=query_params)
             tmpl_values['query_url'] = query_url
         return field.renderer(template, **tmpl_values)
+
+
+# DO NOT use this in colander.Sequence fields. Will not work.
+# Use without kw multiple=False instead.
+class UserReferenceWidget(ReferenceWidget):
+    default_query_params = {'glob': 1,
+                            'show_hidden': 1,
+                            'id_attr': 'userid',
+                            'type_name': 'User'}
+    id_attr = 'userid'
 
 
 class FileAttachmentWidget(Widget):

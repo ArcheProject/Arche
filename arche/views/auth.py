@@ -49,6 +49,8 @@ class RegisterForm(BaseForm):
     type_name = u'Auth'
     schema_name = 'register'
     title = _(u"Register")
+    use_ajax = True
+    formid = 'register-form'
 
     def __init__(self, context, request):
         super(RegisterForm, self).__init__(context, request)
@@ -68,8 +70,7 @@ class RegisterForm(BaseForm):
 
     @property
     def buttons(self):
-        return (deform.Button('register', title = _(u"Register"), css_class = 'btn btn-primary'),
-                 self.button_cancel,)
+        return (deform.Button('register', title = _(u"Register"), css_class = 'btn btn-primary'),)
 
     def register_success(self, appstruct):
         #FIXME: Protect against spamming?
@@ -81,8 +82,10 @@ class RegisterForm(BaseForm):
             token = factory(hours = 12)
             rtokens = IRegistrationTokens(self.context)
             rtokens[email] = token
-            url = self.request.resource_url(self.context, 'register_finish', query = {'t': token, 'e': email})
-            html = self.render_template("arche:templates/emails/register.pt", token = token, email = email, url = url)
+            url = self.request.resource_url(self.context, 'register_finish',
+                                            query = {'t': token, 'e': email})
+            html = self.render_template("arche:templates/emails/register.pt",
+                                        token = token, email = email, url = url)
             self.request.send_email(_(u"Registration link"),
                                     [email],
                                     html,
@@ -93,7 +96,7 @@ class RegisterForm(BaseForm):
             self.flash_messages.add(msg,
                                     auto_destruct = False,
                                     type="success")
-            return HTTPFound(location = self.request.resource_url(self.root))
+            return self.relocate_response(self.request.resource_url(self.root))
 
 
 class RegisterFinishForm(BaseForm):
@@ -107,10 +110,12 @@ class RegisterFinishForm(BaseForm):
             raise HTTPForbidden(_(u"Already logged in."))
         rtokens = IRegistrationTokens(context)
         email = self.reg_email
-        if not (email is not None and email in rtokens and rtokens[email].valid and rtokens[email] == request.GET.get('t', object())):
-            raise HTTPForbidden(_("reg_token_expired_or_invalid",
-                                  default = "The registration link is either invalid or has expired. "
-                                  "You may request a new one if registration is open. "))
+        if not (email is not None and email in rtokens and rtokens[email].valid and
+                rtokens[email] == request.GET.get('t', object())):
+            raise HTTPForbidden(
+                _("reg_token_expired_or_invalid",
+                  default = "The registration link is either invalid or has expired. "
+                            "You may request a new one if registration is open. "))
 
     @property
     def reg_email(self):
@@ -201,10 +206,6 @@ class UserChangePasswordForm(DefaultEditForm):
             if context.email_validated == False:
                 context.email_validated = True
             super(UserChangePasswordForm, self).__init__(context, request)
-            try:
-                del self.schema['current_password']
-            except KeyError:
-                pass
             return
         else:
             if request.has_permission(security.PERM_EDIT):
@@ -240,12 +241,12 @@ def includeme(config):
                     context = IRoot,
                     name = 'login',
                     permission = security.NO_PERMISSION_REQUIRED,
-                    renderer = 'arche:templates/form.pt')
+                    renderer = 'arche:templates/system/login.pt')
     config.add_view(RegisterForm,
                     context = IRoot,
                     name = 'register',
                     permission = security.PERM_REGISTER,
-                    renderer = 'arche:templates/form.pt')
+                    renderer = 'arche:templates/system/register.pt')
     config.add_view(RegisterFinishForm,
                     context = IRoot,
                     name = 'register_finish',

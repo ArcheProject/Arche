@@ -41,6 +41,8 @@
 
         <div class="modal-body">
 
+          <div tal:condition="field.before_fields|False" tal:content="structure field.before_fields" />
+
           <!-- Nav tabs -->
           <p tal:condition="len(tabbed_fields) > 1">
             <ul class="nav nav-pills">
@@ -76,6 +78,8 @@
           <tal:fields condition="not tabbed_fields" repeat="child field">
             <tal:field replace="structure child.render_template(item_template)" />
           </tal:fields>
+
+          <div tal:condition="field.before_buttons|False" tal:content="structure field.before_buttons" />
 
         </div><!-- body -->
 

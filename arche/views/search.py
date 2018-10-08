@@ -2,6 +2,7 @@ from arche.interfaces import IJSONData
 from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.i18n import TranslationString
 from pyramid.view import view_config
 from pyramid.view import view_defaults
@@ -48,7 +49,10 @@ class SearchView(BaseView):
             if v and k in self.root.catalog:
                 perform_query = True
                 if isinstance(v, string_types):
-                    query_objs.append(Eq(k, v))
+                    if v.isdigit():
+                        query_objs.append(Eq(k, int(v)) | Eq(k, v))
+                    else:
+                        query_objs.append(Eq(k, v))
                 else:
                     query_objs.append(Any(k, v))
         query_obj = None
@@ -62,7 +66,7 @@ class SearchView(BaseView):
                 query_obj = obj
         try:
             #Limit kw is only used by the catalog if a sort index is specified
-            self.result, self.docids = self.root.catalog.query(query_obj,)
+            self.result, self.docids = self.root.catalog.query(query_obj)
         except ParseError:
             if not self.request.is_xhr:
                 msg = _(u"Invalid search query - try something else!")
@@ -105,6 +109,9 @@ class SearchView(BaseView):
 
     @view_config(name = 'search_select2.json', renderer = 'json')
     def search_select_2_json(self):
+        id_attr = self.request.GET.pop('id_attr', 'uid')
+        if id_attr not in ('uid', 'userid'):
+            raise HTTPBadRequest()
         self._mk_query()
         output = []
         for obj in self.resolve_docids(self.docids):
@@ -116,7 +123,7 @@ class SearchView(BaseView):
             except AttributeError:
                 tag = ''
             output.append({'text': obj.title,
-                           'id': obj.uid,
+                           'id': getattr(obj, id_attr),
                            'type_name': obj.type_name,
                            'img_tag': tag,
                            'type_title': type_title})

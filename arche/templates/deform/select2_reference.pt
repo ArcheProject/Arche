@@ -5,7 +5,8 @@
      css_class css_class|field.widget.css_class;
      optgroup_class optgroup_class|field.widget.optgroup_class;
      multiple multiple|field.widget.multiple;
-     sortable sortable|field.widget.sortable;">
+     sortable sortable|field.widget.sortable;
+     id_attr id_attr|field.widget.id_attr;">
 
    <style>
     .form-control .select2-selection--choice {
@@ -48,7 +49,7 @@
     <tal:loop tal:repeat="item values">
       <option tal:attributes="
               class css_class;
-              value item.uid;" selected>${item.title}</option>
+              value getattr(item, id_attr);" selected>${item.title}</option>
     </tal:loop>
 
     </select>

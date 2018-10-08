@@ -71,13 +71,11 @@ class Thumbnail(object):
     height = 0
     image_type = u""
     image = None
-    etag = ""
 
     def __init__(self, image, size = None, image_type = u""):
         self.width, self.height = size
         self.image = image
         self.image_type = image_type
-        self.etag = str(uuid4())
 
     @property
     def mimetype(self):

@@ -1,3 +1,7 @@
+from __future__ import unicode_literals
+
+import warnings
+
 import colander
 import deform
 from pytz import common_timezones
@@ -24,6 +28,7 @@ from arche.validators import unique_email_validator
 from arche.widgets import FileAttachmentWidget
 from arche.widgets import LocalDateTime
 from arche.widgets import ReferenceWidget
+from arche.widgets import UserReferenceWidget
 from arche.widgets import TaggingWidget
 
 
@@ -51,6 +56,8 @@ def current_userid_as_tuple(node, kw):
 
 @colander.deferred
 def userid_hinder_widget(node, kw):
+    warnings.warn("The 'userid_hinder_widget' is deprecated,"
+                  "try using 'arche.widgets.UserReferenceWidget(multiple=False)' instead", DeprecationWarning)
     view = kw['view']
     return deform.widget.AutocompleteInputWidget(values=tuple(view.root['users'].keys()))
 
@@ -79,10 +86,10 @@ def tagging_widget(node, kw):
 
 @colander.deferred
 def tagging_userids_widget(node, kw):
-    view = kw['view']
-    userids = tuple(view.root['users'].keys())
-    return TaggingWidget(tags=userids, placeholder=_("Type to search for UserIDs"),
-                         custom_tags=False, sortable=True)
+    warnings.warn("The 'tagging_userids_widget' is deprecated,"
+                  "use 'arche.widgetsUserReferenceWidget' instead", DeprecationWarning)
+    return UserReferenceWidget(placeholder=_("Type to search for Users"),
+                               sortable=True)
 
 
 @colander.deferred
@@ -118,14 +125,16 @@ class DCMetadataSchema(colander.Schema):
     creator = colander.SchemaNode(
         colander.List(),
         tab='metadata',
-        widget=tagging_userids_widget,
+        widget=UserReferenceWidget(placeholder=_("Type to search for UserIDs"),
+                                   sortable=True),
         validator=existing_userids,
         missing=(),
         default=current_userid_as_tuple
     )
     contributor = colander.SchemaNode(
         colander.List(),
-        widget=tagging_userids_widget,
+        widget=UserReferenceWidget(placeholder=_("Type to search for UserIDs"),
+                                   sortable=True),
         validator=existing_userids,
         tab='metadata',
         missing=()
@@ -381,6 +390,20 @@ class ChangePasswordSchema(colander.Schema):
         validator=ascii_encodable_validator,
         widget=deform.widget.CheckedPasswordWidget()
     )
+
+    def after_bind(self, schema, kw):
+        request = kw['request']
+        def _remove_pw():
+            try:
+                del schema['current_password']
+            except KeyError:
+                pass
+        # Cases where the current password field shouldn't exist
+        if not request.authenticated_userid:
+            _remove_pw()
+        # Admins may change the password of other users, but admins might not have a pw
+        if request.authenticated_userid and not request.profile.password:
+            _remove_pw()
 
 
 class InitialSetup(colander.Schema):

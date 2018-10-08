@@ -3,6 +3,7 @@ from repoze.folder.events import ObjectAddedEvent #API
 from repoze.folder.events import ObjectWillBeRemovedEvent #API
 
 from arche.interfaces import IEmailValidatedEvent
+from arche.interfaces import IFormSuccessEvent
 from arche.interfaces import IObjectUpdatedEvent
 from arche.interfaces import ISchemaCreatedEvent
 from arche.interfaces import IUser
@@ -48,6 +49,21 @@ class SchemaCreatedEvent(object):
         self.view = view
         self.request = request
         self.context = context
+        self.__dict__.update(**kw)
+
+
+@implementer(IFormSuccessEvent)
+class FormSuccessEvent(object):
+    """ Raised when a form succeded validation. Ment as a plugin point for
+        modifications before things are saved.
+    """
+
+    def __init__(self, _object, appstruct, form=None, **kw):
+        self.object = _object
+        self.request = _object.request
+        self.context = _object.context
+        self.appstruct = appstruct
+        self.form = form  # The deform.Form instance
         self.__dict__.update(**kw)
 
 

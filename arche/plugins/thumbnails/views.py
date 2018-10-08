@@ -33,13 +33,16 @@ def thumb_view(context, request, subpath=None):
         raise HTTPNotFound()
     thumb = thumbnails.get_thumb(scale_name, key=key, direction=direction)
     if thumb:
-        return Response(
+        response =  Response(
             body=thumb.image,
             headerlist=[
                 ('Content-Type', thumb.mimetype),
-                ('Etag', thumb.etag)
+                ('Cache-Control', 'private, max-age=%s' % (60*60)),
             ]
         )
+        if response.etag is None:
+            response.md5_etag()
+        return response
     raise HTTPNotFound()
 
 
