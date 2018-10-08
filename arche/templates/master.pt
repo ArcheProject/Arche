@@ -19,7 +19,6 @@
                     portlets_bottom view.render_portlet_slot('bottom');
                     main_cols 12 - int(bool(portlets_left))*3 - int(bool(portlets_right))*3;">
 
-    <div class="fixed-flash-slot" data-flash-slot="main"></div>
 
     <nav metal:define-slot="navigation" tal:replace="structure view.render_template('arche:templates/navigation.pt')" />
 
@@ -77,7 +76,11 @@
       </div>
 
       <tal:actionbar metal:define-slot="actionbar" replace="structure view.render_actionbar()" />
-
+      <div metal:define-slot="mainflash" style="position: relative;">
+        <div data-spy="affix" data-offset-top="150" class="mainflash">
+          <div class="" data-flash-slot="main"></div>
+        </div>
+      </div>
       <div id="content">
         <metal:content define-slot="content"></metal:content>
       </div>
