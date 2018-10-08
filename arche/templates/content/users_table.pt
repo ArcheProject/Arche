@@ -18,9 +18,6 @@
       <span class="input-group-addon" i18n:translate="">Search</span>
       <input name="q" v-model="query" type="search" class="form-control" />
       <span class="input-group-btn">
-        <!--
-        <button class="btn btn-default" i18n:translate=""><span class="glyphicon glyphicon-filter"></span> Filter</button>
-        -->
         <button class="btn btn-default" v-on:click="reverseOrder()">
           <span v-bind:class="'glyphicon glyphicon-sort-by-attributes' + (orderReversed ? '-alt' : '')"></span>
         </button>
@@ -40,30 +37,32 @@
     <table class="table table-responsive table-striped table-hover">
       <thead>
         <tr>
-          <th tal:repeat="(value, desc) fields">${ desc }</th>
+          <th i18n:translate="">UserID</th>
+          <th i18n:translate="">Name</th>
+          <th i18n:translate="">Email</th>
+          <th i18n:translate="">Created</th>
         </tr>
       </thead>
       <tbody>
         <tr v-if="typeof currentPage === 'undefined'">
-          <td colspan="6">
+          <td colspan="4">
             <span class="rotate-me glyphicon glyphicon-refresh"></span>
             <tal:ts i18n:translate="">Loading...</tal:ts>
           </td>
         </tr>
         <tr v-if="typeof currentPage !== 'undefined' && currentUsers.length===0">
-          <td colspan="6">
+          <td colspan="4">
             <span class="glyphicon glyphicon-ban-circle"></span>
             <tal:ts i18n:translate="">No user matches your search.</tal:ts>
           </td>
         </tr>
         <tr v-for="user in currentUsers">
           <td><a v-bind:href="'/users/' + user.userid">{{ user.userid }}</a></td>
+          <td>{{ user.first_name }} {{ user.last_name }}</td>
           <td class="text-nowrap">
-            <span v-if="user.email_validated" class="glyphicon glyphicon-ok-sign text-success"></span>
+            <span v-if="user.email_validated" class="glyphicon glyphicon-ok-sign text-success" title="Email verified"></span>
             <a class="email" v-bind:href="'mailto:' + user.email">{{ user.email }}</a>
           </td>
-          <td>{{ user.first_name }}</td>
-          <td>{{ user.last_name }}</td>
           <td>{{ user.created }}</td>
         </tr>
       </tbody>
