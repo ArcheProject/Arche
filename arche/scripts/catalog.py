@@ -25,7 +25,7 @@ def quick_reindex_script(env, parsed_ns):
     else:
         print ("-- Reindexing specified indexes")
     request = env['request']
-    quick_reindex(request, parsed_ns.indexes, print_log=True)
+    quick_reindex(request, parsed_ns.indexes)
 
 
 def includeme(config):
