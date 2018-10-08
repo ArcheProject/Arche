@@ -1,10 +1,14 @@
 from __future__ import unicode_literals
 
 from pyramid.decorator import reify
+from pyramid.httpexceptions import HTTPBadRequest
+
+from repoze.catalog.query import Eq
+from repoze.catalog.query import Contains
 
 from arche import _
 from arche import security
-from arche.fanstatic_lib import pure_js
+from arche.fanstatic_lib import vue_js
 from arche.interfaces import IDateTimeHandler
 from arche.interfaces import IJSONData
 from arche.views.base import BaseView
@@ -15,8 +19,17 @@ class UsersView(BaseView):
     """
 
     def __call__(self):
-        pure_js.need()
-        return {}
+        # pure_js.need()
+        vue_js.mode('debug').need()
+        return {
+            'fields': (
+                ('userid', _('UserID')),
+                ('email', _('Email')),
+                ('first_name', _('First name')),
+                ('last_name', _('Last name')),
+                ('created', _('Created')),
+            ),
+        }
 
 
 class JSONUsers(BaseView):
@@ -26,13 +39,26 @@ class JSONUsers(BaseView):
         return IDateTimeHandler(self.request)
 
     def __call__(self):
-        results = []
-        for obj in self.context.values():
-            if self.request.has_permission(security.PERM_VIEW, obj):
-                results.append(obj)
-        response = {}
-        response['items'] = self.json_format_objects(results)
-        return response
+        query = Eq('type_name', 'User') & Eq('path', self.request.resource_path(self.context))
+        q = self.request.GET.get('q')
+        if q:
+            q = ' '.join([w+'*' for w in q.split()])
+            query &= Contains('searchable_text', q)
+        result, docids = self.request.root.catalog.query(
+            query,
+            sort_index=self.request.GET.get('order', 'userid'),
+            reverse=self.request.GET.get('reverse') == 'true'
+        )
+        try:
+            start = int(self.request.GET.get('start', 0))
+            limit = int(self.request.GET.get('limit', 100))
+        except ValueError:
+            raise HTTPBadRequest()
+        users = self.request.resolve_docids(list(docids)[start:start+limit])
+        return {
+            'items': self.json_format_objects(users),
+            'total': result.total,
+        }
 
     def json_format_objects(self, items):
         res = []

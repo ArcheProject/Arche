@@ -3,72 +3,153 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-model="http://www.w3.org/1999/xhtml"
       metal:use-macro="view.macro('arche:templates/base_view.pt')"
       i18n:domain="Arche">
 <body>
 <div metal:fill-slot="main-content">
 
-  <script type="text/javascript">
-    $(document).ready(function() {
-      var request = arche.do_request("${request.resource_url(context, 'users.json')}");
-      request.done(function(response) {
-        $('[data-load-marker]').remove();
-        var directive = {'tr':
-          {'user<-items':
-            {'.userid': 'user.userid',
-             '.created': 'user.created',
-             '.email': 'user.email',
-             '.email@href+': 'user.email',
-             '.first_name': 'user.first_name',
-             '.last_name': 'user.last_name',
-             '.profile-link@href': function(arg) {
-               return '/users/' + arg.item['__name__'];
-             },
-             '[data-email-validated]@class': function(arg) {
-               if (arg.item['email_validated'] == true) return 'glyphicon glyphicon-ok-sign text-success';
-               return 'glyphicon glyphicon-question-sign text-warning';
-             }
-            }
-          }
-        };
-        $('#users').render(response, directive);
-      })
-    })
-  </script>
+  <h1 i18n:translate="">User(s)</h1>
 
-  <h1 i18n:translate="">Showing <tal:ts content="len(context)" i18n:name="num" /> user(s)</h1>
-
-  <table class="table table-responsive table-bordered table-striped table-hover">
-    <thead>
-      <tr>
-        <th i18n:translate="">UserID</th>
-        <th i18n:translate="">Email</th>
-        <th i18n:translate="">First name</th>
-        <th i18n:translate="">Last name</th>
-        <th i18n:translate="">Created</th>
-      </tr>
-    </thead>
-    <tbody id="users">
-      <tr>
-        <td>
-          <span data-load-marker>
+  <div id="user-table" data-src="${request.resource_url(context, 'users.json')}">
+    <div class="input-group" style="margin: 15px 0;">
+      <span class="input-group-addon" i18n:translate="">Search</span>
+      <input name="q" v-model="query" type="search" class="form-control" />
+      <span class="input-group-btn">
+        <!--
+        <button class="btn btn-default" i18n:translate=""><span class="glyphicon glyphicon-filter"></span> Filter</button>
+        -->
+        <button class="btn btn-default" v-on:click="reverseOrder()">
+          <span v-bind:class="'glyphicon glyphicon-sort-by-attributes' + (orderReversed ? '-alt' : '')"></span>
+        </button>
+        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Order by <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li tal:repeat="(value, desc) fields"><a v-on:click="setOrder('${value}')"><span v-if="orderBy == '${value}'" class="glyphicon glyphicon-ok-sign"></span> ${desc}</a></li>
+        </ul>
+      </span>
+    </div>
+    <ul class="nav nav-pills">
+      <li role="presentation" v-for="page in pages" v-bind:class="page === currentPage ? 'active' : null">
+        <a v-on:click="getPage(page)" v-bind:href="'#page-' + page">{{ (page*itemsPerPage)+1 }} - {{ total > (page+1)*itemsPerPage ? (page+1)*itemsPerPage : total }}</a>
+      </li>
+    </ul>
+    <table class="table table-responsive table-striped table-hover">
+      <thead>
+        <tr>
+          <th tal:repeat="(value, desc) fields">${ desc }</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-if="typeof currentPage === 'undefined'">
+          <td colspan="6">
             <span class="rotate-me glyphicon glyphicon-refresh"></span>
             <tal:ts i18n:translate="">Loading...</tal:ts>
-          </span>
-          <a class="profile-link">
-              <span class="userid"></span>
-          </a>
-        </td>
-        <td class="text-nowrap">
-          <span data-email-validated></span>
-          <a class="email" href="mailto:"></a>
-        </td>
-        <td><span class="first_name"></span></td>
-        <td><span class="last_name"></span></td>
-        <td><span class="created"></span></td>
-      </tr>
-    </tbody>
-  </table>
+          </td>
+        </tr>
+        <tr v-if="typeof currentPage !== 'undefined' && currentUsers.length===0">
+          <td colspan="6">
+            <span class="glyphicon glyphicon-ban-circle"></span>
+            <tal:ts i18n:translate="">No user matches your search.</tal:ts>
+          </td>
+        </tr>
+        <tr v-for="user in currentUsers">
+          <td><a v-bind:href="'/users/' + user.userid">{{ user.userid }}</a></td>
+          <td class="text-nowrap">
+            <span v-if="user.email_validated" class="glyphicon glyphicon-ok-sign text-success"></span>
+            <a class="email" v-bind:href="'mailto:' + user.email">{{ user.email }}</a>
+          </td>
+          <td>{{ user.first_name }}</td>
+          <td>{{ user.last_name }}</td>
+          <td>{{ user.created }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <script type="text/javascript">
+    var user_app = new Vue({
+      data: {
+        users: [],
+        userPages: {},
+        currentPage: undefined,
+        total: undefined,
+        itemsPerPage: 50,
+        orderBy: "userid",
+        orderReversed: false,
+        query: ""
+      },
+      el: "#user-table",
+      mounted: function() {
+        this.getPage(0);
+      },
+      methods: {
+        getRange: function(start) {
+          var params = {
+            start: start,
+            limit: this.itemsPerPage,
+            order: this.orderBy,
+            q: this.query,
+            reverse: this.orderReversed
+          };
+          return arche.do_request(this.$el.dataset.src, {data: params})
+          .done(function(response) {
+            for (i=0; i<response.items.length; i++) {
+              this.users[start + i] = response.items[i];
+            }
+            this.total = response.total;
+          }.bind(this));
+        },
+        getPage: function(page) {
+          var start = page*this.itemsPerPage;
+          if (this.users[start]) {
+            this.currentPage = page;
+          } else {
+            this.currentPage = undefined;
+            this.getRange(start)
+            .done(function() {
+              this.currentPage = page;
+            }.bind(this));
+          }
+        },
+        search: function() {
+          this.users = [];
+          this.getPage(0);
+        },
+        setOrder: function(value) {
+          this.orderBy = value;
+          this.search();
+        },
+        reverseOrder: function() {
+          this.orderReversed = !this.orderReversed;
+          this.search();
+        },
+      },
+      computed: {
+        currentUsers: function() {
+          var start = this.currentPage * this.itemsPerPage;
+          return this.users.slice(start, start + this.itemsPerPage);
+        },
+        pages: function() {
+          var pages = [];
+          if (typeof this.total !== 'undefined') {
+            var count = Math.ceil(this.total / this.itemsPerPage);
+            for (i=0; i<count; i++) {
+              pages.push(i);
+            }
+          }
+          return pages;
+        }
+      },
+      watch: {
+        query: function(val) {
+          this.search();
+        }
+      }
+    });
+  </script>
 </div>
 </body>
 </html>
