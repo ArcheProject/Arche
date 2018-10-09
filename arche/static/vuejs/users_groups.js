@@ -99,7 +99,6 @@ $(function() {
             if (sliceStart > 0) {
               pages.push({
                 text: '«',
-                active: false,
                 id: 0
               });
             }
@@ -107,7 +106,6 @@ $(function() {
             if (sliceEnd < endPage) {
               pages.push({
                 text: '»',
-                active: false,
                 id: endPage
               });
             }
