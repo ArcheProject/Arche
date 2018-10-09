@@ -89,7 +89,7 @@ $(function() {
             var count = Math.ceil(this.total / this.itemsPerPage);
             for (page=0; page<count; page++) {
               var start = (page * this.itemsPerPage) + 1;
-              var end = Math.min(start + this.itemsPerPage, this.total);
+              var end = Math.min((page * this.itemsPerPage) + this.itemsPerPage, this.total);
               slicePages.push({
                 text: start + ' - ' + end,
                 active: page === this.currentPage,
