@@ -8,7 +8,7 @@ from repoze.catalog.query import Contains
 
 from arche import _
 from arche import security
-from arche.fanstatic_lib import vue_js
+from arche.fanstatic_lib import users_groups_js
 from arche.interfaces import IDateTimeHandler
 from arche.interfaces import IJSONData
 from arche.views.base import BaseView
@@ -19,8 +19,7 @@ class UsersView(BaseView):
     """
 
     def __call__(self):
-        # pure_js.need()
-        vue_js.mode('debug').need()
+        users_groups_js.need()
         return {
             'fields': (
                 ('userid', _('UserID')),
