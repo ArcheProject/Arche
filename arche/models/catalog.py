@@ -186,6 +186,9 @@ class CatalogIndexHelper(object):
 
             Returns a set of type_names if it's possible, otherwise None
         """
+        if index_names is None:
+            # All
+            return
         found_types = set()
         for name in index_names:
             try:
@@ -202,6 +205,9 @@ class CatalogIndexHelper(object):
 
             For instance, searchable_text must always be updated when title updates."""
         # FIXME This function must be able to recurse into other index names without crashing
+        if names is None:
+            # All indexes
+            return
         found = set(names)
         names = set(names)
         for info in self.values():
@@ -600,11 +606,16 @@ def quick_reindex(request, indexes):
     else:
         total = len(request.root.document_map.docid_to_address)
         docids = request.root.document_map.docid_to_address
-    required_indexes = list(indexhelper.get_required(indexes))
+    required = indexhelper.get_required(indexes)
+    if required is None:
+        # None means all here
+        required = list(request.root.catalog.keys())
+    else:
+        required = list(required)
     logger.info("Reindexing %s objects...", total)
     for obj in request.resolve_docids(docids, perm=None):
         cataloger = ICataloger(obj)
-        cataloger.index_object(indexes=required_indexes)
+        cataloger.index_object(indexes=required)
 
 
 def _unregister_index_utils(registry=None):

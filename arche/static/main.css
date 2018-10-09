@@ -10,12 +10,20 @@
   color: #f0ad4e;
 }
 
+/* This is no longer used! */
 .fixed-flash-slot {
   position: fixed;
   right: 10px;
   left: 10px;
   top: 60px;
   z-index: 2000;
+}
+
+.mainflash {
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: 2000;
 }
 
 .dashed-border { border: #ccc 1px dashed; }
