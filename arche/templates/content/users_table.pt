@@ -75,7 +75,7 @@
         userPages: {},
         currentPage: undefined,
         total: undefined,
-        itemsPerPage: 50,
+        itemsPerPage: 200,
         orderBy: "userid",
         orderReversed: false,
         query: ""
@@ -85,8 +85,12 @@
         this.getPage(0);
       },
       methods: {
+        clear: function() {
+          this.users = [];
+          this.itemsPerPage=200;
+        },
         setTotal: function(total) {
-          var perPage = 25;
+          var perPage = 20;
           if (total >= 200) perPage = 50;
           if (total >= 1000) perPage = 100;
           if (total >= 4000) perPage = 200;
@@ -123,7 +127,7 @@
           }
         },
         search: function() {
-          this.users = [];
+          this.clear();
           this.getPage();
         },
         searchTimer: function() {
