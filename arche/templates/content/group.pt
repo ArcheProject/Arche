@@ -10,9 +10,25 @@
 <body>
 <div metal:fill-slot="main-content">
 
-  <h1 i18n:translate="">User(s)</h1>
+  <style>
+    .select2-container .select2-selection--single.form-control {
+      height: 34px;
+    }
+    .select2-container .select2-selection--single.form-control .select2-selection__rendered {
+      line-height: unset;
+      padding: 0;
+    }
+  </style>
+
+  <h1 i18n:translate="">${context.title}</h1>
 
   <div id="user-table" data-src="${request.resource_url(context, 'users.json')}">
+    <div class="input-group" style="margin: 15px 0;">
+      <select2 data-src="${request.resource_path(request.root, 'search_select2.json', query={'glob': 1,'show_hidden': 1,'id_attr': 'userid','type_name': 'User'})}" v-model="addUserSelected"></select2>
+      <span class="input-group-btn">
+        <button class="btn btn-default" data-target="${request.resource_url(context, 'add_user')}" v-bind:disabled="!addUserSelected" v-on:click="addUser" i18n:translate="">Add user</button>
+      </span>
+    </div>
     <div class="input-group" style="margin: 15px 0;">
       <span class="input-group-addon" i18n:translate="">Search</span>
       <input name="q" v-model="query" type="search" class="form-control" />
@@ -23,7 +39,7 @@
         <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Order by <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" tal:condition="fields|None">
           <li tal:repeat="(value, desc) fields"><a v-on:click="setOrder('${value}')">${desc} <span v-if="orderBy == '${value}'" class="glyphicon glyphicon-ok"></span></a></li>
         </ul>
       </span>
@@ -40,7 +56,7 @@
           <th i18n:translate="">UserID</th>
           <th i18n:translate="">Name</th>
           <th i18n:translate="">Email</th>
-          <th i18n:translate="">Created</th>
+          <th></th>
         </tr>
         </thead>
         <tbody>
@@ -63,7 +79,15 @@
             <span v-if="user.email_validated" class="glyphicon glyphicon-ok-sign text-success" title="Email verified"></span>
             <a class="email" v-bind:href="'mailto:' + user.email">{{ user.email }}</a>
           </td>
-          <td>{{ user.created }}</td>
+          <td class="text-right">
+            <button
+                    class="btn btn-sm btn-default"
+                    data-target="${request.resource_path(context, 'remove_user')}"
+                    v-on:click="removeUser(user.userid)">
+              <span class="glyphicon glyphicon-remove text-danger"></span>
+              <tal:ts i18n:translate="">Remove</tal:ts>
+            </button>
+          </td>
         </tr>
         </tbody>
       </table>

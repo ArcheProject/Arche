@@ -352,16 +352,16 @@ class GroupSchema(colander.Schema):
         widget=deform.widget.TextAreaWidget(rows=3),
         missing=u""
     )
-    members = colander.SchemaNode(
-        colander.Sequence(),
-        colander.SchemaNode(
-            colander.String(),
-            title=_(u"UserID"),
-            name=u"not_used",
-            validator=existing_userids,
-            widget=userid_hinder_widget, ),
-        title=_(u"Members"),
-    )
+    # members = colander.SchemaNode(
+    #     colander.Sequence(),
+    #     colander.SchemaNode(
+    #         colander.String(),
+    #         title=_(u"UserID"),
+    #         name=u"not_used",
+    #         validator=existing_userids,
+    #         widget=userid_hinder_widget, ),
+    #     title=_(u"Members"),
+    # )
 
 
 @colander.deferred

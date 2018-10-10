@@ -1,15 +1,59 @@
+// TODO Move components to a separate file for generic use.
+
+Vue.component('select2', {
+  props: ['value'],
+  template: '<select><slot></slot></select>',
+  mounted: function () {
+    var vm = this
+    $(this.$el)
+      // init select2
+      .select2({
+        minimumInputLength: 1,
+        containerCssClass: 'form-control',
+        width: "100%",
+        ajax: {
+          url: this.$el.dataset.src,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return {
+              query: params.term, // search term
+              page_limit: 10,
+            };
+          },
+        }
+      })
+      .val(this.value)
+      .trigger('change')
+      // emit event on change.
+      .on('change', function () {
+        vm.$emit('input', this.value)
+      })
+  },
+  watch: {
+    value: function (value) {
+      // update value
+      $(this.$el)
+      	.val(value)
+      	.trigger('change')
+    },
+  },
+  destroyed: function () {
+    $(this.$el).off().select2('destroy')
+  }
+})
+
 $(function() {
     var user_app = new Vue({
       data: {
         users: [],
         userPages: {},
-        currentPage: undefined,
-        total: undefined,
         itemsPerPage: 100,
         orderBy: "userid",
         orderReversed: false,
         query: ""
       },
+      props: ['addUserSelected', 'currentPage', 'total'],
       el: "#user-table",
       mounted: function() {
         this.getPage(0);
@@ -73,6 +117,31 @@ $(function() {
           this.orderReversed = !this.orderReversed;
           this.search();
         },
+        addRemove: function(target, userID) {
+          do_request(target, {
+            method: 'POST',
+            data: {userid: userID}
+          })
+          .done(function() {
+            this.search();
+          }.bind(this))
+          .fail(function(xhr) {
+            arche.create_flash_message(
+                xhr.responseText,
+                {type: 'danger', auto_destruct: true}
+            );
+          })
+        },
+        addUser: function(event) {
+          var target = event.target.dataset.target;
+          var userID = this.addUserSelected;
+          if (!userID) return;
+          this.addRemove(target, userID);
+        },
+        removeUser: function(userID) {
+          var target = event.target.dataset.target;
+          this.addRemove(target, userID);
+        }
       },
       computed: {
         currentUsers: function() {

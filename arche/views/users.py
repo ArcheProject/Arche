@@ -33,10 +33,6 @@ class UsersView(BaseView):
 
 class JSONUsers(BaseView):
 
-    @reify
-    def dt_handler(self):
-        return IDateTimeHandler(self.request)
-
     def __call__(self):
         query = Eq('type_name', 'User') & Eq('path', self.request.resource_path(self.context))
         q = self.request.GET.get('q')
@@ -63,7 +59,11 @@ class JSONUsers(BaseView):
         res = []
         for obj in items:
             adapted = IJSONData(obj)
-            res.append(adapted(self.request, dt_formater = self.dt_handler.format_relative, attrs = ('userid', 'email', 'first_name', 'last_name', 'email_validated')))
+            res.append(adapted(
+                self.request,
+                dt_formater=self.request.dt_handler.format_relative,
+                attrs=('userid', 'email', 'first_name', 'last_name', 'email_validated')
+            ))
         return res
 
 
