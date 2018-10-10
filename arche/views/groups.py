@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from deform_autoneed import need_lib
 from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import HTTPConflict
 from pyramid.httpexceptions import HTTPNoContent
 from pyramid.view import view_defaults, view_config
 from repoze.catalog.query import Eq
@@ -54,7 +55,7 @@ class GroupView(BaseView):
         user = self.requested_user
         members = self.context.members
         if user.userid in members:
-            raise HTTPBadRequest(body='User {} already in group.'.format(user.userid))
+            raise HTTPConflict(body='User {} already in group.'.format(user.userid))
         members.add(user.userid)
         return HTTPNoContent()
 
@@ -63,7 +64,7 @@ class GroupView(BaseView):
         user = self.requested_user
         members = self.context.members
         if user.userid not in members:
-            raise HTTPBadRequest(body='User {} not in group.'.format(user.userid))
+            raise HTTPConflict(body='User {} not in group.'.format(user.userid))
         members.remove(user.userid)
         return HTTPNoContent()
 
