@@ -7,7 +7,7 @@
 
 # configuration
 DOMAIN="Arche"
-SEARCH_PATH="Arche/"
+SEARCH_PATH="arche"
 LOCALES_PATH="$SEARCH_PATH/locale"
 # end configuration
 

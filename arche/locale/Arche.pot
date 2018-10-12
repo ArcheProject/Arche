@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-09-30 13:28+0200\n"
+"POT-Creation-Date: 2018-10-12 10:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,1715 +16,1740 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Lingua 4.13\n"
 
-#: ./Arche/validators.py:49
-msgid "Names can only contain charracters: A-Z, a-z, 0-9, '.', '-' or '_'"
+#. Default: Group for all administrators. Add any administrators to this group.
+#: ./arche/populators.py:27
+msgid "admin_group_desc"
 msgstr ""
 
-#: ./Arche/validators.py:52
-msgid "Already used within this context"
+#: ./arche/populators.py:29
+msgid "Administrators"
 msgstr ""
 
-#: ./Arche/validators.py:59
-msgid "Please use lowercase only."
-msgstr ""
-
-#: ./Arche/validators.py:62
-msgid "Already taken or conflicts with a restricted name."
-msgstr ""
-
-#. Default: UserID must be 3-30 chars, start with lowercase a-z and only
-#. contain lowercase a-z, numbers, minus and underscore.
-#: ./Arche/validators.py:65
-msgid "userid_char_error"
-msgstr ""
-
-#: ./Arche/validators.py:85
-msgid "Login disabled for this user"
-msgstr ""
-
-#. Default: Avoid non-english letters for this field.
-#: ./Arche/validators.py:100
-msgid "asci_encodable_error"
-msgstr ""
-
-#: ./Arche/validators.py:116
-msgid "Invalid email or UserID"
-msgstr ""
-
-#. Default: Password login disabled for this user. If you own the account you
-#. may request one to be set by using the recover password form.
-#: ./Arche/validators.py:120
-msgid "no_password_set_error"
-msgstr ""
-
-#: ./Arche/validators.py:127 ./Arche/validators.py:276
-msgid "Wrong password. Remember that passwords are case sensitive."
-msgstr ""
-
-#: ./Arche/validators.py:153
-msgid "No such email registered. Perhaps you haven't registered here?"
-msgstr ""
-
-#: ./Arche/validators.py:155
-msgid "No such UserID registered. You may wish to try your email address."
-msgstr ""
-
-#: ./Arche/validators.py:158
-msgid "User doesn't have a valid email address"
-msgstr ""
-
-#: ./Arche/validators.py:180
-#, python-format
-msgid "Can't find the UserID '${userid}'"
-msgstr ""
-
-#. Default: Already registered. You may recoveryour password if you've lost it.
-#: ./Arche/validators.py:206
-msgid "already_registered_email_error"
-msgstr ""
-
-#. Default: This address is already used.
-#: ./Arche/validators.py:212
-msgid "already_used_email_error"
-msgstr ""
-
-#: ./Arche/validators.py:219
-#, python-format
-msgid ""
-"Not a valid image file! Any of these image types are supported: ${suggested}"
-msgstr ""
-
-#: ./Arche/validators.py:238
-#, python-format
-msgid "Not a valid file type, try any of the following: ${suggested}"
-msgstr ""
-
-#: ./Arche/validators.py:291
-msgid "Not an existing valid path."
-msgstr ""
-
-#: ./Arche/validators.py:321
-msgid "An object with that name already exists here."
-msgstr ""
-
-#: ./Arche/validators.py:324
-msgid "This name is already reserved by a view."
-msgstr ""
-
-#: ./Arche/security.py:35
-msgid "Administrator"
-msgstr ""
-
-#: ./Arche/security.py:36
-msgid "Default 'superuser' role."
-msgstr ""
-
-#: ./Arche/security.py:40
-msgid "Editor"
-msgstr ""
-
-#: ./Arche/security.py:41
-msgid "Someone who has normal edit permissions."
-msgstr ""
-
-#: ./Arche/security.py:45
-msgid "Viewer"
-msgstr ""
-
-#: ./Arche/security.py:46
-msgid "Someone who's allowed to view."
-msgstr ""
-
-#: ./Arche/security.py:50
-msgid "Owner"
-msgstr ""
-
-#: ./Arche/security.py:51
-msgid "Special role for the initial creator."
-msgstr ""
-
-#: ./Arche/security.py:55
-msgid "Reviewer"
-msgstr ""
-
-#: ./Arche/security.py:56
-msgid ""
-"Review and publish content. Usable when combined with a workflow that "
-"implements review before publish."
-msgstr ""
-
-#: ./Arche/security.py:61
-msgid "Everyone"
-msgstr ""
-
-#: ./Arche/security.py:62
-msgid "Including anonymous"
-msgstr ""
-
-#: ./Arche/security.py:65
-msgid "Authenticated users"
-msgstr ""
-
-#: ./Arche/security.py:295 ./Arche/models/workflow.py:184
-#: ./Arche/models/workflow.py:235
-msgid "Private"
-msgstr ""
-
-#: ./Arche/security.py:302 ./Arche/models/workflow.py:185
-#: ./Arche/models/workflow.py:236
-msgid "Public"
-msgstr ""
-
-#: ./Arche/security.py:308 ./Arche/models/workflow.py:237
-msgid "Review"
-msgstr ""
-
-#: ./Arche/security.py:315 ./Arche/resources.py:461
-#: ./Arche/templates/revisions.pt:28
-msgid "User"
-msgstr ""
-
-#: ./Arche/widgets.py:80 ./Arche/templates/contents.pt:42
+#: ./arche/widgets.py:81 ./arche/templates/contents.pt:42
 msgid "Tags"
 msgstr ""
 
-#: ./Arche/widgets.py:129
+#: ./arche/widgets.py:130
 msgid "Type something to search."
 msgstr ""
 
-#: ./Arche/schemas.py:31 ./Arche/templates/menus/templates.pt:13
-msgid "Default"
+#: ./arche/resources.py:270
+msgid "Link"
 msgstr ""
 
-#: ./Arche/schemas.py:32
-msgid "Visibility"
+#: ./arche/resources.py:271
+msgid "Content type that redirects to somewhere."
 msgstr ""
 
-#: ./Arche/schemas.py:33
-msgid "Metadata"
+#: ./arche/resources.py:288
+msgid "Site root"
 msgstr ""
 
-#: ./Arche/schemas.py:34
-msgid "Related"
+#: ./arche/resources.py:338
+msgid "Document"
 msgstr ""
 
-#: ./Arche/schemas.py:35 ./Arche/resources.py:423 ./Arche/resources.py:427
-#: ./Arche/views/actions.py:192
-msgid "Users"
+#: ./arche/resources.py:357
+msgid "File"
 msgstr ""
 
-#: ./Arche/schemas.py:36 ./Arche/resources.py:535 ./Arche/resources.py:539
-#: ./Arche/views/actions.py:197
-msgid "Groups"
-msgstr ""
-
-#: ./Arche/schemas.py:37
-msgid "Advanced"
-msgstr ""
-
-#: ./Arche/schemas.py:63
-msgid "No thanks"
-msgstr ""
-
-#: ./Arche/schemas.py:64
-msgid "Don't install or change anything"
-msgstr ""
-
-#: ./Arche/schemas.py:84
-msgid "Type to search for UserIDs"
-msgstr ""
-
-#: ./Arche/schemas.py:103 ./Arche/schemas.py:338 ./Arche/schemas.py:583
-#: ./Arche/schemas.py:612 ./Arche/portlets/contents.py:45
-#: ./Arche/portlets/workflow_history.py:34 ./Arche/portlets/richtext.py:20
-#: ./Arche/templates/contents.pt:38
-msgid "Title"
-msgstr ""
-
-#: ./Arche/schemas.py:107 ./Arche/schemas.py:342
-#: ./Arche/templates/content/groups.pt:14
-msgid "Description"
-msgstr ""
-
-#: ./Arche/schemas.py:113
-msgid "Tags or subjects"
-msgstr ""
-
-#: ./Arche/schemas.py:141
-msgid "Related content"
-msgstr ""
-
-#: ./Arche/schemas.py:142
-msgid "Can be used to link to other content"
-msgstr ""
-
-#: ./Arche/schemas.py:154
-msgid "Date"
-msgstr ""
-
-#: ./Arche/schemas.py:155
-msgid "Publish date, or used for sorting"
-msgstr ""
-
-#: ./Arche/schemas.py:162
-msgid "Licensing"
-msgstr ""
-
-#: ./Arche/schemas.py:189
-msgid "Show in navigations"
-msgstr ""
-
-#: ./Arche/schemas.py:196
-msgid "Show in listing or table views"
-msgstr ""
-
-#: ./Arche/schemas.py:197
-msgid "The content view will always show this regardless of what you set."
-msgstr ""
-
-#: ./Arche/schemas.py:204
-msgid "Include in search results"
-msgstr ""
-
-#: ./Arche/schemas.py:205
-msgid ""
-"Note that this is not a permission setting - it's just a matter of "
-"practicality for users. They may even disable this setting."
-msgstr ""
-
-#: ./Arche/schemas.py:214
-msgid "Navigation bar title"
-msgstr ""
-
-#: ./Arche/schemas.py:215
-msgid "If you wish to use another name for when it's shown in menus."
-msgstr ""
-
-#: ./Arche/schemas.py:230 ./Arche/resources.py:402
+#: ./arche/resources.py:402 ./arche/schemas.py:239
 msgid "Image"
 msgstr ""
 
-#: ./Arche/schemas.py:239
-msgid "Show byline"
+#: ./arche/resources.py:411
+msgid "Initial setup"
 msgstr ""
 
-#: ./Arche/schemas.py:247
-#, python-format
-msgid ""
-"Current default timezone is: '${tzname}', leave this field blank if your're "
-"okay with that."
+#: ./arche/resources.py:414
+msgid "Welcome to Arche!"
 msgstr ""
 
-#: ./Arche/schemas.py:277 ./Arche/schemas.py:498
-#: ./Arche/templates/content/users_table.pt:46
-msgid "First name"
+#: ./arche/resources.py:417 ./arche/views/initial_setup.py:12
+msgid "Initial Setup"
 msgstr ""
 
-#: ./Arche/schemas.py:282 ./Arche/schemas.py:503
-#: ./Arche/templates/content/users_table.pt:47
-msgid "Last name"
+#: ./arche/resources.py:423 ./arche/resources.py:427 ./arche/schemas.py:40
+#: ./arche/views/actions.py:192
+msgid "Users"
 msgstr ""
 
-#: ./Arche/schemas.py:287 ./Arche/schemas.py:413
-msgid "Email adress"
+#: ./arche/resources.py:461 ./arche/security.py:315
+#: ./arche/templates/revisions.pt:28
+msgid "User"
 msgstr ""
 
-#: ./Arche/schemas.py:296
-msgid "Profile image"
+#: ./arche/resources.py:535 ./arche/resources.py:539 ./arche/schemas.py:41
+#: ./arche/views/actions.py:197
+msgid "Groups"
 msgstr ""
 
-#: ./Arche/schemas.py:302
-msgid "Set custom timezone"
+#: ./arche/resources.py:563 ./arche/templates/content/groups.pt:13
+msgid "Group"
 msgstr ""
 
-#: ./Arche/schemas.py:319 ./Arche/schemas.py:350 ./Arche/schemas.py:508
-#: ./Arche/templates/content/users_table.pt:44
-msgid "UserID"
+#: ./arche/resources.py:597
+msgid "Token"
 msgstr ""
 
-#: ./Arche/schemas.py:324 ./Arche/schemas.py:379 ./Arche/schemas.py:419
-#: ./Arche/schemas.py:458 ./Arche/schemas.py:521
-msgid "Password"
-msgstr ""
-
-#: ./Arche/schemas.py:354 ./Arche/templates/content/groups.pt:15
-msgid "Members"
-msgstr ""
-
-#: ./Arche/schemas.py:364
-msgid "Your current password for your own account"
-msgstr ""
-
-#: ./Arche/schemas.py:365
-msgid "Current password"
-msgstr ""
-
-#: ./Arche/schemas.py:403
-msgid "Site title"
-msgstr ""
-
-#: ./Arche/schemas.py:404
-msgid "A site made with Arche"
-msgstr ""
-
-#: ./Arche/schemas.py:408
-msgid "Admin userid - use lowercase!"
-msgstr ""
-
-#: ./Arche/schemas.py:425
-msgid "Populate site"
-msgstr ""
-
-#: ./Arche/schemas.py:454 ./Arche/schemas.py:547
-msgid "Email or UserID"
-msgstr ""
-
-#. Default: A link will be sent to this address. You need to click the link to
-#. finish the registration. If no email arrives within 15 minutes, you might
-#. need to check your emails' spam folder.
-#: ./Arche/schemas.py:476
-msgid "reg_email_description"
-msgstr ""
-
-#: ./Arche/schemas.py:487 ./Arche/templates/content/users_table.pt:45
-msgid "Email"
-msgstr ""
-
-#. Default: Use only lowercase a-z, '-', '_' or 0-9. It must start with a
-#. lowercase letter. This name will be visible to other users and they may use
-#. it to refer to you. It can't be changed later.
-#: ./Arche/schemas.py:509
-msgid "userid_description"
-msgstr ""
-
-#. Default: At least 6 characters. It's a good idea to use quite long
-#. passwords. If you forget your password you can reset it later.
-#: ./Arche/schemas.py:522
-msgid "pw_description_help"
-msgstr ""
-
-#: ./Arche/schemas.py:554
-msgid "Page head title"
-msgstr ""
-
-#: ./Arche/schemas.py:555
-msgid "Usually shown as a title of the browser tab."
-msgstr ""
-
-#. Default: Meta-description in the head-section. (No more than 155 chars)
-#: ./Arche/schemas.py:560
-msgid "meta_description_title"
-msgstr ""
-
-#. Default: Mosty used by search engines and robots.The content of this tag
-#. won't be visible on the actual page.
-#: ./Arche/schemas.py:562
-msgid "meta_description_description"
-msgstr ""
-
-#: ./Arche/schemas.py:568
-msgid "Footer"
-msgstr ""
-
-#: ./Arche/schemas.py:584 ./Arche/schemas.py:613
-msgid "Filename will be used if you leave this blank"
-msgstr ""
-
-#: ./Arche/schemas.py:589
-msgid "Upload file"
-msgstr ""
-
-#: ./Arche/schemas.py:602
-msgid "Change file"
-msgstr ""
-
-#: ./Arche/schemas.py:618
-msgid "Upload image"
-msgstr ""
-
-#: ./Arche/schemas.py:631
-msgid "Change image"
-msgstr ""
-
-#: ./Arche/schemas.py:663
-msgid "Allow users to register themselves to this site."
-msgstr ""
-
-#: ./Arche/schemas.py:668
-msgid "Show login link."
-msgstr ""
-
-#: ./Arche/schemas.py:673
-msgid "Skip email validation"
-msgstr ""
-
-#: ./Arche/schemas.py:674
-msgid ""
-"This will allow users to register with a fake email address. Generally not "
-"recommended."
-msgstr ""
-
-#: ./Arche/schemas.py:679
-msgid "Show language switcher menu?"
-msgstr ""
-
-#. Default: If more than one language is available and no other means of
-#. setting language is provided.
-#: ./Arche/schemas.py:680
-msgid "show_lang_menu_description"
-msgstr ""
-
-#: ./Arche/schemas.py:690 ./Arche/templates/menus/language.pt:8
-msgid "Language"
-msgstr ""
-
-#: ./Arche/schemas.py:692
-msgid "Available languages"
-msgstr ""
-
-#: ./Arche/schemas.py:709
-msgid "Customization active?"
-msgstr ""
-
-#: ./Arche/schemas.py:710
-msgid "Unselect to use default values"
-msgstr ""
-
-#: ./Arche/schemas.py:714
-msgid "Allowed types"
-msgstr ""
-
-#. Default: Allow user to login? WARNING: This is your current user, disabling
-#. this will probably lock you out of this account!
-#: ./Arche/schemas.py:725
-msgid "allow_login_title_warning"
-msgstr ""
-
-#: ./Arche/schemas.py:728
-msgid "Allow user to login?"
-msgstr ""
-
-#: ./Arche/schemas.py:743
-msgid "Skip validation email (change directly)"
-msgstr ""
-
-#: ./Arche/schemas.py:753
-msgid "Email validated?"
-msgstr ""
-
-#. Default: You may set this manually, but don't change it unless you know what
-#. you're doing. Other systems might depend on that this address is really
-#. validated!
-#: ./Arche/schemas.py:756
-msgid "manual_email_validated_description"
-msgstr ""
-
-#. Default: User may login with a regular login form. This is the default
-#. behaviour, but for some system specific users or someone you wish to shut
-#. out you may want to disable this.
-#: ./Arche/schemas.py:771
-msgid "allow_login_description"
-msgstr ""
-
-#: ./Arche/utils.py:620
+#: ./arche/utils.py:620
 msgid "You're not allowed to access this"
 msgstr ""
 
-#: ./Arche/utils.py:623
+#: ./arche/utils.py:623
 msgid "You need to login"
 msgstr ""
 
-#: ./Arche/exceptions.py:25
+#: ./arche/exceptions.py:25
 msgid "Reference guarded error"
 msgstr ""
 
 #. Default: Refguard vetos delete of ${context}
 #. The following objects (or docids) would stop working as expected:
 #. ${ojbs}
-#: ./Arche/exceptions.py:27
+#: ./arche/exceptions.py:27
 msgid "refguard_default_message"
 msgstr ""
 
-#: ./Arche/resources.py:270
-msgid "Link"
+#: ./arche/schemas.py:36 ./arche/templates/menus/templates.pt:13
+msgid "Default"
 msgstr ""
 
-#: ./Arche/resources.py:271
-msgid "Content type that redirects to somewhere."
+#: ./arche/schemas.py:37
+msgid "Visibility"
 msgstr ""
 
-#: ./Arche/resources.py:288
-msgid "Site root"
+#: ./arche/schemas.py:38
+msgid "Metadata"
 msgstr ""
 
-#: ./Arche/resources.py:338
-msgid "Document"
+#: ./arche/schemas.py:39
+msgid "Related"
 msgstr ""
 
-#: ./Arche/resources.py:357
-msgid "File"
+#: ./arche/schemas.py:42
+msgid "Advanced"
 msgstr ""
 
-#: ./Arche/resources.py:411
-msgid "Initial setup"
+#: ./arche/schemas.py:70
+msgid "No thanks"
 msgstr ""
 
-#: ./Arche/resources.py:414
-msgid "Welcome to Arche!"
+#: ./arche/schemas.py:71
+msgid "Don't install or change anything"
 msgstr ""
 
-#: ./Arche/resources.py:417 ./Arche/views/initial_setup.py:12
-msgid "Initial Setup"
+#: ./arche/schemas.py:91
+msgid "Type to search for Users"
 msgstr ""
 
-#: ./Arche/resources.py:563 ./Arche/templates/content/groups.pt:13
-msgid "Group"
+#: ./arche/schemas.py:110 ./arche/schemas.py:347 ./arche/schemas.py:592
+#: ./arche/schemas.py:621 ./arche/templates/contents.pt:38
+#: ./arche/portlets/workflow_history.py:34 ./arche/portlets/richtext.py:20
+#: ./arche/portlets/contents.py:45
+msgid "Title"
 msgstr ""
 
-#: ./Arche/resources.py:597
-msgid "Token"
+#: ./arche/schemas.py:114 ./arche/schemas.py:351
+#: ./arche/templates/content/groups.pt:14
+msgid "Description"
 msgstr ""
 
-#. Default: Group for all administrators. Add any administrators to this group.
-#: ./Arche/populators.py:27
-msgid "admin_group_desc"
+#: ./arche/schemas.py:120
+msgid "Tags or subjects"
 msgstr ""
 
-#: ./Arche/populators.py:29
-msgid "Administrators"
+#: ./arche/schemas.py:128 ./arche/schemas.py:136
+msgid "Type to search for UserIDs"
 msgstr ""
 
-#: ./Arche/portlets/byline.py:11
-msgid "Byline"
+#: ./arche/schemas.py:150
+msgid "Related content"
 msgstr ""
 
-#: ./Arche/portlets/contents.py:17 ./Arche/portlets/contents.py:69
-#: ./Arche/views/actions.py:64
-msgid "Contents"
+#: ./arche/schemas.py:151
+msgid "Can be used to link to other content"
 msgstr ""
 
-#: ./Arche/portlets/contents.py:50
-msgid "Only in this context"
+#: ./arche/schemas.py:163
+msgid "Date"
 msgstr ""
 
-#: ./Arche/portlets/contents.py:56
-msgid "Only show these content types"
+#: ./arche/schemas.py:164
+msgid "Publish date, or used for sorting"
 msgstr ""
 
-#: ./Arche/portlets/contents.py:61
-msgid "Only show these states"
+#: ./arche/schemas.py:171
+msgid "Licensing"
 msgstr ""
 
-#: ./Arche/portlets/__init__.py:64
-msgid "Portlet"
+#: ./arche/schemas.py:198
+msgid "Show in navigations"
 msgstr ""
 
-#: ./Arche/portlets/__init__.py:65
-msgid "A mini view within another view"
+#: ./arche/schemas.py:205
+msgid "Show in listing or table views"
 msgstr ""
 
-#: ./Arche/portlets/__init__.py:128
-msgid "Portlet folder"
+#: ./arche/schemas.py:206
+msgid "The content view will always show this regardless of what you set."
 msgstr ""
 
-#: ./Arche/portlets/__init__.py:129
-msgid "Container for portlets"
+#: ./arche/schemas.py:213
+msgid "Include in search results"
 msgstr ""
 
-#: ./Arche/portlets/__init__.py:235
-msgid "Left"
-msgstr ""
-
-#: ./Arche/portlets/__init__.py:236
-msgid "Right"
-msgstr ""
-
-#: ./Arche/portlets/__init__.py:237
-msgid "Top"
-msgstr ""
-
-#: ./Arche/portlets/__init__.py:238
-msgid "Bottom"
-msgstr ""
-
-#: ./Arche/portlets/workflow_history.py:19
-#: ./Arche/portlets/workflow_history.py:52
-msgid "Workflow history"
-msgstr ""
-
-#: ./Arche/portlets/workflow_history.py:39
-msgid "Only show this amount of entries"
-msgstr ""
-
-#: ./Arche/portlets/workflow_history.py:44
-msgid "Enable for these workflows"
-msgstr ""
-
-#: ./Arche/portlets/navigation.py:15
-msgid "Navigation"
-msgstr ""
-
-#: ./Arche/portlets/richtext.py:14 ./Arche/portlets/richtext.py:47
-msgid "Richtext"
-msgstr ""
-
-#: ./Arche/portlets/richtext.py:21
-msgid "Shown in portlet manager"
-msgstr ""
-
-#: ./Arche/portlets/richtext.py:26
-msgid "Body"
-msgstr ""
-
-#: ./Arche/portlets/richtext.py:31
-msgid "Show portlet panel"
-msgstr ""
-
-#. Default: If this is inactive, only the richtext (body) content will be
-#. rendered.
-#: ./Arche/portlets/richtext.py:32
-msgid "show_container_description"
-msgstr ""
-
-#: ./Arche/portlets/richtext.py:39
-msgid "Hide in subfolders"
-msgstr ""
-
-#: ./Arche/portlets/richtext.py:40
-msgid "Only render in this context."
-msgstr ""
-
-#: ./Arche/app/reference_guards.py:33
-msgid "User listed as creator"
-msgstr ""
-
-#: ./Arche/app/reference_guards.py:39
-msgid "User has permissions set"
-msgstr ""
-
-#: ./Arche/app/reference_guards.py:45
-msgid "User has set permission(s) in group(s)"
-msgstr ""
-
-#: ./Arche/app/reference_guards.py:50
-msgid "Content listed as related (metadata)"
-msgstr ""
-
-#: ./Arche/app/workflows/activate.py:9
-msgid "Activate workflow"
-msgstr ""
-
-#: ./Arche/app/workflows/activate.py:10
-msgid "Used for things that should be switched on or off."
-msgstr ""
-
-#: ./Arche/app/workflows/activate.py:11 ./Arche/app/workflows/activate.py:21
-msgid "Enabled"
-msgstr ""
-
-#: ./Arche/app/workflows/activate.py:12 ./Arche/app/workflows/activate.py:26
-msgid "Disabled"
-msgstr ""
-
-#: ./Arche/app/workflows/activate.py:34
-msgid "Disable"
-msgstr ""
-
-#: ./Arche/app/workflows/activate.py:42
-msgid "Enable"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/schemas.py:17
-msgid "Human-readable name of session"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/schemas.py:18
-msgid "Good as a reminder if you use this session for api access."
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/schemas.py:23
-msgid "Session will timeout after this time (in minutes) has expired."
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/schemas.py:24
+#: ./arche/schemas.py:214
 msgid ""
-"If emtpy, this session will never expire. Recommended for key-based "
-"authentication."
+"Note that this is not a permission setting - it's just a matter of "
+"practicality for users. They may even disable this setting."
 msgstr ""
 
-#: ./Arche/plugins/auth_sessions/schemas.py:31
-msgid "Allow authentication with this key"
+#: ./arche/schemas.py:223
+msgid "Navigation bar title"
 msgstr ""
 
-#: ./Arche/plugins/auth_sessions/schemas.py:38
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:21
-msgid "IP"
+#: ./arche/schemas.py:224
+msgid "If you wish to use another name for when it's shown in menus."
 msgstr ""
 
-#: ./Arche/plugins/auth_sessions/schemas.py:40
-msgid "Limit access to these IP-addresses"
+#: ./arche/schemas.py:248
+msgid "Show byline"
 msgstr ""
 
-#: ./Arche/plugins/auth_sessions/schemas.py:51
-msgid "Keep me logged in"
-msgstr ""
-
-#. Default: Your session will never time out. Don't use this on a public
-#. computer!
-#: ./Arche/plugins/auth_sessions/schemas.py:52
-msgid "keep_me_logged_in_description"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/views.py:21
+#: ./arche/schemas.py:256
 #, python-format
-msgid "Logged out session ${id}"
+msgid ""
+"Current default timezone is: '${tzname}', leave this field blank if your're "
+"okay with that."
 msgstr ""
 
-#: ./Arche/plugins/auth_sessions/views.py:25
+#: ./arche/schemas.py:286 ./arche/schemas.py:507 ./arche/views/users.py:27
+#: ./arche/views/groups.py:40
+msgid "First name"
+msgstr ""
+
+#: ./arche/schemas.py:291 ./arche/schemas.py:512 ./arche/views/users.py:28
+#: ./arche/views/groups.py:41
+msgid "Last name"
+msgstr ""
+
+#: ./arche/schemas.py:296 ./arche/schemas.py:422
+msgid "Email adress"
+msgstr ""
+
+#: ./arche/schemas.py:305
+msgid "Profile image"
+msgstr ""
+
+#: ./arche/schemas.py:311
+msgid "Set custom timezone"
+msgstr ""
+
+#: ./arche/schemas.py:328 ./arche/schemas.py:517 ./arche/views/users.py:25
+#: ./arche/views/groups.py:38 ./arche/templates/content/users_table.pt:40
+#: ./arche/templates/content/group.pt:56
+msgid "UserID"
+msgstr ""
+
+#: ./arche/schemas.py:333 ./arche/schemas.py:388 ./arche/schemas.py:428
+#: ./arche/schemas.py:467 ./arche/schemas.py:530
+msgid "Password"
+msgstr ""
+
+#: ./arche/schemas.py:373
+msgid "Your current password for your own account"
+msgstr ""
+
+#: ./arche/schemas.py:374
+msgid "Current password"
+msgstr ""
+
+#: ./arche/schemas.py:412
+msgid "Site title"
+msgstr ""
+
+#: ./arche/schemas.py:413
+msgid "A site made with Arche"
+msgstr ""
+
+#: ./arche/schemas.py:417
+msgid "Admin userid - use lowercase!"
+msgstr ""
+
+#: ./arche/schemas.py:434
+msgid "Populate site"
+msgstr ""
+
+#: ./arche/schemas.py:463 ./arche/schemas.py:556
+msgid "Email or UserID"
+msgstr ""
+
+#. Default: A link will be sent to this address. You need to click the link to
+#. finish the registration. If no email arrives within 15 minutes, you might
+#. need to check your emails' spam folder.
+#: ./arche/schemas.py:485
+msgid "reg_email_description"
+msgstr ""
+
+#: ./arche/schemas.py:496 ./arche/views/users.py:26 ./arche/views/groups.py:39
+#: ./arche/templates/content/users_table.pt:42
+#: ./arche/templates/content/group.pt:58
+msgid "Email"
+msgstr ""
+
+#. Default: Use only lowercase a-z, '-', '_' or 0-9. It must start with a
+#. lowercase letter. This name will be visible to other users and they may use
+#. it to refer to you. It can't be changed later.
+#: ./arche/schemas.py:518
+msgid "userid_description"
+msgstr ""
+
+#. Default: At least 6 characters. It's a good idea to use quite long
+#. passwords. If you forget your password you can reset it later.
+#: ./arche/schemas.py:531
+msgid "pw_description_help"
+msgstr ""
+
+#: ./arche/schemas.py:563
+msgid "Page head title"
+msgstr ""
+
+#: ./arche/schemas.py:564
+msgid "Usually shown as a title of the browser tab."
+msgstr ""
+
+#. Default: Meta-description in the head-section. (No more than 155 chars)
+#: ./arche/schemas.py:569
+msgid "meta_description_title"
+msgstr ""
+
+#. Default: Mosty used by search engines and robots.The content of this tag
+#. won't be visible on the actual page.
+#: ./arche/schemas.py:571
+msgid "meta_description_description"
+msgstr ""
+
+#: ./arche/schemas.py:577
+msgid "Footer"
+msgstr ""
+
+#: ./arche/schemas.py:593 ./arche/schemas.py:622
+msgid "Filename will be used if you leave this blank"
+msgstr ""
+
+#: ./arche/schemas.py:598
+msgid "Upload file"
+msgstr ""
+
+#: ./arche/schemas.py:611
+msgid "Change file"
+msgstr ""
+
+#: ./arche/schemas.py:627
+msgid "Upload image"
+msgstr ""
+
+#: ./arche/schemas.py:640
+msgid "Change image"
+msgstr ""
+
+#: ./arche/schemas.py:672
+msgid "Allow users to register themselves to this site."
+msgstr ""
+
+#: ./arche/schemas.py:677
+msgid "Show login link."
+msgstr ""
+
+#: ./arche/schemas.py:682
+msgid "Skip email validation"
+msgstr ""
+
+#: ./arche/schemas.py:683
+msgid ""
+"This will allow users to register with a fake email address. Generally not "
+"recommended."
+msgstr ""
+
+#: ./arche/schemas.py:688
+msgid "Show language switcher menu?"
+msgstr ""
+
+#. Default: If more than one language is available and no other means of
+#. setting language is provided.
+#: ./arche/schemas.py:689
+msgid "show_lang_menu_description"
+msgstr ""
+
+#: ./arche/schemas.py:699 ./arche/templates/menus/language.pt:8
+msgid "Language"
+msgstr ""
+
+#: ./arche/schemas.py:701
+msgid "Available languages"
+msgstr ""
+
+#: ./arche/schemas.py:718
+msgid "Customization active?"
+msgstr ""
+
+#: ./arche/schemas.py:719
+msgid "Unselect to use default values"
+msgstr ""
+
+#: ./arche/schemas.py:723
+msgid "Allowed types"
+msgstr ""
+
+#. Default: Allow user to login? WARNING: This is your current user, disabling
+#. this will probably lock you out of this account!
+#: ./arche/schemas.py:734
+msgid "allow_login_title_warning"
+msgstr ""
+
+#: ./arche/schemas.py:737
+msgid "Allow user to login?"
+msgstr ""
+
+#: ./arche/schemas.py:752
+msgid "Skip validation email (change directly)"
+msgstr ""
+
+#: ./arche/schemas.py:762
+msgid "Email validated?"
+msgstr ""
+
+#. Default: You may set this manually, but don't change it unless you know what
+#. you're doing. Other systems might depend on that this address is really
+#. validated!
+#: ./arche/schemas.py:765
+msgid "manual_email_validated_description"
+msgstr ""
+
+#. Default: User may login with a regular login form. This is the default
+#. behaviour, but for some system specific users or someone you wish to shut
+#. out you may want to disable this.
+#: ./arche/schemas.py:780
+msgid "allow_login_description"
+msgstr ""
+
+#: ./arche/validators.py:49
+msgid "Names can only contain charracters: A-Z, a-z, 0-9, '.', '-' or '_'"
+msgstr ""
+
+#: ./arche/validators.py:52
+msgid "Already used within this context"
+msgstr ""
+
+#: ./arche/validators.py:59
+msgid "Please use lowercase only."
+msgstr ""
+
+#: ./arche/validators.py:62
+msgid "Already taken or conflicts with a restricted name."
+msgstr ""
+
+#. Default: UserID must be 3-30 chars, start with lowercase a-z and only
+#. contain lowercase a-z, numbers, minus and underscore.
+#: ./arche/validators.py:65
+msgid "userid_char_error"
+msgstr ""
+
+#: ./arche/validators.py:85
+msgid "Login disabled for this user"
+msgstr ""
+
+#. Default: Avoid non-english letters for this field.
+#: ./arche/validators.py:100
+msgid "asci_encodable_error"
+msgstr ""
+
+#: ./arche/validators.py:116
+msgid "Invalid email or UserID"
+msgstr ""
+
+#. Default: Password login disabled for this user. If you own the account you
+#. may request one to be set by using the recover password form.
+#: ./arche/validators.py:120
+msgid "no_password_set_error"
+msgstr ""
+
+#: ./arche/validators.py:127 ./arche/validators.py:276
+msgid "Wrong password. Remember that passwords are case sensitive."
+msgstr ""
+
+#: ./arche/validators.py:153
+msgid "No such email registered. Perhaps you haven't registered here?"
+msgstr ""
+
+#: ./arche/validators.py:155
+msgid "No such UserID registered. You may wish to try your email address."
+msgstr ""
+
+#: ./arche/validators.py:158
+msgid "User doesn't have a valid email address"
+msgstr ""
+
+#: ./arche/validators.py:180
 #, python-format
-msgid "No active session with id: ${id}"
+msgid "Can't find the UserID '${userid}'"
 msgstr ""
 
-#. Default: Authentication session created with id ${id}
-#: ./Arche/plugins/auth_sessions/views.py:43
-msgid "new_auth_session_details"
+#. Default: Already registered. You may recoveryour password if you've lost it.
+#: ./arche/validators.py:206
+msgid "already_registered_email_error"
 msgstr ""
 
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:11
-msgid "Auth sessions"
+#. Default: This address is already used.
+#: ./arche/validators.py:212
+msgid "already_used_email_error"
 msgstr ""
 
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:19
-msgid "Name"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:20
-msgid "Active"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:22
-msgid "Last"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:23
-msgid "Last login"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:24
-msgid "Max valid (min)"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:25
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:66
-msgid "API key"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:26
-msgid "User agent"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:27
-#: ./Arche/views/actions.py:85
-msgid "Edit"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:58
-msgid "Always"
-msgstr ""
-
-#: ./Arche/plugins/auth_sessions/templates/sessions.pt:77
-msgid "Browser user agent string"
-msgstr ""
-
-#: ./Arche/plugins/request_auth/models.py:80
-msgid "Token not found or used already"
-msgstr ""
-
-#: ./Arche/plugins/request_auth/models.py:81
+#: ./arche/validators.py:219
 #, python-format
-msgid "No token related to userid ${userid}"
+msgid ""
+"Not a valid image file! Any of these image types are supported: ${suggested}"
 msgstr ""
 
-#: ./Arche/plugins/request_auth/models.py:84
-msgid "Link expired"
-msgstr ""
-
-#: ./Arche/plugins/request_auth/models.py:86
-msgid "IP address doesn't match"
-msgstr ""
-
-#: ./Arche/plugins/thumbnails/views.py:53
-msgid "Album view"
-msgstr ""
-
-#: ./Arche/plugins/thumbnails/views.py:54
-msgid "Photo album-like view"
-msgstr ""
-
-#: ./Arche/models/folder.py:12
-msgid "Folder"
-msgstr ""
-
-#: ./Arche/models/folder.py:13
-msgid "A generic folder where you may add things."
-msgstr ""
-
-#: ./Arche/models/reference_guard.py:75
+#: ./arche/validators.py:238
 #, python-format
-msgid "Reference guard named: ${name}"
+msgid "Not a valid file type, try any of the following: ${suggested}"
 msgstr ""
 
-#: ./Arche/models/acl.py:126 ./Arche/models/workflow.py:261
-msgid "Inherit"
+#: ./arche/validators.py:291
+msgid "Not an existing valid path."
 msgstr ""
 
-#: ./Arche/models/acl.py:127
-msgid "Fetch the ACL from the parent object"
+#: ./arche/validators.py:321
+msgid "An object with that name already exists here."
 msgstr ""
 
-#: ./Arche/models/workflow.py:50
-msgid "<Not found>"
+#: ./arche/validators.py:324
+msgid "This name is already reserved by a view."
 msgstr ""
 
-#: ./Arche/models/workflow.py:170 ./Arche/models/workflow.py:202
-#: ./Arche/models/workflow.py:217
-msgid "Make private"
+#: ./arche/security.py:35
+msgid "Administrator"
 msgstr ""
 
-#: ./Arche/models/workflow.py:171 ./Arche/models/workflow.py:203
-#: ./Arche/models/workflow.py:218
-msgid "Now private"
+#: ./arche/security.py:36
+msgid "Default 'superuser' role."
 msgstr ""
 
-#: ./Arche/models/workflow.py:176 ./Arche/models/workflow.py:207
-#: ./Arche/models/workflow.py:227
-msgid "Publish"
+#: ./arche/security.py:40
+msgid "Editor"
 msgstr ""
 
-#: ./Arche/models/workflow.py:177 ./Arche/models/workflow.py:208
-#: ./Arche/models/workflow.py:228
-msgid "Published"
+#: ./arche/security.py:41
+msgid "Someone who has normal edit permissions."
 msgstr ""
 
-#: ./Arche/models/workflow.py:183
-msgid "Simple"
+#: ./arche/security.py:45
+msgid "Viewer"
 msgstr ""
 
-#: ./Arche/models/workflow.py:212
-msgid "Submit for review"
+#: ./arche/security.py:46
+msgid "Someone who's allowed to view."
 msgstr ""
 
-#: ./Arche/models/workflow.py:213
-msgid "Submitted for review"
+#: ./arche/security.py:50
+msgid "Owner"
 msgstr ""
 
-#: ./Arche/models/workflow.py:222
-msgid "Retract and resubmit for review"
+#: ./arche/security.py:51
+msgid "Special role for the initial creator."
 msgstr ""
 
-#: ./Arche/models/workflow.py:223
-msgid "Retracted and resubmitted for review"
+#: ./arche/security.py:55
+msgid "Reviewer"
 msgstr ""
 
-#: ./Arche/models/workflow.py:234
-msgid "Review workflow"
+#: ./arche/security.py:56
+msgid ""
+"Review and publish content. Usable when combined with a workflow that "
+"implements review before publish."
 msgstr ""
 
-#: ./Arche/models/workflow.py:260
-msgid "Inherit workflow"
+#: ./arche/security.py:61
+msgid "Everyone"
 msgstr ""
 
-#: ./Arche/models/datetime_handler.py:117
-msgid "Just now"
+#: ./arche/security.py:62
+msgid "Including anonymous"
 msgstr ""
 
-#: ./Arche/models/datetime_handler.py:119
+#: ./arche/security.py:65
+msgid "Authenticated users"
+msgstr ""
+
+#: ./arche/security.py:295 ./arche/models/workflow.py:184
+#: ./arche/models/workflow.py:235
+msgid "Private"
+msgstr ""
+
+#: ./arche/security.py:302 ./arche/models/workflow.py:185
+#: ./arche/models/workflow.py:236
+msgid "Public"
+msgstr ""
+
+#: ./arche/security.py:308 ./arche/models/workflow.py:237
+msgid "Review"
+msgstr ""
+
+#: ./arche/views/site_settings.py:11
+msgid "Site settings"
+msgstr ""
+
+#: ./arche/views/search.py:72
+msgid "Invalid search query - try something else!"
+msgstr ""
+
+#: ./arche/views/search.py:103
+msgid "No results"
+msgstr ""
+
+#: ./arche/views/search.py:105
 #, python-format
-msgid "${diff} seconds ago"
+msgid "${num} more results..."
 msgstr ""
 
-#: ./Arche/models/datetime_handler.py:121
-msgid "1 minute ago"
+#: ./arche/views/portlets.py:28
+msgid "<Select>"
 msgstr ""
 
-#: ./Arche/models/datetime_handler.py:123
-#, python-format
-msgid "${diff} minutes ago"
-msgstr ""
-
-#: ./Arche/models/datetime_handler.py:125
-msgid "1 hour ago"
-msgstr ""
-
-#: ./Arche/models/datetime_handler.py:127
-#, python-format
-msgid "${diff} hours ago"
-msgstr ""
-
-#: ./Arche/templates/manage_portlets.pt:25 ./Arche/views/actions.py:302
-msgid "Manage portlets"
-msgstr ""
-
-#. Default: Add or remove portlets. Note that the slots might not be positioned
-#. the way they'll be on the page later on. If you wish to resort portlets you
-#. can drag and drop them from the arrows-icon. Dragging to another box is
-#. currently not supported.
-#: ./Arche/templates/manage_portlets.pt:26
-msgid "portlets-manager-help"
-msgstr ""
-
-#: ./Arche/templates/manage_portlets.pt:37
-#: ./Arche/templates/exceptions/reference_guarded.pt:36
-msgid "Back"
-msgstr ""
-
-#: ./Arche/templates/master.pt:45 ./Arche/templates/search.pt:13
-#: ./Arche/templates/search.pt:18
-msgid "Search"
-msgstr ""
-
-#: ./Arche/templates/master.pt:62 ./Arche/templates/deform/form_modal.pt:38
-#: ./Arche/templates/deform/readonly/form_modal.pt:38 ./Arche/views/base.py:229
-msgid "Close"
-msgstr ""
-
-#. Default: Found ${count} items for '${query}'
-#: ./Arche/templates/search.pt:30
-msgid "found_search_results"
-msgstr ""
-
-#: ./Arche/templates/search.pt:36
-msgid "Search for anything that starts with '${query}'."
-msgstr ""
-
-#: ./Arche/templates/permissions.pt:49
-msgid "Saved"
-msgstr ""
-
-#: ./Arche/templates/permissions.pt:61 ./Arche/templates/system/roles_log.pt:36
-#: ./Arche/views/portlets.py:87
-msgid "Added"
-msgstr ""
-
-#: ./Arche/templates/permissions.pt:73
-msgid "Current settings at ${title}"
-msgstr ""
-
-#: ./Arche/templates/permissions.pt:83 ./Arche/templates/permissions.pt:135
-#: ./Arche/templates/permissions.pt:150
-msgid "UserID or group"
-msgstr ""
-
-#: ./Arche/templates/permissions.pt:115 ./Arche/views/base.py:227
-msgid "Save"
-msgstr ""
-
-#: ./Arche/templates/permissions.pt:125
-msgid "Add local roles"
-msgstr ""
-
-#: ./Arche/templates/permissions.pt:169
-#: ./Arche/templates/menus/add_content.pt:8 ./Arche/views/actions.py:99
-#: ./Arche/views/base.py:228
-msgid "Add"
-msgstr ""
-
-#: ./Arche/templates/protected_delete.pt:13
-msgid "Delete veto"
-msgstr ""
-
-#. Default: The content you want to delete is referenced by other content. Note
-#. that you might not have the correct permission to change or even view the
-#. referenced content.
-#: ./Arche/templates/protected_delete.pt:16
-msgid "delete_veto_explanation"
-msgstr ""
-
-#: ./Arche/templates/protected_delete.pt:40
-msgid "${count} more item(s) not shown"
-msgstr ""
-
-#: ./Arche/templates/action_bar.pt:10 ./Arche/templates/navigation.pt:11
-msgid "Toggle navigation"
-msgstr ""
-
-#: ./Arche/templates/contents.pt:15
-msgid "Contents of"
-msgstr ""
-
-#: ./Arche/templates/contents.pt:23
-msgid "Parent directory"
-msgstr ""
-
-#: ./Arche/templates/contents.pt:27
-msgid "Not a folder, so it can't have content"
-msgstr ""
-
-#: ./Arche/templates/contents.pt:39 ./Arche/templates/content/file.pt:26
-#: ./Arche/templates/content/image.pt:31
-#: ./Arche/templates/deform/file_upload.pt:20
-#: ./Arche/templates/deform/readonly/file_upload.pt:18
-#: ./Arche/views/portlets.py:36
+#: ./arche/views/portlets.py:36 ./arche/templates/contents.pt:39
+#: ./arche/templates/content/file.pt:26 ./arche/templates/content/image.pt:31
+#: ./arche/templates/deform/file_upload.pt:20
+#: ./arche/templates/deform/readonly/file_upload.pt:18
 msgid "Type"
 msgstr ""
 
-#: ./Arche/templates/contents.pt:40 ./Arche/templates/content/users_table.pt:48
+#: ./arche/views/portlets.py:87 ./arche/templates/permissions.pt:61
+#: ./arche/templates/system/roles_log.pt:36
+msgid "Added"
+msgstr ""
+
+#: ./arche/views/portlets.py:130
+#, python-format
+msgid "Edit ${portlet_title}"
+msgstr ""
+
+#: ./arche/views/portlets.py:138
+msgid "Nothing to edit for this portlet"
+msgstr ""
+
+#: ./arche/views/listing.py:7
+msgid "Content listing"
+msgstr ""
+
+#: ./arche/views/users.py:29 ./arche/views/groups.py:42
+#: ./arche/templates/contents.pt:40 ./arche/templates/content/users_table.pt:43
 msgid "Created"
 msgstr ""
 
-#: ./Arche/templates/contents.pt:41
-msgid "Modified"
+#: ./arche/views/permissions.py:58
+msgid "That GroupID don't exist"
 msgstr ""
 
-#: ./Arche/templates/contents.pt:43
-msgid "Info"
+#: ./arche/views/permissions.py:63
+msgid "That UserID don't exist"
 msgstr ""
 
-#: ./Arche/templates/contents.pt:45
-msgid "Ordering enabled."
+#. Default: Something isn't behaving the way it should. The error has been
+#. logged. You may wish to contact the person running this site about this
+#. error. It's one of those things that should never happen.
+#: ./arche/views/exceptions.py:18
+msgid "generic_exception_explanation"
 msgstr ""
 
-#. Default: Ordering not stored. If you drag and drop items,
-#.                   ordering will be enabled automatically.
-#: ./Arche/templates/contents.pt:49
-msgid "ordering_enabled_notice"
+#: ./arche/views/exceptions.py:81 ./arche/views/exceptions.py:100
+msgid "Not allowed, perhaps you need to log in?"
 msgstr ""
 
-#: ./Arche/templates/contents.pt:65 ./Arche/templates/content/users_table.pt:56
-msgid "Loading..."
+#: ./arche/views/exceptions.py:121
+msgid "Application error"
 msgstr ""
 
-#: ./Arche/templates/contents.pt:97
-msgid "Drag and drop or click to upload..."
+#: ./arche/views/selected_content.py:11
+msgid "Select content to show"
 msgstr ""
 
-#: ./Arche/templates/revisions.pt:11 ./Arche/views/actions.py:313
-msgid "Revisions"
+#: ./arche/views/selected_content.py:15
+msgid "Show content body, if any"
 msgstr ""
 
-#. Default: While it would be possible to have versioning in this context, no
-#. attributes are currently tracked.
-#: ./Arche/templates/revisions.pt:13
-msgid "no_tracked_attrs_versioning"
+#: ./arche/views/selected_content.py:20
+msgid "Selected content"
 msgstr ""
 
-#: ./Arche/templates/revisions.pt:26
-msgid "ID"
+#: ./arche/views/workflow.py:21
+#, python-format
+msgid "Changed state to ${state}"
 msgstr ""
 
-#: ./Arche/templates/revisions.pt:27 ./Arche/templates/system/roles_log.pt:32
-msgid "Timestamp"
+#: ./arche/views/actions.py:35
+msgid "Workflow"
 msgstr ""
 
-#: ./Arche/templates/portlets/manager_slot.pt:42
-msgid "Add to"
-msgstr ""
-
-#: ./Arche/templates/portlets/byline.pt:16
-msgid "(modified ${datetime})"
-msgstr ""
-
-#. Default: This email was sent from the site ${site_title} at ${url}. You're
-#. not subscribed to a list and shouldn't receive this email unless you've
-#. requested it. If you think there has been an error, please contact someone
-#. at that site.
-#: ./Arche/templates/emails/footer.pt:8
-msgid "email_footer_text"
-msgstr ""
-
-#: ./Arche/templates/emails/email_validate.pt:6
-#: ./Arche/templates/emails/email_change.pt:6
-msgid "Verify email"
-msgstr ""
-
-#. Default: We got a request to validate the email address for the UserID
-#. ${userid}. You need to be logged in to that account to verify that you're
-#. the owner of this email address. Click the link below to verify your
-#. address.
-#: ./Arche/templates/emails/email_validate.pt:7
-msgid "request_email_validation_description"
-msgstr ""
-
-#: ./Arche/templates/emails/recover_password.pt:6
-msgid "Password reset request"
-msgstr ""
-
-#. Default: We got a request to reset the password for the UserID ${userid}. If
-#. you don't wish to change your password you don't have to do anything.
-#. Otherwise click the link below and set a new password.
-#: ./Arche/templates/emails/recover_password.pt:7
-msgid "request_password_reset"
-msgstr ""
-
-#: ./Arche/templates/emails/register.pt:6
-msgid "Complete registration at ${site}"
-msgstr ""
-
-#. Default: To finish the registration process, simply follow the link below.
-#: ./Arche/templates/emails/register.pt:9
-msgid "complete_registration_text"
-msgstr ""
-
-#. Default: We got a request to change email address for the UserID ${userid}
-#. to this address. The current address is ${email}. If you don't wish to
-#. change address you can simply discard this email. Otherwise, click the link
-#. below while you're logged in to your account.
-#: ./Arche/templates/emails/email_change.pt:7
-msgid "request_email_change_description"
-msgstr ""
-
-#: ./Arche/templates/content/file.pt:17 ./Arche/templates/content/image.pt:22
-msgid "Download file"
-msgstr ""
-
-#: ./Arche/templates/content/file.pt:21 ./Arche/templates/content/image.pt:26
-#: ./Arche/views/actions.py:49
+#: ./arche/views/actions.py:49 ./arche/templates/content/file.pt:21
+#: ./arche/templates/content/image.pt:26
 msgid "View"
 msgstr ""
 
-#: ./Arche/templates/content/file.pt:25 ./Arche/templates/content/image.pt:30
-#: ./Arche/templates/deform/file_upload.pt:18
-#: ./Arche/templates/deform/readonly/file_upload.pt:16
-msgid "Size"
+#: ./arche/views/actions.py:64 ./arche/portlets/contents.py:17
+#: ./arche/portlets/contents.py:69
+msgid "Contents"
 msgstr ""
 
-#: ./Arche/templates/content/link.pt:16
-msgid "This is a link that will redirect users without edit permission to:"
+#: ./arche/views/actions.py:70
+msgid "Permissions"
 msgstr ""
 
-#: ./Arche/templates/content/users_table.pt:39
-msgid "Showing ${num} user(s)"
+#: ./arche/views/actions.py:85
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:27
+msgid "Edit"
 msgstr ""
 
-#: ./Arche/templates/exceptions/403.pt:11
-msgid "Forbidden"
+#: ./arche/views/actions.py:99 ./arche/views/base.py:229
+#: ./arche/templates/permissions.pt:169
+#: ./arche/templates/menus/add_content.pt:8
+msgid "Add"
 msgstr ""
 
-#: ./Arche/templates/exceptions/403.pt:12
-msgid "You don't have correct permission to do that."
-msgstr ""
-
-#: ./Arche/templates/exceptions/403.pt:15
-msgid "Back to ${title}"
-msgstr ""
-
-#: ./Arche/templates/exceptions/400.pt:11
-msgid "Error"
-msgstr ""
-
-#: ./Arche/templates/exceptions/404.pt:11
-msgid "Not found"
-msgstr ""
-
-#: ./Arche/templates/exceptions/404.pt:12
-msgid "There's nothing here with that name."
-msgstr ""
-
-#: ./Arche/templates/exceptions/reference_guarded.pt:15
-msgid "Action blocked"
-msgstr ""
-
-#. Default: Your action would have caused references within this site to break.
-#. This usually happens when you try to delete a container with content that's
-#. required by other content.
-#: ./Arche/templates/exceptions/reference_guarded.pt:18
-msgid "reference_guard_fired_error"
-msgstr ""
-
-#. Default: Context that caused the exception: ${link}
-#: ./Arche/templates/exceptions/reference_guarded.pt:25
-msgid "exc_context_link"
-msgstr ""
-
-#: ./Arche/templates/exceptions/generic.pt:13
-msgid "There's a problem..."
-msgstr ""
-
-#: ./Arche/templates/exceptions/generic.pt:17
-msgid ""
-"arche.debug is set to True, so this error will be printed instead of logged."
-msgstr ""
-
-#: ./Arche/templates/system/login.pt:11
-msgid "Don't have an account?"
-msgstr ""
-
-#: ./Arche/templates/system/login.pt:14
-msgid "Register here"
-msgstr ""
-
-#: ./Arche/templates/system/roles_log.pt:16
-msgid "Local role changes"
-msgstr ""
-
-#: ./Arche/templates/system/roles_log.pt:22
-msgid "New query"
-msgstr ""
-
-#: ./Arche/templates/system/roles_log.pt:30
-msgid "By user"
-msgstr ""
-
-#: ./Arche/templates/system/roles_log.pt:31
-msgid "URL"
-msgstr ""
-
-#: ./Arche/templates/system/roles_log.pt:34
-msgid "Context"
-msgstr ""
-
-#: ./Arche/templates/system/roles_log.pt:35
-msgid "Principal"
-msgstr ""
-
-#: ./Arche/templates/system/roles_log.pt:37
-msgid "Removed"
-msgstr ""
-
-#: ./Arche/templates/system/roles_log.pt:42
-msgid "Nothing matched"
-msgstr ""
-
-#: ./Arche/templates/system/roles_log.pt:57
-msgid "(Context removed)"
-msgstr ""
-
-#: ./Arche/templates/system/register.pt:11
-msgid "Already have an account?"
-msgstr ""
-
-#: ./Arche/templates/system/register.pt:14
-msgid "Login here"
-msgstr ""
-
-#: ./Arche/templates/menus/templates.pt:8
-msgid "Template"
-msgstr ""
-
-#: ./Arche/templates/menus/site.pt:9
-msgid "Site"
-msgstr ""
-
-#: ./Arche/templates/menus/add_content.pt:22
-msgid "Add customization active"
-msgstr ""
-
-#: ./Arche/templates/menus/add_content.pt:26
-msgid "Customize addable..."
-msgstr ""
-
-#: ./Arche/templates/menus/actions.pt:8 ./Arche/views/actions.py:116
+#: ./arche/views/actions.py:116 ./arche/templates/menus/actions.pt:8
 msgid "Actions"
 msgstr ""
 
-#: ./Arche/templates/deform/form.pt:51
-#: ./Arche/templates/deform/_form_modal.pt:58
-#: ./Arche/templates/deform/form_modal.pt:59
-#: ./Arche/templates/deform/readonly/form.pt:51
-#: ./Arche/templates/deform/readonly/form_modal.pt:57
-msgid "There was a problem with your submission"
+#: ./arche/views/actions.py:127
+msgid "Templates"
 msgstr ""
 
-#. Default: en
-#: ./Arche/templates/deform/richtext.pt:29
-msgid "tinymce-locale-file"
+#: ./arche/views/actions.py:143
+msgid "User menu"
 msgstr ""
 
-#: ./Arche/templates/deform/file_upload.pt:16
-#: ./Arche/templates/deform/readonly/file_upload.pt:14
-msgid "Filename"
+#: ./arche/views/actions.py:152
+msgid "Site menu"
 msgstr ""
 
-#: ./Arche/templates/deform/file_upload.pt:25 ./Arche/views/actions.py:247
-#: ./Arche/views/base.py:225
-msgid "Delete"
-msgstr ""
-
-#: ./Arche/templates/deform/file_upload.pt:31
-msgid "Replace current file:"
-msgstr ""
-
-#: ./Arche/views/auth.py:19 ./Arche/views/auth.py:25
-#: ./Arche/views/actions.py:161
+#: ./arche/views/actions.py:161 ./arche/views/auth.py:19
+#: ./arche/views/auth.py:25
 msgid "Login"
 msgstr ""
 
-#: ./Arche/views/auth.py:26 ./Arche/views/auth.py:155
-msgid "Recover password"
-msgstr ""
-
-#: ./Arche/views/auth.py:34
-msgid "Welcome!"
-msgstr ""
-
-#: ./Arche/views/auth.py:51 ./Arche/views/auth.py:71 ./Arche/views/auth.py:121
-#: ./Arche/views/actions.py:175
+#: ./arche/views/actions.py:175 ./arche/views/auth.py:51
+#: ./arche/views/auth.py:73 ./arche/views/auth.py:126
 msgid "Register"
 msgstr ""
 
-#: ./Arche/views/auth.py:56
+#: ./arche/views/actions.py:187
+msgid "Settings"
+msgstr ""
+
+#: ./arche/views/actions.py:202
+msgid "Logout"
+msgstr ""
+
+#: ./arche/views/actions.py:222
+msgid "Profile"
+msgstr ""
+
+#: ./arche/views/actions.py:225 ./arche/views/auth.py:191
+msgid "Change password"
+msgstr ""
+
+#: ./arche/views/actions.py:235
+msgid "Validate email"
+msgstr ""
+
+#: ./arche/views/actions.py:247 ./arche/views/base.py:226
+#: ./arche/templates/deform/file_upload.pt:25
+msgid "Delete"
+msgstr ""
+
+#: ./arche/views/actions.py:258 ./arche/views/cut_copy_paste.py:39
+msgid "Cut"
+msgstr ""
+
+#: ./arche/views/actions.py:269 ./arche/views/cut_copy_paste.py:47
+msgid "Copy"
+msgstr ""
+
+#: ./arche/views/actions.py:280
+msgid "Paste"
+msgstr ""
+
+#: ./arche/views/actions.py:291
+msgid "Rename"
+msgstr ""
+
+#: ./arche/views/actions.py:302 ./arche/templates/manage_portlets.pt:25
+msgid "Manage portlets"
+msgstr ""
+
+#: ./arche/views/actions.py:313 ./arche/templates/revisions.pt:11
+msgid "Revisions"
+msgstr ""
+
+#: ./arche/views/actions.py:331
+msgid "Unset delegated view"
+msgstr ""
+
+#: ./arche/views/actions.py:340
+msgid "View settings"
+msgstr ""
+
+#: ./arche/views/cut_copy_paste.py:56
+msgid "Can't paste to this context"
+msgstr ""
+
+#: ./arche/views/cut_copy_paste.py:65
+msgid "Moved here"
+msgstr ""
+
+#. Default: New copy added here. References that pointed to the original object
+#. won't point to this one.
+#: ./arche/views/cut_copy_paste.py:68
+msgid "copy_references_notice"
+msgstr ""
+
+#: ./arche/views/cut_copy_paste.py:81
+msgid "Name, this will be part of the URL"
+msgstr ""
+
+#: ./arche/views/cut_copy_paste.py:88
+#, python-format
+msgid "Rename '${name}'"
+msgstr ""
+
+#: ./arche/views/languages.py:14
+#, python-format
+msgid "Language set to ${selected_lang}"
+msgstr ""
+
+#: ./arche/views/auth.py:26 ./arche/views/auth.py:160
+msgid "Recover password"
+msgstr ""
+
+#: ./arche/views/auth.py:34
+msgid "Welcome!"
+msgstr ""
+
+#: ./arche/views/auth.py:58
 msgid "Site doesn't allow self registration"
 msgstr ""
 
-#: ./Arche/views/auth.py:58 ./Arche/views/auth.py:107
+#: ./arche/views/auth.py:60 ./arche/views/auth.py:110
 msgid "Already logged in."
 msgstr ""
 
-#: ./Arche/views/auth.py:86
+#: ./arche/views/auth.py:89
 msgid "Registration link"
 msgstr ""
 
 #. Default: An email with registration instructions have been sent to the
 #. address you specified.
-#: ./Arche/views/auth.py:90
+#: ./arche/views/auth.py:93
 msgid "reg_email_notification"
 msgstr ""
 
-#: ./Arche/views/auth.py:102
+#: ./arche/views/auth.py:105
 msgid "Complete registration"
 msgstr ""
 
 #. Default: The registration link is either invalid or has expired. You may
 #. request a new one if registration is open.
-#: ./Arche/views/auth.py:111
+#: ./arche/views/auth.py:116
 msgid "reg_token_expired_or_invalid"
 msgstr ""
 
-#: ./Arche/views/auth.py:130
+#: ./arche/views/auth.py:135
 msgid "Welcome, you're now registered!"
 msgstr ""
 
-#: ./Arche/views/auth.py:159
+#: ./arche/views/auth.py:164
 msgid "Send"
 msgstr ""
 
-#: ./Arche/views/auth.py:163
+#: ./arche/views/auth.py:168
 msgid "Message sent"
 msgstr ""
 
-#: ./Arche/views/auth.py:173
+#: ./arche/views/auth.py:178
 msgid "There's no email associated with this account."
 msgstr ""
 
-#: ./Arche/views/auth.py:177
+#: ./arche/views/auth.py:182
 msgid "Password recovery request"
 msgstr ""
 
-#: ./Arche/views/auth.py:186 ./Arche/views/actions.py:225
-msgid "Change password"
-msgstr ""
-
 #. Default: Link expired, you have to request password reset again
-#: ./Arche/views/auth.py:194
+#: ./arche/views/auth.py:199
 msgid "pw_token_expired"
 msgstr ""
 
 #. Default: Password reset link doesn't match. 
-#: ./Arche/views/auth.py:198
+#: ./arche/views/auth.py:203
 msgid "pw_token_invalid"
 msgstr ""
 
-#: ./Arche/views/auth.py:209
+#: ./arche/views/auth.py:214
 msgid "Not allowed"
 msgstr ""
 
-#: ./Arche/views/auth.py:217
+#: ./arche/views/auth.py:222
 msgid "Password changed"
 msgstr ""
 
 #. Default: You've logged in and changed your password
-#: ./Arche/views/auth.py:220
+#: ./arche/views/auth.py:225
 msgid "logged_in_changed_pw"
 msgstr ""
 
-#: ./Arche/views/user.py:38
+#: ./arche/views/base.py:227
+msgid "Cancel"
+msgstr ""
+
+#: ./arche/views/base.py:228 ./arche/templates/permissions.pt:115
+msgid "Save"
+msgstr ""
+
+#: ./arche/views/base.py:230 ./arche/templates/master.pt:61
+#: ./arche/templates/deform/form_modal.pt:38
+#: ./arche/templates/deform/readonly/form_modal.pt:38
+msgid "Close"
+msgstr ""
+
+#: ./arche/views/base.py:248
+msgid "Done"
+msgstr ""
+
+#: ./arche/views/base.py:249
+msgid "Canceled"
+msgstr ""
+
+#: ./arche/views/base.py:476
+msgid "You're not allowed to add this content type here."
+msgstr ""
+
+#: ./arche/views/base.py:478
+#, python-format
+msgid "Required permission: '${perm}'"
+msgstr ""
+
+#: ./arche/views/base.py:494
+#, python-format
+msgid "Add ${type_title}"
+msgstr ""
+
+#: ./arche/views/base.py:515
+#, python-format
+msgid "Edit ${type_title}"
+msgstr ""
+
+#: ./arche/views/base.py:532
+msgid "<Unknown Type>"
+msgstr ""
+
+#: ./arche/views/base.py:537
+#, python-format
+msgid "Delete ${title} (${type_title}) ?"
+msgstr ""
+
+#: ./arche/views/base.py:566
+#, python-format
+msgid "Deleted '${title}'"
+msgstr ""
+
+#: ./arche/views/base.py:624
+msgid "Default view"
+msgstr ""
+
+#: ./arche/views/base.py:626
+#, python-format
+msgid "View set to '${title}'"
+msgstr ""
+
+#: ./arche/views/base.py:644
+#, python-format
+msgid "View delegated to '${title}'"
+msgstr ""
+
+#: ./arche/views/base.py:648
+msgid "Normal view restored"
+msgstr ""
+
+#: ./arche/views/wizard.py:8
+msgid "Finish"
+msgstr ""
+
+#: ./arche/views/wizard.py:9
+msgid "Next"
+msgstr ""
+
+#: ./arche/views/wizard.py:10
+msgid "Previous"
+msgstr ""
+
+#: ./arche/views/roles_log.py:22
+msgid "Parse"
+msgstr ""
+
+#: ./arche/views/roles_log.py:33
+msgid "Parse local roles"
+msgstr ""
+
+#: ./arche/views/user.py:38
 msgid "Email change validation"
 msgstr ""
 
 #. Default: Since you requested to change your email address we've sent you an
 #. email to verify your new address. As soon as you click the link in your
 #. email, your address will change. All other changes were saved.
-#: ./Arche/views/user.py:41
+#: ./arche/views/user.py:41
 msgid "require_email_verification_notice"
 msgstr ""
 
-#: ./Arche/views/user.py:65
+#: ./arche/views/user.py:65
 msgid "No such token"
 msgstr ""
 
-#: ./Arche/views/user.py:67
+#: ./arche/views/user.py:67
 msgid "Expired."
 msgstr ""
 
-#: ./Arche/views/user.py:73
+#: ./arche/views/user.py:73
 msgid "Email changed"
 msgstr ""
 
-#: ./Arche/views/user.py:76
+#: ./arche/views/user.py:76
 msgid "Email validated"
 msgstr ""
 
-#: ./Arche/views/user.py:78
+#: ./arche/views/user.py:78
 msgid "This link is invalid."
 msgstr ""
 
-#: ./Arche/views/user.py:85
+#: ./arche/views/user.py:85
 msgid "No email set"
 msgstr ""
 
-#: ./Arche/views/user.py:91
+#: ./arche/views/user.py:91
 msgid "Email validation"
 msgstr ""
 
-#: ./Arche/views/user.py:94
+#: ./arche/views/user.py:94
 msgid "We sent you an email with a link to confirm your address."
 msgstr ""
 
-#: ./Arche/views/user.py:96
+#: ./arche/views/user.py:96
 msgid "Your address is already validated."
 msgstr ""
 
-#: ./Arche/views/selected_content.py:11
-msgid "Select content to show"
+#: ./arche/app/reference_guards.py:33
+msgid "User listed as creator"
 msgstr ""
 
-#: ./Arche/views/selected_content.py:15
-msgid "Show content body, if any"
+#: ./arche/app/reference_guards.py:39
+msgid "User has permissions set"
 msgstr ""
 
-#: ./Arche/views/selected_content.py:20
-msgid "Selected content"
+#: ./arche/app/reference_guards.py:45
+msgid "User has set permission(s) in group(s)"
 msgstr ""
 
-#: ./Arche/views/cut_copy_paste.py:39 ./Arche/views/actions.py:258
-msgid "Cut"
+#: ./arche/app/reference_guards.py:50
+msgid "Content listed as related (metadata)"
 msgstr ""
 
-#: ./Arche/views/cut_copy_paste.py:47 ./Arche/views/actions.py:269
-msgid "Copy"
+#: ./arche/app/workflows/activate.py:9
+msgid "Activate workflow"
 msgstr ""
 
-#: ./Arche/views/cut_copy_paste.py:56
-msgid "Can't paste to this context"
+#: ./arche/app/workflows/activate.py:10
+msgid "Used for things that should be switched on or off."
 msgstr ""
 
-#: ./Arche/views/cut_copy_paste.py:65
-msgid "Moved here"
+#: ./arche/app/workflows/activate.py:11 ./arche/app/workflows/activate.py:21
+msgid "Enabled"
 msgstr ""
 
-#. Default: New copy added here. References that pointed to the original object
-#. won't point to this one.
-#: ./Arche/views/cut_copy_paste.py:68
-msgid "copy_references_notice"
+#: ./arche/app/workflows/activate.py:12 ./arche/app/workflows/activate.py:26
+msgid "Disabled"
 msgstr ""
 
-#: ./Arche/views/cut_copy_paste.py:81
-msgid "Name, this will be part of the URL"
+#: ./arche/app/workflows/activate.py:34
+msgid "Disable"
 msgstr ""
 
-#: ./Arche/views/cut_copy_paste.py:88
+#: ./arche/app/workflows/activate.py:42
+msgid "Enable"
+msgstr ""
+
+#: ./arche/templates/search.pt:13 ./arche/templates/search.pt:18
+#: ./arche/templates/master.pt:44 ./arche/templates/content/users_table.pt:17
+#: ./arche/templates/content/group.pt:33
+msgid "Search"
+msgstr ""
+
+#. Default: Found ${count} items for '${query}'
+#: ./arche/templates/search.pt:30
+msgid "found_search_results"
+msgstr ""
+
+#: ./arche/templates/search.pt:36
+msgid "Search for anything that starts with '${query}'."
+msgstr ""
+
+#. Default: Add or remove portlets. Note that the slots might not be positioned
+#. the way they'll be on the page later on. If you wish to resort portlets you
+#. can drag and drop them from the arrows-icon. Dragging to another box is
+#. currently not supported.
+#: ./arche/templates/manage_portlets.pt:26
+msgid "portlets-manager-help"
+msgstr ""
+
+#: ./arche/templates/manage_portlets.pt:37
+#: ./arche/templates/exceptions/reference_guarded.pt:36
+msgid "Back"
+msgstr ""
+
+#: ./arche/templates/protected_delete.pt:13
+msgid "Delete veto"
+msgstr ""
+
+#. Default: The content you want to delete is referenced by other content. Note
+#. that you might not have the correct permission to change or even view the
+#. referenced content.
+#: ./arche/templates/protected_delete.pt:16
+msgid "delete_veto_explanation"
+msgstr ""
+
+#: ./arche/templates/protected_delete.pt:40
+msgid "${count} more item(s) not shown"
+msgstr ""
+
+#. Default: While it would be possible to have versioning in this context, no
+#. attributes are currently tracked.
+#: ./arche/templates/revisions.pt:13
+msgid "no_tracked_attrs_versioning"
+msgstr ""
+
+#: ./arche/templates/revisions.pt:26
+msgid "ID"
+msgstr ""
+
+#: ./arche/templates/revisions.pt:27 ./arche/templates/system/roles_log.pt:32
+msgid "Timestamp"
+msgstr ""
+
+#: ./arche/templates/permissions.pt:49
+msgid "Saved"
+msgstr ""
+
+#: ./arche/templates/permissions.pt:73
+msgid "Current settings at ${title}"
+msgstr ""
+
+#: ./arche/templates/permissions.pt:83 ./arche/templates/permissions.pt:135
+#: ./arche/templates/permissions.pt:150
+msgid "UserID or group"
+msgstr ""
+
+#: ./arche/templates/permissions.pt:125
+msgid "Add local roles"
+msgstr ""
+
+#: ./arche/templates/navigation.pt:11 ./arche/templates/action_bar.pt:10
+msgid "Toggle navigation"
+msgstr ""
+
+#: ./arche/templates/contents.pt:15
+msgid "Contents of"
+msgstr ""
+
+#: ./arche/templates/contents.pt:23
+msgid "Parent directory"
+msgstr ""
+
+#: ./arche/templates/contents.pt:27
+msgid "Not a folder, so it can't have content"
+msgstr ""
+
+#: ./arche/templates/contents.pt:41
+msgid "Modified"
+msgstr ""
+
+#: ./arche/templates/contents.pt:43
+msgid "Info"
+msgstr ""
+
+#: ./arche/templates/contents.pt:45
+msgid "Ordering enabled."
+msgstr ""
+
+#. Default: Ordering not stored. If you drag and drop items,
+#.                   ordering will be enabled automatically.
+#: ./arche/templates/contents.pt:49
+msgid "ordering_enabled_notice"
+msgstr ""
+
+#: ./arche/templates/contents.pt:65 ./arche/templates/content/users_table.pt:50
+#: ./arche/templates/content/group.pt:66
+msgid "Loading..."
+msgstr ""
+
+#: ./arche/templates/contents.pt:97
+msgid "Drag and drop or click to upload..."
+msgstr ""
+
+#: ./arche/templates/exceptions/404.pt:11
+msgid "Not found"
+msgstr ""
+
+#: ./arche/templates/exceptions/404.pt:12
+msgid "There's nothing here with that name."
+msgstr ""
+
+#: ./arche/templates/exceptions/reference_guarded.pt:15
+msgid "Action blocked"
+msgstr ""
+
+#. Default: Your action would have caused references within this site to break.
+#. This usually happens when you try to delete a container with content that's
+#. required by other content.
+#: ./arche/templates/exceptions/reference_guarded.pt:18
+msgid "reference_guard_fired_error"
+msgstr ""
+
+#. Default: Context that caused the exception: ${link}
+#: ./arche/templates/exceptions/reference_guarded.pt:25
+msgid "exc_context_link"
+msgstr ""
+
+#: ./arche/templates/exceptions/generic.pt:13
+msgid "There's a problem..."
+msgstr ""
+
+#: ./arche/templates/exceptions/generic.pt:17
+msgid ""
+"arche.debug is set to True, so this error will be printed instead of logged."
+msgstr ""
+
+#: ./arche/templates/exceptions/403.pt:11
+msgid "Forbidden"
+msgstr ""
+
+#: ./arche/templates/exceptions/403.pt:12
+msgid "You don't have correct permission to do that."
+msgstr ""
+
+#: ./arche/templates/exceptions/403.pt:15
+msgid "Back to ${title}"
+msgstr ""
+
+#: ./arche/templates/exceptions/400.pt:11
+msgid "Error"
+msgstr ""
+
+#: ./arche/templates/emails/email_change.pt:6
+#: ./arche/templates/emails/email_validate.pt:6
+msgid "Verify email"
+msgstr ""
+
+#. Default: We got a request to change email address for the UserID ${userid}
+#. to this address. The current address is ${email}. If you don't wish to
+#. change address you can simply discard this email. Otherwise, click the link
+#. below while you're logged in to your account.
+#: ./arche/templates/emails/email_change.pt:7
+msgid "request_email_change_description"
+msgstr ""
+
+#. Default: This email was sent from the site ${site_title} at ${url}. You're
+#. not subscribed to a list and shouldn't receive this email unless you've
+#. requested it. If you think there has been an error, please contact someone
+#. at that site.
+#: ./arche/templates/emails/footer.pt:8
+msgid "email_footer_text"
+msgstr ""
+
+#: ./arche/templates/emails/recover_password.pt:6
+msgid "Password reset request"
+msgstr ""
+
+#. Default: We got a request to reset the password for the UserID ${userid}. If
+#. you don't wish to change your password you don't have to do anything.
+#. Otherwise click the link below and set a new password.
+#: ./arche/templates/emails/recover_password.pt:7
+msgid "request_password_reset"
+msgstr ""
+
+#: ./arche/templates/emails/register.pt:6
+msgid "Complete registration at ${site}"
+msgstr ""
+
+#. Default: To finish the registration process, simply follow the link below.
+#: ./arche/templates/emails/register.pt:9
+msgid "complete_registration_text"
+msgstr ""
+
+#. Default: We got a request to validate the email address for the UserID
+#. ${userid}. You need to be logged in to that account to verify that you're
+#. the owner of this email address. Click the link below to verify your
+#. address.
+#: ./arche/templates/emails/email_validate.pt:7
+msgid "request_email_validation_description"
+msgstr ""
+
+#: ./arche/templates/system/register.pt:11
+msgid "Already have an account?"
+msgstr ""
+
+#: ./arche/templates/system/register.pt:14
+msgid "Login here"
+msgstr ""
+
+#: ./arche/templates/system/login.pt:11
+msgid "Don't have an account?"
+msgstr ""
+
+#: ./arche/templates/system/login.pt:14
+msgid "Register here"
+msgstr ""
+
+#: ./arche/templates/system/roles_log.pt:16
+msgid "Local role changes"
+msgstr ""
+
+#: ./arche/templates/system/roles_log.pt:22
+msgid "New query"
+msgstr ""
+
+#: ./arche/templates/system/roles_log.pt:30
+msgid "By user"
+msgstr ""
+
+#: ./arche/templates/system/roles_log.pt:31
+msgid "URL"
+msgstr ""
+
+#: ./arche/templates/system/roles_log.pt:34
+msgid "Context"
+msgstr ""
+
+#: ./arche/templates/system/roles_log.pt:35
+msgid "Principal"
+msgstr ""
+
+#: ./arche/templates/system/roles_log.pt:37
+msgid "Removed"
+msgstr ""
+
+#: ./arche/templates/system/roles_log.pt:42
+msgid "Nothing matched"
+msgstr ""
+
+#: ./arche/templates/system/roles_log.pt:57
+msgid "(Context removed)"
+msgstr ""
+
+#: ./arche/templates/content/file.pt:17 ./arche/templates/content/image.pt:22
+msgid "Download file"
+msgstr ""
+
+#: ./arche/templates/content/file.pt:25 ./arche/templates/content/image.pt:30
+#: ./arche/templates/deform/file_upload.pt:18
+#: ./arche/templates/deform/readonly/file_upload.pt:16
+msgid "Size"
+msgstr ""
+
+#: ./arche/templates/content/groups.pt:15
+msgid "Members"
+msgstr ""
+
+#: ./arche/templates/content/users_table.pt:13
+msgid "User(s)"
+msgstr ""
+
+#: ./arche/templates/content/users_table.pt:41
+#: ./arche/templates/content/group.pt:57
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:19
+msgid "Name"
+msgstr ""
+
+#: ./arche/templates/content/users_table.pt:56
+#: ./arche/templates/content/group.pt:72
+msgid "No user matches your search."
+msgstr ""
+
+#: ./arche/templates/content/group.pt:29
+msgid "Add user"
+msgstr ""
+
+#: ./arche/templates/content/group.pt:88
+msgid "Remove"
+msgstr ""
+
+#: ./arche/templates/content/link.pt:16
+msgid "This is a link that will redirect users without edit permission to:"
+msgstr ""
+
+#: ./arche/templates/menus/templates.pt:8
+msgid "Template"
+msgstr ""
+
+#: ./arche/templates/menus/site.pt:9
+msgid "Site"
+msgstr ""
+
+#: ./arche/templates/menus/add_content.pt:22
+msgid "Add customization active"
+msgstr ""
+
+#: ./arche/templates/menus/add_content.pt:26
+msgid "Customize addable..."
+msgstr ""
+
+#: ./arche/templates/deform/form.pt:51
+#: ./arche/templates/deform/_form_modal.pt:58
+#: ./arche/templates/deform/form_modal.pt:59
+#: ./arche/templates/deform/readonly/form.pt:51
+#: ./arche/templates/deform/readonly/form_modal.pt:57
+msgid "There was a problem with your submission"
+msgstr ""
+
+#. Default: en
+#: ./arche/templates/deform/richtext.pt:29
+msgid "tinymce-locale-file"
+msgstr ""
+
+#: ./arche/templates/deform/file_upload.pt:16
+#: ./arche/templates/deform/readonly/file_upload.pt:14
+msgid "Filename"
+msgstr ""
+
+#: ./arche/templates/deform/file_upload.pt:31
+msgid "Replace current file:"
+msgstr ""
+
+#: ./arche/templates/portlets/byline.pt:16
+msgid "(modified ${datetime})"
+msgstr ""
+
+#: ./arche/templates/portlets/manager_slot.pt:42
+msgid "Add to"
+msgstr ""
+
+#: ./arche/plugins/request_auth/models.py:80
+msgid "Token not found or used already"
+msgstr ""
+
+#: ./arche/plugins/request_auth/models.py:81
 #, python-format
-msgid "Rename '${name}'"
+msgid "No token related to userid ${userid}"
 msgstr ""
 
-#: ./Arche/views/actions.py:35
-msgid "Workflow"
+#: ./arche/plugins/request_auth/models.py:84
+msgid "Link expired"
 msgstr ""
 
-#: ./Arche/views/actions.py:70
-msgid "Permissions"
+#: ./arche/plugins/request_auth/models.py:86
+msgid "IP address doesn't match"
 msgstr ""
 
-#: ./Arche/views/actions.py:127
-msgid "Templates"
+#: ./arche/plugins/auth_sessions/schemas.py:17
+msgid "Human-readable name of session"
 msgstr ""
 
-#: ./Arche/views/actions.py:143
-msgid "User menu"
+#: ./arche/plugins/auth_sessions/schemas.py:18
+msgid "Good as a reminder if you use this session for api access."
 msgstr ""
 
-#: ./Arche/views/actions.py:152
-msgid "Site menu"
+#: ./arche/plugins/auth_sessions/schemas.py:23
+msgid "Session will timeout after this time (in minutes) has expired."
 msgstr ""
 
-#: ./Arche/views/actions.py:187
-msgid "Settings"
+#: ./arche/plugins/auth_sessions/schemas.py:24
+msgid ""
+"If emtpy, this session will never expire. Recommended for key-based "
+"authentication."
 msgstr ""
 
-#: ./Arche/views/actions.py:202
-msgid "Logout"
+#: ./arche/plugins/auth_sessions/schemas.py:31
+msgid "Allow authentication with this key"
 msgstr ""
 
-#: ./Arche/views/actions.py:222
-msgid "Profile"
+#: ./arche/plugins/auth_sessions/schemas.py:38
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:21
+msgid "IP"
 msgstr ""
 
-#: ./Arche/views/actions.py:235
-msgid "Validate email"
+#: ./arche/plugins/auth_sessions/schemas.py:40
+msgid "Limit access to these IP-addresses"
 msgstr ""
 
-#: ./Arche/views/actions.py:280
-msgid "Paste"
+#: ./arche/plugins/auth_sessions/schemas.py:51
+msgid "Keep me logged in"
 msgstr ""
 
-#: ./Arche/views/actions.py:291
-msgid "Rename"
+#. Default: Your session will never time out. Don't use this on a public
+#. computer!
+#: ./arche/plugins/auth_sessions/schemas.py:52
+msgid "keep_me_logged_in_description"
 msgstr ""
 
-#: ./Arche/views/actions.py:331
-msgid "Unset delegated view"
-msgstr ""
-
-#: ./Arche/views/actions.py:340
-msgid "View settings"
-msgstr ""
-
-#: ./Arche/views/listing.py:7
-msgid "Content listing"
-msgstr ""
-
-#: ./Arche/views/wizard.py:8
-msgid "Finish"
-msgstr ""
-
-#: ./Arche/views/wizard.py:9
-msgid "Next"
-msgstr ""
-
-#: ./Arche/views/wizard.py:10
-msgid "Previous"
-msgstr ""
-
-#: ./Arche/views/site_settings.py:11
-msgid "Site settings"
-msgstr ""
-
-#: ./Arche/views/permissions.py:58
-msgid "That GroupID don't exist"
-msgstr ""
-
-#: ./Arche/views/permissions.py:63
-msgid "That UserID don't exist"
-msgstr ""
-
-#: ./Arche/views/search.py:68
-msgid "Invalid search query - try something else!"
-msgstr ""
-
-#: ./Arche/views/search.py:99
-msgid "No results"
-msgstr ""
-
-#: ./Arche/views/search.py:101
+#: ./arche/plugins/auth_sessions/views.py:21
 #, python-format
-msgid "${num} more results..."
+msgid "Logged out session ${id}"
 msgstr ""
 
-#. Default: Something isn't behaving the way it should. The error has been
-#. logged. You may wish to contact the person running this site about this
-#. error. It's one of those things that should never happen.
-#: ./Arche/views/exceptions.py:18
-msgid "generic_exception_explanation"
-msgstr ""
-
-#: ./Arche/views/exceptions.py:81 ./Arche/views/exceptions.py:100
-msgid "Not allowed, perhaps you need to log in?"
-msgstr ""
-
-#: ./Arche/views/exceptions.py:121
-msgid "Application error"
-msgstr ""
-
-#: ./Arche/views/workflow.py:21
+#: ./arche/plugins/auth_sessions/views.py:25
 #, python-format
-msgid "Changed state to ${state}"
+msgid "No active session with id: ${id}"
 msgstr ""
 
-#: ./Arche/views/languages.py:14
+#. Default: Authentication session created with id ${id}
+#: ./arche/plugins/auth_sessions/views.py:43
+msgid "new_auth_session_details"
+msgstr ""
+
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:11
+msgid "Auth sessions"
+msgstr ""
+
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:20
+msgid "Active"
+msgstr ""
+
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:22
+msgid "Last"
+msgstr ""
+
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:23
+msgid "Last login"
+msgstr ""
+
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:24
+msgid "Max valid (min)"
+msgstr ""
+
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:25
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:66
+msgid "API key"
+msgstr ""
+
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:26
+msgid "User agent"
+msgstr ""
+
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:58
+msgid "Always"
+msgstr ""
+
+#: ./arche/plugins/auth_sessions/templates/sessions.pt:77
+msgid "Browser user agent string"
+msgstr ""
+
+#: ./arche/plugins/thumbnails/views.py:53
+msgid "Album view"
+msgstr ""
+
+#: ./arche/plugins/thumbnails/views.py:54
+msgid "Photo album-like view"
+msgstr ""
+
+#: ./arche/portlets/byline.py:11
+msgid "Byline"
+msgstr ""
+
+#: ./arche/portlets/workflow_history.py:19
+#: ./arche/portlets/workflow_history.py:52
+msgid "Workflow history"
+msgstr ""
+
+#: ./arche/portlets/workflow_history.py:39
+msgid "Only show this amount of entries"
+msgstr ""
+
+#: ./arche/portlets/workflow_history.py:44
+msgid "Enable for these workflows"
+msgstr ""
+
+#: ./arche/portlets/richtext.py:14 ./arche/portlets/richtext.py:47
+msgid "Richtext"
+msgstr ""
+
+#: ./arche/portlets/richtext.py:21
+msgid "Shown in portlet manager"
+msgstr ""
+
+#: ./arche/portlets/richtext.py:26
+msgid "Body"
+msgstr ""
+
+#: ./arche/portlets/richtext.py:31
+msgid "Show portlet panel"
+msgstr ""
+
+#. Default: If this is inactive, only the richtext (body) content will be
+#. rendered.
+#: ./arche/portlets/richtext.py:32
+msgid "show_container_description"
+msgstr ""
+
+#: ./arche/portlets/richtext.py:39
+msgid "Hide in subfolders"
+msgstr ""
+
+#: ./arche/portlets/richtext.py:40
+msgid "Only render in this context."
+msgstr ""
+
+#: ./arche/portlets/contents.py:50
+msgid "Only in this context"
+msgstr ""
+
+#: ./arche/portlets/contents.py:56
+msgid "Only show these content types"
+msgstr ""
+
+#: ./arche/portlets/contents.py:61
+msgid "Only show these states"
+msgstr ""
+
+#: ./arche/portlets/navigation.py:15
+msgid "Navigation"
+msgstr ""
+
+#: ./arche/portlets/__init__.py:64
+msgid "Portlet"
+msgstr ""
+
+#: ./arche/portlets/__init__.py:65
+msgid "A mini view within another view"
+msgstr ""
+
+#: ./arche/portlets/__init__.py:128
+msgid "Portlet folder"
+msgstr ""
+
+#: ./arche/portlets/__init__.py:129
+msgid "Container for portlets"
+msgstr ""
+
+#: ./arche/portlets/__init__.py:235
+msgid "Left"
+msgstr ""
+
+#: ./arche/portlets/__init__.py:236
+msgid "Right"
+msgstr ""
+
+#: ./arche/portlets/__init__.py:237
+msgid "Top"
+msgstr ""
+
+#: ./arche/portlets/__init__.py:238
+msgid "Bottom"
+msgstr ""
+
+#: ./arche/models/folder.py:12
+msgid "Folder"
+msgstr ""
+
+#: ./arche/models/folder.py:13
+msgid "A generic folder where you may add things."
+msgstr ""
+
+#: ./arche/models/reference_guard.py:75
 #, python-format
-msgid "Language set to ${selected_lang}"
+msgid "Reference guard named: ${name}"
 msgstr ""
 
-#: ./Arche/views/base.py:226
-msgid "Cancel"
+#: ./arche/models/workflow.py:50
+msgid "<Not found>"
 msgstr ""
 
-#: ./Arche/views/base.py:233
-msgid "Done"
+#: ./arche/models/workflow.py:170 ./arche/models/workflow.py:202
+#: ./arche/models/workflow.py:217
+msgid "Make private"
 msgstr ""
 
-#: ./Arche/views/base.py:234
-msgid "Canceled"
+#: ./arche/models/workflow.py:171 ./arche/models/workflow.py:203
+#: ./arche/models/workflow.py:218
+msgid "Now private"
 msgstr ""
 
-#: ./Arche/views/base.py:364
-msgid "You're not allowed to add this content type here."
+#: ./arche/models/workflow.py:176 ./arche/models/workflow.py:207
+#: ./arche/models/workflow.py:227
+msgid "Publish"
 msgstr ""
 
-#: ./Arche/views/base.py:366
+#: ./arche/models/workflow.py:177 ./arche/models/workflow.py:208
+#: ./arche/models/workflow.py:228
+msgid "Published"
+msgstr ""
+
+#: ./arche/models/workflow.py:183
+msgid "Simple"
+msgstr ""
+
+#: ./arche/models/workflow.py:212
+msgid "Submit for review"
+msgstr ""
+
+#: ./arche/models/workflow.py:213
+msgid "Submitted for review"
+msgstr ""
+
+#: ./arche/models/workflow.py:222
+msgid "Retract and resubmit for review"
+msgstr ""
+
+#: ./arche/models/workflow.py:223
+msgid "Retracted and resubmitted for review"
+msgstr ""
+
+#: ./arche/models/workflow.py:234
+msgid "Review workflow"
+msgstr ""
+
+#: ./arche/models/workflow.py:260
+msgid "Inherit workflow"
+msgstr ""
+
+#: ./arche/models/workflow.py:261 ./arche/models/acl.py:126
+msgid "Inherit"
+msgstr ""
+
+#: ./arche/models/acl.py:127
+msgid "Fetch the ACL from the parent object"
+msgstr ""
+
+#: ./arche/models/datetime_handler.py:117
+msgid "Just now"
+msgstr ""
+
+#: ./arche/models/datetime_handler.py:119
 #, python-format
-msgid "Required permission: '${perm}'"
+msgid "${diff} seconds ago"
 msgstr ""
 
-#: ./Arche/views/base.py:382
+#: ./arche/models/datetime_handler.py:121
+msgid "1 minute ago"
+msgstr ""
+
+#: ./arche/models/datetime_handler.py:123
 #, python-format
-msgid "Add ${type_title}"
+msgid "${diff} minutes ago"
 msgstr ""
 
-#: ./Arche/views/base.py:403
+#: ./arche/models/datetime_handler.py:125
+msgid "1 hour ago"
+msgstr ""
+
+#: ./arche/models/datetime_handler.py:127
 #, python-format
-msgid "Edit ${type_title}"
-msgstr ""
-
-#: ./Arche/views/base.py:420
-msgid "<Unknown Type>"
-msgstr ""
-
-#: ./Arche/views/base.py:425
-#, python-format
-msgid "Delete ${title} (${type_title}) ?"
-msgstr ""
-
-#: ./Arche/views/base.py:454
-#, python-format
-msgid "Deleted '${title}'"
-msgstr ""
-
-#: ./Arche/views/base.py:512
-msgid "Default view"
-msgstr ""
-
-#: ./Arche/views/base.py:514
-#, python-format
-msgid "View set to '${title}'"
-msgstr ""
-
-#: ./Arche/views/base.py:532
-#, python-format
-msgid "View delegated to '${title}'"
-msgstr ""
-
-#: ./Arche/views/base.py:536
-msgid "Normal view restored"
-msgstr ""
-
-#: ./Arche/views/portlets.py:28
-msgid "<Select>"
-msgstr ""
-
-#: ./Arche/views/portlets.py:130
-#, python-format
-msgid "Edit ${portlet_title}"
-msgstr ""
-
-#: ./Arche/views/portlets.py:138
-msgid "Nothing to edit for this portlet"
-msgstr ""
-
-#: ./Arche/views/roles_log.py:22
-msgid "Parse"
-msgstr ""
-
-#: ./Arche/views/roles_log.py:33
-msgid "Parse local roles"
+msgid "${diff} hours ago"
 msgstr ""
