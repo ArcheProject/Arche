@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
-from pyramid.decorator import reify
+from itertools import islice
+
 from pyramid.httpexceptions import HTTPBadRequest
 
 from repoze.catalog.query import Eq
@@ -9,7 +10,6 @@ from repoze.catalog.query import Contains
 from arche import _
 from arche import security
 from arche.fanstatic_lib import users_groups_js
-from arche.interfaces import IDateTimeHandler
 from arche.interfaces import IJSONData
 from arche.views.base import BaseView
 
@@ -49,7 +49,9 @@ class JSONUsers(BaseView):
             limit = int(self.request.GET.get('limit', 100))
         except ValueError:
             raise HTTPBadRequest()
-        users = self.request.resolve_docids(list(docids)[start:start+limit])
+        # Slice off some?
+        docids = islice(docids, start, start+limit)
+        users = self.request.resolve_docids(docids)
         return {
             'items': self.json_format_objects(users),
             'total': result.total,

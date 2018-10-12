@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+from itertools import islice
+
 from deform_autoneed import need_lib
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.httpexceptions import HTTPConflict
@@ -12,7 +14,6 @@ from repoze.catalog.query import Any
 from arche.fanstatic_lib import users_groups_js
 from arche.interfaces import IJSONData
 from arche.views.base import DefaultEditForm
-from arche.views.base import DynamicView
 from arche.views.base import BaseView
 from arche import security
 from arche import _
@@ -47,7 +48,7 @@ class GroupView(BaseView):
     def requested_user(self):
         try:
             return self.request.root['users'][self.request.POST['userid']]
-        except IndexError:
+        except (IndexError, KeyError):
             raise HTTPBadRequest('No such user')
 
     @view_config(name='add_user')
@@ -87,7 +88,8 @@ class JSONUsers(BaseView):
             limit = int(self.request.GET.get('limit', 100))
         except ValueError:
             raise HTTPBadRequest()
-        users = self.request.resolve_docids(list(docids)[start:start+limit])
+        docids = islice(docids, start, start+limit)
+        users = self.request.resolve_docids(docids)
         return {
             'items': self.json_format_objects(users),
             'total': result.total,
@@ -109,23 +111,14 @@ def includeme(config):
     config.scan(__name__)
     config.add_view(GroupsView,
                     name = 'view',
-                    permission = security.PERM_MANAGE_USERS, #FIXME
+                    permission = security.PERM_MANAGE_USERS,
                     renderer = "arche:templates/content/groups.pt",
                     context = 'arche.interfaces.IGroups')
     config.add_view(DefaultEditForm,
-                    name = u"edit",
+                    name = "edit",
                     permission = security.PERM_MANAGE_USERS,
                     renderer = "arche:templates/form.pt",
                     context = "arche.interfaces.IGroup")
-    # config.add_view(DynamicView,
-    #                 context = 'arche.interfaces.IGroup',
-    #                 permission = security.PERM_MANAGE_USERS,
-    #                 renderer = 'arche:templates/form.pt')
-    # config.add_view(GroupView,
-    #                 name='view',
-    #                 permission=security.PERM_MANAGE_USERS,
-    #                 renderer="arche:templates/content/group.pt",
-    #                 context='arche.interfaces.IGroup')
     config.add_view(JSONUsers,
                     name='users.json',
                     permission=security.PERM_MANAGE_USERS,
