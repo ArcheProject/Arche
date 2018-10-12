@@ -109,8 +109,8 @@ $(function() {
           this.orderReversed = !this.orderReversed;
           this.search();
         },
-        addRemove: function(target, userID) {
-          do_request(target, {
+        userApi: function(api, userID) {
+          do_request(api, {
             method: 'POST',
             data: {userid: userID}
           })
@@ -124,15 +124,15 @@ $(function() {
             );
           })
         },
-        addUser: function(event) {
-          var target = event.target.dataset.target;
+        addUser: function() {
+          var target = $(event.target).closest('[data-target]').data('target');
           var userID = this.addUserSelected;
           if (!userID) return;
-          this.addRemove(target, userID);
+          this.userApi(target, userID);
         },
         removeUser: function(userID) {
-          var target = event.target.dataset.target;
-          this.addRemove(target, userID);
+          var target = $(event.target).closest('[data-target]').data('target');
+          this.userApi(target, userID);
         }
       },
       computed: {
