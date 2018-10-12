@@ -48,7 +48,7 @@ $(function() {
       data: {
         users: [],
         userPages: {},
-        itemsPerPage: 25,
+        itemsPerPage: 50,
         orderBy: "userid",
         orderReversed: false,
         query: ""
@@ -65,7 +65,7 @@ $(function() {
         getRange: function(start) {
           var params = {
             start: start,
-            limit: this.itemsPerPage * 4,
+            limit: this.itemsPerPage,
             order: this.orderBy,
             q: this.query,
             reverse: this.orderReversed
