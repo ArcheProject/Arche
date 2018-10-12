@@ -49,7 +49,9 @@
     <tal:loop tal:repeat="item values">
       <option tal:attributes="
               class css_class;
-              value getattr(item, id_attr);" selected>${item.title}</option>
+              value getattr(item, id_attr);" selected tal:define="userid getattr(item, 'userid')">
+          ${item.title} ${userid and '({})'.format(userid) or None}
+      </option>
     </tal:loop>
 
     </select>
@@ -72,15 +74,15 @@
             if (${show_thumbs} == true) {
                 var out = $('#${field.oid}-struct').clone();
                 out.removeAttr('id');
-                out.find('.img-container').html(data['img_tag']);
-                out.find('.heading-text').html(data['text']);
-                if (data['type_title']) {
-                    out.find('.heading-type').html("(" + data['type_title'] + ")");
+                out.find('.img-container').html(data.img_tag);
+                out.find('.heading-text').html(data.text);
+                if (data.type_title) {
+                    out.find('.heading-type').html("(" + data.type_title + ")");
                 }
                 out.show();
                 return out;
             } else {
-                return data['text'] + ' (' + data['type_title'] + ')';
+                return data['text'] + ' (' + data.userid || data.type_title + ')';
             }
         };
         var $selector = $('#' + oid).select2({
