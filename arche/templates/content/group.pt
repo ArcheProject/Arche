@@ -83,6 +83,7 @@
           <td class="text-nowrap">
             <span v-if="user.email_validated"
                   class="glyphicon glyphicon-ok-sign text-success"
+                  i18n:attributes="title;"
                   title="Email verified"></span>
             <a class="email" v-bind:href="'mailto:' + user.email">{{ user.email }}</a>
           </td>
