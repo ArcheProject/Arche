@@ -37,7 +37,7 @@
           <span v-bind:class="'glyphicon glyphicon-sort-by-attributes' + (orderReversed ? '-alt' : '')"></span>
         </button>
         <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Order by <span class="caret"></span>
+          <tal:ts i18n:translate="">Order by</tal:ts> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" tal:condition="fields|None">
           <li tal:repeat="(value, desc) fields"><a v-on:click="setOrder('${value}')">${desc} <span v-if="orderBy == '${value}'" class="glyphicon glyphicon-ok"></span></a></li>

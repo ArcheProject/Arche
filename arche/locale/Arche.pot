@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-10-12 10:08+0200\n"
+"POT-Creation-Date: 2018-10-12 11:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1370,6 +1370,11 @@ msgstr ""
 
 #: ./arche/templates/content/users_table.pt:13
 msgid "User(s)"
+msgstr ""
+
+#: ./arche/templates/content/users_table.pt:24
+#: ./arche/templates/content/group.pt:40
+msgid "Order by"
 msgstr ""
 
 #: ./arche/templates/content/users_table.pt:41

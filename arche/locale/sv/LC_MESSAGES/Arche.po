@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-10-12 10:08+0200\n"
-"PO-Revision-Date: 2018-10-12 10:54+0200\n"
+"POT-Creation-Date: 2018-10-12 11:02+0200\n"
+"PO-Revision-Date: 2018-10-12 11:03+0200\n"
 "Last-Translator: Robin Harms Oredsson <robin@betahaus.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -1447,6 +1447,11 @@ msgstr "Medlemmar"
 #: arche/templates/content/users_table.pt:13
 msgid "User(s)"
 msgstr "Användare"
+
+#: arche/templates/content/users_table.pt:24
+#: arche/templates/content/group.pt:40
+msgid "Order by"
+msgstr "Sortera efter"
 
 #: arche/templates/content/users_table.pt:41
 #: arche/templates/content/group.pt:57
