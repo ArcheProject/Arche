@@ -16,7 +16,7 @@ library = Library('arche', 'static')
 
 main_css = Resource(library, 'main.css', depends = (bootstrap_css,))
 jquery_file_upload = Resource(library, 'third_party/jquery.fileupload.js', depends=(jquery, ui_widget))
-vue_js = Resource(library, 'vuejs/vue.min.js', debug='vuejs/vue.js')
+vue_js = Resource(library, 'vuejs/vue.js', minified='vuejs/vue.min.js')
 pure_js = Resource(library, 'pure.js', minified = 'pure.min.js', depends = (jquery,))
 common_js = Resource(library, 'common.js', depends = (jquery,))
 touchpunch_js = Resource(library, 'jquery.ui.touch-punch.min.js', depends = (jquery, jqueryui))
