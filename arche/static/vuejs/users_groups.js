@@ -48,7 +48,7 @@ $(function() {
       data: {
         users: [],
         userPages: {},
-        itemsPerPage: 100,
+        itemsPerPage: 25,
         orderBy: "userid",
         orderReversed: false,
         query: ""
@@ -61,19 +61,11 @@ $(function() {
       methods: {
         clear: function() {
           this.users = [];
-          this.itemsPerPage=100;
-        },
-        setTotal: function(total) {
-          var perPage = 20;
-          if (total >= 200) perPage = 50;
-          if (total >= 1000) perPage = 100;
-          this.itemsPerPage = perPage;
-          this.total = total;
         },
         getRange: function(start) {
           var params = {
             start: start,
-            limit: this.itemsPerPage,
+            limit: this.itemsPerPage * 4,
             order: this.orderBy,
             q: this.query,
             reverse: this.orderReversed
@@ -83,7 +75,7 @@ $(function() {
             for (i=0; i<response.items.length; i++) {
               this.users[start + i] = response.items[i];
             }
-            this.setTotal(response.total);
+            this.total = response.total;
           }.bind(this));
         },
         getPage: function(page) {
@@ -150,28 +142,35 @@ $(function() {
         },
         pages: function() {
           var pages = [];
-          var slicePages = [];
           var endPage = Math.floor(this.total / this.itemsPerPage);
-          var sliceStart = Math.max(0, this.currentPage - 3);
-          var sliceEnd = Math.min(endPage, this.currentPage + 3);
-          if (typeof this.total !== 'undefined') {
-            var count = Math.ceil(this.total / this.itemsPerPage);
-            for (page=0; page<count; page++) {
-              var start = (page * this.itemsPerPage) + 1;
-              var end = Math.min((page * this.itemsPerPage) + this.itemsPerPage, this.total);
-              slicePages.push({
-                text: start + ' - ' + end,
-                active: page === this.currentPage,
-                id: page
-              });
+          var sliceStart = this.currentPage - 3;
+          var sliceEnd = this.currentPage + 3;
+          if (sliceStart < 0 !== sliceEnd > endPage) {  // Only one is off
+            if (sliceStart < 0) {  // Start is off
+              sliceEnd = 6;
+            } else {  // End is off
+              sliceStart = endPage - 6;
             }
+          }
+          // Make sure nothing is off after this.
+          sliceStart = Math.max(sliceStart, 0);
+          sliceEnd = Math.min(sliceEnd, endPage);
+          if (typeof this.total !== 'undefined') {
             if (sliceStart > 0) {
               pages.push({
                 text: '«',
                 id: 0
               });
             }
-            pages = pages.concat(slicePages.slice(sliceStart, sliceEnd + 1));
+            for (page=sliceStart; page<=sliceEnd; page++) {
+              var start = (page * this.itemsPerPage) + 1;
+              var end = Math.min((page * this.itemsPerPage) + this.itemsPerPage, this.total);
+              pages.push({
+                text: (start === end) ? start : start + ' - ' + end,
+                active: page === this.currentPage,
+                id: page
+              });
+            }
             if (sliceEnd < endPage) {
               pages.push({
                 text: '»',
