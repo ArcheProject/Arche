@@ -190,7 +190,7 @@ class ContextACLMixin(object):
     @property
     def __acl__(self):
         """ Return ACL lists according to the priority:
-            - If a workflow exist and the state exist, check '<TypeName>:<workflow_state_id>'
+            - If a workflow exist and the state exist, check '<workflow_name>:<workflow_state_id>'
             - If the type name exist in the registry, return that
             - Return 'default'
         """
@@ -198,8 +198,9 @@ class ContextACLMixin(object):
         wf = self.workflow
         if wf:
             state = wf.state in wf.states and wf.state or wf.initial_state
-            if state in acl_reg:
-                return acl_reg.get_acl("%s:%s" % (wf.name, state))
+            wf_state = "%s:%s" % (wf.name, state)
+            if wf_state in acl_reg:
+                return acl_reg.get_acl(wf_state)
         if self.type_name in acl_reg:
             return acl_reg.get_acl(self.type_name)
         return acl_reg.get_acl('default')
