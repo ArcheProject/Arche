@@ -34,7 +34,7 @@
       </li>
     </ul>
     <div class="table-responsive">
-      <table class="table table-responsive table-striped table-hover">
+      <table class="table table-responsive table-striped table-condensed table-hover">
         <thead>
         <tr>
           <th i18n:translate="">UserID</th>
