@@ -202,6 +202,18 @@ class ContextACLTests(TestCase):
         # FIXME Robin: py3(only?) gives 'role:Administrator'
         self.assertEqual(context.__acl__[0][0:2], ('Allow', 'role:Owner',))
 
+    def test_set_state_via_property(self):
+        self.config.include('arche.models.workflow')
+        context = self._mk_dummy()
+        _attach_dummy_acl(self.config, name = 'Dummy')
+        self.config.testing_securitypolicy(userid='hello')
+        request = testing.DummyRequest()
+        self.config.begin(request)
+        self.config.set_content_workflow('Dummy', 'simple_workflow')
+        self.assertEqual(context.wf_state, 'private')
+        context.wf_state = 'public'
+        self.assertEqual(context.wf_state, 'public')
+
 
 class TokenTests(TestCase):
      

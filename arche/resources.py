@@ -22,6 +22,7 @@ from arche import _
 from arche.models.catalog import create_catalog
 from arche.events import EmailValidatedEvent
 from arche.events import ObjectUpdatedEvent
+from arche.exceptions import WorkflowException
 from arche.interfaces import (IBase,
                               IBlobs,
                               IContent,
@@ -185,7 +186,8 @@ class LocalRolesMixin(object):
 
 @implementer(IContextACL)
 class ContextACLMixin(object):
-    """ Mixin for content that cares about security in some way. Could either be workflows or ACL."""
+    """ Mixin for content that cares about security in some way.
+        Could either be workflows or ACL."""
 
     @property
     def __acl__(self):
@@ -214,6 +216,12 @@ class ContextACLMixin(object):
         wf = self.workflow
         if wf:
             return wf.state in wf.states and wf.state or wf.initial_state
+    @wf_state.setter
+    def wf_state(self, value):
+        wf = self.workflow
+        if not wf:
+            raise WorkflowException("No workflow configured for %s" % self)
+        return wf.do_transition(value)
 
 
 @implementer(IContent, IIndexedContent, ITrackRevisions)
