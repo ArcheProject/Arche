@@ -26,7 +26,11 @@
     <div class="input-group" >
       <select2 data-src="${request.resource_path(request.root, 'search_select2.json',
                         query={'glob': 1,'show_hidden': 1,'id_attr': 'userid','type_name': 'User'})}"
-               v-model="addUserSelected"></select2>
+               v-model="addUserSelected"
+               placeholder="Type something to search."
+               name="userid"
+               i18n:attributes="placeholder">
+      </select2>
       <span class="input-group-btn">
         <button class="btn btn-default"
                 data-target="${request.resource_url(context, 'add_user')}"

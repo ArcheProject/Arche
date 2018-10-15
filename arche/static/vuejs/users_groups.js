@@ -1,16 +1,19 @@
 // TODO Move components to a separate file for generic use.
 
 Vue.component('select2', {
-  props: ['value'],
+  props: ['value', 'placeholder'],
   template: '<select><slot></slot></select>',
   mounted: function () {
     var vm = this
-    $(this.$el)
+    var src = this.$el.dataset.src;
+    if (src) {
+      $(this.$el)
       // init select2
       .select2({
         minimumInputLength: 1,
         containerCssClass: 'form-control',
         width: "100%",
+        placeholder: this.placeholder,
         ajax: {
           url: this.$el.dataset.src,
           dataType: 'json',
@@ -29,6 +32,7 @@ Vue.component('select2', {
       .on('change', function () {
         vm.$emit('input', this.value)
       })
+    }
   },
   watch: {
     value: function (value) {
