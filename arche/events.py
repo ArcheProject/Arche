@@ -91,21 +91,23 @@ class WillLoginEvent(object):
         self.__dict__.update(**kw)
 
 
-class _WorkflowTransition(object):
+class BaseWorkflowTransition(object):
+    """ See intefaces.IWorkflowTransition. """
 
     def __init__(self, _object, workflow, transition, request = None):
         self.object = _object
         self.workflow = workflow
         self.transition = transition
         self.request = request
+        self.to_state = transition.to_state
+        self.from_state = transition.from_state
 
 
 @implementer(IWorkflowBeforeTransition)
-class WorkflowBeforeTransition(_WorkflowTransition):
-    pass
+class WorkflowBeforeTransition(BaseWorkflowTransition):
+    __doc__ = IWorkflowBeforeTransition.__doc__
 
 
 @implementer(IWorkflowAfterTransition)
-class WorkflowAfterTransition(_WorkflowTransition):
-    pass
-
+class WorkflowAfterTransition(BaseWorkflowTransition):
+    __doc__ = IWorkflowAfterTransition.__doc__

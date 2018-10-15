@@ -60,14 +60,34 @@ class IEmailValidatedEvent(Interface):
 class IObjectUpdatedEvent(IObjectEvent):
     pass
 
-class IWorkflowBeforeTransition(IObjectEvent):
-    pass
 
-class IWorkflowAfterTransition(IObjectEvent):
-    pass
+class IWorkflowTransition(IObjectEvent):
+    """ Base class for transitions.
+        Should normally not be used unless you want something to fire
+        both before and after a transition, since
+        IWorkflowBeforeTransition and IWorkflowAfterTransition inherits this.
+    """
+    object = Attribute("The object which the transition occurs on, normally a resource or context.")
+    workflow = Attribute("Registered workflow")
+    transition = Attribute("The transition object")
+    request = Attribute("Current request")
+    to_state = Attribute("The state the object transitions to.")
+    from_state = Attribute("The state the object transitions from.")
+
+
+class IWorkflowBeforeTransition(IWorkflowTransition):
+    """ Fires before a transition takes place. """
+
+
+class IWorkflowAfterTransition(IWorkflowTransition):
+    """ Fires after a transition takes place. """
+
 
 class IViewInitializedEvent(IObjectEvent):
-    pass
+    """ A view class has been initialized with context and request.
+    """
+    object = Attribute("The instantiated view.")
+
 
 class ISchemaCreatedEvent(IObjectEvent):
     pass

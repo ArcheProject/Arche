@@ -122,11 +122,12 @@ class SearchView(BaseView):
                 tag = self.request.thumb_tag(obj, 'mini')
             except AttributeError:
                 tag = ''
-            output.append({'text': obj.title,
+            user_extra = id_attr == 'userid' and ' ({})'.format(obj.userid) or ''
+            output.append({'text': obj.title + user_extra,
                            'id': getattr(obj, id_attr),
                            'type_name': obj.type_name,
                            'img_tag': tag,
-                           'type_title': type_title})
+                           'type_title': '' if user_extra else type_title})
         return {'results': output}
 
     @view_config(route_name='resolve_uid')
