@@ -113,7 +113,7 @@ class Workflow(object):
 
     def do_transition(self, name, request = None, force = False):
         """
-        :param name: Either the name of the transision or the expected state
+        :param name: Either the name of the transition or the expected state
         :param request: current request
         :param force: Do transition regardless of permission.
         :return: transition
@@ -121,7 +121,7 @@ class Workflow(object):
         #Check permission, treat input as unsafe!
         if request is None:
             request = get_current_request()
-        if ':' not in name:
+        if name not in self.transitions and ':' not in name:
             name = "%s:%s" % (self.state, name)
         try:
             trans = self.transitions[name]
