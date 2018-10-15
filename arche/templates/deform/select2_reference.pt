@@ -49,7 +49,7 @@
     <tal:loop tal:repeat="item values">
       <option tal:attributes="
               class css_class;
-              value getattr(item, id_attr);" selected tal:define="userid getattr(item, 'userid')">
+              value getattr(item, id_attr, None);" selected tal:define="userid getattr(item, 'userid', None)">
           ${item.title} ${userid and '({})'.format(userid) or None}
       </option>
     </tal:loop>
