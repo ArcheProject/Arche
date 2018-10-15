@@ -6,7 +6,7 @@ from pyramid_mailer.mailer import DebugMailer
 from zope.interface import implementer
 
 
-def barebone_fixture(config):
+def barebone_fixture(config=None):
     from arche.api import Root
     from arche.api import Users
     root = Root()
