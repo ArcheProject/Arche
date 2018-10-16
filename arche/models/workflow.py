@@ -113,7 +113,7 @@ class Workflow(object):
 
     def do_transition(self, name, request = None, force = False):
         """
-        :param name: Either the name of the transision or the expected state
+        :param name: Either the name of the transition or the expected state
         :param request: current request
         :param force: Do transition regardless of permission.
         :return: transition
@@ -121,8 +121,14 @@ class Workflow(object):
         #Check permission, treat input as unsafe!
         if request is None:
             request = get_current_request()
-        if ':' not in name:
-            name = "%s:%s" % (self.state, name)
+
+        if name not in self.transitions:
+            # Don't do transitions that seem to end up in the same state
+            if name == self.state:
+                logger.debug('%r is already in state %s', self.context, name)
+                return
+            if ':' not in name:
+                name = "%s:%s" % (self.state, name)
         try:
             trans = self.transitions[name]
         except KeyError:
