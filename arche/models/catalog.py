@@ -679,6 +679,7 @@ def includeme(config):
         'body',
         'userid',
         'first_name',
-        'last_name'
+        'last_name',
+        'email'
     ))
     config.add_searchable_text_discriminator(_searchable_html_body)
