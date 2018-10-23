@@ -77,7 +77,7 @@ $(function() {
           return arche.do_request(this.$el.dataset.src, {data: params})
           .done(function(response) {
             for (i=0; i<response.items.length; i++) {
-              this.users[start + i] = response.items[i];
+              this.users.splice(start + i, 1, response.items[i]);
             }
             this.total = response.total;
           }.bind(this));
