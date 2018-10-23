@@ -28,7 +28,7 @@
         </ul>
       </span>
     </div>
-    <ul class="nav nav-pills" v-if="total">
+    <ul class="nav nav-pills" v-if="users">
       <li role="presentation" v-for="page in pages" v-bind:class="page.active ? 'active' : null">
         <a v-on:click="getPage(page.id)" v-bind:href="'#page-' + page.id">{{ page.text }}</a>
       </li>
@@ -50,13 +50,13 @@
             <tal:ts i18n:translate="">Loading...</tal:ts>
           </td>
         </tr>
-        <tr v-if="typeof currentPage !== 'undefined' && total===0">
+        <tr v-else-if="!users">
           <td colspan="4">
             <span class="glyphicon glyphicon-ban-circle"></span>
             <tal:ts i18n:translate="">No user matches your search.</tal:ts>
           </td>
         </tr>
-        <tr v-for="user in currentUsers">
+        <tr v-for="user in currentUsers" v-bind:key="user.userid">
           <td><a v-bind:href="'/users/' + user.userid">{{ user.userid }}</a></td>
           <td>{{ user.first_name }} {{ user.last_name }}</td>
           <td class="text-nowrap">

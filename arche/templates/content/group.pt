@@ -23,7 +23,7 @@
   <h1 i18n:translate="">${context.title}</h1>
 
   <div id="user-table" data-src="${request.resource_url(context, 'users.json')}">
-    <div class="input-group" >
+    <div class="input-group">
       <select2 data-src="${request.resource_path(request.root, 'search_select2.json',
                         query={'glob': 1,'show_hidden': 1,'id_attr': 'userid','type_name': 'User'})}"
                v-model="addUserSelected"
@@ -53,8 +53,8 @@
         </ul>
       </span>
     </div>
-    <ul class="nav nav-pills" v-if="total">
-      <li role="presentation" v-for="page in pages" v-bind:class="page.active ? 'active' : null">
+    <ul class="nav nav-pills" v-if="users">
+      <li role="presentation" v-for="page in pages" v-bind:class="{active: page.active}">
         <a v-on:click="getPage(page.id)" v-bind:href="'#page-' + page.id">{{ page.text }}</a>
       </li>
     </ul>
@@ -75,19 +75,21 @@
             <tal:ts i18n:translate="">Loading...</tal:ts>
           </td>
         </tr>
-        <tr v-if="typeof currentPage !== 'undefined' && total === 0 && query !== ''">
-          <td colspan="4">
-            <span class="glyphicon glyphicon-ban-circle"></span>
-            <tal:ts i18n:translate="">No user matches your search.</tal:ts>
-          </td>
+        <tr v-else-if="!users">
+          <template v-if="query">
+            <td colspan="4">
+              <span class="glyphicon glyphicon-ban-circle"></span>
+              <tal:ts i18n:translate="">No user matches your search.</tal:ts>
+            </td>
+          </template>
+          <template v-else>
+            <td colspan="4">
+              <span class="glyphicon glyphicon-user"></span>
+              <tal:ts i18n:translate="">No users in group.</tal:ts>
+            </td>
+          </template>
         </tr>
-        <tr v-if="typeof currentPage !== 'undefined' && total === 0 && query === ''">
-          <td colspan="4">
-            <span class="glyphicon glyphicon-user"></span>
-            <tal:ts i18n:translate="">No users in group.</tal:ts>
-          </td>
-        </tr>
-        <tr v-for="user in currentUsers">
+        <tr v-for="(user) in currentUsers" v-bind:key="user.userid">
           <td><a v-bind:href="'/users/' + user.userid">{{ user.userid }}</a></td>
           <td>{{ user.first_name }} {{ user.last_name }}</td>
           <td class="text-nowrap">
@@ -102,7 +104,7 @@
                     data-target="${request.resource_path(context, 'remove_user')}"
                     title="Remove"
                     i18n:attributes="title;"
-                    v-on:click="removeUser(user.userid)">
+                    v-on:click.once="removeUser(user)">
               <span class="glyphicon glyphicon-remove text-danger"></span>
             </button>
           </td>
