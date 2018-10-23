@@ -55,7 +55,8 @@ $(function() {
         orderBy: "userid",
         orderReversed: false,
         query: "",
-        currentPage: 0
+        currentPage: 0,
+        loading: false
       },
       props: ['addUserSelected'],
       el: "#user-table",
@@ -74,6 +75,7 @@ $(function() {
             q: this.query,
             reverse: this.orderReversed
           };
+          this.loading = true;
           return arche.do_request(this.$el.dataset.src, {data: params})
           .done(function(response) {
             // According to Vue docs, splice is correct method, but length is necessary
@@ -82,6 +84,7 @@ $(function() {
             for (i=0; i<response.items.length; i++) {
               this.users.splice(start + i, 1, response.items[i]);
             }
+            this.loading = false;
           }.bind(this));
         },
         getPage: function(page) {

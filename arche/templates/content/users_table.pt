@@ -28,7 +28,7 @@
         </ul>
       </span>
     </div>
-    <ul class="nav nav-pills" v-if="users">
+    <ul class="nav nav-pills" v-if="users.length">
       <li role="presentation" v-for="page in pages" v-bind:class="page.active ? 'active' : null">
         <a v-on:click="getPage(page.id)" v-bind:href="'#page-' + page.id">{{ page.text }}</a>
       </li>
@@ -44,13 +44,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-if="typeof currentPage === 'undefined'">
+        <tr v-if="loading">
           <td colspan="4">
             <span class="rotate-me glyphicon glyphicon-refresh"></span>
             <tal:ts i18n:translate="">Loading...</tal:ts>
           </td>
         </tr>
-        <tr v-else-if="!users">
+        <tr v-else-if="!users.length">
           <td colspan="4">
             <span class="glyphicon glyphicon-ban-circle"></span>
             <tal:ts i18n:translate="">No user matches your search.</tal:ts>
