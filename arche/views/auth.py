@@ -194,14 +194,17 @@ class UserChangePasswordForm(DefaultEditForm):
         #FIXME: Review this structure. Is it really smart to call super in two separate places?
         if request.authenticated_userid is None:
             token = getattr(context, 'pw_token', None)
+            if token is None:
+                raise HTTPForbidden(_("pw_token_doesnt_exist",
+                                      default="You haven't requested a password reset."))
             rtoken = request.GET.get('t', object())
             if not token.valid:
                 raise HTTPForbidden(_("pw_token_expired",
                                       default="Link expired, you have to request "
-                                              "password reset again"))
+                                              "password reset again."))
             if token != rtoken:
                 raise HTTPForbidden(_("pw_token_invalid",
-                                      default="Password reset link doesn't match. "))
+                                      default="Password reset link doesn't match."))
             #At this point the email address could be considered as validated too
             if context.email_validated == False:
                 context.email_validated = True
