@@ -9,7 +9,7 @@ from pyramid.traversal import resource_path
 from zope.component import adapter
 from zope.component.event import objectEventNotify
 from zope.interface.declarations import implementer
-import six
+from six import string_types
 
 from arche import _
 from arche import logger
@@ -90,7 +90,7 @@ class Workflow(object):
         found_states = set()
         if states == '*':
             found_states.update(cls.states)
-        elif isinstance(states, six.string_types):
+        elif isinstance(states, string_types):
             found_states.add(states)
         else:
             found_states.update(states)
@@ -111,6 +111,17 @@ class Workflow(object):
             if trans.from_state == self.state and request.has_permission(trans.permission, self.context):
                 yield trans
 
+    def get_transition(self, name):
+        """ Get a transition either in 'to:from' format, or 'to'.
+        """
+        if name not in self.transitions:
+            if ':' not in name:
+                name = "%s:%s" % (self.state, name)
+        try:
+            return self.transitions[name]
+        except KeyError:
+            raise WorkflowException("The workflow '%s' doesn't have any transition with the id '%s'." % (self.name, name))
+
     def do_transition(self, name, request = None, force = False):
         """
         :param name: Either the name of the transition or the expected state
@@ -121,18 +132,11 @@ class Workflow(object):
         #Check permission, treat input as unsafe!
         if request is None:
             request = get_current_request()
-
-        if name not in self.transitions:
+        trans = self.get_transition(name)
+        if trans.to_state == self.state:
             # Don't do transitions that seem to end up in the same state
-            if name == self.state:
-                logger.debug('%r is already in state %s', self.context, name)
-                return
-            if ':' not in name:
-                name = "%s:%s" % (self.state, name)
-        try:
-            trans = self.transitions[name]
-        except KeyError:
-            raise WorkflowException("The workflow '%s' doesn't have any transition with the id '%s'." % (self.name, name))
+            logger.debug('%r is already in state %s', self.context, name)
+            return
         if trans.from_state != self.state and force is False:
             raise ValueError("The transition '%s' cant go from state '%s'" % (trans.name, self.state))
         if not request.has_permission(trans.permission, self.context) and force is False:
@@ -289,7 +293,7 @@ class WorkflowRegistry(IterableUserDict):
             logger.debug("Removing workflow for %r" % type_name)
             self.content_type_mapping.pop(type_name, None)
         else:
-            assert isinstance(wf_name, six.string_types), "wf_name must be a string, got: %r" % wf_name
+            assert isinstance(wf_name, string_types), "wf_name must be a string, got: %r" % wf_name
             logger.debug("Workflow for %r set to %r" % (type_name, wf_name))
             self.content_type_mapping[type_name] = wf_name
             if self.get_wf_adapter(wf_name) is None:
@@ -403,6 +407,15 @@ def bulk_state_change(context, from_state, to_state, request = None, type_name =
         if wf:
             wf.do_transition("%s:%s" % (from_state, to_state), force = force)
 
+def transition_url(request, context, trans, return_url=None, **kw):
+    if isinstance(trans, string_types):
+        trans = context.workflow.get_transition(trans)
+    if return_url is None:
+        return_url = request.url
+    query = {'id': trans.name, 'return_url': return_url}
+    query.update(kw)
+    return request.resource_url(context, '__wf_transition__', query=query)
+
 def includeme(config):
     if hasattr(config.registry, 'workflows'):
         logger.warn("arche.models.workflow has already been loaded. Aborting")
@@ -413,3 +426,4 @@ def includeme(config):
     config.add_workflow(ReviewWorkflow)
     config.add_workflow(InheritWorkflow)
     config.add_directive('set_content_workflow', set_content_workflow)
+    config.add_request_method(transition_url)

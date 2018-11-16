@@ -11,7 +11,7 @@
     </a>
     <ul class="dropdown-menu">
       <tal:iterate repeat="transition transitions">
-          <li><a href="${request.resource_url(context, '__wf_transition__', query = {'id': transition.name, 'return_url': request.url})}">
+          <li><a href="${request.transition_url(context, transition)}">
               ${transition.title}
           </a></li>
       </tal:iterate>
