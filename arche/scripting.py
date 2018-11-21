@@ -1,16 +1,22 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import argparse
+import traceback
 from sys import argv
 from sys import exc_info
-import traceback
 
-from arche.utils import format_traceback
-from transaction import commit
-from transaction import abort
+from pyramid.authentication import CallbackAuthenticationPolicy
+from pyramid.interfaces import IAuthenticationPolicy
 from pyramid.paster import bootstrap
+from transaction import abort
+from transaction import commit
 from zc.lockfile import LockFile
 from zope.interface import implementer
 
 from arche.interfaces import IScript
+from arche.security import groupfinder
+from arche.utils import format_traceback
 
 
 _runner_parser = argparse.ArgumentParser(add_help=False)
@@ -150,6 +156,33 @@ def help_script(env, parsed_ns):
             script.argparser.print_help()
     else:
         print ("No command called %r" % parsed_ns.help_cmd)
+
+
+@implementer(IAuthenticationPolicy)
+class StaticAuthenticationPolicy(CallbackAuthenticationPolicy):
+    """ An authentication policy useful for scripting or when a process is
+        delegated to a worker from a logged in user.
+    """
+
+    def __init__(self, callback=None, debug=False):
+        self.callback = callback
+        self.debug = debug
+
+    def remember(self, request, userid, **kw):
+        """ Set userid. """
+        request._userid = userid
+
+    def forget(self, request):
+        """ Unset userid. """
+        if hasattr(request, '_userid'):
+            delattr(request, '_userid')
+
+    def unauthenticated_userid(self, request):
+        return getattr(request, '_userid', None)
+
+
+def static_auth_factory(settings):
+    return StaticAuthenticationPolicy(callback=groupfinder)
 
 
 def includeme(config):
