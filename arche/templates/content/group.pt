@@ -55,7 +55,7 @@
     </div>
     <ul class="nav nav-pills" v-if="users.length">
       <li role="presentation" v-for="page in pages" v-bind:class="{active: page.active}">
-        <a v-on:click="getPage(page.id)" v-bind:href="'#page-' + page.id">{{ page.text }}</a>
+        <a v-on:click.prevent="getPage(page.id)" v-bind:href="'#page-' + page.id">{{ page.text }}</a>
       </li>
     </ul>
     <div class="table-responsive">

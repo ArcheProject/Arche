@@ -44,6 +44,8 @@ function handle_form_errors(response) {
 }
 arche.handle_form_errors = handle_form_errors;
 
+arche.modalCallbacks = [];
+
 /*
 Handle modal content
 
@@ -54,11 +56,12 @@ params:
   to be closed by clicking on the backdrop.
 - ... any other options will be passed to the modal() bootstrap function.
  */
-function create_modal(url, params) {
+function create_modal(url, params, callback) {
 
-  if (typeof(params) == 'undefined') var params = {'backdrop': true};
+  if (typeof(params) === 'undefined') params = {'backdrop': true};
   var modal_dialog_cls = typeof params['modal-dialog-class'] !== 'undefined' ? params['modal-dialog-class'] : '';
   arche.destroy_modal();
+  if (typeof(callback) !== 'undefined') arche.modalCallbacks.push(callback);
   var out = '<div class="modal fade" id="modal-area" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">';
   out += '<div class="modal-dialog ' + modal_dialog_cls + '"><div class="modal-content"></div></div></div>';
   var request = arche.do_request(url, {data: {modal: 1}});
@@ -84,13 +87,22 @@ function create_modal(url, params) {
 }
 arche.create_modal = create_modal;
 
-function destroy_modal() {
+function destroy_modal(callbackValue) {
   $('body').removeClass('modal-open');
   $('.modal-backdrop').remove();
   $('.modal').remove();
+  arche.dispatch_modal_callback(callbackValue);
 }
 arche.destroy_modal = destroy_modal;
 
+arche.dispatch_modal_callback = function(value) {
+  if (value) {
+    for (var i=0; i<arche.modalCallbacks.length; i++) {
+      arche.modalCallbacks[i](value);
+    }
+  }
+  arche.modalCallbacks = [];
+};
 
 /* Create a modal window when an element is clicked
  * ================================================

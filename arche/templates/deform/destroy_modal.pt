@@ -4,7 +4,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       i18n:domain="Arche">
 <script type="text/javascript">
-  arche.destroy_modal();
+  arche.destroy_modal(${callback_value | None});
   arche.load_flash_messages(); //If any from modal interaction
 </script>
 </tal:main>
