@@ -12,63 +12,65 @@
 
   <h1 i18n:translate="">User(s)</h1>
 
-  <div id="user-table" data-src="${request.resource_url(context, 'users.json')}">
-    <div class="input-group" style="margin: 15px 0;">
-      <span class="input-group-addon" i18n:translate="">Search</span>
-      <input name="q" v-model="query" type="search" class="form-control" />
-      <span class="input-group-btn">
-        <button class="btn btn-default" v-on:click="reverseOrder()">
-          <span v-bind:class="'glyphicon glyphicon-sort-by-attributes' + (orderReversed ? '-alt' : '')"></span>
-        </button>
-        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <tal:ts i18n:translate="">Order by</tal:ts> <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-          <li tal:repeat="(value, desc) fields"><a v-on:click="setOrder('${value}')">${desc} <span v-if="orderBy == '${value}'" class="glyphicon glyphicon-ok"></span></a></li>
-        </ul>
-      </span>
+  <user-table api="${request.resource_path(context, 'users.json')}" inline-template>
+    <div>
+      <div class="input-group" style="margin: 15px 0;">
+        <span class="input-group-addon" i18n:translate="">Search</span>
+        <input name="q" v-model="query" type="search" class="form-control" />
+        <span class="input-group-btn">
+          <button class="btn btn-default" v-on:click="reverseOrder()">
+            <span v-bind:class="'glyphicon glyphicon-sort-by-attributes' + (orderReversed ? '-alt' : '')"></span>
+          </button>
+          <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <tal:ts i18n:translate="">Order by</tal:ts> <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li tal:repeat="(value, desc) fields"><a v-on:click="setOrder('${value}')">${desc} <span v-if="orderBy == '${value}'" class="glyphicon glyphicon-ok"></span></a></li>
+          </ul>
+        </span>
+      </div>
+      <ul class="nav nav-pills" v-if="users.length">
+        <li role="presentation" v-for="page in pages" v-bind:class="page.active ? 'active' : null">
+          <a v-on:click.prevent="getPage(page.id)" v-bind:href="'#page-' + page.id">{{ page.text }}</a>
+        </li>
+      </ul>
+      <div class="table-responsive">
+        <table class="table table-responsive table-striped table-condensed table-hover">
+          <thead>
+          <tr>
+            <th i18n:translate="">UserID</th>
+            <th i18n:translate="">Name</th>
+            <th i18n:translate="">Email</th>
+            <th i18n:translate="">Created</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-if="loading">
+            <td colspan="4">
+              <span class="rotate-me glyphicon glyphicon-refresh"></span>
+              <tal:ts i18n:translate="">Loading...</tal:ts>
+            </td>
+          </tr>
+          <tr v-else-if="!users.length">
+            <td colspan="4">
+              <span class="glyphicon glyphicon-ban-circle"></span>
+              <tal:ts i18n:translate="">No user matches your search.</tal:ts>
+            </td>
+          </tr>
+          <tr v-for="user in currentUsers" v-bind:key="user.userid">
+            <td><a v-bind:href="'/users/' + user.userid">{{ user.userid }}</a></td>
+            <td>{{ user.first_name }} {{ user.last_name }}</td>
+            <td class="text-nowrap">
+              <span v-if="user.email_validated" class="glyphicon glyphicon-ok-sign text-success" title="Email verified"></span>
+              <a class="email" v-bind:href="'mailto:' + user.email">{{ user.email }}</a>
+            </td>
+            <td>{{ user.created }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <ul class="nav nav-pills" v-if="users.length">
-      <li role="presentation" v-for="page in pages" v-bind:class="page.active ? 'active' : null">
-        <a v-on:click.prevent="getPage(page.id)" v-bind:href="'#page-' + page.id">{{ page.text }}</a>
-      </li>
-    </ul>
-    <div class="table-responsive">
-      <table class="table table-responsive table-striped table-condensed table-hover">
-        <thead>
-        <tr>
-          <th i18n:translate="">UserID</th>
-          <th i18n:translate="">Name</th>
-          <th i18n:translate="">Email</th>
-          <th i18n:translate="">Created</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-if="loading">
-          <td colspan="4">
-            <span class="rotate-me glyphicon glyphicon-refresh"></span>
-            <tal:ts i18n:translate="">Loading...</tal:ts>
-          </td>
-        </tr>
-        <tr v-else-if="!users.length">
-          <td colspan="4">
-            <span class="glyphicon glyphicon-ban-circle"></span>
-            <tal:ts i18n:translate="">No user matches your search.</tal:ts>
-          </td>
-        </tr>
-        <tr v-for="user in currentUsers" v-bind:key="user.userid">
-          <td><a v-bind:href="'/users/' + user.userid">{{ user.userid }}</a></td>
-          <td>{{ user.first_name }} {{ user.last_name }}</td>
-          <td class="text-nowrap">
-            <span v-if="user.email_validated" class="glyphicon glyphicon-ok-sign text-success" title="Email verified"></span>
-            <a class="email" v-bind:href="'mailto:' + user.email">{{ user.email }}</a>
-          </td>
-          <td>{{ user.created }}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  </user-table>
 </div>
 </body>
 </html>
