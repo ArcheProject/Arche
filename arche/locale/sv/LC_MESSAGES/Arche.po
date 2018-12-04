@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-10-12 11:02+0200\n"
-"PO-Revision-Date: 2018-10-12 11:03+0200\n"
+"POT-Creation-Date: 2018-12-04 14:39+0100\n"
+"PO-Revision-Date: 2018-12-04 14:40+0100\n"
 "Last-Translator: Robin Harms Oredsson <robin@betahaus.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -15,455 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Lingua 3.9\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
-
-#. Default: Group for all administrators. Add any administrators to this group.
-#: arche/populators.py:27
-msgid "admin_group_desc"
-msgstr ""
-"Grupp för alla administratörer. Lägg till användare här om de ska ha den "
-"rättigheten."
-
-#: arche/populators.py:29
-msgid "Administrators"
-msgstr "Administratörer"
-
-#: arche/widgets.py:81 arche/templates/contents.pt:42
-msgid "Tags"
-msgstr "Taggar"
-
-#: arche/widgets.py:130
-msgid "Type something to search."
-msgstr "Skriv något för att söka."
-
-#: arche/resources.py:270
-msgid "Link"
-msgstr "Länk"
-
-#: arche/resources.py:271
-msgid "Content type that redirects to somewhere."
-msgstr "Innehåll som omdirigerar någonstans."
-
-#: arche/resources.py:288
-msgid "Site root"
-msgstr "Siterot"
-
-#: arche/resources.py:338
-msgid "Document"
-msgstr "Dokument"
-
-#: arche/resources.py:357
-msgid "File"
-msgstr "Fil"
-
-#: arche/resources.py:402 arche/schemas.py:239
-msgid "Image"
-msgstr "Bild"
-
-#: arche/resources.py:411
-msgid "Initial setup"
-msgstr "Initial konfiguration"
-
-#: arche/resources.py:414
-msgid "Welcome to Arche!"
-msgstr "Välkommen till Arche!"
-
-#: arche/resources.py:417 arche/views/initial_setup.py:12
-msgid "Initial Setup"
-msgstr "Installation"
-
-#: arche/resources.py:423 arche/resources.py:427 arche/schemas.py:40
-#: arche/views/actions.py:192
-msgid "Users"
-msgstr "Användare"
-
-#: arche/resources.py:461 arche/security.py:315 arche/templates/revisions.pt:28
-msgid "User"
-msgstr "Användare"
-
-#: arche/resources.py:535 arche/resources.py:539 arche/schemas.py:41
-#: arche/views/actions.py:197
-msgid "Groups"
-msgstr "Grupper"
-
-#: arche/resources.py:563 arche/templates/content/groups.pt:13
-msgid "Group"
-msgstr "Grupp"
-
-#: arche/resources.py:597
-msgid "Token"
-msgstr "Token"
-
-#: arche/utils.py:620
-msgid "You're not allowed to access this"
-msgstr "Du har inte tillgång till detta"
-
-#: arche/utils.py:623
-msgid "You need to login"
-msgstr "Du behöver logga in"
-
-#: arche/exceptions.py:25
-msgid "Reference guarded error"
-msgstr "Referensskydd-fel"
-
-#. Default: Refguard vetos delete of ${context}
-#. The following objects (or docids) would stop working as expected:
-#. ${ojbs}
-#: arche/exceptions.py:27
-msgid "refguard_default_message"
-msgstr ""
-"Refguard förbjuder radering av ${context}\n"
-"Följande objekt (eller dokument-ID) skulle sluta fungera som förväntat:\n"
-"${objs}"
-
-#: arche/schemas.py:36 arche/templates/menus/templates.pt:13
-msgid "Default"
-msgstr "Standard"
-
-#: arche/schemas.py:37
-msgid "Visibility"
-msgstr "Synlighet"
-
-#: arche/schemas.py:38
-msgid "Metadata"
-msgstr "Metadata"
-
-#: arche/schemas.py:39
-msgid "Related"
-msgstr "Relaterade"
-
-#: arche/schemas.py:42
-msgid "Advanced"
-msgstr "Avancerat"
-
-#: arche/schemas.py:70
-msgid "No thanks"
-msgstr "Nej tack"
-
-#: arche/schemas.py:71
-msgid "Don't install or change anything"
-msgstr "Ändra eller installera inget"
-
-#: arche/schemas.py:91
-msgid "Type to search for Users"
-msgstr "Skriv för att söka efter användare"
-
-#: arche/schemas.py:110 arche/schemas.py:347 arche/schemas.py:592
-#: arche/schemas.py:621 arche/templates/contents.pt:38
-#: arche/portlets/workflow_history.py:34 arche/portlets/richtext.py:20
-#: arche/portlets/contents.py:45
-msgid "Title"
-msgstr "Titel"
-
-#: arche/schemas.py:114 arche/schemas.py:351
-#: arche/templates/content/groups.pt:14
-msgid "Description"
-msgstr "Beskrivning"
-
-#: arche/schemas.py:120
-msgid "Tags or subjects"
-msgstr "Taggar eller ämnen"
-
-#: arche/schemas.py:128 arche/schemas.py:136
-msgid "Type to search for UserIDs"
-msgstr "Skriv för att söka efter AnvändarIDn"
-
-#: arche/schemas.py:150
-msgid "Related content"
-msgstr "Relaterat innehåll"
-
-#: arche/schemas.py:151
-msgid "Can be used to link to other content"
-msgstr "Kan användas för att länka till annat innehåll"
-
-#: arche/schemas.py:163
-msgid "Date"
-msgstr "Datum"
-
-#: arche/schemas.py:164
-msgid "Publish date, or used for sorting"
-msgstr "Publiceringsdatum, eller för sortering"
-
-#: arche/schemas.py:171
-msgid "Licensing"
-msgstr "Licens"
-
-#: arche/schemas.py:198
-msgid "Show in navigations"
-msgstr "Visa i navigation"
-
-#: arche/schemas.py:205
-msgid "Show in listing or table views"
-msgstr "Visa i listor eller tabellvyer"
-
-#: arche/schemas.py:206
-msgid "The content view will always show this regardless of what you set."
-msgstr "Innehållsvyn visar däremot alltid innehåll oavsett denna inställning."
-
-#: arche/schemas.py:213
-msgid "Include in search results"
-msgstr "Inkludera i sökresultat"
-
-#: arche/schemas.py:214
-msgid ""
-"Note that this is not a permission setting - it's just a matter of "
-"practicality for users. They may even disable this setting."
-msgstr ""
-"Notera att det här inte är en rättighetsinställning - bara en fråga om "
-"användbarhet. Användare kan gå runt denna inställning."
-
-#: arche/schemas.py:223
-msgid "Navigation bar title"
-msgstr "Titel i navigationsfältet"
-
-#: arche/schemas.py:224
-msgid "If you wish to use another name for when it's shown in menus."
-msgstr "Om du vill använda ett annat namn när det visas i menyer."
-
-#: arche/schemas.py:248
-msgid "Show byline"
-msgstr "Visa byline"
-
-#: arche/schemas.py:256
-#, python-format
-msgid ""
-"Current default timezone is: '${tzname}', leave this field blank if your're "
-"okay with that."
-msgstr ""
-"Nuvarande standardtidszon är: '${tzname}', låt fältet vara blankt om du vill "
-"använda den."
-
-#: arche/schemas.py:286 arche/schemas.py:507 arche/views/users.py:27
-#: arche/views/groups.py:40
-msgid "First name"
-msgstr "Förnamn"
-
-#: arche/schemas.py:291 arche/schemas.py:512 arche/views/users.py:28
-#: arche/views/groups.py:41
-msgid "Last name"
-msgstr "Efternamn"
-
-#: arche/schemas.py:296 arche/schemas.py:422
-msgid "Email adress"
-msgstr "Epostadress"
-
-#: arche/schemas.py:305
-msgid "Profile image"
-msgstr "Profilbild"
-
-#: arche/schemas.py:311
-msgid "Set custom timezone"
-msgstr "Ställ in egen tidszon"
-
-#: arche/schemas.py:328 arche/schemas.py:517 arche/views/users.py:25
-#: arche/views/groups.py:38 arche/templates/content/users_table.pt:40
-#: arche/templates/content/group.pt:56
-msgid "UserID"
-msgstr "AnvändarID"
-
-#: arche/schemas.py:333 arche/schemas.py:388 arche/schemas.py:428
-#: arche/schemas.py:467 arche/schemas.py:530
-msgid "Password"
-msgstr "Lösenord"
-
-#: arche/schemas.py:373
-msgid "Your current password for your own account"
-msgstr "Ditt nuvarande lösenord för ditt eget konto"
-
-#: arche/schemas.py:374
-msgid "Current password"
-msgstr "Nuvarande lösenord"
-
-#: arche/schemas.py:412
-msgid "Site title"
-msgstr "Sidans titel"
-
-#: arche/schemas.py:413
-msgid "A site made with Arche"
-msgstr "En sida gjord med Arche"
-
-#: arche/schemas.py:417
-msgid "Admin userid - use lowercase!"
-msgstr "Administratörens användarID - använd små bokstäver!"
-
-#: arche/schemas.py:434
-msgid "Populate site"
-msgstr "Populera sidan"
-
-#: arche/schemas.py:463 arche/schemas.py:556
-msgid "Email or UserID"
-msgstr "Epost eller AnvändarID"
-
-#. Default: A link will be sent to this address. You need to click the link to
-#. finish the registration. If no email arrives within 15 minutes, you might
-#. need to check your emails' spam folder.
-#: arche/schemas.py:485
-msgid "reg_email_description"
-msgstr ""
-"En länk kommer skickas till denna adress. Du behöver klicka på länken för "
-"att avsluta registreringen. Om du inte fått något brev inom 15 minuter kan "
-"du behöva titta i din eposts skräppost-mapp."
-
-#: arche/schemas.py:496 arche/views/users.py:26 arche/views/groups.py:39
-#: arche/templates/content/users_table.pt:42
-#: arche/templates/content/group.pt:58
-msgid "Email"
-msgstr "Epost"
-
-#. Default: Use only lowercase a-z, '-', '_' or 0-9. It must start with a
-#. lowercase letter. This name will be visible to other users and they may use
-#. it to refer to you. It can't be changed later.
-#: arche/schemas.py:518
-msgid "userid_description"
-msgstr ""
-"Använd bara små bokstäver mellan a-z, '-', '_' eller 0-9. Måste starta med "
-"liten bokstav. Namnet kommer vara synligt för andra och de kan använda det "
-"för att referera till dig. Du kan inte ändra användarID senare."
-
-#. Default: At least 6 characters. It's a good idea to use quite long
-#. passwords. If you forget your password you can reset it later.
-#: arche/schemas.py:531
-msgid "pw_description_help"
-msgstr ""
-"Minst 6 tecken. Det är en bra idé att använda ganska långa lösenord. Om du "
-"glömmer bort ditt lösenordet kan du nollställa det senare."
-
-#: arche/schemas.py:563
-msgid "Page head title"
-msgstr "Sidans huvudtitel"
-
-#: arche/schemas.py:564
-msgid "Usually shown as a title of the browser tab."
-msgstr "Visas vanligtvis som titel på webbläsarfliken."
-
-#. Default: Meta-description in the head-section. (No more than 155 chars)
-#: arche/schemas.py:569
-msgid "meta_description_title"
-msgstr "Meta-beskrivning i <head>. (Max 155 tecken)"
-
-#. Default: Mosty used by search engines and robots.The content of this tag
-#. won't be visible on the actual page.
-#: arche/schemas.py:571
-msgid "meta_description_description"
-msgstr ""
-"Används mestadels av sökmotorer och robotar. Innehållet visas inte på "
-"webbsidan."
-
-#: arche/schemas.py:577
-msgid "Footer"
-msgstr "Sidfot"
-
-#: arche/schemas.py:593 arche/schemas.py:622
-msgid "Filename will be used if you leave this blank"
-msgstr "Filnamnet används om du lämnar det här tomt"
-
-#: arche/schemas.py:598
-msgid "Upload file"
-msgstr "Ladda upp fil"
-
-#: arche/schemas.py:611
-msgid "Change file"
-msgstr "Ändra fil"
-
-#: arche/schemas.py:627
-msgid "Upload image"
-msgstr "Ladda upp bild"
-
-#: arche/schemas.py:640
-msgid "Change image"
-msgstr "Ändra bild"
-
-#: arche/schemas.py:672
-msgid "Allow users to register themselves to this site."
-msgstr "Tillåt att användare registrerar sig själva."
-
-#: arche/schemas.py:677
-msgid "Show login link."
-msgstr "Visa inloggningslänk."
-
-#: arche/schemas.py:682
-msgid "Skip email validation"
-msgstr "Skippa epostvalidering"
-
-#: arche/schemas.py:683
-msgid ""
-"This will allow users to register with a fake email address. Generally not "
-"recommended."
-msgstr ""
-"Det gör att användare kan använda en fejkat epostadress. Rekommenderas "
-"generellt inte."
-
-#: arche/schemas.py:688
-msgid "Show language switcher menu?"
-msgstr "Visa meny för språkval?"
-
-#. Default: If more than one language is available and no other means of
-#. setting language is provided.
-#: arche/schemas.py:689
-msgid "show_lang_menu_description"
-msgstr ""
-"Om fler än ett språk finns tillgängligt och inga andra metoder att välja "
-"språk ges."
-
-#: arche/schemas.py:699 arche/templates/menus/language.pt:8
-msgid "Language"
-msgstr "Språk"
-
-#: arche/schemas.py:701
-msgid "Available languages"
-msgstr "Tillgängliga språk"
-
-#: arche/schemas.py:718
-msgid "Customization active?"
-msgstr "Anpassning aktiv?"
-
-#: arche/schemas.py:719
-msgid "Unselect to use default values"
-msgstr "Inaktivera för att använda standardvärden"
-
-#: arche/schemas.py:723
-msgid "Allowed types"
-msgstr "Tillåtna typer"
-
-#. Default: Allow user to login? WARNING: This is your current user, disabling
-#. this will probably lock you out of this account!
-#: arche/schemas.py:734
-msgid "allow_login_title_warning"
-msgstr ""
-"Tillåt användare att logga in?\n"
-"VARNING: Detta är din nuvarande användare. Att inaktivera inloggning kommer "
-"förmodligen stänga dig ute från kontot!"
-
-#: arche/schemas.py:737
-msgid "Allow user to login?"
-msgstr "Tillåt användaren att logga in?"
-
-#: arche/schemas.py:752
-msgid "Skip validation email (change directly)"
-msgstr "Skippa epostvalideringsmeddelande (ändra direkt)"
-
-#: arche/schemas.py:762
-msgid "Email validated?"
-msgstr "Epost validerad?"
-
-#. Default: You may set this manually, but don't change it unless you know what
-#. you're doing. Other systems might depend on that this address is really
-#. validated!
-#: arche/schemas.py:765
-msgid "manual_email_validated_description"
-msgstr ""
-"Du kan ställa in det här manuellt, men ändra inte om du inte vet vad du gör. "
-"Andra system kan bero av att adressen verkligen är validerad!"
-
-#. Default: User may login with a regular login form. This is the default
-#. behaviour, but for some system specific users or someone you wish to shut
-#. out you may want to disable this.
-#: arche/schemas.py:780
-msgid "allow_login_description"
-msgstr ""
-"Användaren kan logga in med ett vanligt inloggningsformulär. Detta är "
-"standardbeteendet, men för vissa systemanvändare eller användare du vill "
-"stänga ute kan du inaktivera detta."
+"X-Generator: Poedit 2.2\n"
 
 #: arche/validators.py:49
 msgid "Names can only contain charracters: A-Z, a-z, 0-9, '.', '-' or '_'"
@@ -513,7 +65,7 @@ msgstr ""
 
 #: arche/validators.py:127 arche/validators.py:276
 msgid "Wrong password. Remember that passwords are case sensitive."
-msgstr "Fel lösenord. Kom ihåg att de är skriflägetskänsliga."
+msgstr "Fel lösenord. Kom ihåg att de är skriftlägeskänsliga."
 
 #: arche/validators.py:153
 msgid "No such email registered. Perhaps you haven't registered here?"
@@ -625,480 +177,567 @@ msgstr "Inkludera anonyma"
 msgid "Authenticated users"
 msgstr "Inloggade användare"
 
-#: arche/security.py:295 arche/models/workflow.py:184
-#: arche/models/workflow.py:235
+#: arche/security.py:295 arche/models/workflow.py:194
+#: arche/models/workflow.py:245
 msgid "Private"
 msgstr "Privat"
 
-#: arche/security.py:302 arche/models/workflow.py:185
-#: arche/models/workflow.py:236
+#: arche/security.py:302 arche/models/workflow.py:195
+#: arche/models/workflow.py:246
 msgid "Public"
 msgstr "Publik"
 
-#: arche/security.py:308 arche/models/workflow.py:237
+#: arche/security.py:308 arche/models/workflow.py:247
 msgid "Review"
 msgstr "Granska"
 
-#: arche/views/site_settings.py:11
-msgid "Site settings"
-msgstr "Siteinställningar"
+#: arche/security.py:315 arche/resources.py:476 arche/templates/revisions.pt:28
+msgid "User"
+msgstr "Användare"
 
-#: arche/views/search.py:72
-msgid "Invalid search query - try something else!"
-msgstr "Ogiltig sökning - prova något annat!"
+#: arche/widgets.py:81 arche/templates/contents.pt:42
+msgid "Tags"
+msgstr "Taggar"
 
-#: arche/views/search.py:103
-msgid "No results"
-msgstr "Inga resultat"
+#: arche/widgets.py:130 arche/templates/content/group.pt:35
+msgid "Type something to search."
+msgstr "Skriv något för att söka."
 
-#: arche/views/search.py:105
-#, python-format
-msgid "${num} more results..."
-msgstr "${num} fler resultat…"
+#: arche/schemas.py:36 arche/templates/menus/templates.pt:13
+msgid "Default"
+msgstr "Standard"
 
-#: arche/views/portlets.py:28
-msgid "<Select>"
-msgstr "<Välj>"
+#: arche/schemas.py:37
+msgid "Visibility"
+msgstr "Synlighet"
 
-#: arche/views/portlets.py:36 arche/templates/contents.pt:39
-#: arche/templates/content/file.pt:26 arche/templates/content/image.pt:31
-#: arche/templates/deform/file_upload.pt:20
-#: arche/templates/deform/readonly/file_upload.pt:18
-msgid "Type"
-msgstr "Typ"
+#: arche/schemas.py:38
+msgid "Metadata"
+msgstr "Metadata"
 
-#: arche/views/portlets.py:87 arche/templates/permissions.pt:61
-#: arche/templates/system/roles_log.pt:36
-msgid "Added"
-msgstr "Tillagd"
+#: arche/schemas.py:39
+msgid "Related"
+msgstr "Relaterade"
 
-#: arche/views/portlets.py:130
-#, python-format
-msgid "Edit ${portlet_title}"
-msgstr "Redigera ${portlet_title}"
+#: arche/schemas.py:40 arche/resources.py:438 arche/resources.py:442
+#: arche/views/actions.py:192
+msgid "Users"
+msgstr "Användare"
 
-#: arche/views/portlets.py:138
-msgid "Nothing to edit for this portlet"
-msgstr "Inget att redigera för denna portlet"
+#: arche/schemas.py:41 arche/resources.py:550 arche/resources.py:554
+#: arche/views/actions.py:197
+msgid "Groups"
+msgstr "Grupper"
 
-#: arche/views/listing.py:7
-msgid "Content listing"
-msgstr "Lista innehåll"
+#: arche/schemas.py:42
+msgid "Advanced"
+msgstr "Avancerat"
 
-#: arche/views/users.py:29 arche/views/groups.py:42
-#: arche/templates/contents.pt:40 arche/templates/content/users_table.pt:43
-msgid "Created"
-msgstr "Skapad"
+#: arche/schemas.py:70
+msgid "No thanks"
+msgstr "Nej tack"
 
-#: arche/views/permissions.py:58
-msgid "That GroupID don't exist"
-msgstr "Grupp-ID existerar inte"
+#: arche/schemas.py:71
+msgid "Don't install or change anything"
+msgstr "Ändra eller installera inget"
 
-#: arche/views/permissions.py:63
-msgid "That UserID don't exist"
-msgstr "AnvändarIDt finns inte"
+#: arche/schemas.py:91
+msgid "Type to search for Users"
+msgstr "Skriv för att söka efter användare"
 
-#. Default: Something isn't behaving the way it should. The error has been
-#. logged. You may wish to contact the person running this site about this
-#. error. It's one of those things that should never happen.
-#: arche/views/exceptions.py:18
-msgid "generic_exception_explanation"
+#: arche/schemas.py:110 arche/schemas.py:347 arche/schemas.py:582
+#: arche/schemas.py:611 arche/portlets/contents.py:45
+#: arche/portlets/workflow_history.py:34 arche/portlets/richtext.py:20
+#: arche/templates/contents.pt:38
+msgid "Title"
+msgstr "Titel"
+
+#: arche/schemas.py:114 arche/schemas.py:351
+#: arche/templates/content/groups.pt:14
+msgid "Description"
+msgstr "Beskrivning"
+
+#: arche/schemas.py:120
+msgid "Tags or subjects"
+msgstr "Taggar eller ämnen"
+
+#: arche/schemas.py:128 arche/schemas.py:136
+msgid "Type to search for UserIDs"
+msgstr "Skriv för att söka efter AnvändarIDn"
+
+#: arche/schemas.py:150
+msgid "Related content"
+msgstr "Relaterat innehåll"
+
+#: arche/schemas.py:151
+msgid "Can be used to link to other content"
+msgstr "Kan användas för att länka till annat innehåll"
+
+#: arche/schemas.py:163
+msgid "Date"
+msgstr "Datum"
+
+#: arche/schemas.py:164
+msgid "Publish date, or used for sorting"
+msgstr "Publiceringsdatum, eller för sortering"
+
+#: arche/schemas.py:171
+msgid "Licensing"
+msgstr "Licens"
+
+#: arche/schemas.py:198
+msgid "Show in navigations"
+msgstr "Visa i navigation"
+
+#: arche/schemas.py:205
+msgid "Show in listing or table views"
+msgstr "Visa i listor eller tabellvyer"
+
+#: arche/schemas.py:206
+msgid "The content view will always show this regardless of what you set."
+msgstr "Innehållsvyn visar däremot alltid innehåll oavsett denna inställning."
+
+#: arche/schemas.py:213
+msgid "Include in search results"
+msgstr "Inkludera i sökresultat"
+
+#: arche/schemas.py:214
+msgid ""
+"Note that this is not a permission setting - it's just a matter of "
+"practicality for users. They may even disable this setting."
 msgstr ""
-"Något beter sig inte som det ska. Felet har loggats. Det kan vara en bra idé "
-"att kontakta de som driver sidan om detta. Det här är en sådan sak som "
-"aldrig ska hända."
+"Notera att det här inte är en rättighetsinställning - bara en fråga om "
+"användbarhet. Användare kan gå runt denna inställning."
 
-#: arche/views/exceptions.py:81 arche/views/exceptions.py:100
-msgid "Not allowed, perhaps you need to log in?"
-msgstr "Inte tillåtet, du behöver kanske logga in?"
+#: arche/schemas.py:223
+msgid "Navigation bar title"
+msgstr "Titel i navigationsfältet"
 
-#: arche/views/exceptions.py:121
-msgid "Application error"
-msgstr "Applikationsfel"
+#: arche/schemas.py:224
+msgid "If you wish to use another name for when it's shown in menus."
+msgstr "Om du vill använda ett annat namn när det visas i menyer."
 
-#: arche/views/selected_content.py:11
-msgid "Select content to show"
-msgstr "Välj innehåll att visa"
+#: arche/schemas.py:239 arche/resources.py:417
+msgid "Image"
+msgstr "Bild"
 
-#: arche/views/selected_content.py:15
-msgid "Show content body, if any"
-msgstr "Visa brödtext, om finns"
+#: arche/schemas.py:248
+msgid "Show byline"
+msgstr "Visa byline"
 
-#: arche/views/selected_content.py:20
-msgid "Selected content"
-msgstr "Valt innehåll"
-
-#: arche/views/workflow.py:21
+#: arche/schemas.py:256
 #, python-format
-msgid "Changed state to ${state}"
-msgstr "Ändrade status till ${state}"
+msgid ""
+"Current default timezone is: '${tzname}', leave this field blank if your're "
+"okay with that."
+msgstr ""
+"Nuvarande standardtidszon är: '${tzname}', låt fältet vara blankt om du vill "
+"använda den."
 
-#: arche/views/actions.py:35
-msgid "Workflow"
-msgstr "Arbetsflöde"
+#: arche/schemas.py:286 arche/schemas.py:497 arche/views/users.py:27
+#: arche/views/groups.py:41
+msgid "First name"
+msgstr "Förnamn"
 
-#: arche/views/actions.py:49 arche/templates/content/file.pt:21
-#: arche/templates/content/image.pt:26
-msgid "View"
-msgstr "Vy"
+#: arche/schemas.py:291 arche/schemas.py:502 arche/views/users.py:28
+#: arche/views/groups.py:42
+msgid "Last name"
+msgstr "Efternamn"
 
-#: arche/views/actions.py:64 arche/portlets/contents.py:17
-#: arche/portlets/contents.py:69
+#: arche/schemas.py:296 arche/schemas.py:412
+msgid "Email adress"
+msgstr "Epostadress"
+
+#: arche/schemas.py:305
+msgid "Profile image"
+msgstr "Profilbild"
+
+#: arche/schemas.py:311
+msgid "Set custom timezone"
+msgstr "Ställ in egen tidszon"
+
+#: arche/schemas.py:328 arche/schemas.py:507
+#: arche/templates/content/group.pt:69
+#: arche/templates/content/users_table.pt:41 arche/views/users.py:25
+#: arche/views/groups.py:39
+msgid "UserID"
+msgstr "AnvändarID"
+
+#: arche/schemas.py:333 arche/schemas.py:378 arche/schemas.py:418
+#: arche/schemas.py:457 arche/schemas.py:520
+msgid "Password"
+msgstr "Lösenord"
+
+#: arche/schemas.py:363
+msgid "Your current password for your own account"
+msgstr "Ditt nuvarande lösenord för ditt eget konto"
+
+#: arche/schemas.py:364
+msgid "Current password"
+msgstr "Nuvarande lösenord"
+
+#: arche/schemas.py:402
+msgid "Site title"
+msgstr "Sidans titel"
+
+#: arche/schemas.py:403
+msgid "A site made with Arche"
+msgstr "En sida gjord med Arche"
+
+#: arche/schemas.py:407
+msgid "Admin userid - use lowercase!"
+msgstr "Administratörens användarID - använd små bokstäver!"
+
+#: arche/schemas.py:424
+msgid "Populate site"
+msgstr "Populera sidan"
+
+#: arche/schemas.py:453 arche/schemas.py:546
+msgid "Email or UserID"
+msgstr "Epost eller AnvändarID"
+
+#. Default: A link will be sent to this address. You need to click the link to
+#. finish the registration. If no email arrives within 15 minutes, you might
+#. need to check your emails' spam folder.
+#: arche/schemas.py:475
+msgid "reg_email_description"
+msgstr ""
+"En länk kommer skickas till denna adress. Du behöver klicka på länken för "
+"att avsluta registreringen. Om du inte fått något brev inom 15 minuter kan "
+"du behöva titta i din eposts skräppost-mapp."
+
+#: arche/schemas.py:486 arche/templates/content/group.pt:71
+#: arche/templates/content/users_table.pt:43 arche/views/users.py:26
+#: arche/views/groups.py:40
+msgid "Email"
+msgstr "Epost"
+
+#. Default: Use only lowercase a-z, '-', '_' or 0-9. It must start with a
+#. lowercase letter. This name will be visible to other users and they may use
+#. it to refer to you. It can't be changed later.
+#: arche/schemas.py:508
+msgid "userid_description"
+msgstr ""
+"Använd bara små bokstäver mellan a-z, '-', '_' eller 0-9. Måste starta med "
+"liten bokstav. Namnet kommer vara synligt för andra och de kan använda det "
+"för att referera till dig. Du kan inte ändra användarID senare."
+
+#. Default: At least 6 characters. It's a good idea to use quite long
+#. passwords. If you forget your password you can reset it later.
+#: arche/schemas.py:521
+msgid "pw_description_help"
+msgstr ""
+"Minst 6 tecken. Det är en bra idé att använda ganska långa lösenord. Om du "
+"glömmer bort ditt lösenordet kan du nollställa det senare."
+
+#: arche/schemas.py:553
+msgid "Page head title"
+msgstr "Sidans huvudtitel"
+
+#: arche/schemas.py:554
+msgid "Usually shown as a title of the browser tab."
+msgstr "Visas vanligtvis som titel på webbläsarfliken."
+
+#. Default: Meta-description in the head-section. (No more than 155 chars)
+#: arche/schemas.py:559
+msgid "meta_description_title"
+msgstr "Meta-beskrivning i <head>. (Max 155 tecken)"
+
+#. Default: Mosty used by search engines and robots.The content of this tag
+#. won't be visible on the actual page.
+#: arche/schemas.py:561
+msgid "meta_description_description"
+msgstr ""
+"Används mestadels av sökmotorer och robotar. Innehållet visas inte på "
+"webbsidan."
+
+#: arche/schemas.py:567
+msgid "Footer"
+msgstr "Sidfot"
+
+#: arche/schemas.py:583 arche/schemas.py:612
+msgid "Filename will be used if you leave this blank"
+msgstr "Filnamnet används om du lämnar det här tomt"
+
+#: arche/schemas.py:588
+msgid "Upload file"
+msgstr "Ladda upp fil"
+
+#: arche/schemas.py:601
+msgid "Change file"
+msgstr "Ändra fil"
+
+#: arche/schemas.py:617
+msgid "Upload image"
+msgstr "Ladda upp bild"
+
+#: arche/schemas.py:630
+msgid "Change image"
+msgstr "Ändra bild"
+
+#: arche/schemas.py:662
+msgid "Allow users to register themselves to this site."
+msgstr "Tillåt att användare registrerar sig själva."
+
+#: arche/schemas.py:667
+msgid "Show login link."
+msgstr "Visa inloggningslänk."
+
+#: arche/schemas.py:672
+msgid "Skip email validation"
+msgstr "Skippa epostvalidering"
+
+#: arche/schemas.py:673
+msgid ""
+"This will allow users to register with a fake email address. Generally not "
+"recommended."
+msgstr ""
+"Det gör att användare kan använda en fejkat epostadress. Rekommenderas "
+"generellt inte."
+
+#: arche/schemas.py:678
+msgid "Show language switcher menu?"
+msgstr "Visa meny för språkval?"
+
+#. Default: If more than one language is available and no other means of
+#. setting language is provided.
+#: arche/schemas.py:679
+msgid "show_lang_menu_description"
+msgstr ""
+"Om fler än ett språk finns tillgängligt och inga andra metoder att välja "
+"språk ges."
+
+#: arche/schemas.py:689 arche/templates/menus/language.pt:8
+msgid "Language"
+msgstr "Språk"
+
+#: arche/schemas.py:691
+msgid "Available languages"
+msgstr "Tillgängliga språk"
+
+#: arche/schemas.py:708
+msgid "Customization active?"
+msgstr "Anpassning aktiv?"
+
+#: arche/schemas.py:709
+msgid "Unselect to use default values"
+msgstr "Inaktivera för att använda standardvärden"
+
+#: arche/schemas.py:713
+msgid "Allowed types"
+msgstr "Tillåtna typer"
+
+#. Default: Allow user to login? WARNING: This is your current user, disabling
+#. this will probably lock you out of this account!
+#: arche/schemas.py:724
+msgid "allow_login_title_warning"
+msgstr ""
+"Tillåt användare att logga in?\n"
+"VARNING: Detta är din nuvarande användare. Att inaktivera inloggning kommer "
+"förmodligen stänga dig ute från kontot!"
+
+#: arche/schemas.py:727
+msgid "Allow user to login?"
+msgstr "Tillåt användaren att logga in?"
+
+#: arche/schemas.py:742
+msgid "Skip validation email (change directly)"
+msgstr "Skippa epostvalideringsmeddelande (ändra direkt)"
+
+#: arche/schemas.py:752
+msgid "Email validated?"
+msgstr "Epost validerad?"
+
+#. Default: You may set this manually, but don't change it unless you know what
+#. you're doing. Other systems might depend on that this address is really
+#. validated!
+#: arche/schemas.py:755
+msgid "manual_email_validated_description"
+msgstr ""
+"Du kan ställa in det här manuellt, men ändra inte om du inte vet vad du gör. "
+"Andra system kan bero av att adressen verkligen är validerad!"
+
+#. Default: User may login with a regular login form. This is the default
+#. behaviour, but for some system specific users or someone you wish to shut
+#. out you may want to disable this.
+#: arche/schemas.py:770
+msgid "allow_login_description"
+msgstr ""
+"Användaren kan logga in med ett vanligt inloggningsformulär. Detta är "
+"standardbeteendet, men för vissa systemanvändare eller användare du vill "
+"stänga ute kan du inaktivera detta."
+
+#: arche/utils.py:620
+msgid "You're not allowed to access this"
+msgstr "Du har inte tillgång till detta"
+
+#: arche/utils.py:623
+msgid "You need to login"
+msgstr "Du behöver logga in"
+
+#: arche/exceptions.py:25
+msgid "Reference guarded error"
+msgstr "Referensskydd-fel"
+
+#. Default: Refguard vetos delete of ${context}
+#. The following objects (or docids) would stop working as expected:
+#. ${ojbs}
+#: arche/exceptions.py:27
+msgid "refguard_default_message"
+msgstr ""
+"Refguard förbjuder radering av ${context}\n"
+"Följande objekt (eller dokument-ID) skulle sluta fungera som förväntat:\n"
+"${objs}"
+
+#: arche/resources.py:285
+msgid "Link"
+msgstr "Länk"
+
+#: arche/resources.py:286
+msgid "Content type that redirects to somewhere."
+msgstr "Innehåll som omdirigerar någonstans."
+
+#: arche/resources.py:303
+msgid "Site root"
+msgstr "Siterot"
+
+#: arche/resources.py:353
+msgid "Document"
+msgstr "Dokument"
+
+#: arche/resources.py:372
+msgid "File"
+msgstr "Fil"
+
+#: arche/resources.py:426
+msgid "Initial setup"
+msgstr "Initial konfiguration"
+
+#: arche/resources.py:429
+msgid "Welcome to Arche!"
+msgstr "Välkommen till Arche!"
+
+#: arche/resources.py:432 arche/views/initial_setup.py:12
+msgid "Initial Setup"
+msgstr "Installation"
+
+#: arche/resources.py:578 arche/templates/content/groups.pt:13
+msgid "Group"
+msgstr "Grupp"
+
+#: arche/resources.py:612
+msgid "Token"
+msgstr "Token"
+
+#. Default: Group for all administrators. Add any administrators to this group.
+#: arche/populators.py:27
+msgid "admin_group_desc"
+msgstr ""
+"Grupp för alla administratörer. Lägg till användare här om de ska ha den "
+"rättigheten."
+
+#: arche/populators.py:29
+msgid "Administrators"
+msgstr "Administratörer"
+
+#: arche/portlets/byline.py:11
+msgid "Byline"
+msgstr ""
+
+#: arche/portlets/contents.py:17 arche/portlets/contents.py:69
+#: arche/views/actions.py:64
 msgid "Contents"
 msgstr "Innehåll"
 
-#: arche/views/actions.py:70
-msgid "Permissions"
-msgstr "Rättigheter"
+#: arche/portlets/contents.py:50
+msgid "Only in this context"
+msgstr "Bara i denna kontext."
 
-#: arche/views/actions.py:85
-#: arche/plugins/auth_sessions/templates/sessions.pt:27
-msgid "Edit"
-msgstr "Redigera"
+#: arche/portlets/contents.py:56
+msgid "Only show these content types"
+msgstr "Visa endast dessa innehållstyper"
 
-#: arche/views/actions.py:99 arche/views/base.py:229
-#: arche/templates/permissions.pt:169 arche/templates/menus/add_content.pt:8
-msgid "Add"
-msgstr "Lägg till"
+#: arche/portlets/contents.py:61
+msgid "Only show these states"
+msgstr "Visa endast dessa tillstånd"
 
-#: arche/views/actions.py:116 arche/templates/menus/actions.pt:8
-msgid "Actions"
-msgstr "Handlingar"
+#: arche/portlets/__init__.py:64
+msgid "Portlet"
+msgstr "Portlet"
 
-#: arche/views/actions.py:127
-msgid "Templates"
-msgstr "Mallar"
+#: arche/portlets/__init__.py:65
+msgid "A mini view within another view"
+msgstr "En minivy inuti en annan vy"
 
-#: arche/views/actions.py:143
-msgid "User menu"
-msgstr "Användarmeny"
+#: arche/portlets/__init__.py:128
+msgid "Portlet folder"
+msgstr "Portlet-folder"
 
-#: arche/views/actions.py:152
-msgid "Site menu"
-msgstr "Sitemeny"
+#: arche/portlets/__init__.py:129
+msgid "Container for portlets"
+msgstr "Container för portlets"
 
-#: arche/views/actions.py:161 arche/views/auth.py:19 arche/views/auth.py:25
-msgid "Login"
-msgstr "Logga in"
+#: arche/portlets/__init__.py:235
+msgid "Left"
+msgstr "Vänster"
 
-#: arche/views/actions.py:175 arche/views/auth.py:51 arche/views/auth.py:73
-#: arche/views/auth.py:126
-msgid "Register"
-msgstr "Registrera"
+#: arche/portlets/__init__.py:236
+msgid "Right"
+msgstr "Höger"
 
-#: arche/views/actions.py:187
-msgid "Settings"
-msgstr "Inställningar"
+#: arche/portlets/__init__.py:237
+msgid "Top"
+msgstr "Topp"
 
-#: arche/views/actions.py:202
-msgid "Logout"
-msgstr "Logga ut"
+#: arche/portlets/__init__.py:238
+msgid "Bottom"
+msgstr "Botten"
 
-#: arche/views/actions.py:222
-msgid "Profile"
-msgstr "Profil"
+#: arche/portlets/workflow_history.py:19 arche/portlets/workflow_history.py:52
+msgid "Workflow history"
+msgstr "Arbetsflödeshistorik"
 
-#: arche/views/actions.py:225 arche/views/auth.py:191
-msgid "Change password"
-msgstr "Byt lösenord"
+#: arche/portlets/workflow_history.py:39
+msgid "Only show this amount of entries"
+msgstr "Visa bara detta antal ändringar"
 
-#: arche/views/actions.py:235
-msgid "Validate email"
-msgstr "Verifiera epost"
+#: arche/portlets/workflow_history.py:44
+msgid "Enable for these workflows"
+msgstr "Aktivera för dessa arbetsflöden"
 
-#: arche/views/actions.py:247 arche/views/base.py:226
-#: arche/templates/deform/file_upload.pt:25
-msgid "Delete"
-msgstr "Radera"
+#: arche/portlets/navigation.py:15
+msgid "Navigation"
+msgstr "Navigation"
 
-#: arche/views/actions.py:258 arche/views/cut_copy_paste.py:39
-msgid "Cut"
-msgstr "Klipp"
-
-#: arche/views/actions.py:269 arche/views/cut_copy_paste.py:47
-msgid "Copy"
-msgstr "Kopiera"
-
-#: arche/views/actions.py:280
-msgid "Paste"
-msgstr "Klistra in"
-
-#: arche/views/actions.py:291
-msgid "Rename"
-msgstr "Byt namn"
-
-#: arche/views/actions.py:302 arche/templates/manage_portlets.pt:25
-msgid "Manage portlets"
-msgstr "Hantera portlets"
-
-#: arche/views/actions.py:313 arche/templates/revisions.pt:11
-msgid "Revisions"
-msgstr "Revisioner"
-
-#: arche/views/actions.py:331
-msgid "Unset delegated view"
+#: arche/portlets/richtext.py:14 arche/portlets/richtext.py:47
+msgid "Richtext"
 msgstr ""
 
-#: arche/views/actions.py:340
-msgid "View settings"
-msgstr "Inställningar för vy"
+#: arche/portlets/richtext.py:21
+msgid "Shown in portlet manager"
+msgstr "Visas i portlet-hanteraren"
 
-#: arche/views/cut_copy_paste.py:56
-msgid "Can't paste to this context"
-msgstr "Kan inte klistra in i denna kontext"
+#: arche/portlets/richtext.py:26
+msgid "Body"
+msgstr "Brödtext"
 
-#: arche/views/cut_copy_paste.py:65
-msgid "Moved here"
-msgstr "Flyttad hit"
+#: arche/portlets/richtext.py:31
+msgid "Show portlet panel"
+msgstr "Visa panel för portlets"
 
-#. Default: New copy added here. References that pointed to the original object
-#. won't point to this one.
-#: arche/views/cut_copy_paste.py:68
-msgid "copy_references_notice"
-msgstr ""
-"Ny kopia tillagd här. Referenser till ursprungliga objektet kommer inte peka "
-"på detta objekt."
+#. Default: If this is inactive, only the richtext (body) content will be
+#. rendered.
+#: arche/portlets/richtext.py:32
+msgid "show_container_description"
+msgstr "Om denna är inaktiv kommer endast brödtexten att renderas."
 
-#: arche/views/cut_copy_paste.py:81
-msgid "Name, this will be part of the URL"
-msgstr "Namn. Detta kommer att vara en del av webbadressen."
+#: arche/portlets/richtext.py:39
+msgid "Hide in subfolders"
+msgstr "Göm i underkataloger"
 
-#: arche/views/cut_copy_paste.py:88
-#, python-format
-msgid "Rename '${name}'"
-msgstr "Byt namn på '${name}'"
-
-#: arche/views/languages.py:14
-#, python-format
-msgid "Language set to ${selected_lang}"
-msgstr "Språk satt till ${selected_lang}"
-
-#: arche/views/auth.py:26 arche/views/auth.py:160
-msgid "Recover password"
-msgstr "Återställ lösenord"
-
-#: arche/views/auth.py:34
-msgid "Welcome!"
-msgstr "Välkommen!"
-
-#: arche/views/auth.py:58
-msgid "Site doesn't allow self registration"
-msgstr "Sidan tillåter inte användare att registrera sig själva"
-
-#: arche/views/auth.py:60 arche/views/auth.py:110
-msgid "Already logged in."
-msgstr "Redan inloggad."
-
-#: arche/views/auth.py:89
-msgid "Registration link"
-msgstr "Registreringslänk"
-
-#. Default: An email with registration instructions have been sent to the
-#. address you specified.
-#: arche/views/auth.py:93
-msgid "reg_email_notification"
-msgstr ""
-"Ett epostmeddelande med registreringsinstruktioner har skickats till "
-"adressen du angav."
-
-#: arche/views/auth.py:105
-msgid "Complete registration"
-msgstr "Slutför registrering"
-
-#. Default: The registration link is either invalid or has expired. You may
-#. request a new one if registration is open.
-#: arche/views/auth.py:116
-msgid "reg_token_expired_or_invalid"
-msgstr ""
-"Registreringslänken är antagligen ogiltig eller har gått ut. Du kan be om en "
-"ny om registrering är tillåten på sidan"
-
-#: arche/views/auth.py:135
-msgid "Welcome, you're now registered!"
-msgstr "Välkommen, du är nu registrerad!"
-
-#: arche/views/auth.py:164
-msgid "Send"
-msgstr "Skicka"
-
-#: arche/views/auth.py:168
-msgid "Message sent"
-msgstr "Meddelande skickat"
-
-#: arche/views/auth.py:178
-msgid "There's no email associated with this account."
-msgstr "Ingen epostadress är kopplad till kontot."
-
-#: arche/views/auth.py:182
-msgid "Password recovery request"
-msgstr "Lösenordsåterställning"
-
-#. Default: Link expired, you have to request password reset again
-#: arche/views/auth.py:199
-msgid "pw_token_expired"
-msgstr "Länken har gått ut, du måste begära lösenordsåterställning igen"
-
-#. Default: Password reset link doesn't match.
-#: arche/views/auth.py:203
-msgid "pw_token_invalid"
-msgstr "Länken för lösenordsåterställning matchar inte."
-
-#: arche/views/auth.py:214
-msgid "Not allowed"
-msgstr "Tillåts inte"
-
-#: arche/views/auth.py:222
-msgid "Password changed"
-msgstr "Lösenord ändrat"
-
-#. Default: You've logged in and changed your password
-#: arche/views/auth.py:225
-msgid "logged_in_changed_pw"
-msgstr "Du har loggat in och ändrat lösenord"
-
-#: arche/views/base.py:227
-msgid "Cancel"
-msgstr "Avbryt"
-
-#: arche/views/base.py:228 arche/templates/permissions.pt:115
-msgid "Save"
-msgstr "Spara"
-
-#: arche/views/base.py:230 arche/templates/master.pt:61
-#: arche/templates/deform/form_modal.pt:38
-#: arche/templates/deform/readonly/form_modal.pt:38
-msgid "Close"
-msgstr "Stäng"
-
-#: arche/views/base.py:248
-msgid "Done"
-msgstr "Klart"
-
-#: arche/views/base.py:249
-msgid "Canceled"
-msgstr "Avbruten"
-
-#: arche/views/base.py:476
-msgid "You're not allowed to add this content type here."
-msgstr "Du har inte rättigheter att lägga till denna innehållstypen här."
-
-#: arche/views/base.py:478
-#, python-format
-msgid "Required permission: '${perm}'"
-msgstr "Krävd rättighet: '${perm}'"
-
-#: arche/views/base.py:494
-#, python-format
-msgid "Add ${type_title}"
-msgstr "Lägg till ${type_title}"
-
-#: arche/views/base.py:515
-#, python-format
-msgid "Edit ${type_title}"
-msgstr "Redigera ${type_title}"
-
-#: arche/views/base.py:532
-msgid "<Unknown Type>"
-msgstr "<Okänd typ>"
-
-#: arche/views/base.py:537
-#, python-format
-msgid "Delete ${title} (${type_title}) ?"
-msgstr "Radera ${title} (${type_title}) ?"
-
-#: arche/views/base.py:566
-#, python-format
-msgid "Deleted '${title}'"
-msgstr "Raderade '${title}'"
-
-#: arche/views/base.py:624
-msgid "Default view"
-msgstr "Standardvy"
-
-#: arche/views/base.py:626
-#, python-format
-msgid "View set to '${title}'"
-msgstr "Vy satt till '${title}'"
-
-#: arche/views/base.py:644
-#, python-format
-msgid "View delegated to '${title}'"
-msgstr "Vy delegerad till '${title}'"
-
-#: arche/views/base.py:648
-msgid "Normal view restored"
-msgstr "Normalvy återställd"
-
-#: arche/views/wizard.py:8
-msgid "Finish"
-msgstr "Slutför"
-
-#: arche/views/wizard.py:9
-msgid "Next"
-msgstr "Nästa"
-
-#: arche/views/wizard.py:10
-msgid "Previous"
-msgstr "Föregående"
-
-#: arche/views/roles_log.py:22
-msgid "Parse"
-msgstr ""
-
-#: arche/views/roles_log.py:33
-msgid "Parse local roles"
-msgstr ""
-
-#: arche/views/user.py:38
-msgid "Email change validation"
-msgstr "Validering av epoständring"
-
-#. Default: Since you requested to change your email address we've sent you an
-#. email to verify your new address. As soon as you click the link in your
-#. email, your address will change. All other changes were saved.
-#: arche/views/user.py:41
-msgid "require_email_verification_notice"
-msgstr ""
-"Eftersom du ändrade epostadressen så har vi skickat ett epostmeddelande till "
-"adressen du angav. Så snart du klickar på länken i brevet, så ändras din "
-"adress. Alla andra ändringar sparades."
-
-#: arche/views/user.py:65
-msgid "No such token"
-msgstr "Ingen sådan token"
-
-#: arche/views/user.py:67
-msgid "Expired."
-msgstr "Utgången."
-
-#: arche/views/user.py:73
-msgid "Email changed"
-msgstr "Epost ändrad"
-
-#: arche/views/user.py:76
-msgid "Email validated"
-msgstr "Epost validerad"
-
-#: arche/views/user.py:78
-msgid "This link is invalid."
-msgstr "Länken är ogiltig."
-
-#: arche/views/user.py:85
-msgid "No email set"
-msgstr "Ingen epostadress finns"
-
-#: arche/views/user.py:91
-msgid "Email validation"
-msgstr "Epostvalidering"
-
-#: arche/views/user.py:94
-msgid "We sent you an email with a link to confirm your address."
-msgstr ""
-"Vi har skickat ett epostmeddelande med en länk för att bekräfta din adress."
-
-#: arche/views/user.py:96
-msgid "Your address is already validated."
-msgstr "Din adress är redan validerad."
+#: arche/portlets/richtext.py:40
+msgid "Only render in this context."
+msgstr "Rendera bara i denna kontext."
 
 #: arche/app/reference_guards.py:33
 msgid "User listed as creator"
@@ -1139,404 +778,6 @@ msgstr "Stäng av"
 #: arche/app/workflows/activate.py:42
 msgid "Enable"
 msgstr "Aktivera"
-
-#: arche/templates/search.pt:13 arche/templates/search.pt:18
-#: arche/templates/master.pt:44 arche/templates/content/users_table.pt:17
-#: arche/templates/content/group.pt:33
-msgid "Search"
-msgstr "Sök"
-
-#. Default: Found ${count} items for '${query}'
-#: arche/templates/search.pt:30
-msgid "found_search_results"
-msgstr "Hittade ${count} resultat för ’${query}’"
-
-#: arche/templates/search.pt:36
-msgid "Search for anything that starts with '${query}'."
-msgstr "Sök efter allt som börjar med ’${query}’."
-
-#. Default: Add or remove portlets. Note that the slots might not be positioned
-#. the way they'll be on the page later on. If you wish to resort portlets you
-#. can drag and drop them from the arrows-icon. Dragging to another box is
-#. currently not supported.
-#: arche/templates/manage_portlets.pt:26
-msgid "portlets-manager-help"
-msgstr ""
-"Lägg till eller ta bort portlets. Notera att de kanske inte visas på den "
-"plats de kommer visas på sidan senare."
-
-#: arche/templates/manage_portlets.pt:37
-#: arche/templates/exceptions/reference_guarded.pt:36
-msgid "Back"
-msgstr "Tillbaka"
-
-#: arche/templates/protected_delete.pt:13
-msgid "Delete veto"
-msgstr "Radera-veto"
-
-#. Default: The content you want to delete is referenced by other content. Note
-#. that you might not have the correct permission to change or even view the
-#. referenced content.
-#: arche/templates/protected_delete.pt:16
-msgid "delete_veto_explanation"
-msgstr ""
-"Innehållet du försöker radera refereras till av annat innehåll. Notera att "
-"du kanske inte har rätt att se innehållet som refererar det här."
-
-#: arche/templates/protected_delete.pt:40
-msgid "${count} more item(s) not shown"
-msgstr "${count} fler post(er) visas inte"
-
-#. Default: While it would be possible to have versioning in this context, no
-#. attributes are currently tracked.
-#: arche/templates/revisions.pt:13
-msgid "no_tracked_attrs_versioning"
-msgstr ""
-
-#: arche/templates/revisions.pt:26
-msgid "ID"
-msgstr "ID"
-
-#: arche/templates/revisions.pt:27 arche/templates/system/roles_log.pt:32
-msgid "Timestamp"
-msgstr "Tidsstämpel"
-
-#: arche/templates/permissions.pt:49
-msgid "Saved"
-msgstr "Sparad"
-
-#: arche/templates/permissions.pt:73
-msgid "Current settings at ${title}"
-msgstr "Nuvarande inställningar för '${title}'"
-
-#: arche/templates/permissions.pt:83 arche/templates/permissions.pt:135
-#: arche/templates/permissions.pt:150
-msgid "UserID or group"
-msgstr "AnvändarID eller grupp"
-
-#: arche/templates/permissions.pt:125
-msgid "Add local roles"
-msgstr "Lägg till lokala roller"
-
-#: arche/templates/navigation.pt:11 arche/templates/action_bar.pt:10
-msgid "Toggle navigation"
-msgstr "Växla navigation"
-
-#: arche/templates/contents.pt:15
-msgid "Contents of"
-msgstr "Innehållet i"
-
-#: arche/templates/contents.pt:23
-msgid "Parent directory"
-msgstr "Föräldermapp"
-
-#: arche/templates/contents.pt:27
-msgid "Not a folder, so it can't have content"
-msgstr "Ingen folder, den kan inte ha innehåll"
-
-#: arche/templates/contents.pt:41
-msgid "Modified"
-msgstr "Modifierad"
-
-#: arche/templates/contents.pt:43
-msgid "Info"
-msgstr "Info"
-
-#: arche/templates/contents.pt:45
-msgid "Ordering enabled."
-msgstr "Sortering aktiverad."
-
-#. Default: Ordering not stored. If you drag and drop items,
-#. ordering will be enabled automatically.
-#: arche/templates/contents.pt:49
-msgid "ordering_enabled_notice"
-msgstr ""
-"Ingen sortering lagrad. Dra och släpp objekt för att aktivera sortering."
-
-#: arche/templates/contents.pt:65 arche/templates/content/users_table.pt:50
-#: arche/templates/content/group.pt:66
-msgid "Loading..."
-msgstr "Laddar..."
-
-#: arche/templates/contents.pt:97
-msgid "Drag and drop or click to upload..."
-msgstr "Dra och släpp eller klicka för att ladda upp…"
-
-#: arche/templates/exceptions/404.pt:11
-msgid "Not found"
-msgstr "Hittas inte"
-
-#: arche/templates/exceptions/404.pt:12
-msgid "There's nothing here with that name."
-msgstr "Det finns inget här med det namnet."
-
-#: arche/templates/exceptions/reference_guarded.pt:15
-msgid "Action blocked"
-msgstr "Aktivitet blockerad"
-
-#. Default: Your action would have caused references within this site to break.
-#. This usually happens when you try to delete a container with content that's
-#. required by other content.
-#: arche/templates/exceptions/reference_guarded.pt:18
-msgid "reference_guard_fired_error"
-msgstr ""
-"Din aktivitet skulle leda till att referenser inom webbplatsen bryts.\n"
-"Detta händer vanligen när du försöker radera en behållare med innehåll som "
-"krävs av annat innehåll."
-
-#. Default: Context that caused the exception: ${link}
-#: arche/templates/exceptions/reference_guarded.pt:25
-msgid "exc_context_link"
-msgstr "Innehåll som skapade undantaget: ${link}"
-
-#: arche/templates/exceptions/generic.pt:13
-msgid "There's a problem..."
-msgstr "Vi har problem..."
-
-#: arche/templates/exceptions/generic.pt:17
-msgid ""
-"arche.debug is set to True, so this error will be printed instead of logged."
-msgstr ""
-"arche.debug är satt till True, så felet kommer visas istället för att loggas."
-
-#: arche/templates/exceptions/403.pt:11
-msgid "Forbidden"
-msgstr "Inte tillåtet"
-
-#: arche/templates/exceptions/403.pt:12
-msgid "You don't have correct permission to do that."
-msgstr "Du har inte rättighet att göra det här."
-
-#: arche/templates/exceptions/403.pt:15
-msgid "Back to ${title}"
-msgstr "Tillbaka till '${title}'"
-
-#: arche/templates/exceptions/400.pt:11
-msgid "Error"
-msgstr "Fel"
-
-#: arche/templates/emails/email_change.pt:6
-#: arche/templates/emails/email_validate.pt:6
-msgid "Verify email"
-msgstr "Verifiera epost"
-
-#. Default: We got a request to change email address for the UserID ${userid}
-#. to this address. The current address is ${email}. If you don't wish to
-#. change address you can simply discard this email. Otherwise, click the link
-#. below while you're logged in to your account.
-#: arche/templates/emails/email_change.pt:7
-msgid "request_email_change_description"
-msgstr ""
-"Vi fick en förfrågan om att ändra epost för användarID ${userid} till denna "
-"adress. Den nuvarande adressen är ${email}. Om du inte vill ändra adressen "
-"kan du strunta i detta meddelande. Annars, klicka på linken nedan medan du "
-"är inloggad på ditt konto."
-
-#. Default: This email was sent from the site ${site_title} at ${url}. You're
-#. not subscribed to a list and shouldn't receive this email unless you've
-#. requested it. If you think there has been an error, please contact someone
-#. at that site.
-#: arche/templates/emails/footer.pt:8
-msgid "email_footer_text"
-msgstr ""
-"Det här brevet skickades från sidan ${site_title} som finns på ${url}. Du är "
-"inte med på någon utskickslista och borde inte ha fått detta brev om du inte "
-"har efterfrågat det. Om du tror att något har blivit fel, vänligen kontakta "
-"någon på den sidan."
-
-#: arche/templates/emails/recover_password.pt:6
-msgid "Password reset request"
-msgstr "Förfrågan om lösenordsåterställning"
-
-#. Default: We got a request to reset the password for the UserID ${userid}. If
-#. you don't wish to change your password you don't have to do anything.
-#. Otherwise click the link below and set a new password.
-#: arche/templates/emails/recover_password.pt:7
-msgid "request_password_reset"
-msgstr ""
-"Vi har tagit emot en förfrågan om att återställa lösenordet för användarID "
-"${userid}. Om du inte vill ändra ditt lösenord behöver du inte göra något. "
-"Annars, klicka på länken nedan för att ange ett nytt lösenord."
-
-#: arche/templates/emails/register.pt:6
-msgid "Complete registration at ${site}"
-msgstr "Gör klart registreringen hos ${site}"
-
-#. Default: To finish the registration process, simply follow the link below.
-#: arche/templates/emails/register.pt:9
-msgid "complete_registration_text"
-msgstr "För att göra klart registreringsprocessen, följ bara länken nedan."
-
-#. Default: We got a request to validate the email address for the UserID
-#. ${userid}. You need to be logged in to that account to verify that you're
-#. the owner of this email address. Click the link below to verify your
-#. address.
-#: arche/templates/emails/email_validate.pt:7
-msgid "request_email_validation_description"
-msgstr ""
-"Vi har fått en förfrågan om att validera postadressen för användaren "
-"${userid}. Du behöver vara inloggad på det kontot för att verifiera att du "
-"äger adressen. Klicka på länken nedan för att verifiera."
-
-#: arche/templates/system/register.pt:11
-msgid "Already have an account?"
-msgstr "Har du redan ett konto?"
-
-#: arche/templates/system/register.pt:14
-msgid "Login here"
-msgstr "Logga in här"
-
-#: arche/templates/system/login.pt:11
-msgid "Don't have an account?"
-msgstr "Har du inget konto?"
-
-#: arche/templates/system/login.pt:14
-msgid "Register here"
-msgstr "Registrera här"
-
-#: arche/templates/system/roles_log.pt:16
-msgid "Local role changes"
-msgstr "Ändra lokala roller"
-
-#: arche/templates/system/roles_log.pt:22
-msgid "New query"
-msgstr "Ny fråga"
-
-#: arche/templates/system/roles_log.pt:30
-msgid "By user"
-msgstr "Av användare"
-
-#: arche/templates/system/roles_log.pt:31
-msgid "URL"
-msgstr "URL"
-
-#: arche/templates/system/roles_log.pt:34
-msgid "Context"
-msgstr "Kontext"
-
-#: arche/templates/system/roles_log.pt:35
-msgid "Principal"
-msgstr "Huvudsaklig"
-
-#: arche/templates/system/roles_log.pt:37
-msgid "Removed"
-msgstr "Borttagen"
-
-#: arche/templates/system/roles_log.pt:42
-msgid "Nothing matched"
-msgstr "Inget matchade"
-
-#: arche/templates/system/roles_log.pt:57
-msgid "(Context removed)"
-msgstr "(Innehåll borttaget)"
-
-#: arche/templates/content/file.pt:17 arche/templates/content/image.pt:22
-msgid "Download file"
-msgstr "Spara fil"
-
-#: arche/templates/content/file.pt:25 arche/templates/content/image.pt:30
-#: arche/templates/deform/file_upload.pt:18
-#: arche/templates/deform/readonly/file_upload.pt:16
-msgid "Size"
-msgstr "Storlek"
-
-#: arche/templates/content/groups.pt:15
-msgid "Members"
-msgstr "Medlemmar"
-
-#: arche/templates/content/users_table.pt:13
-msgid "User(s)"
-msgstr "Användare"
-
-#: arche/templates/content/users_table.pt:24
-#: arche/templates/content/group.pt:40
-msgid "Order by"
-msgstr "Sortera efter"
-
-#: arche/templates/content/users_table.pt:41
-#: arche/templates/content/group.pt:57
-#: arche/plugins/auth_sessions/templates/sessions.pt:19
-msgid "Name"
-msgstr "Namn"
-
-#: arche/templates/content/users_table.pt:56
-#: arche/templates/content/group.pt:72
-msgid "No user matches your search."
-msgstr "Ingen användare matchade din sökning."
-
-#: arche/templates/content/group.pt:29
-msgid "Add user"
-msgstr "Lägg till användare"
-
-#: arche/templates/content/group.pt:88
-msgid "Remove"
-msgstr "Ta bort"
-
-#: arche/templates/content/link.pt:16
-msgid "This is a link that will redirect users without edit permission to:"
-msgstr "Den här länken skickar användare utan redigeringsrättighet till:"
-
-#: arche/templates/menus/templates.pt:8
-msgid "Template"
-msgstr "Mall"
-
-#: arche/templates/menus/site.pt:9
-msgid "Site"
-msgstr "Site"
-
-#: arche/templates/menus/add_content.pt:22
-msgid "Add customization active"
-msgstr ""
-
-#: arche/templates/menus/add_content.pt:26
-msgid "Customize addable..."
-msgstr ""
-
-#: arche/templates/deform/form.pt:51 arche/templates/deform/_form_modal.pt:58
-#: arche/templates/deform/form_modal.pt:59
-#: arche/templates/deform/readonly/form.pt:51
-#: arche/templates/deform/readonly/form_modal.pt:57
-msgid "There was a problem with your submission"
-msgstr "Det blev ett problem med ditt formulär"
-
-#. Default: en
-#: arche/templates/deform/richtext.pt:29
-msgid "tinymce-locale-file"
-msgstr "sv_SE"
-
-#: arche/templates/deform/file_upload.pt:16
-#: arche/templates/deform/readonly/file_upload.pt:14
-msgid "Filename"
-msgstr "Filnamn"
-
-#: arche/templates/deform/file_upload.pt:31
-msgid "Replace current file:"
-msgstr "Ersätt nuvarande fil:"
-
-#: arche/templates/portlets/byline.pt:16
-msgid "(modified ${datetime})"
-msgstr "(modifierad ${datetime})"
-
-#: arche/templates/portlets/manager_slot.pt:42
-msgid "Add to"
-msgstr "Lägg till i"
-
-#: arche/plugins/request_auth/models.py:80
-msgid "Token not found or used already"
-msgstr ""
-
-#: arche/plugins/request_auth/models.py:81
-#, python-format
-msgid "No token related to userid ${userid}"
-msgstr ""
-
-#: arche/plugins/request_auth/models.py:84
-msgid "Link expired"
-msgstr "Länken har förfallit"
-
-#: arche/plugins/request_auth/models.py:86
-msgid "IP address doesn't match"
-msgstr "IP-adress matchar inte"
 
 #: arche/plugins/auth_sessions/schemas.py:17
 msgid "Human-readable name of session"
@@ -1601,6 +842,12 @@ msgstr "Skapade session för autentisering med id ${id}"
 msgid "Auth sessions"
 msgstr "Sessioner för autentisering"
 
+#: arche/plugins/auth_sessions/templates/sessions.pt:19
+#: arche/templates/content/group.pt:70
+#: arche/templates/content/users_table.pt:42
+msgid "Name"
+msgstr "Namn"
+
 #: arche/plugins/auth_sessions/templates/sessions.pt:20
 msgid "Active"
 msgstr "Aktiv"
@@ -1626,6 +873,11 @@ msgstr "API-nyckel"
 msgid "User agent"
 msgstr ""
 
+#: arche/plugins/auth_sessions/templates/sessions.pt:27
+#: arche/views/actions.py:85
+msgid "Edit"
+msgstr "Redigera"
+
 #: arche/plugins/auth_sessions/templates/sessions.pt:58
 msgid "Always"
 msgstr "Alltid"
@@ -1634,6 +886,23 @@ msgstr "Alltid"
 msgid "Browser user agent string"
 msgstr ""
 
+#: arche/plugins/request_auth/models.py:80
+msgid "Token not found or used already"
+msgstr ""
+
+#: arche/plugins/request_auth/models.py:81
+#, python-format
+msgid "No token related to userid ${userid}"
+msgstr ""
+
+#: arche/plugins/request_auth/models.py:84
+msgid "Link expired"
+msgstr "Länken har förfallit"
+
+#: arche/plugins/request_auth/models.py:86
+msgid "IP address doesn't match"
+msgstr "IP-adress matchar inte"
+
 #: arche/plugins/thumbnails/views.py:53
 msgid "Album view"
 msgstr "Albumvy"
@@ -1641,100 +910,6 @@ msgstr "Albumvy"
 #: arche/plugins/thumbnails/views.py:54
 msgid "Photo album-like view"
 msgstr "Visa som fotoalbum"
-
-#: arche/portlets/byline.py:11
-msgid "Byline"
-msgstr ""
-
-#: arche/portlets/workflow_history.py:19 arche/portlets/workflow_history.py:52
-msgid "Workflow history"
-msgstr "Arbetsflödeshistorik"
-
-#: arche/portlets/workflow_history.py:39
-msgid "Only show this amount of entries"
-msgstr "Visa bara detta antal ändringar"
-
-#: arche/portlets/workflow_history.py:44
-msgid "Enable for these workflows"
-msgstr "Aktivera för dessa arbetsflöden"
-
-#: arche/portlets/richtext.py:14 arche/portlets/richtext.py:47
-msgid "Richtext"
-msgstr ""
-
-#: arche/portlets/richtext.py:21
-msgid "Shown in portlet manager"
-msgstr "Visas i portlet-hanteraren"
-
-#: arche/portlets/richtext.py:26
-msgid "Body"
-msgstr "Brödtext"
-
-#: arche/portlets/richtext.py:31
-msgid "Show portlet panel"
-msgstr "Visa panel för portlets"
-
-#. Default: If this is inactive, only the richtext (body) content will be
-#. rendered.
-#: arche/portlets/richtext.py:32
-msgid "show_container_description"
-msgstr "Om denna är inaktiv kommer endast brödtexten att renderas."
-
-#: arche/portlets/richtext.py:39
-msgid "Hide in subfolders"
-msgstr "Göm i underkataloger"
-
-#: arche/portlets/richtext.py:40
-msgid "Only render in this context."
-msgstr "Rendera bara i denna kontext."
-
-#: arche/portlets/contents.py:50
-msgid "Only in this context"
-msgstr "Bara i denna kontext."
-
-#: arche/portlets/contents.py:56
-msgid "Only show these content types"
-msgstr "Visa endast dessa innehållstyper"
-
-#: arche/portlets/contents.py:61
-msgid "Only show these states"
-msgstr "Visa endast dessa tillstånd"
-
-#: arche/portlets/navigation.py:15
-msgid "Navigation"
-msgstr "Navigation"
-
-#: arche/portlets/__init__.py:64
-msgid "Portlet"
-msgstr "Portlet"
-
-#: arche/portlets/__init__.py:65
-msgid "A mini view within another view"
-msgstr "En minivy inuti en annan vy"
-
-#: arche/portlets/__init__.py:128
-msgid "Portlet folder"
-msgstr "Portlet-folder"
-
-#: arche/portlets/__init__.py:129
-msgid "Container for portlets"
-msgstr "Container för portlets"
-
-#: arche/portlets/__init__.py:235
-msgid "Left"
-msgstr "Vänster"
-
-#: arche/portlets/__init__.py:236
-msgid "Right"
-msgstr "Höger"
-
-#: arche/portlets/__init__.py:237
-msgid "Top"
-msgstr "Topp"
-
-#: arche/portlets/__init__.py:238
-msgid "Bottom"
-msgstr "Botten"
 
 #: arche/models/folder.py:12
 msgid "Folder"
@@ -1749,65 +924,65 @@ msgstr "En generisk mapp där du kan lägga till innehåll."
 msgid "Reference guard named: ${name}"
 msgstr "Referensskydd med namn: ${name}"
 
-#: arche/models/workflow.py:50
-msgid "<Not found>"
-msgstr "<Hittades inte>"
-
-#: arche/models/workflow.py:170 arche/models/workflow.py:202
-#: arche/models/workflow.py:217
-msgid "Make private"
-msgstr "Gör privat"
-
-#: arche/models/workflow.py:171 arche/models/workflow.py:203
-#: arche/models/workflow.py:218
-msgid "Now private"
-msgstr "Nu privat"
-
-#: arche/models/workflow.py:176 arche/models/workflow.py:207
-#: arche/models/workflow.py:227
-msgid "Publish"
-msgstr "Publicera"
-
-#: arche/models/workflow.py:177 arche/models/workflow.py:208
-#: arche/models/workflow.py:228
-msgid "Published"
-msgstr "Publicerad"
-
-#: arche/models/workflow.py:183
-msgid "Simple"
-msgstr "Enkel"
-
-#: arche/models/workflow.py:212
-msgid "Submit for review"
-msgstr "Skicka in för granskning"
-
-#: arche/models/workflow.py:213
-msgid "Submitted for review"
-msgstr "Inskickad för granskning"
-
-#: arche/models/workflow.py:222
-msgid "Retract and resubmit for review"
-msgstr "Dra tillbaka och skicka till granskning"
-
-#: arche/models/workflow.py:223
-msgid "Retracted and resubmitted for review"
-msgstr "Tillbakadragen och skickad till granskning"
-
-#: arche/models/workflow.py:234
-msgid "Review workflow"
-msgstr "Granskningsarbetsflöde"
-
-#: arche/models/workflow.py:260
-msgid "Inherit workflow"
-msgstr "Ärv"
-
-#: arche/models/workflow.py:261 arche/models/acl.py:126
+#: arche/models/acl.py:126 arche/models/workflow.py:271
 msgid "Inherit"
 msgstr "Ärv"
 
 #: arche/models/acl.py:127
 msgid "Fetch the ACL from the parent object"
 msgstr "Hämta ACL från föräldraobjektet"
+
+#: arche/models/workflow.py:50
+msgid "<Not found>"
+msgstr "<Hittades inte>"
+
+#: arche/models/workflow.py:180 arche/models/workflow.py:212
+#: arche/models/workflow.py:227
+msgid "Make private"
+msgstr "Gör privat"
+
+#: arche/models/workflow.py:181 arche/models/workflow.py:213
+#: arche/models/workflow.py:228
+msgid "Now private"
+msgstr "Nu privat"
+
+#: arche/models/workflow.py:186 arche/models/workflow.py:217
+#: arche/models/workflow.py:237
+msgid "Publish"
+msgstr "Publicera"
+
+#: arche/models/workflow.py:187 arche/models/workflow.py:218
+#: arche/models/workflow.py:238
+msgid "Published"
+msgstr "Publicerad"
+
+#: arche/models/workflow.py:193
+msgid "Simple"
+msgstr "Enkel"
+
+#: arche/models/workflow.py:222
+msgid "Submit for review"
+msgstr "Skicka in för granskning"
+
+#: arche/models/workflow.py:223
+msgid "Submitted for review"
+msgstr "Inskickad för granskning"
+
+#: arche/models/workflow.py:232
+msgid "Retract and resubmit for review"
+msgstr "Dra tillbaka och skicka till granskning"
+
+#: arche/models/workflow.py:233
+msgid "Retracted and resubmitted for review"
+msgstr "Tillbakadragen och skickad till granskning"
+
+#: arche/models/workflow.py:244
+msgid "Review workflow"
+msgstr "Granskningsarbetsflöde"
+
+#: arche/models/workflow.py:270
+msgid "Inherit workflow"
+msgstr "Ärv"
 
 #: arche/models/datetime_handler.py:117
 msgid "Just now"
@@ -1835,6 +1010,843 @@ msgstr "1 timme sedan"
 #, python-format
 msgid "${diff} hours ago"
 msgstr "${diff} timmar sedan"
+
+#: arche/templates/manage_portlets.pt:25 arche/views/actions.py:302
+msgid "Manage portlets"
+msgstr "Hantera portlets"
+
+#. Default: Add or remove portlets. Note that the slots might not be positioned
+#. the way they'll be on the page later on. If you wish to resort portlets you
+#. can drag and drop them from the arrows-icon. Dragging to another box is
+#. currently not supported.
+#: arche/templates/manage_portlets.pt:26
+msgid "portlets-manager-help"
+msgstr ""
+"Lägg till eller ta bort portlets. Notera att de kanske inte visas på den "
+"plats de kommer visas på sidan senare."
+
+#: arche/templates/manage_portlets.pt:37
+#: arche/templates/exceptions/reference_guarded.pt:36
+msgid "Back"
+msgstr "Tillbaka"
+
+#: arche/templates/master.pt:44 arche/templates/search.pt:13
+#: arche/templates/search.pt:18 arche/templates/content/group.pt:46
+#: arche/templates/content/users_table.pt:18
+msgid "Search"
+msgstr "Sök"
+
+#: arche/templates/master.pt:61 arche/templates/deform/form_modal.pt:38
+#: arche/templates/deform/readonly/form_modal.pt:38 arche/views/base.py:230
+msgid "Close"
+msgstr "Stäng"
+
+#. Default: Found ${count} items for '${query}'
+#: arche/templates/search.pt:30
+msgid "found_search_results"
+msgstr "Hittade ${count} resultat för ’${query}’"
+
+#: arche/templates/search.pt:36
+msgid "Search for anything that starts with '${query}'."
+msgstr "Sök efter allt som börjar med ’${query}’."
+
+#: arche/templates/permissions.pt:49
+msgid "Saved"
+msgstr "Sparad"
+
+#: arche/templates/permissions.pt:61 arche/templates/system/roles_log.pt:36
+#: arche/views/portlets.py:87
+msgid "Added"
+msgstr "Tillagd"
+
+#: arche/templates/permissions.pt:73
+msgid "Current settings at ${title}"
+msgstr "Nuvarande inställningar för '${title}'"
+
+#: arche/templates/permissions.pt:83 arche/templates/permissions.pt:135
+#: arche/templates/permissions.pt:150
+msgid "UserID or group"
+msgstr "AnvändarID eller grupp"
+
+#: arche/templates/permissions.pt:115 arche/views/base.py:228
+msgid "Save"
+msgstr "Spara"
+
+#: arche/templates/permissions.pt:125
+msgid "Add local roles"
+msgstr "Lägg till lokala roller"
+
+#: arche/templates/permissions.pt:169 arche/templates/menus/add_content.pt:8
+#: arche/views/actions.py:99 arche/views/base.py:229
+msgid "Add"
+msgstr "Lägg till"
+
+#: arche/templates/protected_delete.pt:13
+msgid "Delete veto"
+msgstr "Radera-veto"
+
+#. Default: The content you want to delete is referenced by other content. Note
+#. that you might not have the correct permission to change or even view the
+#. referenced content.
+#: arche/templates/protected_delete.pt:16
+msgid "delete_veto_explanation"
+msgstr ""
+"Innehållet du försöker radera refereras till av annat innehåll. Notera att "
+"du kanske inte har rätt att se innehållet som refererar det här."
+
+#: arche/templates/protected_delete.pt:40
+msgid "${count} more item(s) not shown"
+msgstr "${count} fler post(er) visas inte"
+
+#: arche/templates/action_bar.pt:10 arche/templates/navigation.pt:11
+msgid "Toggle navigation"
+msgstr "Växla navigation"
+
+#: arche/templates/contents.pt:15
+msgid "Contents of"
+msgstr "Innehållet i"
+
+#: arche/templates/contents.pt:23
+msgid "Parent directory"
+msgstr "Föräldermapp"
+
+#: arche/templates/contents.pt:27
+msgid "Not a folder, so it can't have content"
+msgstr "Ingen folder, den kan inte ha innehåll"
+
+#: arche/templates/contents.pt:39 arche/templates/content/file.pt:26
+#: arche/templates/content/image.pt:31 arche/templates/deform/file_upload.pt:20
+#: arche/templates/deform/readonly/file_upload.pt:18 arche/views/portlets.py:36
+msgid "Type"
+msgstr "Typ"
+
+#: arche/templates/contents.pt:40 arche/templates/content/users_table.pt:44
+#: arche/views/users.py:29 arche/views/groups.py:43
+msgid "Created"
+msgstr "Skapad"
+
+#: arche/templates/contents.pt:41
+msgid "Modified"
+msgstr "Modifierad"
+
+#: arche/templates/contents.pt:43
+msgid "Info"
+msgstr "Info"
+
+#: arche/templates/contents.pt:45
+msgid "Ordering enabled."
+msgstr "Sortering aktiverad."
+
+#. Default: Ordering not stored. If you drag and drop items,
+#. ordering will be enabled automatically.
+#: arche/templates/contents.pt:49
+msgid "ordering_enabled_notice"
+msgstr ""
+"Ingen sortering lagrad. Dra och släpp objekt för att aktivera sortering."
+
+#: arche/templates/contents.pt:65 arche/templates/content/group.pt:79
+#: arche/templates/content/users_table.pt:51
+msgid "Loading..."
+msgstr "Laddar..."
+
+#: arche/templates/contents.pt:97
+msgid "Drag and drop or click to upload..."
+msgstr "Dra och släpp eller klicka för att ladda upp…"
+
+#: arche/templates/revisions.pt:11 arche/views/actions.py:313
+msgid "Revisions"
+msgstr "Revisioner"
+
+#. Default: While it would be possible to have versioning in this context, no
+#. attributes are currently tracked.
+#: arche/templates/revisions.pt:13
+msgid "no_tracked_attrs_versioning"
+msgstr ""
+
+#: arche/templates/revisions.pt:26
+msgid "ID"
+msgstr "ID"
+
+#: arche/templates/revisions.pt:27 arche/templates/system/roles_log.pt:32
+msgid "Timestamp"
+msgstr "Tidsstämpel"
+
+#: arche/templates/portlets/manager_slot.pt:42
+msgid "Add to"
+msgstr "Lägg till i"
+
+#: arche/templates/portlets/byline.pt:16
+msgid "(modified ${datetime})"
+msgstr "(modifierad ${datetime})"
+
+#. Default: This email was sent from the site ${site_title} at ${url}. You're
+#. not subscribed to a list and shouldn't receive this email unless you've
+#. requested it. If you think there has been an error, please contact someone
+#. at that site.
+#: arche/templates/emails/footer.pt:8
+msgid "email_footer_text"
+msgstr ""
+"Det här brevet skickades från sidan ${site_title} som finns på ${url}. Du är "
+"inte med på någon utskickslista och borde inte ha fått detta brev om du inte "
+"har efterfrågat det. Om du tror att något har blivit fel, vänligen kontakta "
+"någon på den sidan."
+
+#: arche/templates/emails/email_validate.pt:6
+#: arche/templates/emails/email_change.pt:6
+msgid "Verify email"
+msgstr "Verifiera epost"
+
+#. Default: We got a request to validate the email address for the UserID
+#. ${userid}. You need to be logged in to that account to verify that you're
+#. the owner of this email address. Click the link below to verify your
+#. address.
+#: arche/templates/emails/email_validate.pt:7
+msgid "request_email_validation_description"
+msgstr ""
+"Vi har fått en förfrågan om att validera postadressen för användaren "
+"${userid}. Du behöver vara inloggad på det kontot för att verifiera att du "
+"äger adressen. Klicka på länken nedan för att verifiera."
+
+#: arche/templates/emails/recover_password.pt:6
+msgid "Password reset request"
+msgstr "Förfrågan om lösenordsåterställning"
+
+#. Default: We got a request to reset the password for the UserID ${userid}. If
+#. you don't wish to change your password you don't have to do anything.
+#. Otherwise click the link below and set a new password.
+#: arche/templates/emails/recover_password.pt:7
+msgid "request_password_reset"
+msgstr ""
+"Vi har tagit emot en förfrågan om att återställa lösenordet för användarID "
+"${userid}. Om du inte vill ändra ditt lösenord behöver du inte göra något. "
+"Annars, klicka på länken nedan för att ange ett nytt lösenord."
+
+#: arche/templates/emails/register.pt:6
+msgid "Complete registration at ${site}"
+msgstr "Gör klart registreringen hos ${site}"
+
+#. Default: To finish the registration process, simply follow the link below.
+#: arche/templates/emails/register.pt:9
+msgid "complete_registration_text"
+msgstr "För att göra klart registreringsprocessen, följ bara länken nedan."
+
+#. Default: We got a request to change email address for the UserID ${userid}
+#. to this address. The current address is ${email}. If you don't wish to
+#. change address you can simply discard this email. Otherwise, click the link
+#. below while you're logged in to your account.
+#: arche/templates/emails/email_change.pt:7
+msgid "request_email_change_description"
+msgstr ""
+"Vi fick en förfrågan om att ändra epost för användarID ${userid} till denna "
+"adress. Den nuvarande adressen är ${email}. Om du inte vill ändra adressen "
+"kan du strunta i detta meddelande. Annars, klicka på linken nedan medan du "
+"är inloggad på ditt konto."
+
+#: arche/templates/content/file.pt:17 arche/templates/content/image.pt:22
+msgid "Download file"
+msgstr "Spara fil"
+
+#: arche/templates/content/file.pt:21 arche/templates/content/image.pt:26
+#: arche/views/actions.py:49
+msgid "View"
+msgstr "Vy"
+
+#: arche/templates/content/file.pt:25 arche/templates/content/image.pt:30
+#: arche/templates/deform/file_upload.pt:18
+#: arche/templates/deform/readonly/file_upload.pt:16
+msgid "Size"
+msgstr "Storlek"
+
+#: arche/templates/content/group.pt:42
+msgid "Add user"
+msgstr "Lägg till användare"
+
+#: arche/templates/content/group.pt:53
+#: arche/templates/content/users_table.pt:25
+msgid "Order by"
+msgstr "Sortera efter"
+
+#: arche/templates/content/group.pt:86
+#: arche/templates/content/users_table.pt:57
+msgid "No user matches your search."
+msgstr "Ingen användare matchade din sökning."
+
+#: arche/templates/content/group.pt:92
+msgid "No users in group."
+msgstr "Inga användare i gruppen."
+
+#: arche/templates/content/group.pt:103
+msgid "Email verified"
+msgstr "Epost verifierad"
+
+#: arche/templates/content/group.pt:108
+msgid "Remove"
+msgstr "Ta bort"
+
+#: arche/templates/content/link.pt:16
+msgid "This is a link that will redirect users without edit permission to:"
+msgstr "Den här länken skickar användare utan redigeringsrättighet till:"
+
+#: arche/templates/content/users_table.pt:13
+msgid "User(s)"
+msgstr "Användare"
+
+#: arche/templates/content/groups.pt:15
+msgid "Members"
+msgstr "Medlemmar"
+
+#: arche/templates/exceptions/403.pt:11
+msgid "Forbidden"
+msgstr "Inte tillåtet"
+
+#: arche/templates/exceptions/403.pt:12
+msgid "You don't have correct permission to do that."
+msgstr "Du har inte rättighet att göra det här."
+
+#: arche/templates/exceptions/403.pt:15
+msgid "Back to ${title}"
+msgstr "Tillbaka till '${title}'"
+
+#: arche/templates/exceptions/400.pt:11
+msgid "Error"
+msgstr "Fel"
+
+#: arche/templates/exceptions/404.pt:11
+msgid "Not found"
+msgstr "Hittas inte"
+
+#: arche/templates/exceptions/404.pt:12
+msgid "There's nothing here with that name."
+msgstr "Det finns inget här med det namnet."
+
+#: arche/templates/exceptions/reference_guarded.pt:15
+msgid "Action blocked"
+msgstr "Aktivitet blockerad"
+
+#. Default: Your action would have caused references within this site to break.
+#. This usually happens when you try to delete a container with content that's
+#. required by other content.
+#: arche/templates/exceptions/reference_guarded.pt:18
+msgid "reference_guard_fired_error"
+msgstr ""
+"Din aktivitet skulle leda till att referenser inom webbplatsen bryts.\n"
+"Detta händer vanligen när du försöker radera en behållare med innehåll som "
+"krävs av annat innehåll."
+
+#. Default: Context that caused the exception: ${link}
+#: arche/templates/exceptions/reference_guarded.pt:25
+msgid "exc_context_link"
+msgstr "Innehåll som skapade undantaget: ${link}"
+
+#: arche/templates/exceptions/generic.pt:13
+msgid "There's a problem..."
+msgstr "Vi har problem..."
+
+#: arche/templates/exceptions/generic.pt:17
+msgid ""
+"arche.debug is set to True, so this error will be printed instead of logged."
+msgstr ""
+"arche.debug är satt till True, så felet kommer visas istället för att loggas."
+
+#: arche/templates/system/login.pt:11
+msgid "Don't have an account?"
+msgstr "Har du inget konto?"
+
+#: arche/templates/system/login.pt:14
+msgid "Register here"
+msgstr "Registrera här"
+
+#: arche/templates/system/roles_log.pt:16
+msgid "Local role changes"
+msgstr "Ändra lokala roller"
+
+#: arche/templates/system/roles_log.pt:22
+msgid "New query"
+msgstr "Ny fråga"
+
+#: arche/templates/system/roles_log.pt:30
+msgid "By user"
+msgstr "Av användare"
+
+#: arche/templates/system/roles_log.pt:31
+msgid "URL"
+msgstr "URL"
+
+#: arche/templates/system/roles_log.pt:34
+msgid "Context"
+msgstr "Kontext"
+
+#: arche/templates/system/roles_log.pt:35
+msgid "Principal"
+msgstr "Huvudsaklig"
+
+#: arche/templates/system/roles_log.pt:37
+msgid "Removed"
+msgstr "Borttagen"
+
+#: arche/templates/system/roles_log.pt:42
+msgid "Nothing matched"
+msgstr "Inget matchade"
+
+#: arche/templates/system/roles_log.pt:57
+msgid "(Context removed)"
+msgstr "(Innehåll borttaget)"
+
+#: arche/templates/system/register.pt:11
+msgid "Already have an account?"
+msgstr "Har du redan ett konto?"
+
+#: arche/templates/system/register.pt:14
+msgid "Login here"
+msgstr "Logga in här"
+
+#: arche/templates/menus/templates.pt:8
+msgid "Template"
+msgstr "Mall"
+
+#: arche/templates/menus/site.pt:9
+msgid "Site"
+msgstr "Site"
+
+#: arche/templates/menus/add_content.pt:22
+msgid "Add customization active"
+msgstr ""
+
+#: arche/templates/menus/add_content.pt:26
+msgid "Customize addable..."
+msgstr ""
+
+#: arche/templates/menus/actions.pt:8 arche/views/actions.py:116
+msgid "Actions"
+msgstr "Handlingar"
+
+#: arche/templates/deform/form.pt:51 arche/templates/deform/_form_modal.pt:58
+#: arche/templates/deform/form_modal.pt:59
+#: arche/templates/deform/readonly/form.pt:51
+#: arche/templates/deform/readonly/form_modal.pt:57
+msgid "There was a problem with your submission"
+msgstr "Det blev ett problem med ditt formulär"
+
+#. Default: en
+#: arche/templates/deform/richtext.pt:29
+msgid "tinymce-locale-file"
+msgstr "sv_SE"
+
+#: arche/templates/deform/file_upload.pt:16
+#: arche/templates/deform/readonly/file_upload.pt:14
+msgid "Filename"
+msgstr "Filnamn"
+
+#: arche/templates/deform/file_upload.pt:25 arche/views/actions.py:247
+#: arche/views/base.py:226
+msgid "Delete"
+msgstr "Radera"
+
+#: arche/templates/deform/file_upload.pt:31
+msgid "Replace current file:"
+msgstr "Ersätt nuvarande fil:"
+
+#: arche/views/auth.py:19 arche/views/auth.py:25 arche/views/actions.py:161
+msgid "Login"
+msgstr "Logga in"
+
+#: arche/views/auth.py:26 arche/views/auth.py:160
+msgid "Recover password"
+msgstr "Återställ lösenord"
+
+#: arche/views/auth.py:34
+msgid "Welcome!"
+msgstr "Välkommen!"
+
+#: arche/views/auth.py:51 arche/views/auth.py:73 arche/views/auth.py:126
+#: arche/views/actions.py:175
+msgid "Register"
+msgstr "Registrera"
+
+#: arche/views/auth.py:58
+msgid "Site doesn't allow self registration"
+msgstr "Sidan tillåter inte användare att registrera sig själva"
+
+#: arche/views/auth.py:60 arche/views/auth.py:110
+msgid "Already logged in."
+msgstr "Redan inloggad."
+
+#: arche/views/auth.py:89
+msgid "Registration link"
+msgstr "Registreringslänk"
+
+#. Default: An email with registration instructions have been sent to the
+#. address you specified.
+#: arche/views/auth.py:93
+msgid "reg_email_notification"
+msgstr ""
+"Ett epostmeddelande med registreringsinstruktioner har skickats till "
+"adressen du angav."
+
+#: arche/views/auth.py:105
+msgid "Complete registration"
+msgstr "Slutför registrering"
+
+#. Default: The registration link is either invalid or has expired. You may
+#. request a new one if registration is open.
+#: arche/views/auth.py:116
+msgid "reg_token_expired_or_invalid"
+msgstr ""
+"Registreringslänken är antagligen ogiltig eller har gått ut. Du kan be om en "
+"ny om registrering är tillåten på sidan"
+
+#: arche/views/auth.py:135
+msgid "Welcome, you're now registered!"
+msgstr "Välkommen, du är nu registrerad!"
+
+#: arche/views/auth.py:164
+msgid "Send"
+msgstr "Skicka"
+
+#: arche/views/auth.py:168
+msgid "Message sent"
+msgstr "Meddelande skickat"
+
+#: arche/views/auth.py:178
+msgid "There's no email associated with this account."
+msgstr "Ingen epostadress är kopplad till kontot."
+
+#: arche/views/auth.py:182
+msgid "Password recovery request"
+msgstr "Lösenordsåterställning"
+
+#: arche/views/auth.py:191 arche/views/actions.py:225
+msgid "Change password"
+msgstr "Byt lösenord"
+
+#. Default: You haven't requested a password reset.
+#: arche/views/auth.py:198
+msgid "pw_token_doesnt_exist"
+msgstr "Du har inte begärt lösenordsåterställning."
+
+#. Default: Link expired, you have to request password reset again.
+#: arche/views/auth.py:202
+msgid "pw_token_expired"
+msgstr "Länken har gått ut, du måste begära lösenordsåterställning igen"
+
+#. Default: Password reset link doesn't match.
+#: arche/views/auth.py:206
+msgid "pw_token_invalid"
+msgstr "Länken för lösenordsåterställning matchar inte."
+
+#: arche/views/auth.py:217
+msgid "Not allowed"
+msgstr "Tillåts inte"
+
+#: arche/views/auth.py:225
+msgid "Password changed"
+msgstr "Lösenord ändrat"
+
+#. Default: You've logged in and changed your password
+#: arche/views/auth.py:228
+msgid "logged_in_changed_pw"
+msgstr "Du har loggat in och ändrat lösenord"
+
+#: arche/views/user.py:38
+msgid "Email change validation"
+msgstr "Validering av epoständring"
+
+#. Default: Since you requested to change your email address we've sent you an
+#. email to verify your new address. As soon as you click the link in your
+#. email, your address will change. All other changes were saved.
+#: arche/views/user.py:41
+msgid "require_email_verification_notice"
+msgstr ""
+"Eftersom du ändrade epostadressen så har vi skickat ett epostmeddelande till "
+"adressen du angav. Så snart du klickar på länken i brevet, så ändras din "
+"adress. Alla andra ändringar sparades."
+
+#: arche/views/user.py:65
+msgid "No such token"
+msgstr "Ingen sådan token"
+
+#: arche/views/user.py:67
+msgid "Expired."
+msgstr "Utgången."
+
+#: arche/views/user.py:73
+msgid "Email changed"
+msgstr "Epost ändrad"
+
+#: arche/views/user.py:76
+msgid "Email validated"
+msgstr "Epost validerad"
+
+#: arche/views/user.py:78
+msgid "This link is invalid."
+msgstr "Länken är ogiltig."
+
+#: arche/views/user.py:85
+msgid "No email set"
+msgstr "Ingen epostadress finns"
+
+#: arche/views/user.py:91
+msgid "Email validation"
+msgstr "Epostvalidering"
+
+#: arche/views/user.py:94
+msgid "We sent you an email with a link to confirm your address."
+msgstr ""
+"Vi har skickat ett epostmeddelande med en länk för att bekräfta din adress."
+
+#: arche/views/user.py:96
+msgid "Your address is already validated."
+msgstr "Din adress är redan validerad."
+
+#: arche/views/selected_content.py:11
+msgid "Select content to show"
+msgstr "Välj innehåll att visa"
+
+#: arche/views/selected_content.py:15
+msgid "Show content body, if any"
+msgstr "Visa brödtext, om finns"
+
+#: arche/views/selected_content.py:20
+msgid "Selected content"
+msgstr "Valt innehåll"
+
+#: arche/views/cut_copy_paste.py:39 arche/views/actions.py:258
+msgid "Cut"
+msgstr "Klipp"
+
+#: arche/views/cut_copy_paste.py:47 arche/views/actions.py:269
+msgid "Copy"
+msgstr "Kopiera"
+
+#: arche/views/cut_copy_paste.py:56
+msgid "Can't paste to this context"
+msgstr "Kan inte klistra in i denna kontext"
+
+#: arche/views/cut_copy_paste.py:65
+msgid "Moved here"
+msgstr "Flyttad hit"
+
+#. Default: New copy added here. References that pointed to the original object
+#. won't point to this one.
+#: arche/views/cut_copy_paste.py:68
+msgid "copy_references_notice"
+msgstr ""
+"Ny kopia tillagd här. Referenser till ursprungliga objektet kommer inte peka "
+"på detta objekt."
+
+#: arche/views/cut_copy_paste.py:81
+msgid "Name, this will be part of the URL"
+msgstr "Namn. Detta kommer att vara en del av webbadressen."
+
+#: arche/views/cut_copy_paste.py:88
+#, python-format
+msgid "Rename '${name}'"
+msgstr "Byt namn på '${name}'"
+
+#: arche/views/actions.py:35
+msgid "Workflow"
+msgstr "Arbetsflöde"
+
+#: arche/views/actions.py:70
+msgid "Permissions"
+msgstr "Rättigheter"
+
+#: arche/views/actions.py:127
+msgid "Templates"
+msgstr "Mallar"
+
+#: arche/views/actions.py:143
+msgid "User menu"
+msgstr "Användarmeny"
+
+#: arche/views/actions.py:152
+msgid "Site menu"
+msgstr "Sitemeny"
+
+#: arche/views/actions.py:187
+msgid "Settings"
+msgstr "Inställningar"
+
+#: arche/views/actions.py:202
+msgid "Logout"
+msgstr "Logga ut"
+
+#: arche/views/actions.py:222
+msgid "Profile"
+msgstr "Profil"
+
+#: arche/views/actions.py:235
+msgid "Validate email"
+msgstr "Verifiera epost"
+
+#: arche/views/actions.py:280
+msgid "Paste"
+msgstr "Klistra in"
+
+#: arche/views/actions.py:291
+msgid "Rename"
+msgstr "Byt namn"
+
+#: arche/views/actions.py:331
+msgid "Unset delegated view"
+msgstr ""
+
+#: arche/views/actions.py:340
+msgid "View settings"
+msgstr "Inställningar för vy"
+
+#: arche/views/listing.py:7
+msgid "Content listing"
+msgstr "Lista innehåll"
+
+#: arche/views/wizard.py:8
+msgid "Finish"
+msgstr "Slutför"
+
+#: arche/views/wizard.py:9
+msgid "Next"
+msgstr "Nästa"
+
+#: arche/views/wizard.py:10
+msgid "Previous"
+msgstr "Föregående"
+
+#: arche/views/site_settings.py:11
+msgid "Site settings"
+msgstr "Siteinställningar"
+
+#: arche/views/permissions.py:58
+msgid "That GroupID don't exist"
+msgstr "Grupp-ID existerar inte"
+
+#: arche/views/permissions.py:63
+msgid "That UserID don't exist"
+msgstr "AnvändarIDt finns inte"
+
+#: arche/views/search.py:72
+msgid "Invalid search query - try something else!"
+msgstr "Ogiltig sökning - prova något annat!"
+
+#: arche/views/search.py:103
+msgid "No results"
+msgstr "Inga resultat"
+
+#: arche/views/search.py:105
+#, python-format
+msgid "${num} more results..."
+msgstr "${num} fler resultat…"
+
+#. Default: Something isn't behaving the way it should. The error has been
+#. logged. You may wish to contact the person running this site about this
+#. error. It's one of those things that should never happen.
+#: arche/views/exceptions.py:18
+msgid "generic_exception_explanation"
+msgstr ""
+"Något beter sig inte som det ska. Felet har loggats. Det kan vara en bra idé "
+"att kontakta de som driver sidan om detta. Det här är en sådan sak som "
+"aldrig ska hända."
+
+#: arche/views/exceptions.py:81 arche/views/exceptions.py:100
+msgid "Not allowed, perhaps you need to log in?"
+msgstr "Inte tillåtet, du behöver kanske logga in?"
+
+#: arche/views/exceptions.py:121
+msgid "Application error"
+msgstr "Applikationsfel"
+
+#: arche/views/workflow.py:21
+#, python-format
+msgid "Changed state to ${state}"
+msgstr "Ändrade status till ${state}"
+
+#: arche/views/languages.py:14
+#, python-format
+msgid "Language set to ${selected_lang}"
+msgstr "Språk satt till ${selected_lang}"
+
+#: arche/views/base.py:227
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: arche/views/base.py:248
+msgid "Done"
+msgstr "Klart"
+
+#: arche/views/base.py:249
+msgid "Canceled"
+msgstr "Avbruten"
+
+#: arche/views/base.py:476
+msgid "You're not allowed to add this content type here."
+msgstr "Du har inte rättigheter att lägga till denna innehållstypen här."
+
+#: arche/views/base.py:478
+#, python-format
+msgid "Required permission: '${perm}'"
+msgstr "Krävd rättighet: '${perm}'"
+
+#: arche/views/base.py:494
+#, python-format
+msgid "Add ${type_title}"
+msgstr "Lägg till ${type_title}"
+
+#: arche/views/base.py:515
+#, python-format
+msgid "Edit ${type_title}"
+msgstr "Redigera ${type_title}"
+
+#: arche/views/base.py:532
+msgid "<Unknown Type>"
+msgstr "<Okänd typ>"
+
+#: arche/views/base.py:537
+#, python-format
+msgid "Delete ${title} (${type_title}) ?"
+msgstr "Radera ${title} (${type_title}) ?"
+
+#: arche/views/base.py:566
+#, python-format
+msgid "Deleted '${title}'"
+msgstr "Raderade '${title}'"
+
+#: arche/views/base.py:624
+msgid "Default view"
+msgstr "Standardvy"
+
+#: arche/views/base.py:626
+#, python-format
+msgid "View set to '${title}'"
+msgstr "Vy satt till '${title}'"
+
+#: arche/views/base.py:644
+#, python-format
+msgid "View delegated to '${title}'"
+msgstr "Vy delegerad till '${title}'"
+
+#: arche/views/base.py:648
+msgid "Normal view restored"
+msgstr "Normalvy återställd"
+
+#: arche/views/portlets.py:28
+msgid "<Select>"
+msgstr "<Välj>"
+
+#: arche/views/portlets.py:130
+#, python-format
+msgid "Edit ${portlet_title}"
+msgstr "Redigera ${portlet_title}"
+
+#: arche/views/portlets.py:138
+msgid "Nothing to edit for this portlet"
+msgstr "Inget att redigera för denna portlet"
+
+#: arche/views/roles_log.py:22
+msgid "Parse"
+msgstr ""
+
+#: arche/views/roles_log.py:33
+msgid "Parse local roles"
+msgstr ""
 
 #~ msgid "Showing ${num} user(s)"
 #~ msgstr "Visar ${num} användare"
@@ -1913,9 +1925,6 @@ msgstr "${diff} timmar sedan"
 
 #~ msgid "Overview"
 #~ msgstr "Översikt"
-
-#~ msgid "Users & Groups"
-#~ msgstr "Användare och grupper"
 
 #~ msgid "No"
 #~ msgstr "Nej"
