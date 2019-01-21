@@ -131,11 +131,13 @@ def appmaker(zodb_root):
     except KeyError:
         from pyramid.threadlocal import get_current_registry
         from zope.interface import alsoProvides
+        from zope.component.event import objectEventNotify
         import transaction
         from arche.utils import get_content_factories
         from arche.interfaces import IRoot
         from arche.populators import root_populator
         from arche.models.evolver import run_initial_migrations
+        from arche.events import ObjectAddedEvent
 
         factories = get_content_factories()
         #This is where initial population takes place, but first some site setup
@@ -152,6 +154,8 @@ def appmaker(zodb_root):
             zodb_root['app_root'] = root = root_populator(**data)
             transaction.commit()
             run_initial_migrations(root)
+            # Manually notify added event
+            objectEventNotify(ObjectAddedEvent(root, None, None))
             del zodb_root['initial_setup']
             return root
 
