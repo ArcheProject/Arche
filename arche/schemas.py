@@ -10,7 +10,6 @@ from six import string_types
 from arche import _
 from arche import security
 from arche.compat import unquote
-from arche.interfaces import IPopulator
 from arche.interfaces import ISchemaCreatedEvent
 from arche.interfaces import IUser
 from arche.utils import get_content_factories
@@ -56,24 +55,11 @@ def current_userid_as_tuple(node, kw):
 
 @colander.deferred
 def userid_hinder_widget(node, kw):
+    # And was a typo :)
     warnings.warn("The 'userid_hinder_widget' is deprecated,"
                   "try using 'arche.widgets.UserReferenceWidget(multiple=False)' instead", DeprecationWarning)
     view = kw['view']
     return deform.widget.AutocompleteInputWidget(values=tuple(view.root['users'].keys()))
-
-
-@colander.deferred
-def populators_choice(node, kw):
-    request = kw['request']
-
-    class _NoThanks(object):
-        title = _('No thanks')
-        description = _("Don't install or change anything")
-
-    values = [('', _NoThanks())]
-    values.extend([(x.name, x.factory) for x in request.registry.registeredAdapters() if
-                   x.provided == IPopulator])
-    return deform.widget.RadioChoiceWidget(values=values, template="object_radio_choice")
 
 
 @colander.deferred
@@ -417,12 +403,6 @@ class InitialSetup(colander.Schema):
         colander.String(),
         title=_(u"Password"),
         widget=deform.widget.CheckedPasswordWidget()
-    )
-    populator_name = colander.SchemaNode(
-        colander.String(),
-        missing=u'',
-        title=_("Populate site"),
-        widget=populators_choice
     )
 
 

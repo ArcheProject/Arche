@@ -55,7 +55,6 @@ def includeme(config):
     config.include('arche.schemas')
     config.include('arche.views')
     config.include('arche.portlets')
-    config.include('arche.populators')
     config.include('arche.scripts')
     #Include all applications
     config.include('arche.app')

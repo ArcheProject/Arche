@@ -438,13 +438,6 @@ class IRevisions(IContextAdapter, IImmutableDict):
         """ Only allows delete of first or last item.
         """
 
-class IPopulator(Interface):
-    """ An adapter that populates the database with content or initial setup.
-        Should accept root as context.
-    """
-    def populate(self, **kw):
-        """ Populate context with the following arguments. """
-
 
 class IReferenceGuards(Interface):
     """ Request adapter to interact with the reference guards.
