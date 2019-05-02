@@ -367,7 +367,7 @@ def send_email(request, subject, recipients, html, sender = None, plaintext = No
 
         returns the message object sent, or None
     """
-    msg = compose_email(request, subject, recipients, html, sender = None, plaintext = None, **kw)
+    msg = compose_email(request, subject, recipients, html, sender = sender, plaintext = plaintext, **kw)
     mailer = get_mailer(request)
     #Note that messages are sent during the transaction process. See pyramid_mailer docs
     if send_immediately:
