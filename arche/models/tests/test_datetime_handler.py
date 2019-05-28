@@ -40,7 +40,8 @@ class DateTimeHandlerTests(TestCase):
     def test_datetime_sv_locale(self):
         obj = self._cut(locale = 'sv')
         date_and_time = obj.timezone.localize(datetime.strptime('1999-12-14 19:12', "%Y-%m-%d %H:%M"))
-        self.assertEqual(obj.format_dt(date_and_time), '1999-12-14 19:12')
+        # For some silly reason, this seems to change all the time...
+        self.assertIn(obj.format_dt(date_and_time), ['1999-12-14 19:12', '1999-12-14 19.12'])
 
     def test_datetime_full_sv(self):
         obj = self._cut(locale = 'sv', tz_name = 'Europe/Stockholm')
