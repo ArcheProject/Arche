@@ -17,6 +17,12 @@ from arche import security
 from arche.views.base import BaseView
 
 
+def logic_wrap(word):
+    if word in ('and', 'or'):
+        return '"{}"'.format(word)
+    return word
+
+
 @view_defaults(permission = security.PERM_VIEW, context = 'arche.interfaces.IRoot')
 class SearchView(BaseView):
     result = None
@@ -41,6 +47,8 @@ class SearchView(BaseView):
             if self.request.GET.get('glob', False):
                 if '*' not in query:
                     query = "%s*" % query
+            if '"' not in query:
+                query = ' '.join(logic_wrap(word) for word in query.split())
             query_objs.append(Contains('searchable_text', query))
             perform_query = True
         #Check other get-values:
