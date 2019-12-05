@@ -1,11 +1,15 @@
+from os.path import isfile
+
 import deform
-from arche.models.mimetype_views import get_mimetype_views
+from pyramid.asset import abspath_from_asset_spec
 from pyramid.httpexceptions import HTTPForbidden
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.response import Response
 from pyramid.view import render_view_to_response
+from pyramid.response import FileResponse
 
+from arche.models.mimetype_views import get_mimetype_views
 from arche import security
 from arche.interfaces import IBlobs
 from arche.schemas import AddFileSchema
@@ -127,6 +131,11 @@ def mimetype_view_selector(context, request):
     return response
 
 
+def favicon_view(request):
+    icon = abspath_from_asset_spec(request.registry.settings["arche.favicon"])
+    return FileResponse(icon, request=request)
+
+
 def includeme(config):
     config.add_view(AddFileForm,
                     context = 'arche.interfaces.IContent',
@@ -155,6 +164,13 @@ def includeme(config):
                     permission = security.PERM_VIEW,
                     name = 'upload',
                     renderer = 'json')
+    favicon = config.registry.settings.get("arche.favicon", None)
+    if favicon:
+        abspath_fav = abspath_from_asset_spec(favicon)
+        if isfile(abspath_fav):
+            config.add_view(favicon_view, name='favicon.ico')
+        else:
+            raise IOError("{} is not a file - check arche.favicon specification.".format(abspath_fav))
     # config.add_view(upload_temp,
     #                 context = 'arche.interfaces.IContent',
     #                 permission = security.PERM_VIEW,
