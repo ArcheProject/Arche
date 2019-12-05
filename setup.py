@@ -14,7 +14,7 @@ requires = ('Babel',
             'deform>=2.0.4',
             'deform_autoneed>=0.2.2b',
             'fanstatic',
-            'html2text',
+            'html2text==2019.8.11',  # Last py 2.7 version
             'js.bootstrap>=3.3.4',
             'js.jqueryui',
             'peppercorn',
