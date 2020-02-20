@@ -1,3 +1,2 @@
-include *.txt *.cfg *.rst
+include *.txt *.cfg *.rst *.css *.js *.png *.svg
 exclude buildout.cfg .installed.cfg
-
