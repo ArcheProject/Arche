@@ -1,3 +1,3 @@
 include *.txt *.cfg *.rst 
-recursive-include arche/static *.css *.js *.png *.svg
+recursive-include arche *.css *.js *.png *.svg *.mo
 exclude buildout.cfg .installed.cfg
