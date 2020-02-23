@@ -122,20 +122,23 @@ class SearchView(BaseView):
             raise HTTPBadRequest()
         self._mk_query()
         output = []
+        limit = self.limit
         for obj in self.resolve_docids(self.docids):
-            type_title = getattr(obj, 'type_title', getattr(obj, 'type_name', "(Unknown)"))
-            if isinstance(type_title, TranslationString):
-                type_title = self.request.localizer.translate(type_title)
-            try:
-                tag = self.request.thumb_tag(obj, 'mini')
-            except AttributeError:
-                tag = ''
-            user_extra = id_attr == 'userid' and ' ({})'.format(obj.userid) or ''
-            output.append({'text': obj.title + user_extra,
-                           'id': getattr(obj, id_attr),
-                           'type_name': obj.type_name,
-                           'img_tag': tag,
-                           'type_title': '' if user_extra else type_title})
+            if limit > 0:
+                type_title = getattr(obj, 'type_title', getattr(obj, 'type_name', "(Unknown)"))
+                if isinstance(type_title, TranslationString):
+                    type_title = self.request.localizer.translate(type_title)
+                try:
+                    tag = self.request.thumb_tag(obj, 'mini')
+                except AttributeError:
+                    tag = ''
+                user_extra = id_attr == 'userid' and ' ({})'.format(obj.userid) or ''
+                output.append({'text': obj.title + user_extra,
+                               'id': getattr(obj, id_attr),
+                               'type_name': obj.type_name,
+                               'img_tag': tag,
+                               'type_title': '' if user_extra else type_title})
+                limit -= 1
         return {'results': output}
 
     @view_config(route_name='resolve_uid')

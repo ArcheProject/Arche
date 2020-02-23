@@ -130,11 +130,13 @@ class ReferenceWidget(Select2Widget):
     placeholder = _("Type something to search.")
     minimumInputLength = 2
     show_thumbs = True
-    default_query_params = {'glob': 1, 'show_hidden': 1}
+    default_query_params = {'glob': 1, 'show_hidden': 1, 'limit': 20}
     query_params = {}
     multiple = True
     sortable = False
     id_attr = 'uid'
+    view_name = "search_select2.json"  # The view to query
+    context_from = 'get_root' # Which attribute on view to fetch the context from.
     #Make query view configurable?
 
     def _fetch_referenced_objects(self, field, cstruct):
@@ -165,10 +167,15 @@ class ReferenceWidget(Select2Widget):
         if cstruct in (colander.null, None):
             cstruct = self.null_value
         readonly = kw.get('readonly', self.readonly)
-        kw['placeholder'] = kw.get('placeholder', self.placeholder)
-        kw['minimumInputLength'] = kw.get('minimumInputLength', self.minimumInputLength)
+        kw.setdefault("context_from", self.context_from)
+        kw.setdefault('view_name', self.view_name)
+        kw.setdefault('placeholder', self.placeholder)
+        kw.setdefault("minimumInputLength", self.minimumInputLength)
         kw['show_thumbs'] = str(bool(kw.get('show_thumbs', self.show_thumbs))).lower()  # true or false in js
-        view = field.schema.bindings['view']
+        bindings = field.schema.bindings
+        view = bindings['view']
+        context_func = getattr(self, kw["context_from"])
+        query_context = context_func(bindings)
         template = readonly and self.readonly_template or self.template
         kw.setdefault('request', view.request)
         tmpl_values = self.get_template_values(field, cstruct, kw)
@@ -176,9 +183,14 @@ class ReferenceWidget(Select2Widget):
         if not readonly:
             query_params = self.default_query_params.copy()
             query_params.update(self.query_params)
-            query_url = view.request.resource_url(view.root, 'search_select2.json', query=query_params)
+            query_url = view.request.resource_url(query_context, kw['view_name'], query=query_params)
             tmpl_values['query_url'] = query_url
         return field.renderer(template, **tmpl_values)
+
+    def get_root(self, bindings):
+        if "view" in bindings:
+            return bindings["view"].root
+        return find_root(bindings["context"])
 
 
 # DO NOT use this in colander.Sequence fields. Will not work.
