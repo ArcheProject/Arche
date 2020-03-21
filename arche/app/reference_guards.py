@@ -30,18 +30,21 @@ def includeme(config):
         find_created_by_user,
         requires=(IUser,),
         catalog_result=True,
+        allow_move=False,
         title=_("User listed as creator"),
     )
     config.add_ref_guard(
         find_local_roles_for_user,
         requires=(IUser,),
         catalog_result=True,
+        allow_move=False,
         title=_("User has permissions set"),
     )
     config.add_ref_guard(
         find_groups_for_user,
         requires=(IUser,),
         catalog_result=False,
+        allow_move=False,
         title=_("User has set permission(s) in group(s)"),
     )
     config.add_ref_guard(
