@@ -1,8 +1,10 @@
 from zope.interface import Interface, Attribute
 from zope.component.interfaces import IObjectEvent
 from pyramid.interfaces import IDict
-from repoze.folder.interfaces import (IObjectAddedEvent,
+from repoze.folder.interfaces import (IObjectWillBeAddedEvent,
+                                      IObjectAddedEvent,
                                       IObjectWillBeRemovedEvent,
+                                      IObjectRemovedEvent,
                                       IFolder) #API
 
 #Base classes
