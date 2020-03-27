@@ -621,7 +621,7 @@ def quick_reindex(request, indexes):
 def _unregister_index_utils(registry=None):
     if registry is None:
         registry = get_current_registry()
-    for util in registry.getAllUtilitiesRegisteredFor(ICatalogIndexes):
+    for util in tuple(registry.getAllUtilitiesRegisteredFor(ICatalogIndexes)):
         registry.unregisterUtility(util)
 
 
