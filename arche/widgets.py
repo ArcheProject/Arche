@@ -135,6 +135,7 @@ class ReferenceWidget(Select2Widget):
     multiple = True
     sortable = False
     id_attr = 'uid'
+    allowClear = True
     view_name = "search_select2.json"  # The view to query
     context_from = 'get_root' # Which attribute on view to fetch the context from.
     #Make query view configurable?

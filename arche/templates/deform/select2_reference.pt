@@ -15,7 +15,7 @@
     }
 
     .form-control .select2-selection--choice .select2-arrow {
-        border-radius: 0 2px 2px 0;   
+        border-radius: 0 2px 2px 0;
     }
 
     .form-control.select2-selection {
@@ -92,6 +92,7 @@
             multiple: ${str(bool(field.widget.multiple)).lower()},
             width: "100%",
             templateResult: template,
+            allowClear: ${str(bool(field.widget.allowClear)).lower()|'false'},
             ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
                 url: "${query_url}",
                 dataType: 'json',
