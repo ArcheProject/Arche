@@ -42,7 +42,7 @@ def wf_menu(context, request, va, **kw):
         view = kw['view']
         transitions = tuple(wf.get_transitions(request))
         if transitions or request.has_permission(security.PERM_EDIT, context):
-            return view.render_template('arche:templates/menus/workflow.pt', wf=wf, transitions=transitions)
+            return view.render_template('arche:templates/menus/workflow.pt', context=context, wf=wf, transitions=transitions)
 
 
 @view_action('actionbar_main', 'view',
