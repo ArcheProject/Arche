@@ -5,15 +5,12 @@ bundler_args: --retry 8
 python:
   - 2.7
 
-#FIXME: As soon as repoze catalog works with python 3
-#  - 3.5
-
 before_install:
+  - pip install "setuptools<45"
   - pip install --upgrade pip
 
 install:
-  - pip install zc.buildout
-  - travis_retry buildout -c testing.cfg
+  - pip install -r requirements.txt
 
 script:
-  - travis_retry bin/py setup.py test -q
+  - python setup.py test -q

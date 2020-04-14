@@ -1,0 +1,2 @@
+-e .[testing]
+six>=1.12
