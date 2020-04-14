@@ -69,12 +69,11 @@ class ContentsPortlet(PortletType):
     title = _(u"Contents")
     tpl = "arche:templates/portlets/contents.pt"
 
-    def render(self, context, request, view, **kwargs):
+    def get_contents(self, context, request):
         if self.portlet.settings.get('limit_to_this_context', False):
             if context != self.context:
-                return
-        #FIXME: Implement batching on really large folders
-        contents = []
+                raise StopIteration()
+        # FIXME: Implement batching on really large folders
         limit_types = self.portlet.settings.get('limit_types', ())
         limit_states = self.portlet.settings.get('limit_states', ())
         for obj in context.values():
@@ -87,7 +86,16 @@ class ContentsPortlet(PortletType):
                 wf_st_name = "%s:%s" % (getattr(wf, 'name', ''), getattr(obj, 'wf_state', ''))
                 if wf_st_name not in limit_states:
                     continue
-            contents.append(obj)
+            yield obj
+
+    def visible(self, context, request, view, **kwargs):
+        # Just get one to check if this should be visible
+        for obj in self.get_contents(context, request):
+            return True
+        return False
+
+    def render(self, context, request, view, **kwargs):
+        contents = tuple(self.get_contents(context, request))
         if contents:
             values = {'title': self.portlet.settings.get('title', self.title),
                       'contents': contents,

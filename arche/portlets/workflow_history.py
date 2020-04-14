@@ -52,18 +52,22 @@ class WorkflowHistoryPortlet(PortletType):
     title = _("Workflow history")
     tpl = "arche:templates/portlets/workflow_history.pt"
 
-    def render(self, context, request, view, **kwargs):
+    def visible(self, context, request, view, **kwargs):
         if not ITrackRevisions.providedBy(context):
-            return
+            return False
         if not IContextACL.providedBy(context):
-            return
+            return False
         try:
             if not context.workflow.name in self.portlet.settings.get('show_wfs', ()):
-                return
+                return False
         except AttributeError:
-            return
+            return False
         revisions = IRevisions(context, None)
-        if revisions:
+        return bool(revisions)
+
+    def render(self, context, request, view, **kwargs):
+        if self.visible(context, request, view, **kwargs):
+            revisions = IRevisions(context, None)
             limit = self.portlet.settings.get('limit', 5)
             history = tuple(revisions.get_revisions('wf_state', limit = limit))
             if history:

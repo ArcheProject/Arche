@@ -11,6 +11,11 @@ class BylinePortlet(PortletType):
     title = _("Byline")
     tpl = "arche:templates/portlets/byline.pt"
 
+    def visible(self, context, request, view, **kwargs):
+        if not getattr(context, 'show_byline', False):
+            return
+        return bool(getattr(context, 'creator', ()))
+
     def render(self, context, request, view, **kwargs):
         if not getattr(context, 'show_byline', False):
             return
@@ -23,6 +28,7 @@ class BylinePortlet(PortletType):
                               {'profile': profile, 'portlet': self.portlet, 'view': view},
                               request = request)
         return out
+
 
 def includeme(config):
     config.add_portlet(BylinePortlet)

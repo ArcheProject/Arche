@@ -47,17 +47,22 @@ class RichtextPortlet(PortletType):
     title = _("Richtext")
     tpl = "arche:templates/portlets/richtext.pt"
 
-    def render(self, context, request, view, **kwargs):
+    def visible(self, context, request, view, **kwargs):
         settings = self.portlet.settings
         if settings.get('hide_in_subfolders', False) and context != self.context:
-            return
-        values = {'title': settings.get('title', self.title),
-                  'body': settings.get('body',''),
-                  'show_container': settings.get('show_container', True),
-                  'portlet': self.portlet}
-        return render(self.tpl,
-                      values,
-                      request = request)
+            return False
+        return True
+
+    def render(self, context, request, view, **kwargs):
+        if self.visible(context, request, view, **kwargs):
+            settings = self.portlet.settings
+            values = {'title': settings.get('title', self.title),
+                      'body': settings.get('body',''),
+                      'show_container': settings.get('show_container', True),
+                      'portlet': self.portlet}
+            return render(self.tpl,
+                          values,
+                          request = request)
 
 
 def includeme(config):

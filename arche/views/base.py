@@ -81,6 +81,25 @@ class BaseView(object):
     def flash_messages(self):
         return get_flash_messages(self.request)
 
+    def portlet_slot_visible(self, slot, **kw):
+        """ Check for any reason to reserve space to render portlets. """
+        context = self.context
+        while context:
+            manager = get_portlet_manager(context, self.request.registry)
+            if manager:
+                # Use the view context when calling the portlets!
+                try:
+                    visible = manager.visible(slot, self.context, self.request, self, **kw)
+                except Exception as exc:
+                    if self.request.registry.settings['arche.debug']:
+                        raise exc
+                    else:
+                        warnings.warn(str(exc))
+                if visible:
+                    return True
+            context = getattr(context, '__parent__', None)
+        return False
+
     def render_portlet_slot(self, slot, **kw):
         results = []
         context = self.context

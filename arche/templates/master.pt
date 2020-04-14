@@ -13,12 +13,11 @@
 
   <body class="view-${request.view_name or 'default'|'default'}"
         metal:define-slot="fullpage"
-        tal:define="portlets_left view.render_portlet_slot('left');
-                    portlets_right view.render_portlet_slot('right');
-                    portlets_top view.render_portlet_slot('top');
-                    portlets_bottom view.render_portlet_slot('bottom');
-                    main_cols 12 - int(bool(portlets_left))*3 - int(bool(portlets_right))*3;">
-
+        tal:define="portlets_left_visible view.portlet_slot_visible('left');
+                    portlets_right_visible view.portlet_slot_visible('right');
+                    portlets_top_visible view.portlet_slot_visible('top');
+                    portlets_bottom_visible view.portlet_slot_visible('bottom');
+                    main_cols 12 - int(portlets_left_visible)*3 - int(portlets_right_visible)*3;">
 
     <nav metal:define-slot="navigation" tal:replace="structure view.render_template('arche:templates/navigation.pt')" />
 

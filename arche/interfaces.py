@@ -598,13 +598,32 @@ class IPortletType(Interface):
         It doesn't have to be the same context as the current request.
     """)
 
+    def visible(context, request, view, **kwargs):
+        """ Check if the portlet should be visible or not.
+        """
+
     def render(context, request, view, **kwargs):
         """ Render portlet
         """
 
 
-class IPortletManager(Interface):
-    pass
+class IPortletManager(IDict):
+
+
+    def add(slot, portlet_type, **kw):
+        pass
+
+    def get_portlets(slot, portlet_type = None):
+        pass
+
+    def remove(slot, portlet_uid):
+        pass
+
+    def visible(slot, context, request, view, **kw):
+        pass
+
+    def render_slot(slot, context, request, view, **kw):
+        pass
 
 
 class IFileUploadTempStore(Interface):

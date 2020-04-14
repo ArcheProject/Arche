@@ -33,6 +33,10 @@ class PortletType(object):
     def __init__(self, portlet):
         self.portlet = portlet
 
+    def visible(self, context, request, view, **kwargs):
+        # Must be implemented by subclass!
+        return False
+
     def render(self, context, request, view, **kwargs):
         return u""
 
@@ -181,6 +185,16 @@ class PortletManager(IterableUserDict):
 
     def remove(self, slot, portlet_uid):
         self[slot].pop(portlet_uid, None)
+
+    def visible(self, slot, context, request, view, **kw):
+        """ Check if any portlet within this slot is registered as visible.
+        """
+        for portlet in self.get(slot, {}).values():
+            if portlet.enabled:
+                portlet_type = portlet.portlet_adapter
+                if portlet_type.visible(context, request, view, **kw):
+                    return True
+        return False
 
     def render_slot(self, slot, context, request, view, **kw):
         results = []

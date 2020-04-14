@@ -8,15 +8,15 @@
       i18n:domain="Arche">
 <body>
   <div class="row" metal:fill-slot="content">
-      <div class="col-sm-3 portlets-left" tal:condition="portlets_left" metal:define-slot="portlets-left">
-          <tal:portlets repeat="portlet portlets_left">
+      <div class="col-sm-3 portlets-left" tal:condition="portlets_left_visible" metal:define-slot="portlets-left">
+          <tal:portlets repeat="portlet view.render_portlet_slot('left')">
               <tal:portlet replace="structure portlet" />
           </tal:portlets>
       </div>
       <div class="col-sm-${main_cols}" metal:define-slot="main-column">
 
-          <div class="portlets-top" tal:condition="portlets_top" metal:define-slot="portlets-top">
-              <tal:portlets repeat="portlet portlets_top">
+          <div class="portlets-top" tal:condition="portlets_top_visible" metal:define-slot="portlets-top">
+              <tal:portlets repeat="portlet view.render_portlet_slot('top')">
                   <tal:portlet replace="structure portlet" />
                   <div class="clearfix"><!-- --></div>
               </tal:portlets>
@@ -24,16 +24,16 @@
 
           <tal:main-column metal:define-slot="main-content"></tal:main-column>
 
-          <div class="portlets-bottom" tal:condition="portlets_bottom" metal:define-slot="portlets-bottom">
-              <tal:portlets repeat="portlet portlets_bottom">
+          <div class="portlets-bottom" tal:condition="portlets_bottom_visible" metal:define-slot="portlets-bottom">
+              <tal:portlets repeat="portlet view.render_portlet_slot('bottom')">
                   <tal:portlet replace="structure portlet" />
                   <div class="clearfix"><!-- --></div>
               </tal:portlets>
           </div>
 
       </div>
-      <div class="col-sm-3 portlets-right" tal:condition="portlets_right" metal:define-slot="portlets-right">
-          <tal:portlets repeat="portlet portlets_right">
+      <div class="col-sm-3 portlets-right" tal:condition="portlets_right_visible" metal:define-slot="portlets-right">
+          <tal:portlets repeat="portlet view.render_portlet_slot('right')">
               <tal:portlet replace="structure portlet" />
           </tal:portlets>
       </div>
