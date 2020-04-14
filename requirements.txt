@@ -1,2 +1,4 @@
 -e .[testing]
 six>=1.12
+Pillow<5
+plone.scale<3
