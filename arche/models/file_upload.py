@@ -59,4 +59,4 @@ class FileUploadTempStore(object):
         return None
 
 def includeme(config):
-    config.registry.registerAdapter(FileUploadTempStore)
+    config.registry.registerAdapter(FileUploadTempStore, provided=IFileUploadTempStore)

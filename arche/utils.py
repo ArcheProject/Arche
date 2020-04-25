@@ -626,8 +626,8 @@ def authdebug_message(request):
 
 
 def includeme(config):
-    config.registry.registerAdapter(RegistrationTokens)
-    config.registry.registerAdapter(EmailValidationTokens)
+    config.registry.registerAdapter(RegistrationTokens, provided=IRegistrationTokens)
+    config.registry.registerAdapter(EmailValidationTokens, provided=IEmailValidationTokens)
     config.add_directive('add_content_factory', add_content_factory)
     config.add_directive('add_addable_content', add_addable_content)
     config.add_directive('add_schema', add_schema)

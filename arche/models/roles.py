@@ -302,7 +302,7 @@ def register_roles(config, *roles):
 
 
 def includeme(config):
-    config.registry.registerAdapter(Roles)
+    config.registry.registerAdapter(Roles, provided=IRoles)
     config.add_directive('register_roles', register_roles)
     # Hook logging here
     log_roles_name = config.registry.settings.get('arche.log_roles', '')

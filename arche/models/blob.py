@@ -96,4 +96,4 @@ def upload_stream(stream, _file):
 
 
 def includeme(config):
-    config.registry.registerAdapter(Blobs)
+    config.registry.registerAdapter(Blobs, provided=IBlobs)

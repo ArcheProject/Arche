@@ -245,7 +245,7 @@ def includeme(config):
     config.add_directive('add_portlet', add_portlet)
     config.add_directive('add_portlet_slot', add_portlet_slot)
     config.registry.portlet_slots = {}
-    config.registry.registerAdapter(PortletManager)
+    config.registry.registerAdapter(PortletManager, provided=IPortletManager)
     config.add_portlet_slot('left', title = _("Left"), layout = 'vertical')
     config.add_portlet_slot('right', title = _("Right"), layout = 'vertical')
     config.add_portlet_slot('top', title = _("Top"), layout = 'horizontal')

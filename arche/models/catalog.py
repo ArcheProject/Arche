@@ -123,7 +123,7 @@ class CatalogIndexes(IterableUserDict):
 
 def add_catalog_indexes(config, package_name, indexes):
     util = CatalogIndexes(package_name, indexes)
-    config.registry.registerUtility(util, name = package_name)
+    config.registry.registerUtility(util, name=package_name, provided=ICatalogIndexes)
     config.update_index_info(indexes)
 
 
@@ -627,7 +627,7 @@ def _unregister_index_utils(registry=None):
 def includeme(config):
     """ Initialise catalog systems.
     """
-    config.registry.registerAdapter(Cataloger)
+    config.registry.registerAdapter(Cataloger, provided=ICataloger)
 
     config.add_subscriber(index_object_subscriber, [IIndexedContent, IObjectAddedEvent])
     config.add_subscriber(index_object_subscriber, [IIndexedContent, IObjectUpdatedEvent])
