@@ -11,6 +11,10 @@ class CatalogConfigError(Exception):
     """
 
 
+class CatalogNeedsUpdate(Exception):
+    """ Catalog needs an update, and this should block any startup procedure. """
+
+
 class EvolverVersionError(Exception):
     """ The version requirement wasn't met.
     """

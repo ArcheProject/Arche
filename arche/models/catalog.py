@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from calendar import timegm
 from copy import copy
 from datetime import datetime
+from os import getenv
 
 from pyramid.interfaces import IApplicationCreated
 from pyramid.threadlocal import get_current_registry
@@ -525,38 +526,15 @@ def reindex_catalog(root, savepoint_limit = 1000, savepoint_callback=_savepoint_
     logger.info("Process complete. %s objects reindexed", total)
 
 
-def check_catalog_on_startup(event = None, env = None):
-    """ Check that the catalog has all required indexes and that they're up to date.
-        Ment to be run by the IApplicationCreated event.
-    """
-    def _commit_and_cleanup(closer, commit=False, registry=None):
-        if commit:
-            import transaction
-            transaction.commit()
-        _unregister_index_utils(registry)
-        closer()
-
-    #Split this into other functions?
-    #This should be changed into something more sensible.
-    #Env vars?
-    from sys import argv
-    #FIXME: This makes arche unusable on windows, or if someone types
-    #"./bin/arche" this won't work.
-    script_names = ['bin/arche', 'bin/pshell']
-    if argv[0] in script_names:
-        return _unregister_index_utils()
-    if env is None:
-        from pyramid.scripting import prepare
-        env = prepare()
-    root = env['root']
-    reg = env['registry']
+def check_catalog(root, registry):
     if not IRoot.providedBy(root):
         logger.info("Root object is %r, so check_catalog_on_startup won't run" % root)
-        return _commit_and_cleanup(env['closer'], commit=False, registry=reg)
+        return [], []
+        #return _commit_and_cleanup(env['closer'], commit=False, registry=reg)
     catalog = root.catalog
     registered_keys = {}
     index_needs_indexing = []
-    for util in reg.getAllUtilitiesRegisteredFor(ICatalogIndexes):
+    for util in registry.getAllUtilitiesRegisteredFor(ICatalogIndexes):
         for (key, index) in util.items():
             if key in registered_keys:
                 raise CatalogConfigError("Both %r and %r tried to add the same key %r"
@@ -578,19 +556,54 @@ def check_catalog_on_startup(event = None, env = None):
                 del catalog[key]
                 index_needs_indexing.append(key)
                 catalog[key] = index
-    request = env['request']
     # Clean up unused indexes
     indexes_to_remove = set()
     for key in catalog:
         if key not in registered_keys:
             indexes_to_remove.add(key)
+    return index_needs_indexing, indexes_to_remove
+
+
+def check_catalog_on_startup(event = None, env = None):
+    """ Check that the catalog has all required indexes and that they're up to date.
+        Ment to be run by the IApplicationCreated event.
+    """
+    def _commit_and_cleanup(closer, request, commit=False, registry=None):
+        if commit:
+            try:
+                commit_func = request.tm.commit
+            except AttributeError:
+                from transaction import commit
+                commit_func = commit
+            commit_func()
+        _unregister_index_utils(registry)
+        closer()
+
+    #Split this into other functions?
+    #This should be changed into something more sensible.
+    #Env vars?
+    from sys import argv
+    #FIXME: This makes arche unusable on windows, or if someone types
+    #"./bin/arche" this won't work.
+    script_names = ['bin/arche', 'bin/pshell']
+    if argv[0] in script_names or getenv("ARCHE_NO_CATALOG_CHECK"):
+        return _unregister_index_utils()
+    if env is None:
+        from pyramid.scripting import prepare
+        env = prepare()
+
+    root = env['root']
+    registry = env['registry']
+    request = env['request']
+    index_needs_indexing, indexes_to_remove = check_catalog(root, registry)
+
     for key in indexes_to_remove:
         logger.warn("Removing catalog index '%s' since it's not registered anywhere.", key)
-        del catalog[key]
+        del root.catalog[key]
     # Finally reindex any that needs reindexing
     if index_needs_indexing:
         quick_reindex(request, index_needs_indexing)
-    _commit_and_cleanup(env['closer'], commit=bool(index_needs_indexing or indexes_to_remove), registry=reg)
+    _commit_and_cleanup(env['closer'], request, commit=bool(index_needs_indexing or indexes_to_remove), registry=registry)
 
 
 def quick_reindex(request, indexes):
