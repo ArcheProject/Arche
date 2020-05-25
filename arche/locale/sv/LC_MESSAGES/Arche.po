@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
 "POT-Creation-Date: 2018-12-04 14:39+0100\n"
-"PO-Revision-Date: 2019-05-03 15:39+0200\n"
+"PO-Revision-Date: 2020-05-25 11:18+0200\n"
 "Last-Translator: Robin Harms Oredsson <robin@betahaus.net>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Lingua 3.9\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.3\n"
 
 #: arche/validators.py:49
 msgid "Names can only contain charracters: A-Z, a-z, 0-9, '.', '-' or '_'"
@@ -1425,7 +1425,7 @@ msgstr "Handlingar"
 #: arche/templates/deform/readonly/form.pt:51
 #: arche/templates/deform/readonly/form_modal.pt:57
 msgid "There was a problem with your submission"
-msgstr "Det blev ett problem med ditt formulär"
+msgstr "Formuläret är inte rätt ifyllt"
 
 #. Default: en
 #: arche/templates/deform/richtext.pt:29
