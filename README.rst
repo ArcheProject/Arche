@@ -3,6 +3,8 @@ Arche README
 
 Arche development version
 
+NOTE: This project is no longer maintained. It's only kept here as a reference.
+
 
 Paster ini settings
 ===================
